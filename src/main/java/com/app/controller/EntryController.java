@@ -1,5 +1,6 @@
 package com.app.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,10 @@ public class EntryController {
 	
 	@GetMapping("/jn_banks")
 	public List<JnBank> jn_banks() {
-		return jnServices.getAll();
+		List<JnBank> arrayList = new ArrayList<JnBank>();
+		arrayList.add(new JnBank(1,"but powerful"));
+		//arrayList =  jnServices.getAll();
+		return arrayList;
 	}
 
 }

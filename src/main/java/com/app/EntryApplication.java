@@ -16,8 +16,9 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-@EnableEurekaClient
+
 @SpringBootApplication
+@EnableEurekaClient
 @EnableDiscoveryClient
 @EnableSwagger2
 @Import(ApiConfiguration.class)

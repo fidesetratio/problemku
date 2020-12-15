@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${PIPELINE_BUILD_IMAGE}
+  namespace: ${PIPELINE_NAME_SPACE}
+  labels:
+    app: ${PIPELINE_BUILD_IMAGE}
+spec:
+  replicas: ${PIPELINE_REPLICA}
+  selector:
+    matchLabels:
+      app: ${PIPELINE_BUILD_IMAGE}
+  template:
+    metadata:
+      labels:
+        app: ${PIPELINE_BUILD_IMAGE}
+    spec:
+      containers:
+        - name: ${PIPELINE_BUILD_IMAGE}
+          image: ${PIPELINE_IMAGE}
+          ports:
+            - containerPort: 9092
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ${PIPELINE_BUILD_IMAGE}
+  namespace: ${PIPELINE_NAME_SPACE}
+spec:
+  selector:
+    app: ${PIPELINE_BUILD_IMAGE}
+  type: NodePort
+  ports:
+    - nodePort: 30161
+      port: ${PIPELINE_LOAD_BALANCER_PORT}
+      protocol: TCP
+      targetPort: 9092

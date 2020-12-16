@@ -32,11 +32,24 @@ public class EntryController {
 		return arrayList;
 	}
 
-	@GetMapping("/getLong")
-	public Double getLong() {
+	@GetMapping("/biaya")
+	public Double biaya() {
 		Double number = 122003.90 * 0.05;
-
+	   return Precision.round(number,2);
+				
+	}
+	
+	@GetMapping("/nett")
+	public Double nett() {
+		Double number = 122003.90 - 122003.90 *0.05;
+	   return Precision.round(number,2);
+				
+	}
+	@GetMapping("/nilai")
+	public Double nilai() {
+		Double number = 122003.90;
 	   return Precision.round(number,2);
 				
 	}
 }
+

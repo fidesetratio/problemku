@@ -3,6 +3,7 @@ package com.app.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,4 +32,11 @@ public class EntryController {
 		return arrayList;
 	}
 
+	@GetMapping("/getLong")
+	public Double getLong() {
+		Double number = 122003.90 * 0.05;
+
+	   return Precision.round(number,2);
+				
+	}
 }

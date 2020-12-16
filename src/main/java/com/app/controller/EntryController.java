@@ -24,8 +24,8 @@ public class EntryController {
 	@GetMapping("/jn_banks")
 	public List<JnBank> jn_banks() {
 		List<JnBank> arrayList = new ArrayList<JnBank>();
-		arrayList.add(new JnBank(1,"but powerful"));
-		//arrayList =  jnServices.getAll();
+		//arrayList.add(new JnBank(1,"but powerful"));
+		arrayList =  jnServices.getAll();
 		return arrayList;
 	}
 

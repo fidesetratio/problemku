@@ -42,7 +42,7 @@ public class EntryController {
 	@GetMapping("/nett")
 	public Double nett() {
 		Double number = 122003.90 - 122003.90 *0.05;
-	   return Precision.round(Precision.round(number,3),2);
+	   return Precision.round(number,2);
 				
 	}
 	@GetMapping("/nilai")

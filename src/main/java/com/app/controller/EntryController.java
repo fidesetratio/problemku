@@ -25,8 +25,8 @@ public class EntryController {
 	public List<JnBank> jn_banks() {
 		
 		List<JnBank> arrayList = new ArrayList<JnBank>();
-		//arrayList.add(new JnBank(1,"but powerful"));
-		arrayList =  jnServices.getAll();
+		arrayList.add(new JnBank(1," Ini Demo aja sihhh"));
+//		arrayList =  jnServices.getAll();
 		return arrayList;
 	}
 

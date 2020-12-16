@@ -79,10 +79,7 @@ pipeline {
                    sshPut remote: server, from: "k8s/deployment${name_space}${build_image}.yaml", into: '.'
                    sshCommand remote: server, command: "kubectl apply -f deployment${name_space}${build_image}.yaml;kubectl -n ${name_space} rollout status deployment.app/${build_image}"
                 }
-                
                  sh "docker rmi -f ${env.PIPELINE_IMAGE}"
-                
-                
            }
            
 

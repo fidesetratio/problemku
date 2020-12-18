@@ -22,6 +22,9 @@ spring:
 
 spring:
   profiles: dev
+  logging:
+    pattern:
+      console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
   datasource:
     driverClassName: oracle.jdbc.driver.OracleDriver
     url: jdbc:oracle:thin:@128.21.30.20:1521:ajsdb
@@ -30,6 +33,9 @@ spring:
   zipkin:
     baseUrl: http://128.21.33.45:30411
 
+logging:
+  level:
+    com.app.mapper.JnBankMapper: DEBUG
 
 eureka:
   instance:
@@ -72,7 +78,9 @@ eureka:
     serviceUrl:
       defaultZone: http://eureka-0.eureka.nebula.svc.cluster.local:8080/eureka,http://eureka-1.eureka.nebula.svc.cluster.local:8080/eureka
 
-
+logging:
+  level:
+    com.app.mapper.JnBankMapper: DEBUG
 
 ---
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.math3.util.Precision;
+import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +18,9 @@ public class EntryController {
 	private JnBankServices jnServices;
 	
 	
+	private static Logger logger = Logger.getLogger(EntryController.class);
+	
+	
 	@GetMapping("/logs")
 	public String logs() {
 		return "Logs Entry Controller";
@@ -24,7 +28,7 @@ public class EntryController {
 	
 	@GetMapping("/jn_banks")
 	public List<JnBank> jn_banks() {
-		
+		logger.info("testing.");
 		List<JnBank> arrayList = new ArrayList<JnBank>();
 		arrayList.add(new JnBank(1," Ini Demo aja sihhh"));
 		arrayList.add(new JnBank(2," Ini Demo llalu aja sihhh"));

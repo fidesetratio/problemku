@@ -59,7 +59,7 @@ spring:
     username: dev
     password: linkdev
   zipkin:
-    baseUrl: http://128.21.33.45:30411
+    baseUrl: http://128.21.33.43:9411
 
 eureka:
   instance:

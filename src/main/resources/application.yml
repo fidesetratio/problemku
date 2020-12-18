@@ -14,7 +14,7 @@ management:
 # Remember that the name of the application has to be the same name of the registered service in the service discovery tool
 spring:
   profiles:
-    active: "uatprod"
+    active: "dev"
   application:
     name: api-entry
 
@@ -27,6 +27,10 @@ spring:
     url: jdbc:oracle:thin:@128.21.30.20:1521:ajsdb
     username: dev
     password: linkdev
+  zipkin:
+    baseUrl: http://128.21.33.43:9411
+
+
 eureka:
   instance:
     # Leave prefer ip address to allow the gateway inside the kubernetes cluster to find this service by it's pod ip
@@ -45,8 +49,6 @@ eureka:
 
 
 
-
-
 ---
 
 spring:
@@ -56,6 +58,9 @@ spring:
     url: jdbc:oracle:thin:@128.21.30.20:1521:ajsdb
     username: dev
     password: linkdev
+  zipkin:
+    baseUrl: http://zipkins:9411
+
 eureka:
   instance:
     preferIpAddress: true

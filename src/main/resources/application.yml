@@ -59,7 +59,7 @@ spring:
     username: dev
     password: linkdev
   zipkin:
-    baseUrl: http://10.105.160.172:9411
+    baseUrl: http://notyfyd-zipkin.default.svc.cluster.local:9411
 
 eureka:
   instance:

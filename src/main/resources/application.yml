@@ -14,7 +14,7 @@ management:
 # Remember that the name of the application has to be the same name of the registered service in the service discovery tool
 spring:
   profiles:
-    active: "uatprod"
+    active: "dev"
   application:
     name: api-entry
 
@@ -28,7 +28,7 @@ spring:
     username: dev
     password: linkdev
   zipkin:
-    baseUrl: http://128.21.33.43:9411
+    baseUrl: http://128.21.33.45:30411
 
 
 eureka:

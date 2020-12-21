@@ -58,7 +58,7 @@ public class EntryController {
 	
 	@GetMapping("/sendemail")
 	public String sendemail() {
-		return "ok email sent";
+		return "ok email sent jagiring jangan gitu donk ini khan cuma replica";
 	}
 }
 

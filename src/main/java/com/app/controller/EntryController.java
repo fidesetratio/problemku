@@ -58,7 +58,7 @@ public class EntryController {
 	
 	@GetMapping("/sendemail")
 	public String sendemail() {
-		return "microserviceswithanother";
+		return "microserviceswithanother hei hei hei";
 	}
 }
 

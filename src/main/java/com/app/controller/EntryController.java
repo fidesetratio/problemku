@@ -55,5 +55,10 @@ public class EntryController {
 	   return Precision.round(number,2);
 				
 	}
+	
+	@GetMapping("/sendemail")
+	public String sendemail() {
+		return "ok email sent";
+	}
 }
 

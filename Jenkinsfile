@@ -19,7 +19,7 @@ pipeline {
            PIPELINE_LOAD_BALANCER_PORT=9092
            //PIPELINE_EUREKA_SERVICE_ADDRESS = "http://${PIPELINE_BUILD_IMAGE}-0.eureka:8080/eureka,http://${PIPELINE_BUILD_IMAGE}-1.eureka:8080/eureka"
            PIPELINE_EUREKA_SERVICE_ADDRESS = "http://eureka-0.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-1.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-2.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-3.eureka.cosmos.svc.cluster.local:8080/eureka"
-           PIPELINE_IMAGE = "128.21.33.43:5000/${env.PIPELINE_NAME_SPACE}/${env.PIPELINE_BUILD_IMAGE}:${env.BUILD_NUMBER}"
+           PIPELINE_IMAGE = "128.21.33.43:5000/${env.PIPELINE_NAME_SPACE}/${env.PIPELINE_BUILD_IMAGE}${env.BUILD_NUMBER}:${env.BUILD_NUMBER}"
            def server = ''
            def name_space = "${env.PIPELINE_NAME_SPACE}"
            def build_image = "${env.PIPELINE_BUILD_IMAGE}"

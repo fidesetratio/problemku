@@ -18,7 +18,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 @SpringBootApplication
-@ComponentScan({"com.app.boot","com.app.utils"})
 @EnableEurekaClient
 @EnableDiscoveryClient
 @EnableSwagger2

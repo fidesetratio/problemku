@@ -13,7 +13,7 @@ pipeline {
     agent any
       environment {
            PIPELINE_BUILD_IMAGE = "api-vega"
-           PIPELINE_NAME_SPACE = "nebula"
+           PIPELINE_NAME_SPACE = "vega"
            PIPELINE_REPLICA = 2
           // PIPELINE_LOAD_BALANCER_IP= "128.21.33.66"
            PIPELINE_LOAD_BALANCER_PORT=9092

@@ -12,7 +12,7 @@ def getHost(){
 pipeline {
     agent any
       environment {
-           PIPELINE_BUILD_IMAGE = "api-entry"
+           PIPELINE_BUILD_IMAGE = "api-vega"
            PIPELINE_NAME_SPACE = "nebula"
            PIPELINE_REPLICA = 2
           // PIPELINE_LOAD_BALANCER_IP= "128.21.33.66"

@@ -16,7 +16,7 @@ spring:
   profiles:
     active: "uatprod"
   application:
-    name: api-entry
+    name: api-vega
 
 ---
 
@@ -72,7 +72,7 @@ spring:
 eureka:
   instance:
     preferIpAddress: true
-    hostname: api-entry
+    hostname: api-vega
   client:
     enabled: true
     registerWithEureka: true
@@ -92,7 +92,7 @@ spring:
 eureka:
   instance:
     preferIpAddress: true
-    hostname: api-entry
+    hostname: api-vega
   client:
     enabled: true
     registerWithEureka: true

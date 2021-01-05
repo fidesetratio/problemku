@@ -18,6 +18,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 @SpringBootApplication
+@ComponentScan({"com.app.boot","com.app.utils"})
 @EnableEurekaClient
 @EnableDiscoveryClient
 @EnableSwagger2
@@ -31,10 +32,10 @@ public class EntryApplication {
 	public Docket swaggerPersonApi10() {
 		return new Docket(DocumentationType.SWAGGER_2)
 				.select()
-					.apis(RequestHandlerSelectors.basePackage("com.app.controller"))
+					.apis(RequestHandlerSelectors.basePackage("com.app.noot.rest.controller"))
 					.paths(PathSelectors.any())
 				.build()
-				.apiInfo(new ApiInfoBuilder().version("2.0").title("Entry API").description("Documentation Entry API v1.0").build());
+				.apiInfo(new ApiInfoBuilder().version("2.0").title("api-vega").description("Documentation Entry API v1.0").build());
 	}
 
 }

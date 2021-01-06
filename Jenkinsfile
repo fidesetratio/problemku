@@ -31,7 +31,7 @@ pipeline {
                 script {                 
                    server = getHost()                                   
                 }
-                 git credentialsId: 'gitcredentialadmin', url: 'http://128.21.33.43:8888/vega/api-vega'
+                 git branch:"api-vega-02" ,credentialsId: 'gitcredentialadmin', url: 'http://128.21.33.43:8888/vega/api-vega'
                
             }
         }

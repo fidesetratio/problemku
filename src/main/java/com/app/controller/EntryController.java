@@ -39,7 +39,7 @@ public class EntryController {
 	@GetMapping("/biaya")
 	public Double biaya() {
 		Double number = 122003.90 * 0.05;
-	   return Precision.round(number,2);
+	    return Precision.round(number,2);
 				
 	}
 	

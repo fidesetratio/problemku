@@ -15,7 +15,7 @@ public class TestController {
 	@Autowired
 	private VegaServices vegaServices;
 	
-	@ApiOperation(value="Service untuk melakukan test memastikan semua aplikasi berhubungan database jalan ")
+	@ApiOperation(value="Service untu melakukan test memastikan semua aplikasi berhubungan database jalan ")
 	@RequestMapping(value = "/testhit", method = RequestMethod.GET)
 	public String testHit() {
 		String printHit = vegaServices.selectEncrypt("test");

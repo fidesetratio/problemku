@@ -30,6 +30,7 @@
     
      <mappers>
        <mapper resource="com/app/xml/bank/select.xml" />
+       <mapper resource="com/app/xml/vega/select.xml" />
  	</mappers>
  
  

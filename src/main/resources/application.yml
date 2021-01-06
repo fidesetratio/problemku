@@ -14,13 +14,15 @@ management:
 # Remember that the name of the application has to be the same name of the registered service in the service discovery tool
 spring:
   profiles:
-    active: "uatprod"
+    active: "dev"
   application:
     name: api-vega
 
 ---
 
 spring:
+  main:
+   banner-mode : off
   profiles: dev
   logging:
     pattern:
@@ -50,13 +52,18 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8080/eureka
 
+jmx:
+ rmi:
+  port: 1099
 
-
-
+server:
+  servlet:
+   contextPath: /policy/api/json
 
 ---
-
 spring:
+  main:
+   banner-mode : off
   profiles: uatprod
   logging:
    pattern:
@@ -81,9 +88,18 @@ eureka:
       #defaultZone: http://eureka-0.eureka.nebula.svc.cluster.local:8080/eureka,http://eureka-1.eureka.nebula.svc.cluster.local:8080/eureka
       defaultZone: http://eureka-0.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-1.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-2.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-3.eureka.cosmos.svc.cluster.local:8080/eureka
 
+jmx:
+ rmi:
+  port: 1099
+
 logging:
   level:
     com.app.mapper.JnBankMapper: DEBUG
+    com.app.mapper.VegaMapper: DEBUG
+
+server:
+  servlet:
+   contextPath: /policy/api/json
 
 ---
 

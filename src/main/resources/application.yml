@@ -97,9 +97,9 @@ logging:
     com.app.mapper.JnBankMapper: DEBUG
     com.app.mapper.VegaMapper: DEBUG
 
-server:
-  servlet:
-   contextPath: /policy/api/json
+#server:
+#  servlet:
+#   contextPath: /policy/api/json
 
 ---
 

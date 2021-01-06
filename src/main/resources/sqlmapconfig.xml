@@ -29,8 +29,7 @@
     
      <mappers>
         <mapper resource="com/app/mapper/xml/select.xml" />
-        <mapper resource="com/app/mapper/xml/insert.xml" />
-        <mapper resource="com/app/mapper/xml/update.xml" />
+        
  	</mappers>
  
  

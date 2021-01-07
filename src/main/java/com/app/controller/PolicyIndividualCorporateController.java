@@ -288,7 +288,7 @@ public class PolicyIndividualCorporateController {
 			HttpServletResponse response) {
 		try {
 			// Set path file
-			String pathWS = pathNewsMpolicy + "\\" + value.replace("A", " ") + "\\" + "Image.jpg";
+			String pathWS = pathNewsMpolicy + File.separator+ value.replace("A", " ") +  File.separator + "Image.jpg";
 
 			// Path file yang mau di download
 			File file = new File(pathWS);

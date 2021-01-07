@@ -89,6 +89,12 @@ public class PolicyIndividualCorporateController {
 					|| (username.equalsIgnoreCase("") && key.equalsIgnoreCase(""))
 					|| (username.equalsIgnoreCase(null) && key.equalsIgnoreCase(null))) {
 				String dir = pathNewsMpolicy;
+				System.out.println("directory :"+dir);
+				File file = new File(dir);
+				if(file.isDirectory()) {
+					System.out.println("directory exist nih");
+				}
+				
 				Set<String> listDirectory = customResourceLoader.listDirUsingJavaIO(dir);
 				if (!listDirectory.isEmpty()) {
 					// Sorting

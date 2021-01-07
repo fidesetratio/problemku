@@ -131,6 +131,7 @@ logging:
   level:
     com.app.mapper.JnBankMapper: DEBUG
     com.app.mapper.VegaMapper: DEBUG
+    com.app.controller.PolicyIndividualCorporateController: DEBUG
     org.springframework: ERROR
 #server:
 #  servlet:

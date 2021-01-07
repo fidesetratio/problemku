@@ -1,5 +1,7 @@
 package com.app.controller;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -20,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
+import com.app.model.Article;
 import com.app.model.request.RequestBanner;
+import com.app.model.request.RequestListArticle;
 import com.app.utils.CustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
@@ -44,6 +48,10 @@ public class PolicyIndividualCorporateController {
 
 	@Autowired
 	private CustomResourceLoader customResourceLoader;
+	
+	private DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
+	private DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
 	
 	@ApiOperation(value="Service Banner")
 	@RequestMapping(value = "/banner", produces = "application/json", method = RequestMethod.POST)
@@ -201,6 +209,60 @@ public class PolicyIndividualCorporateController {
 		String resInput = gson.toJson(mapInput);
 
 		customResourceLoader.insertHistActivityWS(12, 35, new Date(), req, resInput, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	//@ApiOperation(value="Service Banner")
+	@RequestMapping(value = "/listarticle", produces = "application/json", method = RequestMethod.POST)
+	public String listArticle(@RequestBody RequestListArticle requestListArticle, HttpServletRequest request) {
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String res = null;
+		Boolean error = true;
+		String message = null;
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<HashMap<String, Object>> data = new ArrayList<>();
+		try {
+			Integer pageNumber = requestListArticle.getPageNumber();
+			Integer pageSize = requestListArticle.getPageSize();
+
+			ArrayList<Article> dataListArticle = services.selectListArticle(pageNumber, pageSize);
+			if (dataListArticle.isEmpty()) {
+				error = false;
+				message = "Data list article empty, page number: " + pageNumber + ", page size: " + pageSize;
+			} else {
+				for (int x = 0; x < dataListArticle.size(); x++) {
+					Integer id = dataListArticle.get(x).getId();
+					Date create_date = dataListArticle.get(x).getCreate_date();
+					String path_file = dataListArticle.get(x).getPath_file();
+					String title = dataListArticle.get(x).getTitle();
+					String file_type = dataListArticle.get(x).getFile_type();
+
+					HashMap<String, Object> dataTemp = new HashMap<>();
+					dataTemp.put("id", id);
+					dataTemp.put("create_date", create_date != null ? df.format(create_date) : null);
+					dataTemp.put("path_file", path_file);
+					dataTemp.put("title", title);
+					dataTemp.put("file_type", file_type);
+
+					data.add(dataTemp);
+				}
+
+				error = false;
+				message = "Successfully get list article";
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			logger.error("Path: " + request.getServletPath() + ", Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
 
 		return res;
 	}

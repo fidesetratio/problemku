@@ -208,4 +208,30 @@
     	from eka.mst_config 
     	where mc_id = 788
 	</select>
+	
+	<select id="selectListArticle" parameterType="HashMap" resultType="com.app.model.Article">
+		SELECT * FROM
+	(
+    SELECT a.*, rownum r__
+    FROM
+    (
+        SELECT ID,
+		JUDUL AS TITLE,
+		CREATE_DATE,
+		REPLACE(FILE_PATH || '\' || ID || '.' || FILE_TYPE, '\\storage', '\\STORAGE.SINARMASMSIGLIFE.CO.ID') AS PATH_FILE,
+		FILE_NAME,
+		FILE_TYPE
+		FROM EKA.MST_NEWS@EB
+		WHERE KODE_PROGRAM IN (1, 2) 
+		AND FLAG_DELETE <![CDATA[<>]]> 1
+		AND UPPER(FILE_TYPE) = 'PDF'
+		AND CREATE_DATE <![CDATA[>]]> TO_DATE('16/09/2019', 'DD/MM/YYYY')
+		ORDER BY CREATE_DATE DESC
+    ) a
+    WHERE rownum <![CDATA[<]]>
+		((#{pageNumber} * #{pageSize}) + 1 )
+		)
+		WHERE r__ <![CDATA[>=]]>
+		(((#{pageNumber}-1) * #{pageSize}) + 1)
+	</select>
 </mapper>

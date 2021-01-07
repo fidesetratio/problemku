@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.app.model.Article;
 import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
@@ -48,6 +49,8 @@ public interface VegaMapper {
 	public String selectCutoffTransactionLink();
 
 	public String selectCutoffTransactionMagnaAndPrimeLink();
+	
+	public ArrayList<Article> selectListArticle(HashMap<String, Object> hashMap);
 	
 	//Update
 

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.app.mapper.VegaMapper;
+import com.app.model.Article;
 import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
@@ -115,6 +116,14 @@ public class VegaServices {
 	public String selectCutoffTransactionMagnaAndPrimeLink() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectCutoffTransactionMagnaAndPrimeLink();
+	}
+	
+	public ArrayList<Article> selectListArticle(Integer pageNumber, Integer pageSize) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("pageNumber", pageNumber);
+		hashMap.put("pageSize", pageSize);
+		return dao.selectListArticle(hashMap);
 	}
 	
 	// Update

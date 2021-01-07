@@ -25,12 +25,33 @@
         <typeAlias alias="LinkedHashMap" type="java.util.LinkedHashMap" />
         <typeAlias alias="ArrayList" type="java.util.ArrayList" />
         <typeAlias alias="LinkedList" type="java.util.LinkedList" />
-        
+        <typeAlias type="com.app.model.LstHistActivityWS" alias="LstHistActivityWS" />
+		<typeAlias type="com.app.model.User" alias="User"/>
+		<typeAlias type="com.app.model.Pemegang" alias="Pemegang"/>
+		<typeAlias type="com.app.model.SmsServerOut" alias="SmsServerOut"/>
+		<typeAlias type="com.app.model.DataUsulan" alias="DataUsulan"/>
+		<typeAlias type="com.app.model.Rekening" alias="Rekening"/>
+		<typeAlias type="com.app.model.Tertanggung" alias="Tertanggung"/>
+		<typeAlias type="com.app.model.LstUserSimultaneous" alias="LstUserSimultaneous"/>
+		<typeAlias type="com.app.model.ProductRider" alias="ProductRider"/>
+		<typeAlias type="com.app.model.Billing" alias="Billing"/>
+		<typeAlias type="com.app.model.ViewClaim" alias="ViewClaim"/>
+		<typeAlias type="com.app.model.Provinsi" alias="Provinsi"/>
+		<typeAlias type="com.app.model.Topup" alias="Topup"/>
+		<typeAlias type="com.app.model.SwitchingRedirection" alias="SwitchingRedirection"/>
+		<typeAlias type="com.app.model.Withdraw" alias="Withdraw"/>
+		<typeAlias type="com.app.model.DetailWithdraw" alias="DetailWithdraw"/>
+		<typeAlias type="com.app.model.ClaimSubmission" alias="ClaimSubmission"/>
+		<typeAlias type="com.app.model.MpolisConfiguration" alias="MpolisConfiguration"/>
+		<typeAlias type="com.app.model.request.RequestTrackingPolis" alias="RequestTrackingPolis"/>
+		<typeAlias type="com.app.model.UserCorporate" alias="UserCorporate"/>
     </typeAliases>
     
      <mappers>
        <mapper resource="com/app/xml/bank/select.xml" />
+       <mapper resource="com/app/xml/vega/insert.xml" />
        <mapper resource="com/app/xml/vega/select.xml" />
+       <mapper resource="com/app/xml/vega/update.xml" />
  	</mappers>
  
  

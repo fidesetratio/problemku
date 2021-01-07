@@ -18,7 +18,6 @@ public class JnBankServices {
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 	
-	
 	public List<JnBank> getAll(){
 		JnBankMapper dao=sqlSession.getMapper(JnBankMapper.class);
 		return dao.getAll();

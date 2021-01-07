@@ -1,0 +1,316 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+  'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='com.app.mapper.oracle.MapperDao'>
+	<insert id="insertLstHistActvWs" parameterType="lstHistActivityWS">
+		INSERT INTO EKA.LST_HIST_ACTIVITY_WS
+		(CLIENT_ID, PROCESS_ID, PROCESS_DATE, PROCESS_DESC, PROCESS_RESULT, METHOD, MSAH_IP, ERR, START_DATE, KEY)
+		VALUES
+		(
+		#{CLIENT_ID, jdbcType=INTEGER},
+		#{PROCESS_ID, jdbcType=INTEGER},
+		#{PROCESS_DATE, jdbcType=DATE},
+		#{PROCESS_DESC, jdbcType=VARCHAR},
+		#{PROCESS_RESULT, jdbcType=VARCHAR},
+		#{METHOD, jdbcType=INTEGER},
+		#{MSAH_IP, jdbcType=VARCHAR},
+		#{ERR, jdbcType=VARCHAR},
+		#{START_DATE, jdbcType=DATE},
+		#{KEY, jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<insert id="insertSmsServerOut" parameterType="SmsServerOut">
+	    INSERT INTO EKA.SMSSERVER_OUT(                    
+			 TYPE                                             
+			, RECIPIENT                                        
+			, TEXT                                             
+			, WAP_URL                                          
+			, WAP_EXPIRY_DATE                                  
+			, WAP_SIGNAL                                       
+			, CREATE_DATE                                      
+			, ORIGINATOR                                       
+			, ENCODING                                         
+			, STATUS_REPORT                                    
+			, FLASH_SMS                                        
+			, SRC_PORT                                         
+			, DST_PORT                                         
+			, SENT_DATE                                        
+			, REF_NO                                           
+			, PRIORITY                                         
+			, STATUS                                           
+			, ERRORS                                           
+			, GATEWAY_ID
+			, LUS_ID  
+			, ID_REFRENCE    
+			, JENIS        
+			, LJS_ID
+			, MSPO_POLICY_NO
+			, REG_SPAJ                       
+		) VALUES (                                         
+			 #{type,jdbcType=VARCHAR}                           
+			, EKA.UTILS.STANDARD_HP (#{recipient,jdbcType=VARCHAR})                      
+			, #{text,jdbcType=VARCHAR}                    
+			, #{wap_url,jdbcType=VARCHAR}                      
+			, #{wap_expiry_date,jdbcType=DATE}                              
+			, #{wap_signal,jdbcType=VARCHAR}                     
+			, to_date(#{date_created_java, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS')                               
+			, EKA.UTILS.STANDARD_HP(#{originator,jdbcType=VARCHAR})                     
+			, #{encoding,jdbcType=VARCHAR}                        
+			, #{status_report,jdbcType=INTEGER}                         
+			, #{flash_sms,jdbcType=INTEGER}                            
+			, #{src_port,jdbcType=INTEGER}                              
+			, #{dst_port,jdbcType=INTEGER}                               
+			, #{sent_date,jdbcType=DATE}                                    
+			, #{ref_no,jdbcType=VARCHAR}                          
+			, #{priority,jdbcType=INTEGER}                               
+			, 'U' <!-- rubah ke U jika ingin dikirim -->                     
+			, #{errors,jdbcType=INTEGER}                                
+			, EKA.UTILS.SMS_GATEWAY(#{gateway_id,jdbcType=VARCHAR})
+			, #{lus_id,jdbcType=INTEGER}
+			, #{id_refrence,jdbcType=INTEGER} 
+			, #{jenis,jdbcType=INTEGER}                   
+			, #{ljs_id,jdbcType=INTEGER}
+			, #{mspo_policy_no,jdbcType=VARCHAR}
+			, #{reg_spaj,jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="insertNewuser" parameterType="LstUserSimultaneous">
+	    INSERT INTO EKA.LST_USER_SIMULTANEOUS (username, password, id_simultan, flag_active, create_date, reg_spaj, mcl_id_employee)
+	    VALUES
+	    (
+	    	#{USERNAME, jdbcType=VARCHAR}, 
+	    	eka.encrypt(#{PASSWORD, jdbcType=VARCHAR}),
+	    	#{ID_SIMULTAN, jdbcType=VARCHAR}, 
+	    	#{FLAG_ACTIVE, jdbcType=INTEGER},
+	    	to_date(#{DATE_CREATED_JAVA, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS'),
+	    	#{REG_SPAJ, jdbcType=VARCHAR}, 
+	    	#{MCL_ID_EMPLOYEE, jdbcType=VARCHAR} 
+	    )
+	</insert>
+	
+	<insert id="insertMstMpolTrans" parameterType="Topup">
+		insert into eka.mst_mpol_trans (mpt_id, req_date, reg_spaj, lt_id, lku_id, mpt_jumlah, mpt_unit, mpt_status, created_date, 
+    	modified_date, lus_id, payor_name, payor_occupation, payor_income, payor_source_income, 
+    	flag_paid, tgl_coll_proses, path_bsb, reason_fu, mpt_jumlah_process, unique_code)
+		values 
+		(#{mpt_id, jdbcType=BIGINT}, to_date(#{date_created_java1, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
+		#{reg_spaj, jdbcType=VARCHAR}, #{lt_id, jdbcType=INTEGER}, #{lku_id, jdbcType=VARCHAR}, 
+		#{mpt_jumlah, jdbcType=DOUBLE}, #{mpt_unit, jdbcType=INTEGER}, 1, 
+		to_date(#{date_created_java2, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS'), null, #{lus_id, jdbcType=INTEGER}, 
+		#{payor_name, jdbcType=VARCHAR}, #{payor_occupation, jdbcType=VARCHAR}, #{payor_income, jdbcType=VARCHAR},
+		#{payor_source_income, jdbcType=VARCHAR}, 0, null, #{path_bsb, jdbcType=VARCHAR}, null, null, 
+		#{unique_code, jdbcType=INTEGER})
+	</insert>
+	
+	<insert id="insertMstMpolTransDet" parameterType="Topup">
+		insert into eka.mst_mpol_trans_det (mpt_id, lji_id, mpt_persen, mpt_jumlah, mpt_unit)
+		values
+		(#{mpt_id, jdbcType=BIGINT}, 
+		#{lji_id, jdbcType=VARCHAR}, 
+		#{mpt_persen, jdbcType=FLOAT}, 
+		#{mpt_jumlah_det, jdbcType=DOUBLE},
+		#{mpt_unit, jdbcType=INTEGER})
+	</insert>
+	
+	<insert id="insertSwitching">
+		INSERT INTO eka.mst_mpol_trans (mpt_id,
+        		req_date,
+                reg_spaj,
+                lt_id,
+                lku_id,
+                mpt_jumlah,
+                mpt_unit,
+                mpt_status,
+                created_date,
+                payor_name,
+                flag_paid,
+                working_days)
+     	VALUES (#{mpt_id_switching, jdbcType=VARCHAR},
+  				to_date(#{date_created_java1, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
+  				#{reg_spaj, jdbcType=VARCHAR},
+  				#{lt_id, jdbcType=INTEGER},
+  				#{lku_id, jdbcType=VARCHAR},
+  				#{mpt_jumlah, jdbcType=DOUBLE},
+  				#{mpt_unit, jdbcType=INTEGER},
+  				1,
+  				to_date(#{date_created_java2, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS'),
+  				#{payor_name, jdbcType=VARCHAR},
+  				0,
+  				to_date(#{working_days, jdbcType=VARCHAR}, 'DD/MM/YYYY'))
+	</insert>
+	
+	<insert id="insertRedirection">
+		INSERT INTO eka.mst_mpol_trans (mpt_id,
+                                req_date,
+                                reg_spaj,
+                                lt_id,
+                                lku_id,
+                                mpt_status,
+                                created_date,
+                                payor_name,
+                                flag_paid,
+                                collaborate_mpt_id)
+     	VALUES (#{mpt_id_redirection, jdbcType=VARCHAR},
+  				to_date(#{date_created_java1, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
+  				#{reg_spaj, jdbcType=VARCHAR},
+  				#{lt_id, jdbcType=INTEGER},
+  				#{lku_id, jdbcType=VARCHAR},
+  				1,
+  				to_date(#{date_created_java2, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS'),
+  				#{payor_name, jdbcType=VARCHAR},
+  				0,
+  				#{mpt_id_switching, jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="insertDetailSwitching" parameterType="HashMap">
+		INSERT INTO eka.mst_mpol_trans_det(mpt_id, lji_id, mpt_persen, mpt_jumlah, mpt_unit, mpt_dk)
+		VALUES
+		(#{mpt_id, jdbcType=VARCHAR}, 
+		#{lji_id, jdbcType=VARCHAR}, 
+		#{mpt_persen, jdbcType=INTEGER}, 
+		#{mpt_jumlah, jdbcType=DOUBLE},
+		#{mpt_unit, jdbcType=INTEGER},
+		#{mpt_dk, jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="insertDetailRedirection" parameterType="HashMap">
+		INSERT INTO eka.mst_mpol_trans_det(mpt_id, lji_id, mpt_persen, mpt_jumlah, mpt_unit, mpt_dk)
+		VALUES
+		(#{mpt_id, jdbcType=VARCHAR}, 
+		#{lji_id, jdbcType=VARCHAR}, 
+		#{mpt_persen, jdbcType=FLOAT},
+		0,
+		0,
+		#{mpt_dk, jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="insertWithdraw" parameterType="HashMap">
+		insert into eka.mst_mpol_trans (
+		mpt_id,
+		req_date,
+		reg_spaj,
+		lt_id,
+		lku_id,
+		mpt_jumlah,
+		mpt_unit,
+		mpt_status,
+		created_date,
+		payor_name,
+		flag_paid,
+		path_bsb,
+		rekening,
+		bank_name,
+        working_days) values (
+		#{mpt_id, jdbcType=VARCHAR},
+		to_date(#{req_date, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
+		#{reg_spaj, jdbcType=VARCHAR},
+		#{lt_id, jdbcType=INTEGER},
+		#{lku_id, jdbcType=VARCHAR},
+		#{mpt_jumlah, jdbcType=BIGINT},
+		#{mpt_unit, jdbcType=BIGINT},
+		1,
+		to_date(#{created_date, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS'),
+		#{payor_name, jdbcType=VARCHAR},
+		0,
+		#{path_bsb, jdbcType=VARCHAR},
+		#{rekening, jdbcType=VARCHAR},
+		#{bank_name, jdbcType=VARCHAR},
+		to_date(#{working_days, jdbcType=VARCHAR}, 'DD/MM/YYYY'))
+	</insert>
+	
+	<insert id="insertDetailWithdraw" parameterType="HashMap">
+		insert into eka.mst_mpol_trans_det (
+		mpt_id,
+		lji_id,
+		mpt_persen,
+		mpt_jumlah,
+		mpt_unit,
+		mpt_dk) values (
+		#{mpt_id, jdbcType=VARCHAR},
+		#{lji_id, jdbcType=VARCHAR},
+		0,
+		#{mpt_jumlah, jdbcType=BIGINT},
+		#{mpt_unit, jdbcType=BIGINT},
+		'K')
+	</insert>
+	
+	<insert id="insertClaimSubmissionTrans" parameterType="HashMap">
+		insert into eka.mst_mpol_claim_trans (kode_trans, 
+		reg_spaj, 
+		mste_insured_no, 
+		patienname, 
+		lku_id,
+		lsbs_id,
+		lsdbs_number,
+		date_ri_1,
+		date_ri_2,
+		amount_ri,
+		regapldate,
+		jenisclaim,
+		no_hp,
+		email,
+		path_claim,
+		lssp_id,
+		groupclaimjenis,
+		cek_lions,
+		double_cover_claim,
+		st_klmsht,
+		flag_susulan) values (
+		#{mpc_id, jdbcType=BIGINT},
+		#{reg_spaj, jdbcType=VARCHAR},
+		#{mste_insured_no, jdbcType=INTEGER},
+		#{patienname, jdbcType=VARCHAR},
+		#{lku_id, jdbcType=VARCHAR},
+		#{lsbs_id, jdbcType=INTEGER},
+		#{lsdbs_number, jdbcType=INTEGER},
+		to_date(#{date_ri_1, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
+		to_date(#{date_ri_2, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
+		#{amount_ri, jdbcType=INTEGER},
+		sysdate,
+		#{jenisclaim, jdbcType=INTEGER},
+		#{no_hp, jdbcType=VARCHAR},
+		#{email, jdbcType=VARCHAR},
+		#{path_claim, jdbcType=VARCHAR},
+		#{lssp_id, jdbcType=INTEGER},
+		#{groupclaimjenis, jdbcType=VARCHAR},
+		1,
+		#{double_cover_claim, jdbcType=INTEGER},
+		1,
+		0)
+	</insert>
+	
+	<insert id="insertDetailClaimSubmissionTrans" parameterType="HashMap">
+		insert into EKA.MST_MPOL_CLAIM_DET_TRANS 
+ 		(kode_trans, reg_spaj, accountno, lsbp_id, nama_cabang, atasnama) 
+ 		values (
+ 		#{mpc_id, jdbcType=BIGINT},
+		#{reg_spaj, jdbcType=VARCHAR},
+		#{accountno, jdbcType=VARCHAR},
+		#{lsbp_id, jdbcType=INTEGER},
+		#{nama_cabang, jdbcType=VARCHAR},
+		#{atasnama, jdbcType=VARCHAR})
+	</insert>
+	
+	<insert id="insertClaimSubmissionCorporate" parameterType="HashMap">
+		INSERT INTO EKA.MST_MPOL_CLAIM_CORPORATE_TRANS (
+		MPCC_ID, CREATED_DATE, REG_SPAJ, MCL_ID, NO_REG, LSSP_ID, JENIS_CLAIM, START_DATE, END_DATE, DOUBLE_COVER_CLAIM, PATH_STORAGE, BANK, NO_REKENING, STATUS, FLAG_SUSULAN
+		) VALUES (
+    		#{mpcc_id, jdbcType=VARCHAR}, 
+    		SYSDATE, 
+    		#{reg_spaj, jdbcType=VARCHAR}, 
+    		#{mcl_id, jdbcType=VARCHAR}, 
+    		#{no_reg, jdbcType=VARCHAR},
+    		#{lssp_id, jdbcType=INTEGER},
+    		#{jenis_claim, jdbcType=VARCHAR},
+    		to_date(#{start_date, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
+    		to_date(#{end_date, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
+    		#{double_cover_claim, jdbcType=INTEGER},
+    		#{path_storage, jdbcType=VARCHAR},
+    		#{bank, jdbcType=VARCHAR},
+    		#{no_rekening, jdbcType=VARCHAR},
+    		1,
+    		0
+		)
+	</insert>
+</mapper>

@@ -1,6 +1,211 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.app.mapper.VegaMapper">
-<select id="selectEncrypt" resultType="String" parameterType="String">
-		select eka.encrypt(#{value}) from dual
-</select>
+
+	<select id="selectEncrypt" resultType="String" parameterType="String">
+			select eka.encrypt(#{value}) from dual
+	</select>
+	
+	<select id="selectMpolisConfiguration" resultType="MpolisConfiguration">
+		select * from eka.mst_mpolis_configuration where active = 1
+  	</select>
+	
+	<select id="selectLoginAuthenticate" parameterType="LstUserSimultaneous" resultType="LstUserSimultaneous">
+		select username,
+			eka.encrypt(username) key,
+			eka.decrypt(password) password, 
+			id_simultan, 
+			reg_spaj
+		from EKA.LST_USER_SIMULTANEOUS
+		where FLAG_ACTIVE = 1
+		<if test="ID_SIMULTAN != null">
+			and id_simultan = #{ID_SIMULTAN,jdbcType=VARCHAR}
+		</if>
+		<if test="USERNAME != null">
+			and username = #{USERNAME,jdbcType=VARCHAR}
+		</if>
+		<if test="PASSWORD != null">
+			and eka.decrypt(password) = #{PASSWORD,jdbcType=VARCHAR}
+		</if>
+		<if test="REG_SPAJ != null">
+			and reg_spaj = #{REG_SPAJ, jdbcType=VARCHAR}
+		</if>
+	</select>
+	
+	<select id="selectDataLstUserSimultaneous" parameterType="String" resultType="com.app.model.LstUserSimultaneous">
+		SELECT *
+		FROM EKA.LST_USER_SIMULTANEOUS 
+		WHERE USERNAME = #{username, jdbcType=VARCHAR}
+			AND FLAG_ACTIVE = 1
+	</select>
+	
+	<select id="selectListPolisCorporate" parameterType="HashMap" resultType="UserCorporate">
+		SELECT Z.NO_POLIS,
+         Z.MSPO_BEG_DATE,
+         Z.MSPO_END_DATE,
+         Z.REG_SPAJ,
+         C.MSTE_INSURED,
+         I.MCL_FIRST,
+         H.LSRE_RELATION,
+         G.LMS_STATUS,
+         H.LSRE_ID,
+         C.MSTE_NO_REG,
+         C.MSTE_ACTIVE,
+         NVL(Z.MSPO_TYPE_REK, 1) AS MSPO_TYPE_REK
+    	FROM (SELECT * FROM (SELECT A.MSPO_POLICY_NO AS NO_POLIS, A.MSPO_BEG_DATE, A.MSPO_END_DATE, A.REG_SPAJ, A.LSSP_ID, A.MSPO_TYPE_REK
+            FROM EKA.MST_POLICY@EB A
+                 LEFT JOIN EKA.MST_POLICY@EB B
+                    ON A.MSPO_OLDPOL_EB = B.MSPO_POLICY_NO
+                 INNER JOIN EKA.MST_INSURED@EB C ON A.REG_SPAJ = C.REG_SPAJ
+           WHERE     C.MSTE_INSURED = #{mcl_id_employee, jdbcType=VARCHAR}
+                 AND A.MSPO_POLICY_NO IS NOT NULL ORDER BY A.MSPO_BEG_DATE DESC) WHERE ROWNUM <![CDATA[<]]> 3) Z
+         INNER JOIN EKA.MST_INSURED@EB C ON Z.REG_SPAJ = C.REG_SPAJ
+         INNER JOIN EKA.MST_PERSON@EB D ON C.MSTE_INSURED = D.MCL_ID
+         INNER JOIN EKA.MST_PERSON_RELATION@EB E ON D.MCL_ID = E.MCL_ID
+         INNER JOIN EKA.LST_POLICY_STATUS@EB F ON Z.LSSP_ID = F.LSSP_ID
+         INNER JOIN EKA.LST_MASTER_STATUS@EB G ON F.LMS_ID = G.LMS_ID
+         INNER JOIN EKA.LST_RELATION@EB H ON E.LSRE_ID = H.LSRE_ID
+         INNER JOIN EKA.MST_CLIENT@EB I ON C.MSTE_INSURED = I.MCL_ID
+   		WHERE E.MST_MCL_ID = #{mcl_id_employee, jdbcType=VARCHAR} AND Z.LSSP_ID = 1
+		ORDER BY 2 DESC, 10 ASC, 6 ASC
+	</select>
+	
+	<select id="selectUserIndividual" resultType="User" parameterType="String">
+		SELECT A.*,
+			B.MSPO_POLICY_NO,
+       		C.NO_HP,
+       		C.NO_HP2
+  		FROM EKA.LST_USER_SIMULTANEOUS A
+       		INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+       		INNER JOIN EKA.MST_ADDRESS_BILLING C ON B.REG_SPAJ = C.REG_SPAJ
+ 		WHERE A.USERNAME = #{username, jdbcType=VARCHAR} AND A.FLAG_ACTIVE = 1
+	</select>
+	
+	<select id="selectCountDeathClaim" parameterType="String" resultType="Integer">
+		select count(*) from eka.lst_user_simultaneous a
+			inner join eka.mst_simultaneous b on a.id_simultan = b.id_simultan
+			inner join eka.mst_policy c on b.reg_spaj = c.reg_spaj
+			inner join eka.lst_policy_status d on c.lssp_id = d.lssp_id
+			inner join eka.lst_master_status e on d.lms_id = e.lms_id
+		where b.mssm_pemegang = 1
+			and c.lstb_id = 1
+			and a.flag_active = 1
+			and d.lssp_id = 6
+			and a.username = #{username, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectDetailedPolis" parameterType="String" resultType="com.app.model.User">
+		SELECT /*+ first_rows */
+        mspo_policy_no_format,
+         b.lsbs_id,
+         b.lsdbs_number,
+         j.lms_id,
+         (CASE NVL (a.mspo_flag_new, 0)
+             WHEN 1
+             THEN
+                DECODE (NVL (a.mspo_syahriah, 0),
+                        1, d.lsdbs_view_syariah,
+                        d.lsdbs_view)
+             ELSE
+                DECODE (NVL (a.mspo_syahriah, 0),
+                        1, d.lsdbs_view_syariah0,
+                        d.lsdbs_view0)
+          END)
+            nm_prod,
+         f.mcl_first nm_pp,
+         g.mcl_first nm_tt,
+         j.lms_status_id status,
+         CASE
+            WHEN c.lsgp_id IN (0, 1, 2, 3, 4)
+            THEN
+               c.lsgp_id
+            ELSE
+               0
+         END
+            AS gprod_id,
+         NVL (e.lsgp_ket, 'N/A') group_prod,
+         eka.pac_mpolis.check_group_prod (a.reg_spaj, 5) ishealth
+    	FROM eka.mst_policy a,
+         eka.mst_insured i,
+         eka.mst_product_insured b,
+         eka.lst_det_bisnis d,
+         eka.lst_bisnis c,
+         eka.lst_group_product e,
+         eka.mst_client f,
+         eka.mst_client g,
+         eka.lst_policy_status h,
+         eka.lst_master_status j
+   		WHERE     a.reg_spaj = i.reg_spaj
+         AND i.reg_spaj = b.reg_spaj
+         AND i.mste_insured_no = b.mste_insured_no
+         AND b.lsbs_id = d.lsbs_id
+         AND b.lsdbs_number = d.lsdbs_number
+         AND d.lsbs_id = c.lsbs_id
+         AND c.lsgp_id = e.lsgp_id(+)
+         AND a.mspo_policy_holder = f.mcl_id
+         AND i.mste_insured = g.mcl_id
+         AND a.lssp_id = h.lssp_id
+         AND h.lms_id = j.lms_id
+         AND c.lsbs_id <![CDATA[<]]> 300
+         AND j.lms_id NOT IN (5, 6)
+         AND EXISTS
+                (SELECT 1
+                   FROM eka.mst_simultaneous g, eka.lst_user_simultaneous h
+                  WHERE     g.id_simultan = h.id_simultan
+                        AND a.reg_spaj = g.reg_spaj
+                        AND g.mssm_pemegang = 1
+                        AND  h.username = #{username, jdbcType=VARCHAR})
+		ORDER BY j.lms_id, a.mspo_policy_no_format
+	</select>
+	
+	<select id="selectUserCorporate" parameterType="String" resultType="UserCorporate">
+		SELECT *
+  			FROM (  SELECT A.*,
+                 C.MSPE_MOBILE AS NO_HP,
+                 E.REG_SPAJ AS REG_SPAJ_EB,
+                 E.MSPO_POLICY_NO AS NO_POLIS
+            FROM EKA.LST_USER_SIMULTANEOUS A
+                 INNER JOIN EKA.MST_CLIENT@EB B ON A.MCL_ID_EMPLOYEE = B.MCL_ID
+                 INNER JOIN EKA.MST_PERSON@EB C ON B.MCL_ID = C.MCL_ID
+                 INNER JOIN EKA.MST_INSURED@EB D ON C.MCL_ID = D.MSTE_INSURED
+                 INNER JOIN EKA.MST_POLICY@EB E ON D.REG_SPAJ = E.REG_SPAJ
+           WHERE A.USERNAME = #{username, jdbcType=VARCHAR} AND A.FLAG_ACTIVE = 1
+        	ORDER BY REG_SPAJ_EB DESC)
+ 		WHERE ROWNUM <![CDATA[<]]> 2
+	</select>
+	
+	<select id="decryptPassword" resultType="User" parameterType="User">
+		select eka.decrypt (#{key, jdbcType=VARCHAR}) as "KEY" from dual
+	</select>
+	
+	<select id="selectProvinsi2" parameterType="HashMap" resultType="Provinsi">
+		select distinct propinsi, 
+			kabupaten, 
+			kecamatan, 
+			kelurahan, 
+			kodepos
+		from eka.v_propinsi
+		where lspr_id = #{lspr_id, jdbcType=INTEGER}
+			and lska_id = #{lska_id, jdbcType=INTEGER}
+			and lskc_id = #{lskc_id, jdbcType=INTEGER}
+			and lskl_id = #{lskl_id, jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectCheckDate" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) FROM (
+		(SELECT DATE'2020-01-01' + ROWNUM - 1 DT FROM DUAL CONNECT BY LEVEL <![CDATA[<=]]> 3650) A
+		LEFT JOIN 
+		(SELECT LH_DATE FROM EKA.LST_LIBUR) b ON A.DT = B.LH_DATE) WHERE LH_DATE IS NULL AND MOD(TO_CHAR(DT, 'J'), 7) + 1 NOT IN (6, 7) AND DT = TO_DATE(#{dateVal, jdbcType=VARCHAR}, 'DD/MM/YYYY')
+	</select>
+	
+		<select id="selectCutoffTransactionLink" resultType="String">
+		select name
+    	from eka.mst_config 
+    	where mc_id = 788
+	</select>
+	
+	<select id="selectCutoffTransactionMagnaAndPrimeLink" resultType="String">
+		select name2
+    	from eka.mst_config 
+    	where mc_id = 788
+	</select>
 </mapper>

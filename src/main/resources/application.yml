@@ -60,6 +60,44 @@ server:
   servlet:
    contextPath: /policy/api/json
 
+link:
+ redirect:
+  linkRedirectSendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/send
+  linkRedirectValidateOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/validate
+  linkRedirectResendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/resend
+ send:
+  email: http://paymentcc.sinarmasmsiglife.co.id:8989/autosalestest/api/sendemail
+ update:
+  activity: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/checkactivity
+ fcm:
+  google: https://fcm.googleapis.com/fcm/send/test
+
+path:
+ direct:
+  notification: http://paymentcc.sinarmasmsiglife.co.id:9886/notif/api/json/pushnotif
+ storage:
+  mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\
+ manfaatpdf:
+  mpolicy: \\\\ebserver\\pdfind\\Polis\\
+ logoBank:
+  mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\LogoBank
+ news:
+  mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\News
+ pdf:
+  faq: \\\\storage\\pdfind\\ajsmsig\\mpolicytest\\FormPDF\\formulir_pengkinian_data.pdf
+  formwithdrawumum: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormUnitLinkUmum.pdf
+  formwithdrawumumsyariah: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormUnitLinkUmumSyariah.pdf
+  formwithdrawsimasmagnalink: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormSimasMagnaLinkUmum.pdf
+  formwithdrawsimasmagnalinksyariah: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormSimasMagnaLinkSyariah.pdf
+  formclaimsubmission: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormClaimSubmission
+ log:
+  submitclaimsubmission: E:\\API\\LogSubmitClaimSubmission\\
+  submitclaimsubmissioncorporate: E:\\API\\LogSubmitClaimSubmission\\Corporate\\
+ download:
+  banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=
+ document:
+  claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
+  
 ---
 spring:
   main:
@@ -100,6 +138,44 @@ logging:
 #server:
 #  servlet:
 #   contextPath: /policy/api/json
+
+link:
+ redirect:
+  linkRedirectSendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/send
+  linkRedirectValidateOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/validate
+  linkRedirectResendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/resend
+ send:
+  email: http://paymentcc.sinarmasmsiglife.co.id:8989/autosalestest/api/sendemail
+ update:
+  activity: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/checkactivity
+ fcm:
+  google: https://fcm.googleapis.com/fcm/send/test
+
+path:
+ direct:
+  notification: http://paymentcc.sinarmasmsiglife.co.id:9886/notif/api/json/pushnotif
+ storage:
+  mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\
+ manfaatpdf:
+  mpolicy: \\\\ebserver\\pdfind\\Polis\\
+ logoBank:
+  mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\LogoBank
+ news:
+  mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\News
+ pdf:
+  faq: \\\\storage\\pdfind\\ajsmsig\\mpolicytest\\FormPDF\\formulir_pengkinian_data.pdf
+  formwithdrawumum: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormUnitLinkUmum.pdf
+  formwithdrawumumsyariah: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormUnitLinkUmumSyariah.pdf
+  formwithdrawsimasmagnalink: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormSimasMagnaLinkUmum.pdf
+  formwithdrawsimasmagnalinksyariah: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormSimasMagnaLinkSyariah.pdf
+  formclaimsubmission: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormClaimSubmission
+ log:
+  submitclaimsubmission: E:\\API\\LogSubmitClaimSubmission\\
+  submitclaimsubmissioncorporate: E:\\API\\LogSubmitClaimSubmission\\Corporate\\
+ download:
+  banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=
+ document:
+  claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
 
 ---
 

@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+  'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='com.app.mapper.oracle.MapperDao'>
+    <update id="updateUserKeyName" parameterType="User">
+        UPDATE eka.LST_USER_SIMULTANEOUS
+        <trim prefix="SET" suffixOverrides=",">
+        	<if test="UPDATE_DATE_TIME !=null"> update_date = to_date(#{UPDATE_DATE_TIME,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),</if>
+        	<if test="LAST_LOGIN_DATE_TIME !=null"> last_login_date = to_date(#{LAST_LOGIN_DATE_TIME,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),</if>
+        	<if test="LAST_LOGIN_DATE !=null"> last_login_date = sysdate,</if>
+        	<if test="FLAG_ACTIVE !=null"> flag_active = #{FLAG_ACTIVE,jdbcType=INTEGER},</if>
+        	<if test="LAST_LOGIN_DEVICE != null"> last_login_device = #{LAST_LOGIN_DEVICE, jdbcType=VARCHAR},</if>
+        </trim>
+        where USERNAME = #{USERNAME, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateActivityStatus" parameterType="User">
+    	update eka.lst_user_simultaneous 
+    	set update_date = to_date(#{date_created_java, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS') 
+    	where username = #{username, jdbcType=VARCHAR}
+    </update>
+</mapper>

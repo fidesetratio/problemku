@@ -201,6 +201,7 @@ public class PolicyIndividualCorporateController {
 				// customResourceLoader.updateActivity(username);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			error = true;
 			message = ResponseMessage.ERROR_SYSTEM;
 			resultErr = "bad exception " + e;

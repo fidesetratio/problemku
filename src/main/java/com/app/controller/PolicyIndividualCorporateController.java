@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
 import com.app.model.request.RequestBanner;
@@ -27,6 +28,7 @@ import com.google.gson.GsonBuilder;
 
 import io.swagger.annotations.ApiOperation;
 
+@RestController
 public class PolicyIndividualCorporateController {
 	
 	private static final Logger logger = LogManager.getLogger(PolicyIndividualCorporateController.class);

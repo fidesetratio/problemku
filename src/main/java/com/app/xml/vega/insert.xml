@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
   'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
-<mapper namespace='com.app.mapper.oracle.MapperDao'>
+<mapper namespace='com.app.mapper.VegaMapper'>
 	<insert id="insertLstHistActvWs" parameterType="lstHistActivityWS">
 		INSERT INTO EKA.LST_HIST_ACTIVITY_WS
 		(CLIENT_ID, PROCESS_ID, PROCESS_DATE, PROCESS_DESC, PROCESS_RESULT, METHOD, MSAH_IP, ERR, START_DATE, KEY)

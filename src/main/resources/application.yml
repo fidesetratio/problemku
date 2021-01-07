@@ -131,7 +131,7 @@ logging:
   level:
     com.app.mapper.JnBankMapper: DEBUG
     com.app.mapper.VegaMapper: DEBUG
-
+    org.springframework: ERROR
 #server:
 #  servlet:
 #   contextPath: /policy/api/json

@@ -26,7 +26,7 @@ spec:
       volumes:
         - name: flexvol-mount
           persistentVolumeClaim:
-            claimName: pvc-smb-flexvol
+            claimName: nfs-pvc
 ---
 kind: Service
 apiVersion: v1

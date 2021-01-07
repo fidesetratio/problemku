@@ -159,7 +159,7 @@ path:
  logoBank:
   mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\LogoBank
  news:
-  mpolicy: \\mnt\\storage\\ajsmsig\\mpolicytest\\News
+  mpolicy: /mnt/storage/ajsmsig/mpolicytest/News
  pdf:
   faq: \\\\storage\\pdfind\\ajsmsig\\mpolicytest\\FormPDF\\formulir_pengkinian_data.pdf
   formwithdrawumum: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormUnitLinkUmum.pdf

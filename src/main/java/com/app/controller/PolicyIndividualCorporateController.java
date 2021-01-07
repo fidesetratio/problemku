@@ -106,12 +106,12 @@ public class PolicyIndividualCorporateController {
 					Collections.sort(al, Collections.reverseOrder());
 
 					for (String showDir : al) {
-						String dir2 = dir + "\\" + showDir;
+						String dir2 = dir + File.separator + showDir;
 						Set<String> listFiles = customResourceLoader.listFilesUsingJavaIO(dir2);
 						if (!listFiles.isEmpty()) {
 							HashMap<String, Object> data2 = new HashMap<>();
 							for (String filename : listFiles) {
-								String dir3 = dir2 + "\\" + filename;
+								String dir3 = dir2 + File.separator+ filename;
 								if (filename.endsWith(".jpg") == true) {
 //									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
 //									String strImg = Base64.getEncoder().encodeToString(fileContent);
@@ -157,12 +157,12 @@ public class PolicyIndividualCorporateController {
 						Collections.sort(al, Collections.reverseOrder());
 
 						for (String showDir : al) {
-							String dir2 = dir + "\\" + showDir;
+							String dir2 = dir + File.separator + showDir;
 							Set<String> listFiles = customResourceLoader.listFilesUsingJavaIO(dir2);
 							if (!listFiles.isEmpty()) {
 								HashMap<String, Object> data2 = new HashMap<>();
 								for (String filename : listFiles) {
-									String dir3 = dir2 + "\\" + filename;
+									String dir3 = dir2 + File.separator+ filename;
 									if (filename.endsWith(".jpg") == true) {
 //										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
 //										String strImg = Base64.getEncoder().encodeToString(fileContent);

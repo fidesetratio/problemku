@@ -38,7 +38,6 @@ spec:
     app: ${PIPELINE_BUILD_IMAGE}
   type: NodePort
   ports:
-    - nodePort: 30169
-      port: ${PIPELINE_LOAD_BALANCER_PORT}
+    - port: ${PIPELINE_LOAD_BALANCER_PORT}
       protocol: TCP
       targetPort: 9092

@@ -18,8 +18,15 @@ spec:
       containers:
         - name: ${PIPELINE_BUILD_IMAGE}
           image: ${PIPELINE_IMAGE}
+          volumeMounts:
+            - name: flexvol-mount
+              mountPath: /mnt/storage
           ports:
             - containerPort: 9092
+      volumes:
+        - name: flexvol-mount
+          hostPath:
+           path: /mnt/storage
 ---
 kind: Service
 apiVersion: v1

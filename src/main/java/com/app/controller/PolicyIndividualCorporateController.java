@@ -1,5 +1,9 @@
 package com.app.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,21 +14,26 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.services.VegaServices;
 import com.app.model.Article;
 import com.app.model.request.RequestBanner;
 import com.app.model.request.RequestListArticle;
+import com.app.services.VegaServices;
 import com.app.utils.CustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
@@ -266,4 +275,39 @@ public class PolicyIndividualCorporateController {
 
 		return res;
 	}
+	
+	@RequestMapping(value = "/downloadbanner", method = RequestMethod.GET)
+	public ResponseEntity<String> downloadBanner(@RequestParam String value, HttpServletRequest request,
+			HttpServletResponse response) {
+		try {
+			// Set path file
+			String pathWS = pathNewsMpolicy + "\\" + value.replace("A", " ") + "\\" + "Image.jpg";
+
+			// Path file yang mau di download
+			File file = new File(pathWS);
+
+			// Content-Disposition
+			response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Image.jpg");
+
+			// Content-Length
+			response.setContentLength((int) file.length());
+
+			BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+			BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+			byte[] buffer = new byte[1024];
+			int bytesRead = 0;
+			while ((bytesRead = inStream.read(buffer)) != -1) {
+				outStream.write(buffer, 0, bytesRead);
+			}
+			outStream.flush();
+			inStream.close();
+		} catch (Exception e) {
+			logger.error("Path: " + request.getServletPath() + ", Error: " + e);
+		}
+
+		ResponseEntity<String> result = new ResponseEntity<String>("OK", HttpStatus.OK);
+		return result;
+	}
+	
 }

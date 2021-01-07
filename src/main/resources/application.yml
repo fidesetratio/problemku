@@ -56,9 +56,6 @@ jmx:
  rmi:
   port: 1099
 
-server:
-  servlet:
-   contextPath: /policy/api/json
 
 link:
  redirect:

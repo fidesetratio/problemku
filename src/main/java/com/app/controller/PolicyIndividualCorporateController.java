@@ -25,6 +25,8 @@ import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import io.swagger.annotations.ApiOperation;
+
 public class PolicyIndividualCorporateController {
 	
 	private static final Logger logger = LogManager.getLogger(PolicyIndividualCorporateController.class);
@@ -40,7 +42,8 @@ public class PolicyIndividualCorporateController {
 
 	@Autowired
 	private CustomResourceLoader customResourceLoader;
-
+	
+	@ApiOperation(value="Service Banner")
 	@RequestMapping(value = "/banner", produces = "application/json", method = RequestMethod.POST)
 	public String getBanner(@RequestBody RequestBanner requestBanner, HttpServletRequest request) throws Exception {
 		Date start = new Date();

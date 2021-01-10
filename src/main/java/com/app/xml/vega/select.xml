@@ -1,9 +1,5 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.app.mapper.VegaMapper">
-
-	<select id="selectEncrypt" resultType="String" parameterType="String">
-			select eka.encrypt(#{value}) from dual
-	</select>
 	
 	<select id="selectMpolisConfiguration" resultType="MpolisConfiguration">
 		select * from eka.mst_mpolis_configuration where active = 1
@@ -30,69 +26,138 @@
 			and reg_spaj = #{REG_SPAJ, jdbcType=VARCHAR}
 		</if>
 	</select>
-	
-	<select id="selectDataLstUserSimultaneous" parameterType="String" resultType="com.app.model.LstUserSimultaneous">
+
+	<select id="selectTrackingPolis" parameterType="RequestTrackingPolis" resultType="com.app.model.TrackingPolis">
+		SELECT B.MSPO_POLICY_NO, 
+			A.MSPS_DATE, 
+			E.LSPD_POSITION,
+			C.LSSP_STATUS,
+			D.STATUS_ACCEPT, 
+			A.MSPS_DESC
+		FROM EKA.MST_POSITION_SPAJ A
+			INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+			INNER JOIN EKA.LST_POLICY_STATUS C ON B.LSSP_ID = C.LSSP_ID
+			INNER JOIN EKA.LST_DOCUMENT_POSITION E ON A.LSPD_ID = E.LSPD_ID
+			LEFT OUTER JOIN EKA.LST_STATUS_ACCEPT D ON A.LSSA_ID = D.LSSA_ID
+		WHERE
+		<if test="reg_spaj != null">
+			B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		</if>
+		<if test="no_polis != null">
+			B.MSPO_POLICY_NO = REPLACE(#{no_polis, jdbcType=VARCHAR},
+			'.')
+		</if>
+		<if test="no_blanko != null">
+			B.MSPO_NO_BLANKO = #{no_blanko, jdbcType=VARCHAR}
+		</if>
+		ORDER BY A.MSPS_DATE ASC
+	</select>
+
+	<select id="selectCountDataTrackingPolis" parameterType="RequestTrackingPolis" resultType="com.app.model.TrackingPolis">
+		select reg_spaj 
+		from eka.mst_policy where
+		<if test="reg_spaj != null">
+			trim(REG_SPAJ) = #{reg_spaj, jdbcType=VARCHAR}
+		</if>
+		<if test="no_polis != null">
+			MSPO_POLICY_NO = REPLACE(#{no_polis, jdbcType=VARCHAR},
+			'.')
+		</if>
+		<if test="no_blanko != null">
+			MSPO_NO_BLANKO = #{no_blanko, jdbcType=VARCHAR}
+		</if>
+	</select>
+
+	<select id="selectGetSPAJ" parameterType="Pemegang" resultType="Pemegang">
+		SELECT A.REG_SPAJ,
+       		A.MSPO_POLICY_NO_FORMAT,
+       		A.LKU_ID,
+       		B.ID_SIMULTAN
+  		FROM EKA.MST_POLICY A
+       		INNER JOIN EKA.MST_SIMULTANEOUS B ON A.REG_SPAJ = B.REG_SPAJ
+ 		WHERE     MSPO_POLICY_NO = REPLACE (#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+       		AND LSTB_ID = 1
+       		AND B.MSSM_PEMEGANG = 1
+	</select>
+
+	<select id="selectNomorPolis" parameterType="Pemegang" resultType="Pemegang">
+		SELECT DISTINCT b.mspo_policy_no,
+         	d.mspe_no_identity,
+            b.reg_spaj,
+            d.mspe_date_birth,
+            a.id_simultan,
+            c.no_hp,
+            c.no_hp2,
+            d.mcl_id
+  		FROM eka.lst_user_simultaneous a
+       		INNER JOIN eka.mst_simultaneous e ON a.id_simultan = e.id_simultan
+       		INNER JOIN eka.mst_policy b ON e.reg_spaj = b.reg_spaj
+       		INNER JOIN eka.mst_address_billing c ON b.reg_spaj = c.reg_spaj
+       		INNER JOIN eka.mst_client_new d ON d.mcl_id = b.mspo_policy_holder
+ 		WHERE b.mspo_policy_no = REPLACE (#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+  			and e.mssm_pemegang = 1
+  			and a.flag_active = 1
+  			and b.lstb_id = 1
+	</select>
+
+	<select id="selectNomorPolisNotRegister" parameterType="Pemegang" resultType="Pemegang">
+		SELECT DISTINCT c.mspo_policy_no,
+           	b.mspe_no_identity,
+            c.reg_spaj,
+            b.mspe_date_birth,
+            a.id_simultan,
+            d.no_hp,
+            d.no_hp2,
+            a.mcl_id
+  		FROM eka.mst_simultaneous a
+       		INNER JOIN eka.mst_client_new b ON a.mcl_id = b.mcl_id
+       		INNER JOIN eka.mst_policy c ON a.reg_spaj = c.reg_spaj
+       		INNER JOIN eka.mst_address_billing d ON c.reg_spaj = d.reg_spaj
+       		INNER JOIN eka.lst_policy_status e ON c.lssp_id = e.lssp_id
+ 		WHERE     a.mssm_pemegang = 1
+       		AND c.lstb_id = 1
+       		AND e.lssp_id = 1
+       		AND c.mspo_policy_no = REPLACE (#{mspo_policy_no, jdbcType=VARCHAR},'.')
+  			AND rownum = 1
+	</select>
+
+	<select id="selectKtp" parameterType="String" resultType="Pemegang">
 		SELECT *
-		FROM EKA.LST_USER_SIMULTANEOUS 
-		WHERE USERNAME = #{username, jdbcType=VARCHAR}
-			AND FLAG_ACTIVE = 1
+  			FROM (SELECT DISTINCT c.mspo_policy_no,
+             	b.mspe_no_identity,
+                c.reg_spaj,
+                c.mspo_beg_date,
+                b.mspe_date_birth,
+                a.id_simultan,
+                d.no_hp,
+                d.no_hp2,
+                a.mcl_id
+            FROM eka.mst_simultaneous a
+                 INNER JOIN eka.mst_client_new b ON a.mcl_id = b.mcl_id
+                 INNER JOIN eka.mst_policy c ON a.reg_spaj = c.reg_spaj
+                 INNER JOIN eka.mst_address_billing d
+                    ON c.reg_spaj = d.reg_spaj
+           WHERE a.mssm_pemegang = 1 AND c.lstb_id = 1 AND c.lssp_id = 1
+            AND b.mspe_no_identity = #{mspe_no_identity, jdbcType=VARCHAR}
+        ORDER BY c.mspo_beg_date DESC)
+ 		WHERE ROWNUM = 1
 	</select>
 	
-	<select id="selectListPolisCorporate" parameterType="HashMap" resultType="UserCorporate">
-		SELECT Z.NO_POLIS,
-         Z.MSPO_BEG_DATE,
-         Z.MSPO_END_DATE,
-         Z.REG_SPAJ,
-         C.MSTE_INSURED,
-         I.MCL_FIRST,
-         H.LSRE_RELATION,
-         G.LMS_STATUS,
-         H.LSRE_ID,
-         C.MSTE_NO_REG,
-         C.MSTE_ACTIVE,
-         NVL(Z.MSPO_TYPE_REK, 1) AS MSPO_TYPE_REK
-    	FROM (SELECT * FROM (SELECT A.MSPO_POLICY_NO AS NO_POLIS, A.MSPO_BEG_DATE, A.MSPO_END_DATE, A.REG_SPAJ, A.LSSP_ID, A.MSPO_TYPE_REK
-            FROM EKA.MST_POLICY@EB A
-                 LEFT JOIN EKA.MST_POLICY@EB B
-                    ON A.MSPO_OLDPOL_EB = B.MSPO_POLICY_NO
-                 INNER JOIN EKA.MST_INSURED@EB C ON A.REG_SPAJ = C.REG_SPAJ
-           WHERE     C.MSTE_INSURED = #{mcl_id_employee, jdbcType=VARCHAR}
-                 AND A.MSPO_POLICY_NO IS NOT NULL ORDER BY A.MSPO_BEG_DATE DESC) WHERE ROWNUM <![CDATA[<]]> 3) Z
-         INNER JOIN EKA.MST_INSURED@EB C ON Z.REG_SPAJ = C.REG_SPAJ
-         INNER JOIN EKA.MST_PERSON@EB D ON C.MSTE_INSURED = D.MCL_ID
-         INNER JOIN EKA.MST_PERSON_RELATION@EB E ON D.MCL_ID = E.MCL_ID
-         INNER JOIN EKA.LST_POLICY_STATUS@EB F ON Z.LSSP_ID = F.LSSP_ID
-         INNER JOIN EKA.LST_MASTER_STATUS@EB G ON F.LMS_ID = G.LMS_ID
-         INNER JOIN EKA.LST_RELATION@EB H ON E.LSRE_ID = H.LSRE_ID
-         INNER JOIN EKA.MST_CLIENT@EB I ON C.MSTE_INSURED = I.MCL_ID
-   		WHERE E.MST_MCL_ID = #{mcl_id_employee, jdbcType=VARCHAR} AND Z.LSSP_ID = 1
-		ORDER BY 2 DESC, 10 ASC, 6 ASC
+	<select id="selectCountPhoneNumber" parameterType="String" resultType="Integer">
+		SELECT count(*)
+  		FROM eka.lst_user_simultaneous a
+       		LEFT JOIN eka.mst_address_billing d ON a.reg_spaj = d.reg_spaj
+ 		WHERE (d.no_hp = #{phone_no, jdbcType=VARCHAR} or d.no_hp2 = #{phone_no, jdbcType=VARCHAR})
 	</select>
-	
-	<select id="selectUserIndividual" resultType="User" parameterType="String">
-		SELECT A.*,
-			B.MSPO_POLICY_NO,
-       		C.NO_HP,
-       		C.NO_HP2
-  		FROM EKA.LST_USER_SIMULTANEOUS A
-       		INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
-       		INNER JOIN EKA.MST_ADDRESS_BILLING C ON B.REG_SPAJ = C.REG_SPAJ
- 		WHERE A.USERNAME = #{username, jdbcType=VARCHAR} AND A.FLAG_ACTIVE = 1
+
+	<select id="selectEncrypt" resultType="String" parameterType="String">
+		select eka.encrypt(#{value}) from dual
 	</select>
-	
-	<select id="selectCountDeathClaim" parameterType="String" resultType="Integer">
-		select count(*) from eka.lst_user_simultaneous a
-			inner join eka.mst_simultaneous b on a.id_simultan = b.id_simultan
-			inner join eka.mst_policy c on b.reg_spaj = c.reg_spaj
-			inner join eka.lst_policy_status d on c.lssp_id = d.lssp_id
-			inner join eka.lst_master_status e on d.lms_id = e.lms_id
-		where b.mssm_pemegang = 1
-			and c.lstb_id = 1
-			and a.flag_active = 1
-			and d.lssp_id = 6
-			and a.username = #{username, jdbcType=VARCHAR}
+
+	<select id="decryptPassword" resultType="User" parameterType="User">
+		select eka.decrypt (#{key, jdbcType=VARCHAR}) as "KEY" from dual
 	</select>
-	
+
 	<select id="selectDetailedPolis" parameterType="String" resultType="com.app.model.User">
 		SELECT /*+ first_rows */
         mspo_policy_no_format,
@@ -156,6 +221,2491 @@
                         AND  h.username = #{username, jdbcType=VARCHAR})
 		ORDER BY j.lms_id, a.mspo_policy_no_format
 	</select>
+
+	<select id="selectCountLstUlangan" parameterType="String" resultType="Integer">
+		SELECT COUNT (*) AS jumlah
+  		FROM eka.lst_ulangan
+ 		WHERE     LOWER (jenis) LIKE '%update id simultan%'
+       		AND reg_spaj IN
+              (SELECT a.reg_spaj
+                 FROM eka.mst_policy a,
+                      eka.mst_insured i,
+                      eka.mst_product_insured b,
+                      eka.lst_det_bisnis d,
+                      eka.lst_bisnis c,
+                      eka.lst_group_product e,
+                      eka.mst_client f,
+                      eka.mst_client g,
+                      eka.lst_policy_status h,
+                      eka.lst_master_status j
+                WHERE     a.reg_spaj = i.reg_spaj
+                      AND i.reg_spaj = b.reg_spaj
+                      AND i.mste_insured_no = b.mste_insured_no
+                      AND b.lsbs_id = d.lsbs_id
+                      AND b.lsdbs_number = d.lsdbs_number
+                      AND d.lsbs_id = c.lsbs_id
+                      AND c.lsgp_id = e.lsgp_id(+)
+                      AND a.mspo_policy_holder = f.mcl_id
+                      AND i.mste_insured = g.mcl_id
+                      AND a.lssp_id = h.lssp_id
+                      AND h.lms_id = j.lms_id
+                      AND c.lsbs_id <![CDATA[<]]> 300
+                      AND j.lms_id NOT IN (5, 6)
+                      AND EXISTS
+                             (SELECT 1
+                                FROM eka.mst_simultaneous g,
+                                     eka.lst_user_simultaneous h
+                               WHERE     g.id_simultan = h.id_simultan
+                                     AND a.reg_spaj = g.reg_spaj
+                                     AND g.mssm_pemegang = 1
+                                     AND h.username = #{username, jdbcType=VARCHAR}))
+	</select>
+
+	<select id="selectPemegang" resultType="Pemegang" parameterType="Pemegang">
+		SELECT c.mcl_first,
+       		c.mcl_id,
+       		c.mspe_no_identity,
+       		c.mspe_place_birth,
+       		c.mspe_date_birth,
+       		TO_CHAR (c.mspe_date_birth, 'yyyy') year_birth_date,
+       		d.alamat_rumah,
+       		d.kd_pos_rumah,
+       		d.kota_rumah,
+       		m.no_hp,
+       		m.no_hp2,
+       		m.e_mail AS email,
+       		a.reg_spaj,
+       		a.mspo_policy_no,
+       		a.lssp_id,
+       		l.mrc_no_ac,
+       		k.lsbp_nama,
+       		d.lspr_id,
+       		d.lska_id,
+       		d.lskc_id,
+       		d.lskl_id
+  		FROM eka.mst_policy a,
+       		eka.mst_insured b,
+       		eka.mst_client_new c,
+       		eka.mst_address_new d,
+       		eka.lst_relation k,
+      	 	eka.mst_rek_client l,
+       		eka.lst_bank_pusat k,
+       		eka.mst_address_billing m
+ 		WHERE     a.reg_spaj = b.reg_spaj
+       		AND a.mspo_policy_holder = c.mcl_id
+       		AND c.mcl_id = d.mcl_id
+       		AND a.lsre_id = k.lsre_id(+)
+       		AND a.reg_spaj = l.reg_spaj(+)
+       		AND l.lsbp_id = k.lsbp_id(+)
+       		AND a.reg_spaj = m.reg_spaj
+       		AND a.mspo_policy_no = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+	</select>
+
+	<select id="selectProductRider" parameterType="String" resultType="com.app.model.ProductRider">
+		SELECT EKA.F_LSDBS_VIEW (a.reg_spaj, a.lsbs_id, a.lsdbs_number) AS newname,
+         	b.lsdbs_name,
+         	TO_CHAR (a.mspr_beg_date, 'yyyy-mm-dd') mspr_beg_date,
+         	TO_CHAR (a.mspr_end_date, 'yyyy-mm-dd') mspr_end_date,
+         	a.mspr_tsi,
+         	c.lku_symbol
+    	FROM eka.mst_product_insured a
+         	INNER JOIN eka.lst_det_bisnis b ON a.lsbs_id = b.lsbs_id AND a.lsdbs_number = b.lsdbs_number
+         	INNER JOIN EKA.LST_KURS c ON a.lku_id = c.lku_id
+   		WHERE a.reg_spaj = #{spaj, jdbcType=VARCHAR}
+         	AND b.lsbs_id <![CDATA[>=]]> 800
+         	AND a.mspr_active = 1
+		ORDER BY a.lsbs_id, a.lsdbs_number
+	</select>
+
+	<select id="selectTertanggung" resultType="Tertanggung" parameterType="Tertanggung">
+		SELECT c.mcl_first,
+       		c.mcl_id,
+       		c.mspe_place_birth,
+       		c.mspe_date_birth,
+       		c.mspe_sex,
+       		d.alamat_rumah,
+       		d.kd_pos_rumah,
+       		d.kota_rumah,
+       		l.no_hp,
+       		l.no_hp2,
+       		l.e_mail AS email,
+       		a.reg_spaj,
+       		d.lspr_id,
+       		d.lska_id,
+       		d.lskc_id,
+       		d.lskl_id,
+       		k.lsre_relation,
+       		a.mspo_policy_no,
+       		TO_CHAR (c.mspe_date_birth, 'yyyy') AS tahun_lahir
+  		FROM eka.mst_policy a,
+       		eka.mst_insured b,
+       		eka.mst_client_new c,
+       		eka.mst_address_new d,
+       		eka.lst_relation k,
+       		eka.mst_address_billing l
+ 		WHERE     c.mcl_id = d.mcl_id
+       		AND a.reg_spaj = b.reg_spaj
+       		AND b.mste_insured = c.mcl_id
+       		AND a.reg_spaj = l.reg_spaj
+       		AND a.lsre_id = k.lsre_id(+)
+       		AND a.mspo_policy_no = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+	</select>
+
+	<select id="selectTertanggungTambahan" parameterType="String" resultType="com.app.model.TertanggungTambahan">
+		SELECT nama,
+       		TO_CHAR (a.tgl_lahir, 'yyyy') tgl_lahir,
+       		CASE WHEN kelamin = 0 THEN 'Wanita' WHEN kelamin = 1 THEN 'Pria' END AS kelamin,
+       		b.lsre_relation
+  		FROM eka.mst_peserta a
+       		INNER JOIN eka.lst_relation b ON a.lsre_id = b.lsre_id
+ 		WHERE a.reg_spaj = #{spaj, jdbcType=VARCHAR} and aktif = 1
+	</select>
+
+	<select id="selectDataUsulan" resultType="DataUsulan" parameterType="DataUsulan">
+		SELECT EKA.F_LSDBS_VIEW (a.reg_spaj, a.lsbs_id, a.lsdbs_number) "newname",
+       		a.reg_spaj,
+       		a.mspr_premium,
+       		eka.f_lsdbs (a.reg_spaj, a.lsbs_id, a.lsdbs_number) lsdbs_name,
+       		c.mspo_policy_no,
+       		d.mste_end_date,
+       		d.mste_beg_date,
+       		c.lku_id,
+       		f.lku_symbol,
+       		c.mspo_policy_no,
+       		c.mspo_installment,
+       		a.mspr_tsi,
+      	 	g.MU_JLH_TU,
+       		m.lscb_pay_mode
+  		FROM eka.mst_product_insured a,
+       		eka.lst_det_bisnis b,
+       		eka.mst_policy c,
+       		eka.lst_pay_mode m,
+       		eka.mst_insured d,
+       		eka.lst_kurs f,
+       		(SELECT reg_spaj, mu_jlh_tu
+          		FROM eka.mst_ulink
+         		WHERE reg_spaj = RPAD(REPLACE(#{reg_spaj, jdbcType=VARCHAR}, '.'), 11, ' ')
+  					AND mu_ke = 1
+  					AND mu_periodic_tu = 1) g,
+  			eka.lst_type_produk h, eka.lst_user i
+  		WHERE a.reg_spaj =
+  			rpad(replace(#{reg_spaj, jdbcType=VARCHAR},'.'),11,' ')
+  			AND a.lsbs_id <![CDATA[<]]> 300
+  			AND a.lsbs_id = b.lsbs_id(+)
+  			AND a.lsdbs_number = b.lsdbs_number(+)
+  			AND a.reg_spaj = c.reg_spaj
+  			AND c.reg_spaj = d.reg_spaj
+  			AND c.lscb_id = m.lscb_id
+  			AND c.lku_id = f.lku_id(+)
+  			AND a.reg_spaj = g.reg_spaj(+)
+  			AND c.lstb_id = h.lstb_id(+)
+  			AND c.lstp_id = h.lstp_id(+)
+  			AND c.lus_id = i.lus_id (+)
+	</select>
+
+	<select id="selectListNav" resultType="com.app.model.Nav">
+		SELECT A.LJI_ID,
+         	A.LJI_INVEST,
+         	A.LJI_INVEST AS JENIS_INVEST,
+         	TO_CHAR ((SELECT * FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 2), 'YYYY-MM-DD') AS TGL_NAB_0,
+         	TO_CHAR ((SELECT MIN(LNU_TGL) FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 3), 'YYYY-MM-DD') AS TGL_NAB_1,
+         	EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT * FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 2)) AS NAB_0,
+         	EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT MIN(LNU_TGL) FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 3)) AS NAB_1,
+         	EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT MIN(LNU_TGL) FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 4)) AS NAB_2,
+         	EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT MIN(LNU_TGL) FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 5)) AS NAB_3,
+         	EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT MIN(LNU_TGL) FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 6)) AS NAB_4,
+           	EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT * FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 2)) - NVL (EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT MIN(LNU_TGL) FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 3)),
+            EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT * FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 2))) AS SELISIH_NILAI,
+         	DECODE (
+            EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT MIN(LNU_TGL) FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 3)),
+            0, 0,
+            ROUND (
+                 (  (  EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT * FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 2))
+                     - NVL (EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT MIN(LNU_TGL) FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 3)),
+                            EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT * FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 2))))
+                  / EKA.PACPOLIS.GET_NILAI_NAB (A.LJI_ID, (SELECT MIN(LNU_TGL) FROM (SELECT DISTINCT(LNU_TGL) FROM EKA.LST_NAB_ULINK WHERE LJI_ID = A.LJI_ID ORDER BY LNU_TGL DESC) WHERE ROWNUM <![CDATA[<]]> 3)))
+               * 100,
+               2))
+            AS PERSEN_SELISIH
+    	FROM EKA.LST_JENIS_INVEST A,
+         (SELECT XX.LJI_ID, XX.TGL
+            FROM (  SELECT X.LJI_ID, MAX (X.LNU_TGL) AS TGL
+                      FROM EKA.LST_NAB_ULINK X
+                  GROUP BY X.LJI_ID) XX) BARU
+   		WHERE     (A.LJI_GRUP NOT IN (5, 6, 7) OR A.LJI_ID IN (22, 23, 34))
+         	AND A.LJI_ACTIVE = 1
+         	AND A.LJI_ID = BARU.LJI_ID
+         	AND EXISTS
+                (SELECT 1
+                   FROM EKA.LST_NAB_ULINK X
+                  WHERE X.LJI_ID = A.LJI_ID)
+		ORDER BY JENIS_INVEST ASC
+	</select>
+
+	<select id="selectDetailNav" parameterType="java.util.HashMap" resultType="com.app.model.Nav">
+		SELECT tgl,
+         lji_invest,
+         lji_id,
+         lnu_nilai,
+         selisih,
+         persen_hmin1,
+         lnu_tgl,
+           NVL (
+              (  (  lnu_nilai
+                  - LAG (lnu_nilai, ROWNUM - 1) OVER (ORDER BY lnu_tgl))
+               / LAG (lnu_nilai, ROWNUM - 1) OVER (ORDER BY lnu_tgl)),
+              0)
+         * 100
+            persen_hke1,
+         NVL (
+            (lnu_nilai - LAG (lnu_nilai, ROWNUM - 1) OVER (ORDER BY lnu_tgl)),
+            0)
+            nilai_hke1
+    	FROM (  SELECT TO_CHAR (e.lnu_tgl, 'yyyy-mm-dd') tgl,
+                   d.lji_invest,
+                   d.lji_id,
+                   e.lnu_nilai,
+                   NVL (
+                      (  e.lnu_nilai
+                       - LAG (e.lnu_nilai, 1) OVER (ORDER BY e.lnu_tgl)),
+                      0)
+                      selisih,
+                     NVL (
+                        (  (  e.lnu_nilai
+                            - LAG (e.lnu_nilai, 1) OVER (ORDER BY e.lnu_tgl))
+                         / LAG (e.lnu_nilai, 1) OVER (ORDER BY e.lnu_tgl)),
+                        0)
+                   * 100
+                      persen_hmin1,
+                   ROW_NUMBER () OVER (ORDER BY e.lnu_tgl) AS result,
+                   e.lnu_tgl
+              FROM eka.lst_jenis_invest d,
+                   (SELECT a.lnu_tgl, a.lji_id, a.lnu_nilai
+                      FROM eka.lst_nab_ulink a,
+                           (SELECT lji_id, lnu_tgl
+                              FROM eka.lst_nab_ulink
+                             WHERE     1 = 1
+                                   AND lnu_tgl BETWEEN (SYSDATE - #{nilai, jdbcType=INTEGER}) AND SYSDATE)
+                           b
+                     WHERE     a.lji_id = b.lji_id
+                           AND a.lnu_tgl = b.lnu_tgl
+                           AND a.lji_id = #{lji_id, jdbcType=INTEGER}) e
+             WHERE d.lji_id = e.lji_id
+          GROUP BY d.lji_invest,
+                   d.lji_id,
+                   e.lnu_tgl,
+                   e.lnu_nilai,
+                   d.lji_id,
+                   ROWNUM
+          ORDER BY tgl ASC) z
+		ORDER BY lnu_tgl DESC
+	</select>
+
+	<select id="selectUnitLink" parameterType="String" resultType="com.app.model.UnitLink">
+		SELECT A.REG_SPAJ,
+        	B.LJI_ID,
+        	B.LJI_INVEST,
+        	C.LKU_SYMBOL,
+        	A.MDU_SALDO_UNIT AS TOTAL_UNIT,
+        	EKA.PACLINK.GET_TGL_NAB(A.LJI_ID, SYSDATE) AS LNU_TGL,
+        	EKA.PACLINK.GET_NILAI_NAB(A.LJI_ID, SYSDATE) AS HARGA_UNIT,
+        	ROUND (A.MDU_SALDO_UNIT * EKA.PACLINK.GET_NILAI_NAB(A.LJI_ID, SYSDATE), 2) AS NILAI_POLIS
+		FROM EKA.MST_DET_ULINK A,
+    		EKA.LST_JENIS_INVEST B,
+    		EKA.LST_KURS C
+		WHERE     A.LJI_ID = B.LJI_ID
+    		AND B.LKU_ID = C.LKU_ID
+    		AND A.MU_KE = 1
+    		AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+    		AND EXISTS
+              (SELECT 1
+                 FROM EKA.MST_TRANS_ULINK X
+                WHERE     A.REG_SPAJ = X.REG_SPAJ
+                      AND A.LJI_ID = X.LJI_ID
+                      AND X.MTU_TGL_NAB IS NOT NULL)
+    	ORDER BY 3
+	</select>
+	
+	<select id="selectDetailUnitLink" parameterType="HashMap" resultType="com.app.model.UnitLink">
+		SELECT * FROM
+		(SELECT x.*, rownum r__
+		FROM
+		(
+		SELECT nvl(b.mtu_nab, 0)
+			mtu_nab, nvl(b.mtu_unit, 0) mtu_unit,
+			b.mtu_tgl_proses, 
+			c.lji_invest,
+			b.mtu_dk,
+			a.lt_id, 
+			b.mtu_tgl_trans, 
+			0 AS saldo_awal, 
+			b.mtu_desc,
+			TO_CHAR(b.mtu_tgl_nab,'yyyy-MM-dd HH:MM:SS') mtu_tgl_nab,
+			nvl(b.mtu_jumlah, 0) mtu_jumlah,
+			b.lji_id, b.reg_spaj, 
+			b.mu_ke,
+			b.mtu_flag_biaya, 
+			b.mtu_ke
+		FROM eka.mst_ulink a,
+			eka.mst_trans_ulink b,
+			eka.lst_jenis_invest c
+		WHERE a.reg_spaj = RPAD (REPLACE(#{spaj, jdbcType=VARCHAR}, '.'), 11, ' ')
+			AND a.mu_aktif = 1
+			AND a.reg_spaj = b.reg_spaj
+			AND a.mu_ke = b.mu_ke
+			AND b.lji_id = c.lji_id
+			AND b.MTU_UNIT is not null
+			AND B.MTU_TGL_NAB is not null
+			AND b.lji_id = #{lji_id}
+		<if test="startDate != null">
+			AND b.mtu_tgl_proses <![CDATA[ >= ]]> to_date(#{startDate}, 'YYYY-MM')
+		</if>
+		<if test="endDate != null">
+			AND b.mtu_tgl_proses <![CDATA[ <= ]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+		</if>
+		ORDER BY b.mtu_tgl_proses DESC
+		) x
+		WHERE rownum <![CDATA[<]]>
+		((#{pageNumber} * #{pageSize}) + 1 )
+		)
+		WHERE r__ <![CDATA[>=]]>
+		(((#{pageNumber}-1) * #{pageSize}) + 1)
+	</select>
+	
+	<select id="selectSaldoWithdraw" parameterType="String" resultType="com.app.model.Withdraw">
+		SELECT SUM (NILAI_PP) AS PREMI_POKOK, SUM (NILAI_TU) AS PREMI_TOPUP
+  			FROM (SELECT A.REG_SPAJ,
+               B.LJI_ID,
+               B.LJI_INVEST,
+               C.LKU_SYMBOL,
+               EKA.PACLINK.GET_TGL_NAB (A.LJI_ID, SYSDATE) TGL_NAV,
+               EKA.PACLINK.GET_NILAI_NAB (A.LJI_ID, SYSDATE) HARGA_NAV,
+               A.MDU_SALDO_UNIT_PP SALDO_PP,
+               A.MDU_SALDO_UNIT_TU SALDO_TU,
+               EKA.PACLINK.GET_SALDO_AKHIR (A.REG_SPAJ, A.LJI_ID, SYSDATE)
+                  SALDO_TOTAL,
+               ROUND (
+                    A.MDU_SALDO_UNIT_PP
+                  * EKA.PACLINK.GET_NILAI_NAB (A.LJI_ID, SYSDATE),
+                  2)
+                  NILAI_PP,
+               ROUND (
+                    A.MDU_SALDO_UNIT_TU
+                  * EKA.PACLINK.GET_NILAI_NAB (A.LJI_ID, SYSDATE),
+                  2)
+                  NILAI_TU,
+               ROUND (
+                    EKA.PACLINK.GET_SALDO_AKHIR (A.REG_SPAJ,
+                                                 A.LJI_ID,
+                                                 SYSDATE)
+                  * EKA.PACLINK.GET_NILAI_NAB (A.LJI_ID, SYSDATE),
+                  2)
+                  AS NILAI_POLIS_TOTAL
+          FROM EKA.MST_DET_ULINK A, EKA.LST_JENIS_INVEST B, EKA.LST_KURS C
+         WHERE     A.LJI_ID = B.LJI_ID
+               AND B.LKU_ID = C.LKU_ID
+               AND A.MU_KE = 1
+               AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR})
+	</select>
+
+	<select id="selectProvider" resultType="com.app.model.Provider">
+		SELECT A.RSID,
+         A.RSNAMA,
+         A.RSALAMAT,
+         A.RSTELEPON,
+         A.MAPPOS,
+         A.RSTYPE,
+         B.LSKA_NOTE,
+         B.LSKA_ID,
+         CASE
+            WHEN A.RSTYPE IN (1) THEN 'RS'
+            WHEN A.RSTYPE IN (2) THEN 'RSIA'
+            WHEN A.RSTYPE IN (3) THEN 'RSU/RSUD'
+            WHEN A.RSTYPE IN (4) THEN 'RB dan Klinik'
+            WHEN A.RSTYPE IN (5) THEN 'Klinik'
+         END AS RS_TYPE_LABEL,
+         CASE
+            WHEN (A.RSADMEDIKA = 1 AND NVL(A.RS_SMALL_GROUP, 0) = 0 AND NVL(A.RS_EKASEHAT, 0) = 0 AND NVL(A.RS_MEDIVEST, 0) = 0 AND NVL(A.RS_HCP, 0) = 0 AND NVL(A.RS_PAS, 0) = 0) THEN 'CORPORATE'
+            WHEN (A.RSADMEDIKA = 0 AND (A.RS_SMALL_GROUP = 1 OR A.RS_EKASEHAT = 1 OR A.RS_MEDIVEST = 1 OR A.RS_HCP = 1 OR A.RS_PAS = 1)) THEN 'INDIVIDUAL'
+            ELSE  'CORPORATE AND INDIVIDUAL'
+         END AS TYPE_RS
+    		FROM EKA.LST_RUMAH_SAKIT@EB A, EKA.LST_KABUPATEN@EB B
+   		WHERE     A.RSKBT = B.LSKA_ID
+         AND A.RSNAMA IS NOT NULL
+         AND A.RSAKTIF = 1
+         AND A.RSTYPE IN (1, 2, 3, 4, 5)
+         AND A.RSID NOT IN (
+            SELECT RSID
+  		FROM EKA.LST_RUMAH_SAKIT@EB X
+ 		WHERE     X.RSAKTIF = 1
+       AND A.RSNAMA IS NOT NULL
+       AND A.RSTYPE IN (1, 2, 3, 4, 5)
+       AND (X.RSADMEDIKA = 0 OR X.RSADMEDIKA IS NULL)
+       AND NVL (X.RS_SMALL_GROUP, 0) = 0
+       AND NVL (X.RS_EKASEHAT, 0) = 0
+       AND NVL (X.RS_MEDIVEST, 0) = 0
+       AND NVL (X.RS_HCP, 0) = 0
+       AND NVL (X.RS_PAS, 0) = 0)
+		ORDER BY B.LSKA_NOTE, A.RSNAMA ASC
+	</select>
+
+	<select id="selectKlaimkesehatan" parameterType="ViewClaim" resultType="com.app.model.KlaimKesehatan">
+		SELECT *
+  		FROM (SELECT z.*, ROWNUM r__
+          FROM (SELECT b.st_acp AS id_status_accept,
+                       b.st_expl status_accept,
+                       DECODE (a.st_acp,
+                               5, c.pay_claim,
+                               10, c.pay_claim,
+                               0)
+                          pay_claim,
+                       a.jenisclaim,
+                       nvl(c.amt_claim, 0) amt_claim,
+                       c.max_claim,
+                       a.regclaim,
+                       a.st_acp,
+                       a.mspo_policy_no,
+                       a.regapldate,
+                       a.acceptdate,
+                       a.clm_paid_date,
+                       a.nm_diagnos,
+                       a.date_ri_1,
+                       a.date_ri_2,
+                       d.mspo_ins_period,
+                       f.mspe_sex,
+                       g.lca_nama,
+                       h.mspr_tsi,
+                       i.lku_symbol,
+                       j.mste_age,
+                       j.mste_medical,
+                       h.reg_spaj,
+                       TRIM (e.mcl_first) || ' ' || TRIM (e.mcl_middle) || ' ' || TRIM (e.mcl_last) AS nama_tt,
+                       f.mspe_date_birth,
+                       f.mspe_place_birth,
+                       a.lku_id,
+                       a.lku_bayar,
+                       eka.f_lsdbs (d.reg_spaj, h.lsbs_id, h.lsdbs_number) lsbs_name,
+                       l.mcl_first,
+                       m.EXPLANATION,
+                       h.MSPR_BEG_DATE,
+                       h.MSPR_END_DATE,
+                       EKA.UTILS.CABANG (d.LCA_ID) cabang,
+                       CASE
+                          WHEN a.jenisclaim IN (1) THEN 'RAWAT JALAN'
+                          WHEN a.jenisclaim IN (2) THEN 'RAWAT INAP'
+                          WHEN a.jenisclaim IN (3) THEN 'RAWAT GIGI'
+                          WHEN a.jenisclaim IN (5) THEN 'RAWAT BERSALIN'
+                          WHEN a.jenisclaim IN (9) THEN 'PENUNJANG KESEHATAN'
+                       END
+                          AS JENIS_CLAIM
+                  FROM eka.id_mst_clm a,
+                       eka.id_stat_acp b,
+                       eka.id_trx_clmdtl c,
+                       eka.mst_policy d,
+                       eka.mst_client e,
+                       eka.mst_person f,
+                       eka.lst_cabang g,
+                       eka.mst_product_insured h,
+                       eka.lst_kurs i,
+                       eka.mst_insured j,
+                       eka.lst_det_bisnis k,
+                       eka.mst_client_new l,
+                       EKA.ID_LST_JNS_CLAIMDTL m
+			WHERE (d.lca_id = g.lca_id(+))
+				AND (d.mspo_policy_holder = l.mcl_id)
+				AND (b.st_acp = a.st_acp)
+				AND (c.regclaim = a.regclaim)
+				AND (d.reg_spaj = a.regspaj)
+				AND (a.mste_insured = e.mcl_id)
+				AND (e.mcl_id = f.mcl_id)
+				AND (d.reg_spaj = h.reg_spaj)
+				AND (i.lku_id = d.lku_id)
+				AND (j.reg_spaj = h.reg_spaj)
+				AND (h.lsbs_id = k.lsbs_id)
+				AND (h.lsdbs_number = k.lsdbs_number)
+				AND (h.lsbs_id <![CDATA[<]]> 300)
+				AND m.LJJ_JENIS_ID = c.LJJ_JENIS_ID
+				AND ((h.mste_insured_no = 1)
+				AND (a.mste_insured_no = 1)
+				AND (a.regspaj = #{spaj, jdbcType=VARCHAR}))
+				<if test="startDate != null">
+					AND a.REGAPLDATE <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM')
+				</if>
+				<if test="endDate != null">
+					AND a.REGAPLDATE <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+				</if>
+			ORDER BY a.REGAPLDATE desc) z
+			WHERE rownum <![CDATA[<]]>
+			((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1))
+			WHERE r__ <![CDATA[>=]]>
+		(((#{pageNumber, jdbcType=INTEGER}-1) * #{pageSize, jdbcType=INTEGER}) + 1)
+	</select>
+
+	<select id="selectForgotPassword" parameterType="User" resultType="User">
+		select B.MSPO_POLICY_NO, 
+			D.NO_HP, 
+			D.NO_HP2
+		from EKA.LST_USER_SIMULTANEOUS a
+			left join EKA.MST_POLICY b on a.reg_spaj = b.reg_spaj
+			inner join EKA.MST_CLIENT_NEW c on b.mspo_policy_holder = c.mcl_id
+			inner join eka.mst_address_billing d on b.reg_spaj = d.reg_spaj
+		where a.username = #{username, jdbcType=VARCHAR}
+			and a.flag_active = 1
+			and rownum = 1
+	</select>
+
+	<select id="selectForgotUsernameIndividual" parameterType="HashMap" resultType="User">
+		select * from (
+			select distinct a.username,
+				b.mspo_policy_no,
+				b.reg_spaj,
+				b.mspo_beg_date,
+				d.mspe_no_identity,
+				d.mspe_date_birth, 
+				c.no_hp, 
+				c.no_hp2
+			from eka.lst_user_simultaneous a
+				inner join eka.mst_simultaneous e on a.id_simultan = e.id_simultan
+				inner join eka.mst_policy b on e.reg_spaj = b.reg_spaj
+				inner join eka.mst_address_billing c on b.reg_spaj = c.reg_spaj
+				inner join eka.mst_client_new d on d.mcl_id = b.mspo_policy_holder
+			where (b.mspo_policy_no = REPLACE(#{ktp_or_nopolis, jdbcType=VARCHAR}, '.')
+				or d.mspe_no_identity = REPLACE(#{ktp_or_nopolis, jdbcType=VARCHAR}, '.'))
+				and to_char(d.mspe_date_birth, 'DDMMYYYY') = #{dob, jdbcType=VARCHAR}
+				and a.flag_active = 1
+				and b.lstb_id = 1
+				and b.lssp_id = 1
+				and e.mssm_pemegang = 1
+			order by b.mspo_beg_date desc)
+		where rownum = 1
+	</select>
+
+	<select id="selectCountIdSimultanByIdSimultan" parameterType="String" resultType="Integer">
+		select count(*)
+		from EKA.LST_USER_SIMULTANEOUS
+		where id_simultan = #{id_simultan, jdbcType=VARCHAR}
+			and flag_active = 1
+	</select>
+
+	<select id="getKodeCabang" parameterType="String" resultType="String">
+		select lca_id from eka.mst_policy
+		where mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
+	</select>
+
+	<select id="selectBilling" parameterType="HashMap" resultType="com.app.model.Billing">
+		SELECT * FROM
+			(SELECT z.*, rownum r__
+			FROM
+			(select a.*, DECODE(a.msbi_paid, 1, 'Paid', 'OutS') paid, 
+			b.lku_symbol from
+			(
+				select a.reg_spaj,
+				a.lku_id, 
+				a.msbi_tahun_ke th_ke, 
+				a.msbi_beg_date periode,
+				a.msbi_paid,
+				a.msbi_paid_date tgl_bayar, 
+				sum(b.msdb_premium - nvl(b.msdb_discount,0)) total_premi,
+				row_number() over ( partition by a.reg_spaj order by a.msbi_tahun_ke, a.msbi_beg_date asc) premi_ke
+				from
+					eka.mst_billing a, 
+					eka.mst_det_billing b
+				where a.reg_spaj = b.reg_spaj
+					and a.msbi_tahun_ke = b.msbi_tahun_ke
+					and a.msbi_premi_ke = b.msbi_premi_ke
+					and a.reg_spaj = #{spaj, jdbcType=VARCHAR}
+					and nvl(a.msbi_flag_topup, 0) <![CDATA[<]]> 3
+					<if test="startDate != null">
+						AND a.msbi_beg_date <![CDATA[ >= ]]> to_date(#{startDate}, 'YYYY-MM')
+					</if>
+					<if test="endDate != null">
+						AND a.msbi_beg_date <![CDATA[ <= ]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+					</if>
+				group by a.reg_spaj, a.lku_id, a.msbi_tahun_ke, a.msbi_beg_date, a.msbi_paid, a.msbi_paid_date) a, 
+					eka.lst_kurs b
+			where a.lku_id = b.lku_id
+				order by 4 desc
+		) z
+		WHERE rownum <![CDATA[ < ]]>
+		((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1
+		)
+		) WHERE r__ <![CDATA[ >= ]]>
+		(((#{pageNumber, jdbcType=INTEGER}-1) * #{pageSize, jdbcType=INTEGER})
+		+ 1)
+	</select>
+
+	<select id="selectCheckUsername" parameterType="String" resultType="Integer">
+		select count(*) from eka.lst_user_simultaneous
+		where lower(username) = #{username, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectListProvinsi" resultType="Provinsi">
+		select distinct
+		propinsi, lspr_id
+		from eka.v_propinsi
+		order by propinsi asc
+	</select>
+
+	<select id="selectListKabupaten" parameterType="HashMap" resultType="Provinsi">
+		select distinct kabupaten, lska_id 
+		from eka.v_propinsi
+		where lspr_id = #{lspr_id, jdbcType=INTEGER}
+		order by kabupaten asc
+	</select>
+
+	<select id="selectListKecamatan" parameterType="HashMap" resultType="Provinsi">
+		select distinct kecamatan, lskc_id 
+		from eka.v_propinsi
+		where lspr_id = #{lspr_id, jdbcType=INTEGER}
+		and lska_id = #{lska_id, jdbcType=INTEGER}
+		order by kecamatan asc
+	</select>
+
+	<select id="selectListKelurahan" parameterType="HashMap" resultType="Provinsi">
+		select distinct kelurahan, lskl_id 
+		from eka.v_propinsi
+		where lspr_id = #{lspr_id, jdbcType=INTEGER}
+		and lska_id = #{lska_id, jdbcType=INTEGER}
+		and lskc_id = #{lskc_id, jdbcType=INTEGER}
+		order by kelurahan asc
+	</select>
+
+	<select id="selectListKodePos" parameterType="HashMap" resultType="Provinsi">
+		select distinct kodepos from eka.v_propinsi
+		where lspr_id = #{lspr_id, jdbcType=INTEGER}
+		and lska_id = #{lska_id, jdbcType=INTEGER}
+		and lskc_id = #{lskc_id, jdbcType=INTEGER}
+		and lskl_id = #{lskl_id, jdbcType=INTEGER}
+		order by kodepos asc
+	</select>
+
+	<select id="selectListTopup" parameterType="java.util.HashMap" resultType="com.app.model.Topup">
+		SELECT * FROM
+			(
+    	SELECT o.*, rownum r__
+    	FROM
+    		(
+        SELECT *
+        FROM (SELECT A.MPT_ID,
+                A.REG_SPAJ,
+                C.LKU_SYMBOL,
+                A.MPT_JUMLAH,
+                REQ_DATE AS CREATED_DATE,
+                CASE
+                    WHEN MODIFIED_DATE IS NOT NULL THEN TO_DATE(MODIFIED_DATE, 'DD/MM/YYYY')
+                    ELSE TO_DATE(CREATED_DATE, 'DD/MM/YYYY')
+                END
+                    DATE_STATUS,
+                CASE
+                    WHEN MPT_STATUS IN (0, 1, 2, 3, 4, 5, 6)
+                THEN
+                   'On progress'
+                WHEN MPT_STATUS = 7
+                THEN
+                   'Accepted'
+                WHEN MPT_STATUS = 8
+                THEN
+                   'Canceled'
+                WHEN MPT_STATUS = 9
+                THEN
+                   'Canceled'
+                END
+                    AS DESCRIPTION
+            FROM EKA.MST_MPOL_TRANS A
+                INNER JOIN EKA.LST_KURS C ON A.LKU_ID = C.LKU_ID
+            WHERE REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+                AND lt_id = 2
+            ORDER BY A.MPT_ID DESC)
+    	UNION ALL
+            (           
+            SELECT NVL(A.NO_REGISTER, TO_CHAR (TO_CHAR (TRANS.MTU_TGL_TRANS, 'yyyymmdd') || TRANS.MU_KE)) AS MPT_ID,
+                A.REG_SPAJ,
+                F.LKU_SYMBOL,
+                (select sum(b.MTU_JUMLAH) from eka.mst_ulink a 
+                    inner join eka.mst_trans_ulink b on a.reg_spaj = b.reg_spaj and a.mu_ke = b.mu_ke
+                where b.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}) AS MPT_JUMLAH,
+                A.MU_TGL_TRANS AS CREATED_DATE,
+                NVL(TO_DATE(TRANS.TGL_FILLING, 'DD/MM/YYYY'), TO_DATE(A.MU_TGL_TRANS, 'DD/MM/YYYY')) DATE_STATUS,
+                (CASE
+                WHEN A.LT_ID IN (2, 4)
+                THEN
+                    (CASE
+                    WHEN A.MU_LSPD_ID IN (46, 47) THEN 'On progress'
+                    ELSE 'Accepted'
+                    END)
+                WHEN A.LT_ID IN (3, 11)
+                THEN
+                    (CASE
+                    WHEN A.MU_LSPD_ID IN (46, 47, 54) THEN 'On progress'
+                    ELSE 'Accepted'
+                    END)
+                END) DESCRIPTION
+            FROM EKA.MST_ULINK A,
+                EKA.LST_TRANSAKSI C,
+                EKA.MST_POLICY E,
+                EKA.LST_KURS F,
+                (SELECT X.MTU_TGL_TRANS,
+                    X.REG_SPAJ,
+                    X.MU_KE,
+                    X.MTU_JUMLAH,
+                    (CASE
+                    WHEN X.LT_ID IN (2, 4) THEN TRUNC (X.MTU_TGL_PROSES)
+                    WHEN X.LT_ID IN (3, 11) THEN Y.MUB_TGL_TRANSFER
+                    END) TGL_FILLING
+                FROM EKA.MST_TRANS_ULINK X, 
+                    EKA.MST_ULINK_BAYAR Y
+                WHERE     X.REG_SPAJ = Y.REG_SPAJ(+)
+                    AND X.MU_KE = Y.MU_KE(+)
+                    AND X.MTU_KE = 1) TRANS
+            WHERE     A.LT_ID = C.LT_ID
+                AND A.REG_SPAJ = TRANS.REG_SPAJ(+)
+                AND A.MU_KE = TRANS.MU_KE(+)
+                AND A.LT_ID IN (2)
+                AND A.REG_SPAJ = E.REG_SPAJ
+                AND E.LKU_ID = F.LKU_ID
+                AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+                AND A.ID_MOBILE IS NULL              
+                ) 
+    	ORDER BY 5 DESC, 1 DESC
+    	) o
+    		WHERE rownum <![CDATA[<]]> ((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1 )
+		)
+			WHERE r__ <![CDATA[>=]]> (((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize, jdbcType=INTEGER}) + 1)
+	</select>
+
+	<select id="selectListTopupUsingID" parameterType="String" resultType="Topup">
+		SELECT a.mpt_id,
+       a.reg_spaj,
+       CASE
+          WHEN a.modified_date IS NOT NULL THEN a.modified_date
+          ELSE a.created_date
+       END
+          date_status,
+       d.mspo_policy_no,
+       e.mcl_first,
+       created_date,
+       c.lku_symbol,
+       a.mpt_jumlah,
+       h.lsdbs_name,
+       CASE
+          WHEN mpt_status IN (0, 1, 2, 3, 4, 5, 6)
+          THEN
+             'On progress'
+          WHEN mpt_status = 7
+          THEN
+             'Accepted'
+          WHEN mpt_status = 8
+          THEN
+             'Canceled'
+          WHEN mpt_status = 9
+          THEN
+             'Canceled'
+       END
+          AS description,
+       reason_fu,
+       		NVL (mpt_jumlah_process, 0) AS mpt_jumlah_process,
+       		EKA.F_LSDBS_VIEW (g.reg_spaj, g.lsbs_id, g.lsdbs_number) AS newname
+  		FROM eka.mst_mpol_trans a
+       		INNER JOIN eka.lst_kurs c ON a.lku_id = c.lku_id
+       		INNER JOIN eka.mst_policy d ON a.reg_spaj = d.reg_spaj
+       		INNER JOIN eka.mst_client_new e ON d.mspo_policy_holder = e.mcl_id
+       		INNER JOIN eka.mst_insured f ON d.reg_spaj = f.reg_spaj
+       		INNER JOIN eka.mst_product_insured g
+          	ON     f.reg_spaj = g.reg_spaj
+             AND f.mste_insured_no = g.mste_insured_no
+       		INNER JOIN eka.lst_det_bisnis h
+          	ON g.lsbs_id = h.lsbs_id AND g.lsdbs_number = h.lsdbs_number
+ 		WHERE a.mpt_id = #{mpt_id, jdbcType=DOUBLE} 
+ 		and a.lt_id = 2
+			AND h.lsbs_id <![CDATA[<]]> 300
+	</select>
+	
+	<select id="selectViewTopupPaper" parameterType="HashMap" resultType="Topup">	
+    	SELECT ULINK.ID AS MPT_ID,
+			A.REG_SPAJ,
+			NVL(ULINK.TGL_FILLING, ULINK.REQ_DATE) AS DATE_STATUS,
+			A.MSPO_POLICY_NO_FORMAT AS MSPO_POLICY_NO,
+			B.MCL_FIRST,
+			ULINK.REQ_DATE,
+			D.LKU_SYMBOL,
+			(SELECT SUM(B.MTU_JUMLAH) FROM EKA.MST_ULINK A INNER JOIN EKA.MST_TRANS_ULINK B ON A.REG_SPAJ = B.REG_SPAJ AND A.MU_KE = B.MU_KE
+       		WHERE NVL(A.NO_REGISTER, TO_CHAR (TO_CHAR (B.MTU_TGL_TRANS, 'yyyymmdd') || B.MU_KE)) =  #{mpt_id, jdbcType=VARCHAR} 
+       		AND B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR})  AS MPT_JUMLAH,
+			EKA.F_LSDBS_VIEW (C.REG_SPAJ, C.LSBS_ID, C.LSDBS_NUMBER) AS NEWNAME,
+			ULINK.DESCRIPTION,
+			'' AS REASON_FU
+  		FROM EKA.MST_POLICY A
+       		INNER JOIN EKA.MST_CLIENT_NEW B ON A.MSPO_POLICY_HOLDER = B.MCL_ID
+       		INNER JOIN EKA.MST_PRODUCT_INSURED C ON A.REG_SPAJ = C.REG_SPAJ
+       		INNER JOIN EKA.LST_KURS D ON A.LKU_ID = D.LKU_ID
+       		INNER JOIN EKA.LST_POLICY_STATUS E ON A.LSSP_ID = E.LSSP_ID 
+       		INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
+       		INNER JOIN (
+       		SELECT NVL(X.NO_REGISTER, TO_CHAR (TO_CHAR (Y.MTU_TGL_TRANS, 'yyyymmdd') || Y.MU_KE)) ID,
+    		X.REG_SPAJ,
+    		Y.MTU_TGL_TRANS REQ_DATE,
+    		Z.LT_TRANSKSI,
+    		(CASE
+           		WHEN X.LT_ID IN (2, 4)
+           		THEN
+              	(CASE
+                  WHEN X.MU_LSPD_ID IN (46, 47) THEN 'On progress'
+                  ELSE 'Accepted'
+               	END)
+           	WHEN X.LT_ID IN (3, 11)
+           	THEN
+            	(CASE
+                	WHEN X.MU_LSPD_ID IN (46, 47, 54) THEN 'On progress'
+            		ELSE 'Accepted'
+               	END)
+        	END) AS DESCRIPTION,
+        	(CASE
+                WHEN Y.LT_ID IN (2, 4) THEN  NVL(TRUNC(Y.MTU_TGL_PROSES), Y.MTU_TGL_TRANS)
+                WHEN Y.LT_ID IN (3, 11) THEN V.MUB_TGL_TRANSFER
+            END) TGL_FILLING
+  			FROM EKA.MST_ULINK X,
+       		EKA.MST_TRANS_ULINK Y,
+       		EKA.LST_TRANSAKSI Z,
+       		EKA.MST_ULINK_BAYAR V
+          	WHERE X.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+          	AND X.REG_SPAJ = Y.REG_SPAJ 
+          	AND X.MU_KE = Y.MU_KE
+          	AND X.LT_ID = Z.LT_ID
+          	AND Y.REG_SPAJ = V.REG_SPAJ(+)
+          	AND Y.MU_KE = V.MU_KE(+)
+          	AND X.LT_ID = 2 
+          	AND Y.MTU_KE = 1
+          	AND NVL(X.NO_REGISTER, TO_CHAR (TO_CHAR (Y.MTU_TGL_TRANS, 'yyyymmdd') || Y.MU_KE)) = #{mpt_id, jdbcType=VARCHAR}
+       		) ULINK ON A.REG_SPAJ = ULINK.REG_SPAJ
+ 		WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} AND C.LSBS_ID <![CDATA[<]]> 300
+	</select>
+	
+	<select id="selectInvestasiTopupPaper" parameterType="HashMap" resultType="com.app.model.Topup">
+		SELECT C.LJI_INVEST, 
+			B.MTU_JUMLAH
+  		FROM EKA.MST_ULINK A
+       		INNER JOIN EKA.MST_TRANS_ULINK B ON A.REG_SPAJ = B.REG_SPAJ AND A.MU_KE = B.MU_KE
+       		INNER JOIN EKA.LST_JENIS_INVEST C ON B.LJI_ID = C.LJI_ID
+ 		WHERE A.LT_ID = 2
+       		AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+       		AND NVL (A.NO_REGISTER, TO_CHAR (TO_CHAR (B.MTU_TGL_TRANS, 'yyyymmdd') || B.MU_KE)) = #{mpt_id, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectListInvestasiTopup" parameterType="String" resultType="com.app.model.Topup">
+		select c.lji_invest, 
+			b.mpt_persen
+		from EKA.MST_MPOL_TRANS a
+			inner join eka.mst_mpol_trans_det b on a.mpt_id = b.mpt_id
+			inner join eka.lst_jenis_invest c on b.lji_id = c.lji_id
+		where a.mpt_id = #{mpt_id, jdbcType=DOUBLE}
+	</select>
+
+	<select id="selectCountMessageInboxUnread" parameterType="String" resultType="Integer">
+		select count(*) as total 
+		from eka.mst_notification_inbox
+		where username = #{username, jdbcType=VARCHAR}
+			and jenis_id = 91 
+			and status = 'U'
+	</select>
+
+	<select id="selectCheckDeathClaim" parameterType="String" resultType="Integer">
+		select count(*) as jumlah 
+		from eka.mst_policy c
+			inner join eka.mst_simultaneous d on c.reg_spaj = d.reg_spaj
+			inner join eka.lst_policy_status a on c.lssp_id = a.lssp_id
+			inner join eka.lst_master_status b on a.lms_id = b.lms_id
+		where d.id_simultan = #{id_simultan, jdbcType=VARCHAR}
+			and d.mssm_pemegang = 1 
+			and a.lssp_id = 6
+	</select>
+
+	<select id="selectProductforTopup" parameterType="String" resultType="Topup">
+		SELECT EKA.F_LSDBS_VIEW (a.reg_spaj, a.lsbs_id, a.lsdbs_number) AS newname,
+       		e.mcl_first,
+       		f.lku_symbol,
+       		CASE
+          		WHEN f.lku_symbol = 'Rp.' THEN 'Rupiah'
+          		WHEN f.lku_symbol = 'US$' THEN 'Dollar'
+          		WHEN f.lku_symbol = 'Sin$' THEN 'Dollar Singapura'
+          		WHEN f.lku_symbol = 'EUR' THEN 'Euro'
+          		WHEN f.lku_symbol = 'KRW' THEN 'Won'
+          		WHEN f.lku_symbol = 'JPY' THEN 'Yen'
+       		END mata_uang,
+       		a.lsbs_id,
+       		a.lku_id,
+       		d.reg_spaj
+  		FROM eka.mst_product_insured a
+       		INNER JOIN EKA.MST_INSURED b ON a.reg_spaj = b.reg_spaj AND a.mste_insured_no = b.mste_insured_no
+       		INNER JOIN eka.lst_det_bisnis c ON a.lsbs_id = c.lsbs_id AND a.lsdbs_number = c.lsdbs_number
+       		INNER JOIN eka.mst_policy d ON b.reg_spaj = d.reg_spaj
+       		INNER JOIN eka.mst_client_new e ON d.mspo_policy_holder = e.mcl_id
+       		INNER JOIN eka.lst_kurs f ON d.lku_id = f.lku_id
+ 		WHERE d.mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
+    		AND a.lsbs_id <![CDATA[<]]> 300
+	</select>
+
+	<select id="selectFundOfProduct" parameterType="Topup" resultType="com.app.model.Fund">
+		select b.fund_id, 
+			b.fund_invest
+		from eka.mst_product_insured a
+			inner join eka.vp_product_invest b on a.lsbs_id = b.product_code
+			and a.lku_id = b.currency_id
+			and a.lsdbs_number = b.plan
+		where a.lsbs_id = #{lsbs_id, jdbcType=VARCHAR}
+			and a.lku_id = #{lku_id, jdbcType=VARCHAR}
+			and reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectFundOfProductSwitching" parameterType="HashMap" resultType="com.app.model.Fund">	
+		SELECT B.FUND_ID, 
+			B.FUND_INVEST
+  		FROM EKA.MST_PRODUCT_INSURED A
+       		INNER JOIN EKA.VP_PRODUCT_INVEST B ON A.LSBS_ID = B.PRODUCT_CODE
+             AND A.LKU_ID = B.CURRENCY_ID
+             AND A.LSDBS_NUMBER = B.PLAN
+ 		WHERE  A.LSBS_ID = #{lsbs_id, jdbcType=VARCHAR}
+       		AND A.LKU_ID = #{lku_id, jdbcType=VARCHAR}
+       		AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+       		AND B.FUND_ID NOT IN
+            <foreach item="lji_id" index="index" collection="arrayData" open="(" separator="," close=")">
+            	#{lji_id, jdbcType=VARCHAR}
+            </foreach>
+    	ORDER BY 2
+	</select>
+
+	<select id="selectPowerSave" parameterType="User" resultType="com.app.model.PowerSave">
+		SELECT * FROM
+		(
+		SELECT a.*, rownum r__
+		FROM
+		(
+		SELECT rownum as id,
+		b.MPR_RATE as rate, 
+		to_date(b.MPR_TGL_RATE, 'dd/MM/yyyy') as tgl_rate,
+		case 
+		when a.lku_id = '01' then trunc(b.MPR_DEPOSIT/1000, 0) 
+		else b.MPR_DEPOSIT end as deposit,
+		case 
+		when a.lku_id = '01' then trunc(b.MPR_INTEREST/1000, 0) 
+		else b.MPR_INTEREST end as interest,
+		b.MPR_INSURANCE as insurance, 
+		c.lku_symbol,
+		b.MPR_DEBET as debet,
+		to_date(b.mps_deposit_date, 'dd/MM/yyyy') as beg_date,
+		b.MPR_JANGKA_INVEST,
+		to_date(b.MPR_MATURE_DATE, 'dd/MM/yyyy') as end_date, 
+		case 
+		when b.mps_kode = 5 then 'First Entry' 
+		when b.MPR_JNS_RO = 1 then 'All' 
+		when b.MPR_JNS_RO = 2 then 'RO Premi'
+		when b.MPR_JNS_RO = 3 then 'Auto Break' end as jenis, 
+		b.mps_kode
+		FROM EKA.MST_POLICY a
+		inner join EKA.MST_POWERSAVE_RO b on a.REG_SPAJ =
+		b.REG_SPAJ
+		inner join
+		EKA.LST_KURS c on a.lku_id = c.lku_id
+		WHERE b.REG_SPAJ = #{reg_spaj,
+		jdbcType=VARCHAR} AND MPS_KODE IN (2,3,5)
+		<if test="startDate != null">
+			AND b.mps_deposit_date <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM')
+		</if>
+		<if test="endDate != null">
+			AND b.mps_deposit_date <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+		</if>
+		order by mps_deposit_date desc
+		) a
+		WHERE rownum <![CDATA[<]]>
+		((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1
+		)
+		)
+		WHERE r__ <![CDATA[>=]]>
+		(((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize,
+		jdbcType=INTEGER}) + 1)
+	</select>
+
+	<select id="selectStableSave" parameterType="User" resultType="com.app.model.StableSave">
+		SELECT * FROM
+    	(
+    	SELECT a.*, rownum r__
+    	FROM
+    	(
+        	SELECT rownum as id, MSS_RATE, MSS_RATE_DATE, case when d.lku_id = '01'
+       		then trunc(MSS_PREMI/1000) else MSS_PREMI end as DEPOSIT, MSS_MGI,
+			CASE WHEN MSS_RATE = 4 THEN MSS_PREMI + MSS_TAX 
+			ELSE MSS_PREMI END AS DEBIT, CASE WHEN MSS_KODE = 2 THEN 
+			'RO All' WHEN MSS_KODE = 3 THEN 'RO Premi' 
+			WHEN MSS_KODE = 5 THEN 'First Entry' end as TRANSACTIONS, MSS_BDATE,
+			MSS_EDATE, case when d.lku_id = '01' then 
+			trunc(MSS_BUNGA/1000) else MSS_BUNGA end as MSS_BUNGA, 
+			c.lsbp_nama || ' ' || b.mrc_no_ac || ' a/n ' || b.mrc_nama as Rekening, 
+			e.lku_symbol
+			FROM EKA.MST_SSAVE a 
+			inner join eka.mst_rek_client b on a.reg_spaj = b.reg_spaj
+			inner join eka.lst_bank_pusat c on b.lsbp_id = c.lsbp_id
+			inner join eka.mst_policy d on a.reg_spaj = d.reg_spaj
+			inner join eka.lst_kurs e on d.lku_id = e.lku_id
+			WHERE a.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} AND a.MSS_KODE IN (2,3,5)
+			<if test="startDate != null">
+				AND a.MSS_BDATE <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM')
+			</if>
+			<if test="endDate != null">
+				AND a.MSS_BDATE <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+			</if>
+			ORDER BY a.MSS_BDATE DESC
+    	) a
+    	WHERE rownum <![CDATA[<]]> ((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1 )
+    	)
+    	WHERE r__ <![CDATA[>=]]> (((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize, jdbcType=INTEGER}) + 1)
+	</select>
+
+	<select id="selectStableLink" parameterType="User" resultType="com.app.model.StableLink">
+		SELECT * FROM
+		(
+		SELECT a.*, rownum r__
+		FROM
+		(
+		SELECT a.REG_SPAJ, MSL_NO,
+		MSL_KODE, MSL_DESC, nvl(MSL_NILAI_POLIS, 0) as MSL_NILAI_POLIS,
+		decode(MSL_KODE, 8, 0, nvl(MSL_PREMI + MSL_BUNGA, 0)) as JUMLAH_PREMI_BUNGA,
+		c.LKU_SYMBOL,
+		MSL_BDATE, 
+		MSL_EDATE, 
+		MSL_MGI,
+		MSL_PREMI, 
+		MSL_BUNGA,
+		MSL_HARI, 
+		MSL_TU_KE, 
+		MSL_NAB, 
+		MSL_UNIT,
+		MSL_TGL_NAB
+		FROM EKA.MST_SLINK a
+		inner join eka.mst_policy b on a.reg_spaj = b.reg_spaj
+		inner join eka.lst_kurs c on b.lku_id = c.lku_id
+		WHERE a.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		AND MSL_AKTIF = 1
+		AND MSL_KODE IN (5,2,3,8)
+		<if test="startDate != null">
+			AND a.MSL_BDATE <![CDATA[>=]]>
+			to_date(#{startDate}, 'YYYY-MM')
+		</if>
+		<if test="endDate != null">
+			AND a.MSL_BDATE <![CDATA[<=]]>
+			to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+		</if>
+		ORDER BY MSL_TU_KE
+		) a
+		WHERE rownum <![CDATA[<]]>
+		((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1
+		)
+		)
+		WHERE r__ <![CDATA[>=]]>
+		(((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize,
+		jdbcType=INTEGER}) + 1)
+	</select>
+
+	<select id="selectDetailStableLink" parameterType="User" resultType="com.app.model.StableLink">
+		SELECT * FROM
+		(
+		SELECT a.*, rownum r__
+		FROM
+		(
+		SELECT a.REG_SPAJ, MSL_NO,
+		MSL_KODE, MSL_DESC, MSL_NILAI_POLIS,
+		MSL_PREMI + MSL_BUNGA as
+		PREMI_BUNGA, rownum as id,
+		MSL_BDATE, MSL_EDATE, MSL_MGI, case when
+		b.lku_id = '01'
+		then trunc(MSL_PREMI/1000) else MSL_PREMI end as MSL_PREMI, MSL_RATE,
+		case when b.lku_id = '01' then
+		trunc(MSL_BUNGA/1000) else MSL_BUNGA end as MSL_BUNGA,
+		MSL_HARI,
+		MSL_NAB, MSL_UNIT, MSL_TGL_NAB, case when msl_kode = 2 then 'RO All'
+		when msl_kode = 3 then 'RO Premi' when msl_kode = '5' then 'First
+		Entry' end as jenis
+		FROM EKA.MST_SLINK a
+		inner join eka.mst_policy b on
+		a.reg_spaj = b.reg_spaj
+		WHERE a.REG_SPAJ = #{reg_spaj,
+		jdbcType=VARCHAR}
+		AND MSL_TU_KE = #{msl_tu_ke, jdbcType=INTEGER}
+		AND
+		MSL_KODE IN (5,2,3)
+		<if test="startDate != null">
+			AND MSL_BDATE <![CDATA[>=]]>
+			to_date(#{startDate}, 'YYYY-MM')
+		</if>
+		<if test="endDate != null">
+			AND MSL_BDATE <![CDATA[<=]]>
+			to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+		</if>
+		ORDER BY MSL_BDATE DESC
+		) a
+		WHERE rownum <![CDATA[<]]>
+		((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1
+		)
+		)
+		WHERE r__ <![CDATA[>=]]>
+		(((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize,
+		jdbcType=INTEGER}) + 1)
+	</select>
+
+	<select id="selectRekeningForTopup" parameterType="String" resultType="Rekening">
+		SELECT a.reg_spaj,
+       C.LSDBS_NAME nama_prod,
+       f.lsbp_id,
+       (CASE
+           WHEN f.lsbp_id IN (161,
+                              156,
+                              251,
+                              231,
+                              162,
+                              312,
+                              250)
+           THEN
+              F.LSBP_NAMA
+           ELSE
+              'BANK SINARMAS'
+        END)
+          bank,
+       (CASE
+           WHEN    f.lsbp_id NOT IN (251,
+                                     231,
+                                     162,
+                                     312,
+                                     250)
+                OR I.GRUP_REPORT LIKE '%AGENCY%'
+           THEN
+              g.mste_no_vacc
+           ELSE
+              bank.norek
+        END)
+          rekening
+  		FROM eka.mst_policy a,
+       EKA.MST_PRODUCT_INSURED b,
+       EKA.LST_DET_BISNIS c,
+       EKA.LST_BISNIS d,
+       EKA.LST_JN_BANK e,
+       EKA.LST_BANK_PUSAT f,
+       EKA.MST_INSURED g,
+       (SELECT Z.LSBP_ID, X.LRE_ACC_NO norek
+          FROM EKA.LST_REK_EKALIFE x, EKA.LST_BANK y, EKA.LST_BANK_PUSAT z
+         WHERE     X.LBN_ID = Y.LBN_ID
+               AND Y.LSBP_ID = Z.LSBP_ID
+               AND z.lsbp_id || y.lbn_id || X.LSREK_ID IN (1614354424,
+                                                           156896264,
+                                                           251103420,
+                                                           2314217414,
+                                                           1624462440,
+                                                           3125621434,
+                                                           2503353432)) bank,
+       eka.lst_cabang h,
+       EKA.LST_JALUR_DIST i
+ 		WHERE     a.reg_spaj = b.reg_spaj
+       AND b.lsbs_id <![CDATA[<]]> 300
+       AND a.lssp_id = 1
+       AND b.lsbs_id = c.lsbs_id
+       AND B.LSDBS_NUMBER = C.LSDBS_NUMBER
+       AND c.lsbs_id = d.lsbs_id
+       AND d.lsgb_id = 17
+       AND C.JN_BANK = E.JN_BANK(+)
+       AND E.LSBP_ID = F.LSBP_ID(+)
+       AND F.LSBP_ID = BANK.LSBP_ID(+)
+       AND a.reg_spaj = g.reg_spaj
+       AND A.LCA_ID = H.LCA_ID
+       AND H.JALURDIS = I.ID_DIST
+       AND a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectGetMptId" resultType="BigInteger">
+		select eka.mptId_seq.NEXTVAL from dual
+	</select>
+	
+	<select id="selectGetMpcId" resultType="BigInteger">
+		select EKA.MMCT_ID_SEQ.nextval from dual
+	</select>
+	
+	<select id="selectGetMpccId" resultType="String">
+		select EKA.MPCCID_SEQ.nextval from dual
+	</select>
+
+	<select id="selectUserIndividual" resultType="User" parameterType="String">
+		SELECT A.*,
+			B.MSPO_POLICY_NO,
+       		C.NO_HP,
+       		C.NO_HP2
+  		FROM EKA.LST_USER_SIMULTANEOUS A
+       		INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+       		INNER JOIN EKA.MST_ADDRESS_BILLING C ON B.REG_SPAJ = C.REG_SPAJ
+ 		WHERE A.USERNAME = #{username, jdbcType=VARCHAR} AND A.FLAG_ACTIVE = 1
+	</select>
+
+	<select id="selectProvinsiResult" resultType="Provinsi" parameterType="Provinsi">
+		select distinct
+		<if test="lspr_id != 0 and lspr_id != null">
+			propinsi
+		</if>
+		<if test="lska_id != 0 and lska_id != null">
+			kabupaten
+		</if>
+		<if test="lskc_id != 0 and lskc_id != null">
+			kecamatan
+		</if>
+		<if test="lskl_id != 0 and lskl_id != null">
+			kelurahan
+		</if>
+		from eka.v_propinsi
+		where
+		<if test="lspr_id != 0 and lspr_id != null">
+			lspr_id = #{lspr_id, jdbcType=INTEGER}
+		</if>
+		<if test="lska_id != 0 and lska_id != null">
+			lska_id = #{lska_id, jdbcType=INTEGER}
+		</if>
+		<if test="lskc_id != 0 and lskc_id != null">
+			lskc_id = #{lskc_id, jdbcType=INTEGER}
+		</if>
+		<if test="lskl_id != 0 and lskl_id != null">
+			lskl_id = #{lskl_id, jdbcType=INTEGER}
+		</if>
+	</select>
+
+	<select id="selectSumJumlahTopup" resultType="BigDecimal" parameterType="String">
+		select sum(b.msdb_premium - nvl(b.msdb_discount,0)) total_topup
+		from eka.mst_billing a, 
+			eka.mst_det_billing b
+		where a.reg_spaj = b.reg_spaj
+			and a.msbi_tahun_ke = b.msbi_tahun_ke
+			and a.msbi_premi_ke = b.msbi_premi_ke
+			and nvl(a.msbi_flag_topup,0) = 1
+			and a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+			and exists
+				(select 1
+				from eka.mst_ulink x
+				where a.reg_spaj = x.reg_spaj
+				and a.msbi_tahun_ke = x.mu_tahun_ke
+				and a.msbi_premi_ke = x.mu_premi_ke)
+	</select>
+
+	<select id="selectStartEndActivePolicy" parameterType="String" resultType="Topup">
+		select distinct mste_beg_date as start_active,
+			add_months(mste_beg_date, 12) as one_year, 
+			mste_end_date as end_active
+		from eka.mst_insured
+		where reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectCountDeathClaim" parameterType="String" resultType="Integer">
+		select count(*) from eka.lst_user_simultaneous a
+			inner join eka.mst_simultaneous b on a.id_simultan = b.id_simultan
+			inner join eka.mst_policy c on b.reg_spaj = c.reg_spaj
+			inner join eka.lst_policy_status d on c.lssp_id = d.lssp_id
+			inner join eka.lst_master_status e on d.lms_id = e.lms_id
+		where b.mssm_pemegang = 1
+			and c.lstb_id = 1
+			and a.flag_active = 1
+			and d.lssp_id = 6
+			and a.username = #{username, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectPersentaseBiayaTopup" parameterType="String" resultType="Integer">
+		select nvl(persen, 0) persen_biaya
+		from EKA.LST_BIAYA_ULINK a
+			inner join eka.mst_product_insured b on a.lsbs_id = b.lsbs_id
+		where lt_id = 2
+			and b.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectDataForEmailCS" parameterType="String" resultType="User">
+		select b.reg_spaj,
+			b.mspo_policy_no,
+			a.mcl_first,
+			a.mspe_date_birth,
+			c.id_simultan,
+			a.mspe_no_identity,
+			a.mspe_mother,
+			d.username,
+			e.no_hp,
+			e.no_hp2,
+			d.id_simultan id_sim_used
+		from eka.mst_client_new a,
+			eka.mst_policy b,
+			eka.mst_simultaneous c,
+			eka.lst_user_simultaneous d,
+			eka.mst_address_billing e
+		where a.mcl_id = b.mspo_policy_holder
+			and c.reg_spaj = b.reg_spaj
+			and c.mssm_pemegang = 1
+			and c.id_simultan = d.id_simultan(+)
+			and c.reg_spaj = d.reg_spaj (+)
+			and b.reg_spaj = e.reg_spaj
+			and d.username = #{username, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectFundDefaultUser" parameterType="String" resultType="com.app.model.Fund">
+		SELECT a.lji_id,
+			b.lji_invest,
+			a.mdu_persen,
+			c.lku_symbol
+		FROM eka.mst_det_ulink a
+			INNER JOIN eka.lst_jenis_invest b ON a.lji_id = b.lji_id
+			INNER JOIN eka.lst_kurs c ON b.lku_id = c.lku_id
+		WHERE reg_spaj = #{reg_spaj, jdbcType=VARCHAR} 
+			AND mu_ke = 1
+		ORDER BY b.lji_invest ASC
+	</select>
+
+	<select id="selectCountIdSimultanByUsername" parameterType="HashMap" resultType="Integer">
+		SELECT COUNT (*) AS JUMLAH
+  		FROM (SELECT DISTINCT C.ID_SIMULTAN
+          FROM EKA.MST_CLIENT_NEW A,
+               EKA.MST_POLICY B,
+               EKA.MST_SIMULTANEOUS C,
+               EKA.LST_USER_SIMULTANEOUS D,
+               EKA.LST_POLICY_STATUS E
+         WHERE     A.MCL_ID = B.MSPO_POLICY_HOLDER
+               AND C.REG_SPAJ = B.REG_SPAJ
+               AND C.MSSM_PEMEGANG = 1
+               AND C.ID_SIMULTAN = D.ID_SIMULTAN(+)
+               AND B.LSSP_ID = E.LSSP_ID
+               AND A.MCL_FIRST = #{mcl_first, jdbcType=VARCHAR}
+               AND A.MSPE_DATE_BIRTH = TO_DATE(#{mspe_date_birth, jdbcType=VARCHAR}, 'DD/MM/YYYY'))
+	</select>
+
+	<select id="selectDataUser" parameterType="HashMap" resultType="User">
+		SELECT C.MCL_FIRST, C.MSPE_MOTHER, C.MSPE_DATE_BIRTH, B.REG_SPAJ, B.MSPO_POLICY_NO
+  			FROM EKA.LST_USER_SIMULTANEOUS A
+       		INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+       		INNER JOIN EKA.MST_CLIENT_NEW C ON B.MSPO_POLICY_HOLDER = C.MCL_ID
+ 		WHERE 
+ 		<if test="username != null">
+ 			A.USERNAME = #{username, jdbcType=VARCHAR}
+ 		</if>
+ 		<if test="reg_spaj != null">
+ 			B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+ 		</if>
+ 		<if test="no_polis != null">
+ 			B.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+ 		</if>
+	</select>
+
+	<select id="selectVersionCode" parameterType="java.util.HashMap" resultType="com.app.model.VersionCode">
+		select app_name, 
+			version_name, 
+			version_code,
+			to_char(desc_app) as desc_app
+		from EKA.LST_APP_VERSION_CODE
+		where flag_app = #{flag_app, jdbcType=INTEGER}
+			and flag_platform = #{flag_platform, jdbcType=INTEGER}
+	</select>
+
+	<select id="selectProvinsi2" parameterType="HashMap" resultType="Provinsi">
+		select distinct propinsi, 
+			kabupaten, 
+			kecamatan, 
+			kelurahan, 
+			kodepos
+		from eka.v_propinsi
+		where lspr_id = #{lspr_id, jdbcType=INTEGER}
+			and lska_id = #{lska_id, jdbcType=INTEGER}
+			and lskc_id = #{lskc_id, jdbcType=INTEGER}
+			and lskl_id = #{lskl_id, jdbcType=INTEGER}
+	</select>
+
+	<select id="selectBasicInformationForFinancialTransaction" parameterType="String" resultType="User">
+		SELECT A.MSPO_POLICY_NO_FORMAT AS NO_POLIS,
+			A.REG_SPAJ,
+			D.LKU_ID,
+			D.LSBS_ID,
+			B.MCL_FIRST AS NM_PEMEGANG,
+			F.LMS_STATUS AS STATUS_POLIS,
+			G.LKU_SYMBOL,
+			H.MRC_NO_AC AS REKENING,
+			I.LSBP_NAMA AS BANK,
+			EKA.F_LSDBS_VIEW (D.REG_SPAJ, D.LSBS_ID, D.LSDBS_NUMBER) AS NM_PRODUCT,
+			DECODE(J.NO_HP, NULL, J.NO_HP2, J.NO_HP) AS NO_HP
+		FROM EKA.MST_POLICY A
+			INNER JOIN EKA.MST_CLIENT_NEW B ON A.MSPO_POLICY_HOLDER = B.MCL_ID
+			INNER JOIN EKA.MST_PRODUCT_INSURED D ON A.REG_SPAJ = D.REG_SPAJ
+			INNER JOIN EKA.LST_POLICY_STATUS E ON A.LSSP_ID = E.LSSP_ID
+			INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
+			INNER JOIN EKA.LST_KURS G ON A.LKU_ID = G.LKU_ID
+			INNER JOIN EKA.MST_ADDRESS_BILLING J ON A.REG_SPAJ = J.REG_SPAJ
+			LEFT JOIN EKA.MST_REK_CLIENT H ON A.REG_SPAJ = H.REG_SPAJ
+			LEFT JOIN EKA.LST_BANK_PUSAT I ON H.LSBP_ID = I.LSBP_ID
+		WHERE D.LSBS_ID <![CDATA[<]]> 300 
+			AND A.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectBasicInformationForClaimSubmission" parameterType="String" resultType="ClaimSubmission">
+		SELECT A.MSPO_POLICY_NO_FORMAT AS NO_POLIS,
+			A.REG_SPAJ,
+			A.LSSP_ID,
+			B.MCL_FIRST AS NM_PEMEGANG,
+			DECODE(C.NO_HP, null, C.NO_HP2, C.NO_HP) AS NO_HP,
+			C.E_MAIL AS EMAIL,
+			D.MSTE_INSURED_NO,
+			D.LKU_ID,
+			F.LMS_STATUS AS STATUS_POLIS,
+			G.LKU_SYMBOL,
+			H.MRC_NAMA AS ATAS_NAMA_REKENING,
+			H.MRC_NO_AC AS REKENING,
+			H.MRC_CABANG,
+			I.LSBP_NAMA AS BANK,
+			I.LSBP_ID
+		FROM EKA.MST_POLICY A
+			INNER JOIN EKA.MST_CLIENT_NEW B ON A.MSPO_POLICY_HOLDER = B.MCL_ID
+			INNER JOIN EKA.MST_PRODUCT_INSURED D ON A.REG_SPAJ = D.REG_SPAJ
+			INNER JOIN EKA.LST_POLICY_STATUS E ON A.LSSP_ID = E.LSSP_ID
+			INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
+			INNER JOIN EKA.LST_KURS G ON A.LKU_ID = G.LKU_ID
+			INNER JOIN EKA.MST_ADDRESS_BILLING C ON A.REG_SPAJ = C.REG_SPAJ
+			LEFT JOIN EKA.MST_REK_CLIENT H ON A.REG_SPAJ = H.REG_SPAJ
+			LEFT JOIN EKA.LST_BANK_PUSAT I ON H.LSBP_ID = I.LSBP_ID
+		WHERE D.LSBS_ID <![CDATA[<]]> 300 
+			AND A.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectListSwitchingAndRedirection" parameterType="HashMap" resultType="com.app.model.SwitchingRedirection">
+		SELECT * FROM
+		(
+    	SELECT o.*, rownum r__
+    FROM
+    (
+        SELECT *
+		FROM (SELECT *
+          FROM (SELECT CASE
+                          WHEN A.LT_ID = 19 AND A.COLLABORATE_MPT_ID IS NOT NULL
+                          THEN
+                             COLLABORATE_MPT_ID || ', ' || MPT_ID
+                          WHEN (A.LT_ID != 19 AND (A.COLLABORATE_MPT_ID IS NULL OR A.COLLABORATE_MPT_ID = 0))
+                          THEN
+                             MPT_ID
+                       END
+                          AS MPT_ID,
+                       A.REQ_DATE,
+                       CASE
+                          WHEN A.MODIFIED_DATE IS NOT NULL
+                          THEN
+                             TO_DATE(A.MODIFIED_DATE, 'DD/MM/YYYY')
+                          ELSE
+                             TO_DATE(A.CREATED_DATE, 'DD/MM/YYYY')
+                       END
+                          DATE_STATUS,
+                       CASE
+                  WHEN a.lt_id = 19 AND a.collaborate_mpt_id IS NOT NULL
+                  THEN
+                     (SELECT CASE WHEN x.MPT_STATUS IN (0, 1, 45, 46, 47)
+                  THEN
+                     'On progress'
+                  WHEN x.MPT_STATUS in (7, 54)
+                  THEN
+                     'Accepted'
+                  WHEN x.MPT_STATUS = 8
+                  THEN
+                     'Canceled'
+                  WHEN x.MPT_STATUS = 9
+                  THEN
+                     'Canceled'
+               END
+                  AS DESCRIPTION from eka.mst_mpol_trans x where x.mpt_id = a.collaborate_mpt_id)
+                  WHEN (a.lt_id != 19 AND (a.collaborate_mpt_id IS NULL or a.collaborate_mpt_id = 0))
+                  THEN
+                      (SELECT CASE WHEN x.MPT_STATUS IN (0, 1, 45, 46, 47)
+                  THEN
+                     'On progress'
+                  WHEN x.MPT_STATUS in (7, 54)
+                  THEN
+                     'Accepted'
+                  WHEN x.MPT_STATUS = 8
+                  THEN
+                     'Canceled'
+                  WHEN x.MPT_STATUS = 9
+                  THEN
+                     'Canceled'
+               END
+                  AS DESCRIPTION from eka.mst_mpol_trans x where x.mpt_id = a.mpt_id)
+               END as DESCRIPTION,
+                       C.LT_TRANSKSI AS JENIS_TRANSAKSI
+                  FROM EKA.MST_MPOL_TRANS A
+                       INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+                       INNER JOIN EKA.LST_TRANSAKSI C ON A.LT_ID = C.LT_ID
+                 WHERE B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} AND A.LT_ID IN (4, 19, 20))
+           WHERE MPT_ID IS NOT NULL
+        ORDER BY MPT_ID DESC)
+  UNION ALL
+  (SELECT NVL (
+           A.NO_REGISTER,
+           TO_CHAR (TO_CHAR (TRANS.MTU_TGL_TRANS, 'yyyymmdd') || TRANS.MU_KE))
+           AS MPT_ID,
+        A.MU_TGL_TRANS REQ_DATE,
+        TO_DATE (NVL(TRANS.TGL_FILLING, A.MU_TGL_TRANS), 'DD/MM/YYYY') DATE_STATUS,
+        (CASE
+            WHEN A.LT_ID IN (2, 4)
+            THEN
+               (CASE
+                   WHEN A.MU_LSPD_ID IN (46, 47) THEN 'On progress'
+                   ELSE 'Accepted'
+                END)
+            WHEN A.LT_ID IN (3, 11)
+            THEN
+               (CASE
+                   WHEN A.MU_LSPD_ID IN (46, 47, 54) THEN 'On progress'
+                   ELSE 'Accepted'
+                END)
+         END)
+           DESCRIPTION,
+        C.LT_TRANSKSI JENIS_TRANSAKSI
+   		FROM EKA.MST_ULINK A,
+        EKA.LST_TRANSAKSI C,
+        EKA.MST_ULINK_BAYAR D,
+        (SELECT X.MTU_TGL_TRANS,
+                X.REG_SPAJ,
+                X.MU_KE,
+                (CASE
+                    WHEN X.LT_ID IN (2, 4) THEN  nvl(trunc(X.MTU_TGL_PROSES),X.MTU_TGL_TRANS)
+                    WHEN X.LT_ID IN (3, 11) THEN Y.MUB_TGL_TRANSFER
+                 END)
+                   TGL_FILLING
+           FROM EKA.MST_TRANS_ULINK X, EKA.MST_ULINK_BAYAR Y
+          WHERE     X.REG_SPAJ = Y.REG_SPAJ(+)
+                AND X.MU_KE = Y.MU_KE(+)
+                AND X.MTU_KE = 1) TRANS
+  		WHERE     A.LT_ID = C.LT_ID
+        AND A.REG_SPAJ = TRANS.REG_SPAJ
+        AND A.MU_KE = TRANS.MU_KE
+        AND A.LT_ID IN (4)
+        AND A.REG_SPAJ = D.REG_SPAJ(+)
+        AND A.MU_KE = D.MU_KE(+)
+        AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+        AND A.ID_MOBILE IS NULL)
+  		ORDER BY 2 DESC, 1 DESC
+    		) o
+    	WHERE rownum <![CDATA[<]]> ((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1 )
+			)
+		WHERE r__ <![CDATA[>=]]> (((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize, jdbcType=INTEGER}) + 1)
+	</select>
+	
+	<select id="selectListWithdraw" parameterType="HashMap" resultType="com.app.model.Withdraw">
+		  SELECT * FROM
+		(
+    	SELECT o.*, rownum r__
+    	FROM
+    	(
+        SELECT *
+  		FROM ( 		
+  		SELECT A.*,
+       (SELECT COUNT (MPT_ID)
+          FROM EKA.MST_MPOL_TRANS_DET
+         WHERE MPT_ID = A.MPT_ID)
+          AS COUNT_VALUE,
+       (SELECT MPT_JUMLAH
+          FROM EKA.MST_MPOL_TRANS_DET
+         WHERE MPT_ID = A.MPT_ID AND ROWNUM = 1)
+          AS MPT_JUMLAH_DETAIL,
+       (SELECT MPT_UNIT
+          FROM EKA.MST_MPOL_TRANS_DET
+         WHERE MPT_ID = A.MPT_ID AND ROWNUM = 1)
+          AS MPT_UNIT_DETAIL
+ 		FROM (SELECT A.MPT_ID,
+                 A.REQ_DATE,
+                 CASE
+                    WHEN A.MODIFIED_DATE IS NOT NULL THEN TO_DATE(MODIFIED_DATE, 'DD/MM/YYYY')
+                    ELSE TO_DATE(A.CREATED_DATE, 'DD/MM/YYYY')
+                 END
+                    DATE_STATUS,
+                 CASE
+                    WHEN A.MPT_STATUS IN (0,
+                                          1,
+                                          45,
+                                          46,
+                                          47)
+                    THEN
+                       'On progress'
+                    WHEN A.MPT_STATUS IN (7, 54)
+                    THEN
+                       'Accepted'
+                    WHEN A.MPT_STATUS = 8
+                    THEN
+                       'Canceled'
+                    WHEN A.MPT_STATUS = 9
+                    THEN
+                       'Canceled'
+                 END
+                    AS DESCRIPTION,
+                 CASE
+                    WHEN (A.MPT_JUMLAH = 0 OR A.MPT_JUMLAH IS NULL) THEN 'UNIT'
+                    WHEN (A.MPT_UNIT = 0 OR A.MPT_UNIT IS NULL) THEN 'NOMINAL'
+                 END
+                    AS TYPE_PENARIKAN,
+                 D.LKU_SYMBOL
+            FROM EKA.MST_MPOL_TRANS A
+                 INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+                 INNER JOIN EKA.LST_TRANSAKSI C ON A.LT_ID = C.LT_ID
+                 INNER JOIN EKA.LST_KURS D ON B.LKU_ID = D.LKU_ID
+           WHERE B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+           AND A.LT_ID IN (3)) A)     
+	UNION ALL
+	(SELECT NVL(A.NO_REGISTER, TO_CHAR(TO_CHAR (A.MU_TGL_TRANS, 'yyyymmdd') || A.MU_KE)) AS MPT_ID,
+        A.MU_TGL_TRANS REQ_DATE,
+        TO_DATE(NVL(TRANS.TGL_FILLING, A.MU_TGL_TRANS), 'DD/MM/YYYY') DATE_STATUS,
+       (CASE
+           WHEN A.LT_ID IN (2, 4)
+           THEN
+              (CASE
+                  WHEN A.MU_LSPD_ID IN (46, 47) THEN 'On progress'
+                  ELSE 'Accepted'
+               END)
+           WHEN A.LT_ID IN (3, 11)
+           THEN
+              (CASE
+                  WHEN A.MU_LSPD_ID IN (46, 47, 54) THEN 'On progress'
+                  ELSE 'Accepted'
+               END)
+        END)
+          DESCRIPTION,
+       CASE
+          WHEN NVL (A.MU_JLH_PREMI, 0) > 0 THEN 'NOMINAL'
+          WHEN ABS (NVL (A.MU_JLH_UNIT, 0)) > 0 THEN 'UNIT'
+       END
+          TYPE_PENARIKAN,
+       F.LKU_SYMBOL,
+       (select count(*)
+        from eka.mst_trans_ulink x
+        where x.reg_spaj = a.reg_spaj
+        and x.mu_ke = a.mu_ke) COUNT_VALUE,
+       (A.MU_JLH_PREMI) MPT_JUMLAH_DETAIL,
+       abs(A.MU_JLH_UNIT) MPT_UNIT_DETAIL
+  	FROM EKA.MST_ULINK A,
+       EKA.LST_TRANSAKSI C,
+       EKA.MST_POLICY E,
+       EKA.LST_KURS F,
+       (SELECT X.MTU_TGL_TRANS,
+               X.REG_SPAJ,
+               X.MU_KE,
+               (CASE
+                   WHEN X.LT_ID IN (2, 4) THEN TRUNC (X.MTU_TGL_PROSES)
+                   WHEN X.LT_ID IN (3, 11) THEN Y.MUB_TGL_TRANSFER
+                END)
+                  TGL_FILLING
+          FROM EKA.MST_TRANS_ULINK X, EKA.MST_ULINK_BAYAR Y
+         WHERE     X.REG_SPAJ = Y.REG_SPAJ(+)
+               AND X.MU_KE = Y.MU_KE(+)
+               AND X.MTU_KE = 1) TRANS
+ 		WHERE     
+       A.LT_ID = C.LT_ID
+       AND A.REG_SPAJ = E.REG_SPAJ
+       AND E.LKU_ID = F.LKU_ID
+       AND A.REG_SPAJ = TRANS.REG_SPAJ(+)
+       AND A.MU_KE = TRANS.MU_KE(+)
+       AND A.LT_ID IN (3, 11)
+       AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+       AND A.ID_MOBILE IS NULL  
+       )ORDER BY 2 DESC, 1 DESC
+    		) o
+    	WHERE rownum <![CDATA[<]]> ((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1 )
+			)
+		WHERE r__ <![CDATA[>=]]> (((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize, jdbcType=INTEGER}) + 1)
+	</select>
+	
+	<select id="selectViewSwitchingPaper" parameterType="HashMap" resultType="SwitchingRedirection">
+	   		SELECT ULINK.ID,
+				A.REG_SPAJ,
+				ULINK.REQ_DATE,
+				NVL(ULINK.TGL_FILLING, ULINK.REQ_DATE) AS DATE_STATUS,
+				B.MCL_FIRST AS PAYOR_NAME,
+				A.MSPO_POLICY_NO_FORMAT,
+				EKA.F_LSDBS_VIEW (C.REG_SPAJ, C.LSBS_ID, C.LSDBS_NUMBER) AS NM_PRODUCT,
+				ULINK.BIAYA,
+				D.LKU_SYMBOL,
+				LMS_STATUS AS STATUS_POLIS,
+				ULINK.LT_TRANSKSI,
+				ULINK.DESCRIPTION 
+  			FROM EKA.MST_POLICY A
+       			INNER JOIN EKA.MST_CLIENT_NEW B ON A.MSPO_POLICY_HOLDER = B.MCL_ID
+       			INNER JOIN EKA.MST_PRODUCT_INSURED C ON A.REG_SPAJ = C.REG_SPAJ
+       			INNER JOIN EKA.LST_KURS D ON A.LKU_ID = D.LKU_ID
+       			INNER JOIN EKA.LST_POLICY_STATUS E ON A.LSSP_ID = E.LSSP_ID 
+       			INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
+       			INNER JOIN (
+       			SELECT NVL(X.NO_REGISTER, TO_CHAR (TO_CHAR (Y.MTU_TGL_TRANS, 'yyyymmdd') || Y.MU_KE)) ID,
+    			X.REG_SPAJ,
+    			Y.MTU_TGL_TRANS REQ_DATE,
+    			(CASE
+                	WHEN Y.LT_ID IN (2, 4) THEN  NVL(TRUNC(Y.MTU_TGL_PROSES), Y.MTU_TGL_TRANS)
+               	 	WHEN Y.LT_ID IN (3, 11) THEN V.MUB_TGL_TRANSFER
+            	END) TGL_FILLING,
+    				NVL(BIAYA_ULINK.BIAYA, 0)/ (SELECT COUNT (*) FROM EKA.MST_TRANS_ULINK H WHERE H.REG_SPAJ = Y.REG_SPAJ AND H.MU_KE = Y.MU_KE) BIAYA,
+    				Z.LT_TRANSKSI,
+    			(CASE
+           			WHEN X.LT_ID IN (2, 4)
+           			THEN
+              	(CASE
+                  WHEN X.MU_LSPD_ID IN (46, 47) THEN 'On progress'
+                  ELSE 'Accepted'
+               		END)
+           			WHEN X.LT_ID IN (3, 11)
+           			THEN
+            	(CASE
+                	WHEN X.MU_LSPD_ID IN (46, 47, 54) THEN 'On progress'
+            		ELSE 'Accepted'
+               		END)
+        		END) AS DESCRIPTION
+  				FROM EKA.MST_ULINK X,
+       			EKA.MST_TRANS_ULINK Y,
+       			EKA.LST_TRANSAKSI Z,
+       			EKA.MST_ULINK_BAYAR V,
+       			(SELECT X.REG_SPAJ, X.MU_KE, SUM (NVL (X.MBU_JUMLAH, 0)) BIAYA FROM EKA.MST_BIAYA_ULINK X GROUP BY X.REG_SPAJ, X.MU_KE) BIAYA_ULINK
+          		WHERE X.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+          		AND X.REG_SPAJ = Y.REG_SPAJ 
+          		AND X.MU_KE = Y.MU_KE
+          		AND X.LT_ID = Z.LT_ID
+          		AND Y.REG_SPAJ = V.REG_SPAJ(+)
+          		AND Y.MU_KE = V.MU_KE(+)
+          		AND X.REG_SPAJ = BIAYA_ULINK.REG_SPAJ(+)
+          		AND X.MU_KE = BIAYA_ULINK.MU_KE(+)
+          		AND X.LT_ID = 4 
+          		AND Y.MTU_KE = 1
+          		AND NVL(X.NO_REGISTER, TO_CHAR (TO_CHAR (Y.MTU_TGL_TRANS, 'yyyymmdd') || Y.MU_KE)) IN 
+          		<foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
+              		#{mpt_id, jdbcType=VARCHAR}
+              	</foreach>
+          		) ULINK 
+          		ON A.REG_SPAJ = ULINK.REG_SPAJ
+ 			WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} AND C.LSBS_ID <![CDATA[<]]> 300
+	</select>
+	
+	<select id="selectViewDetailSwitchingPaper" parameterType="HashMap" resultType="SwitchingRedirection">
+		SELECT NVL(L.NO_REGISTER, TO_CHAR (TO_CHAR (I.MTU_TGL_TRANS, 'yyyymmdd') || I.MU_KE)) MPT_ID,
+               J.LJI_ID,
+               I.MTU_JUMLAH MPT_JUMLAH,
+               ABS (UNIT.MTU_UNIT) MPT_UNIT,
+               I.MTU_DK AS MPT_DK,
+               J.LJI_INVEST,
+               A.LKU_ID,
+               N.LKU_SYMBOL,
+               CASE
+                  WHEN NVL (L.MU_JLH_PREMI, 0) > 0 THEN 'NOMINAL'
+                  WHEN ABS (NVL (L.MU_JLH_UNIT, 0)) > 0 THEN 'UNIT'
+               END
+                  AS TYPE_PENARIKAN
+          FROM EKA.MST_POLICY A,
+               EKA.MST_PRODUCT_INSURED B,
+               EKA.MST_TRANS_ULINK I,
+               EKA.LST_JENIS_INVEST J,
+               EKA.MST_ULINK L,
+               EKA.LST_KURS N,
+               (SELECT NVL(A.NO_REGISTER, TO_CHAR(TO_CHAR (B.MTU_TGL_TRANS, 'yyyymmdd') || B.MU_KE)) AS ID, A.REG_SPAJ, B.MTU_UNIT
+                   FROM EKA.MST_ULINK A
+                        INNER JOIN EKA.MST_TRANS_ULINK B
+                           ON     A.REG_SPAJ = B.REG_SPAJ
+                              AND A.MU_KE = B.MU_KE
+                              AND A.LT_ID = 4
+                              AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+                              AND NVL(A.NO_REGISTER, TO_CHAR(TO_CHAR (B.MTU_TGL_TRANS, 'yyyymmdd') || B.MU_KE)) = #{mpt_id, jdbcType=VARCHAR}
+                              AND B.MTU_DK = 'K') UNIT
+         WHERE     A.REG_SPAJ = B.REG_SPAJ
+               AND B.LSBS_ID <![CDATA[<]]> 300
+               AND A.LKU_ID = N.LKU_ID
+               AND A.REG_SPAJ = I.REG_SPAJ
+               AND I.LT_ID = 4
+               AND I.LJI_ID = J.LJI_ID
+               AND I.REG_SPAJ = L.REG_SPAJ
+               AND I.MU_KE = L.MU_KE
+               AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+               AND L.REG_SPAJ = UNIT.REG_SPAJ
+               AND NVL(L.NO_REGISTER, TO_CHAR (TO_CHAR(I.MTU_TGL_TRANS, 'yyyymmdd') || I.MU_KE)) = UNIT.ID
+               AND NVL(L.NO_REGISTER, TO_CHAR (TO_CHAR(I.MTU_TGL_TRANS, 'yyyymmdd') || I.MU_KE)) = #{mpt_id, jdbcType=VARCHAR}       
+	</select>
+
+	<select id="selectViewSwitchingRedirection1" parameterType="HashMap" resultType="SwitchingRedirection">
+		SELECT *
+  			FROM (SELECT CASE
+                  WHEN a.lt_id = 19 AND a.collaborate_mpt_id IS NOT NULL
+                  THEN
+                     collaborate_mpt_id
+                  WHEN (a.lt_id != 19 AND (a.collaborate_mpt_id IS NULL or a.collaborate_mpt_id = 0))
+                  THEN
+                     mpt_id
+               END
+                  AS id,
+               CASE
+                  WHEN a.lt_id = 19 AND a.collaborate_mpt_id IS NOT NULL
+                  THEN
+                     collaborate_mpt_id || ', ' || mpt_id
+                  WHEN (a.lt_id != 19 AND (a.collaborate_mpt_id IS NULL or a.collaborate_mpt_id = 0))
+                  THEN
+                     mpt_id
+               END
+                  AS mpt_id,
+               a.req_date,
+               CASE
+                  WHEN a.MODIFIED_DATE IS NOT NULL THEN MODIFIED_DATE
+                  ELSE a.CREATED_DATE
+               END
+                  DATE_STATUS,
+               CASE
+                  WHEN a.lt_id = 19 AND a.collaborate_mpt_id IS NOT NULL
+                  THEN
+                     (SELECT CASE WHEN x.MPT_STATUS IN (0, 1, 45, 46, 47)
+                  THEN
+                     'On progress'
+                  WHEN x.MPT_STATUS in (7, 54)
+                  THEN
+                     'Accepted'
+                  WHEN x.MPT_STATUS = 8
+                  THEN
+                     'Canceled'
+                  WHEN x.MPT_STATUS = 9
+                  THEN
+                     'Canceled'
+               END
+                  AS DESCRIPTION from eka.mst_mpol_trans x where x.mpt_id = a.collaborate_mpt_id)
+                  WHEN (a.lt_id != 19 AND (a.collaborate_mpt_id IS NULL or a.collaborate_mpt_id = 0))
+                  THEN
+                      (SELECT CASE WHEN x.MPT_STATUS IN (0, 1, 45, 46, 47)
+                  THEN
+                     'On progress'
+                  WHEN x.MPT_STATUS in (7, 54)
+                  THEN
+                     'Accepted'
+                  WHEN x.MPT_STATUS = 8
+                  THEN
+                     'Canceled'
+                  WHEN x.MPT_STATUS = 9
+                  THEN
+                     'Canceled'
+               END
+                  AS DESCRIPTION from eka.mst_mpol_trans x where x.mpt_id = a.mpt_id)
+               END as DESCRIPTION,
+               C.LT_TRANSKSI,
+               A.payor_name,
+               B.mspo_policy_no_format,
+               A.REASON_FU,
+               G.LKU_SYMBOL,
+               F.LMS_STATUS AS STATUS_POLIS,
+               EKA.F_LSDBS_VIEW (D.REG_SPAJ, D.LSBS_ID, D.LSDBS_NUMBER)
+                  AS nm_product
+          FROM eka.mst_mpol_trans a
+               INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+               INNER JOIN EKA.LST_TRANSAKSI C ON A.LT_ID = C.LT_ID
+               INNER JOIN EKA.MST_PRODUCT_INSURED D ON B.REG_SPAJ = D.REG_SPAJ
+               INNER JOIN EKA.LST_POLICY_STATUS E ON B.LSSP_ID = E.LSSP_ID
+               INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
+               INNER JOIN EKA.LST_KURS G ON B.LKU_ID = G.LKU_ID
+         WHERE b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+               AND mpt_id IN 
+               <foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
+                    #{mpt_id, jdbcType=VARCHAR}
+                </foreach>
+               AND D.LSBS_ID <![CDATA[<]]> 300)
+ 		WHERE mpt_id IS NOT NULL
+	</select>
+
+	<select id="selectViewSwitchingRedirection2" parameterType="HashMap" resultType="SwitchingRedirection">
+			SELECT mpt_id,
+				lt_id,
+       			CASE WHEN collaborate_mpt_id IS NULL 
+       				THEN 'Switching'
+          			ELSE 'Redirection'
+       			END
+          		AS jenis_transaksi
+  			FROM eka.mst_mpol_trans a
+  			inner join eka.mst_policy b on a.reg_spaj = b.reg_spaj
+ 			WHERE mpt_id IN 
+			<foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
+				#{mpt_id, jdbcType=VARCHAR}
+			</foreach>
+			and b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectViewSwitchingRedirection3" parameterType="HashMap" resultType="SwitchingRedirection">
+		SELECT B.*, D.LJI_INVEST, D.LKU_ID, E.LKU_SYMBOL
+  			FROM EKA.MST_MPOL_TRANS A
+       			INNER JOIN EKA.MST_MPOL_TRANS_DET B ON A.MPT_ID = B.MPT_ID
+       			INNER JOIN EKA.MST_POLICY C ON A.REG_SPAJ = C.REG_SPAJ
+       			INNER JOIN EKA.LST_JENIS_INVEST D ON B.LJI_ID = D.LJI_ID
+       			INNER JOIN EKA.LST_KURS E ON D.LKU_ID = E.LKU_ID
+ 		WHERE A.MPT_ID = #{mpt_id, jdbcType=VARCHAR} AND C.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectViewWithdrawPaper" parameterType="HashMap" resultType="Withdraw">
+	   	SELECT ULINK.ID AS ID,
+			ULINK.REQ_DATE,
+			NVL(ULINK.TGL_FILLING, ULINK.REQ_DATE) AS DATE_STATUS,
+			B.MCL_FIRST AS PAYOR_NAME,
+			G.MRC_NO_AC AS REKENING,
+			H.LSBP_NAMA AS BANK_NAME,
+			A.MSPO_POLICY_NO_FORMAT,
+			EKA.F_LSDBS_VIEW (C.REG_SPAJ, C.LSBS_ID, C.LSDBS_NUMBER) AS NM_PRODUCT,
+			ULINK.BIAYA,
+			D.LKU_SYMBOL,
+			F.LMS_STATUS AS STATUS_POLIS,
+			'Withdraw' AS LT_TRANSAKSI,
+			ULINK.DESCRIPTION,
+			(SELECT SUM(B.MTU_JUMLAH) FROM EKA.MST_ULINK A INNER JOIN EKA.MST_TRANS_ULINK B ON A.REG_SPAJ = B.REG_SPAJ AND A.MU_KE = B.MU_KE
+       		WHERE NVL(A.NO_REGISTER, TO_CHAR (TO_CHAR (B.MTU_TGL_TRANS, 'yyyymmdd') || B.MU_KE)) = #{mpt_id, jdbcType=VARCHAR} 
+       		AND B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR})  AS TOTAL_PENARIKAN
+  		FROM EKA.MST_POLICY A
+       		INNER JOIN EKA.MST_CLIENT_NEW B ON A.MSPO_POLICY_HOLDER = B.MCL_ID
+       		INNER JOIN EKA.MST_PRODUCT_INSURED C ON A.REG_SPAJ = C.REG_SPAJ
+       		INNER JOIN EKA.LST_KURS D ON A.LKU_ID = D.LKU_ID
+       		INNER JOIN EKA.LST_POLICY_STATUS E ON A.LSSP_ID = E.LSSP_ID 
+       		INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
+       		LEFT JOIN EKA.MST_REK_CLIENT G ON A.REG_SPAJ = G.REG_SPAJ
+       		LEFT JOIN EKA.LST_BANK_PUSAT H ON G.LSBP_ID = H.LSBP_ID
+       		INNER JOIN (
+       		SELECT NVL(X.NO_REGISTER, TO_CHAR (TO_CHAR (Y.MTU_TGL_TRANS, 'yyyymmdd') || Y.MU_KE)) ID,
+       		X.REG_SPAJ,
+        	Y.MTU_TGL_TRANS REQ_DATE,
+        	NVL(BIAYA_ULINK.BIAYA, 0)/ (SELECT COUNT (*) FROM EKA.MST_TRANS_ULINK H WHERE H.REG_SPAJ = Y.REG_SPAJ AND H.MU_KE = Y.MU_KE) BIAYA,
+        	Z.LT_TRANSKSI,
+        	(CASE
+           		WHEN X.LT_ID IN (2, 4)
+           		THEN
+              	(CASE
+                  WHEN X.MU_LSPD_ID IN (46, 47) THEN 'On progress'
+                  ELSE 'Accepted'
+               	END)
+           	WHEN X.LT_ID IN (3, 11)
+           	THEN
+            	(CASE
+                	WHEN X.MU_LSPD_ID IN (46, 47, 54) THEN 'On progress'
+            		ELSE 'Accepted'
+               	END)
+        	END) AS DESCRIPTION,
+        	(CASE
+                WHEN Y.LT_ID IN (2, 4) THEN  NVL(TRUNC(Y.MTU_TGL_PROSES), Y.MTU_TGL_TRANS)
+                WHEN Y.LT_ID IN (3, 11) THEN V.MUB_TGL_TRANSFER
+        	END) TGL_FILLING
+  			FROM EKA.MST_ULINK X,
+       		EKA.MST_TRANS_ULINK Y,
+       		EKA.LST_TRANSAKSI Z,
+       		EKA.MST_ULINK_BAYAR V,
+       		(SELECT X.REG_SPAJ, X.MU_KE, SUM (NVL (X.MBU_JUMLAH, 0)) BIAYA FROM EKA.MST_BIAYA_ULINK X GROUP BY X.REG_SPAJ, X.MU_KE) BIAYA_ULINK
+          	WHERE X.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+          	AND X.REG_SPAJ = Y.REG_SPAJ 
+          	AND X.MU_KE = Y.MU_KE
+          	AND X.LT_ID = Z.LT_ID
+          	AND X.REG_SPAJ = BIAYA_ULINK.REG_SPAJ(+)
+          	AND X.MU_KE = BIAYA_ULINK.MU_KE(+)
+          	AND Y.REG_SPAJ = V.REG_SPAJ(+)
+          	AND Y.MU_KE = V.MU_KE(+)
+          	AND X.LT_ID IN (3, 11) 
+          	AND Y.MTU_KE = 1
+          	AND NVL(X.NO_REGISTER, TO_CHAR (TO_CHAR (Y.MTU_TGL_TRANS, 'yyyymmdd') || Y.MU_KE)) = #{mpt_id, jdbcType=VARCHAR}
+       		) ULINK ON A.REG_SPAJ = ULINK.REG_SPAJ
+ 		WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} AND C.LSBS_ID <![CDATA[<]]> 300
+	</select>
+	
+	<select id="selectViewDetailWithdrawPaper" parameterType="HashMap" resultType="DetailWithdraw">
+		SELECT NVL(L.NO_REGISTER, TO_CHAR (TO_CHAR (I.MTU_TGL_TRANS, 'yyyymmdd') || I.MU_KE)) MPT_ID,
+          	J.LJI_ID,
+          	J.LJI_INVEST,
+          	N.LKU_SYMBOL,
+          	I.MTU_NAB NAV_PROCESS,
+          	I.MTU_JUMLAH MPT_JUMLAH_DETAIL,
+          	ABS (I.MTU_UNIT) MPT_UNIT_DETAIL,
+          	I.MTU_DK AS MPT_DK,
+          	A.LKU_ID,
+       		CASE
+          		WHEN NVL (L.MU_JLH_PREMI, 0) > 0 THEN 'NOMINAL'
+          		WHEN ABS (NVL (L.MU_JLH_UNIT, 0)) > 0 THEN 'UNIT'
+       		END AS TYPE_PENARIKAN
+  		FROM EKA.MST_POLICY A,
+       		EKA.MST_PRODUCT_INSURED B,
+       		EKA.MST_TRANS_ULINK I,
+       		EKA.LST_JENIS_INVEST J,
+       		EKA.MST_ULINK L,
+       		EKA.LST_KURS N
+ 		WHERE     A.REG_SPAJ = B.REG_SPAJ
+       		AND B.LSBS_ID <![CDATA[<]]> 300
+       		AND A.LKU_ID = N.LKU_ID
+       		AND A.REG_SPAJ = I.REG_SPAJ
+       		AND I.LT_ID IN (3, 11)
+       		AND I.LJI_ID = J.LJI_ID
+      	 	AND I.REG_SPAJ = L.REG_SPAJ
+       		AND I.MU_KE = L.MU_KE
+       		AND A.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+       		AND NVL(L.NO_REGISTER, TO_CHAR (TO_CHAR (I.MTU_TGL_TRANS, 'yyyymmdd') || I.MU_KE)) = #{mpt_id, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectViewWithdraw" parameterType="HashMap" resultType="Withdraw">
+		 SELECT MPT_ID,
+               A.REQ_DATE,
+               CASE
+                  WHEN A.MODIFIED_DATE IS NOT NULL THEN MODIFIED_DATE
+                  ELSE A.CREATED_DATE
+               END
+                  DATE_STATUS,
+               CASE
+                  WHEN A.MPT_STATUS IN (0, 1, 45, 46, 47)
+                  THEN
+                     'On progress'
+                  WHEN A.MPT_STATUS IN (7, 54)
+                  THEN
+                     'Accepted'
+                  WHEN A.MPT_STATUS = 8
+                  THEN
+                     'Canceled'
+                  WHEN A.MPT_STATUS = 9
+                  THEN
+                     'Canceled'
+               END
+                  AS DESCRIPTION,
+               A.PAYOR_NAME,
+               A.REKENING,
+               A.BANK_NAME,
+               B.MSPO_POLICY_NO_FORMAT,
+               A.REASON_FU,
+               G.LKU_SYMBOL,
+               F.LMS_STATUS AS STATUS_POLIS,
+               A.MPT_JUMLAH_PROCESS AS TOTAL_PENARIKAN,
+               EKA.F_LSDBS_VIEW (D.REG_SPAJ, D.LSBS_ID, D.LSDBS_NUMBER)
+                  AS NM_PRODUCT
+          FROM EKA.MST_MPOL_TRANS A
+               INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+               INNER JOIN EKA.MST_PRODUCT_INSURED D ON B.REG_SPAJ = D.REG_SPAJ
+               INNER JOIN EKA.LST_POLICY_STATUS E ON B.LSSP_ID = E.LSSP_ID
+               INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
+               INNER JOIN EKA.LST_KURS G ON B.LKU_ID = G.LKU_ID
+         WHERE B.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+               AND MPT_ID = #{mpt_id, jdbcType=VARCHAR}
+               AND D.LSBS_ID <![CDATA[<]]> 300
+	</select>
+	
+	<select id="selectViewDetailWithdrawMPolis" parameterType="HashMap" resultType="DetailWithdraw">
+		SELECT A.MPT_ID,
+       		A.LJI_ID,
+       		B.LJI_INVEST,
+       		C.LKU_SYMBOL,
+       		A.NAV_PROCESS,
+       		CASE WHEN A.MPT_JUMLAH != 0 THEN A.MPT_JUMLAH ELSE A.AMOUNT_PROCESS END
+          		AS MPT_JUMLAH_DETAIL,
+       		CASE WHEN A.MPT_UNIT != 0 THEN A.MPT_UNIT ELSE UNIT_PROCESS END
+          		AS MPT_UNIT_DETAIL
+  		FROM EKA.MST_MPOL_TRANS_DET A
+       		INNER JOIN EKA.LST_JENIS_INVEST B ON A.LJI_ID = B.LJI_ID
+       		INNER JOIN EKA.LST_KURS C ON B.LKU_ID = C.LKU_ID
+       		INNER JOIN EKA.MST_MPOL_TRANS D ON A.MPT_ID = D.MPT_ID
+ 		WHERE A.MPT_ID = #{mpt_id, jdbcType=VARCHAR} AND D.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCheckStatusTransaction" parameterType="HashMap" resultType="Integer">
+		SELECT SUM (res) as res
+  			FROM (SELECT *
+          FROM (SELECT COUNT (*) AS res
+                  FROM EKA.MST_TRANS_ULINK X
+                 WHERE     X.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+                       AND X.MTU_DK = 'K'
+                       AND X.LT_ID <![CDATA[<>]]> 7
+                       AND X.MTU_TGL_NAB IS NULL)
+        UNION
+        (SELECT COUNT (*) AS res
+           FROM EKA.MST_MPOL_TRANS A
+          WHERE     A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+                AND A.LT_ID IN (3, 4, 19)
+                AND MPT_STATUS NOT IN (7, 8, 54)))
+	</select>
+	
+	<select id="storedProcedureGetBiaya" parameterType="java.util.HashMap" statementType="CALLABLE">
+    	CALL EKA.PACLINK.PROC_HIT_BIAYA_ULINK(
+    	#{reg_spaj, jdbcType=VARCHAR, mode=IN},
+    	#{kode_regis, jdbcType=VARCHAR, mode=IN},
+    	#{kode_trans, jdbcType=INTEGER, mode=IN},
+    	#{amount, jdbcType=BIGINT, mode=IN},
+    	#{proses, jdbcType=INTEGER, mode=IN},
+    	#{flag_insert, jdbcType=INTEGER, mode=IN},
+    	#{hasil, jdbcType=VARCHAR, mode=OUT})
+	</select>
+	
+	<select id="selectBiayaForFinancialTransaction" parameterType="HashMap" resultType="com.app.model.CostFinancialTransaction">
+		select a.*, b.ljb_biaya
+		from eka.MST_MPOL_BIAYA_TEMP a
+		inner join EKA.LST_JENIS_BIAYA b on a.ljb_id = b.ljb_id
+		where a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+			and a.mpt_id = #{mpt_id, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectDataFormWithdraw" parameterType="String" resultType="com.app.model.Withdraw">
+		SELECT EKA.F_LSDBS (B.REG_SPAJ, B.LSBS_ID, B.LSDBS_NUMBER) NM_PRODUCT, B.LSBS_ID, B.LSDBS_NUMBER,
+       		CASE WHEN A.NO_HP IS NULL THEN A.NO_HP2 ELSE A.NO_HP END AS NO_HP,
+       		A.E_MAIL AS EMAIL
+  		FROM EKA.MST_ADDRESS_BILLING A
+       		INNER JOIN EKA.MST_PRODUCT_INSURED B ON A.REG_SPAJ = B.REG_SPAJ
+ 		WHERE B.LSBS_ID <![CDATA[<]]> 300 AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCheckOTP" parameterType="HashMap" resultType="String">
+		select otp_no from eka.mst_otp_simultaneous where username = #{no_hp, jdbcType=VARCHAR} and menu_id = #{menu_id, jdbcType=INTEGER} order by id_otp desc fetch first row only
+	</select>
+	
+	<select id="selectCountTransId" parameterType="String" resultType="Integer">
+		select count(*) from (
+			(select mpt_id from eka.mst_mpol_trans where mpt_id = #{mpt_id, jdbcType=VARCHAR})
+		union all
+			(select mpt_id from eka.mst_mpol_trans_det where mpt_id = #{mpt_id, jdbcType=VARCHAR}))
+	</select>
+	
+	<select id="selectListClaimSubmission" parameterType="HashMap" resultType="ClaimSubmission">
+	   SELECT * FROM
+		(
+    	SELECT o.*, rownum r__
+    	FROM
+    	(
+        SELECT A.KODE_TRANS, REGAPLDATE,
+       CASE
+          WHEN JENISCLAIM = 1 THEN 'Rawat Jalan'
+          WHEN JENISCLAIM = 2 THEN 'Rawat Inap'
+          WHEN JENISCLAIM = 3 THEN 'Rawat Gigi'
+          WHEN JENISCLAIM = 5 THEN 'Rawat Bersalin'
+          WHEN JENISCLAIM = 9 THEN 'Penunjang Kesehatan'
+       END AS JENISCLAIM,
+       AMT_CLAIM,
+       CASE 
+                WHEN A.ST_KLMSHT = 1 THEN 'Submitted'
+                WHEN A.ST_KLMSHT = 2 THEN 'Investigation'
+                WHEN A.ST_KLMSHT = 3 THEN 'Further Document'
+                WHEN A.ST_KLMSHT = 4 THEN 'Pending Hardcopy Document'
+                WHEN A.ST_KLMSHT = 5 THEN 'Accepted'
+                WHEN A.ST_KLMSHT = 6 THEN 'Decline'
+                WHEN A.ST_KLMSHT = 7 THEN 'Payment Process'
+       END AS STATUS,
+       CASE
+          WHEN DATE_UPDATE_STATUS IS NULL THEN REGAPLDATE
+          ELSE DATE_UPDATE_STATUS
+       END
+          AS DATE_UPDATE_STATUS,
+        CASE 
+            WHEN A.ST_KLMSHT = 3 THEN C.REASON 
+            ELSE NULL
+        END
+            AS REASON_FURTHER,
+        D.LCA_ID,
+        A.FLAG_SUSULAN,
+        A.ST_KLMSHT AS ID_STATUS
+  		FROM EKA.MST_MPOL_CLAIM_TRANS A
+       		INNER JOIN EKA.MST_MPOL_CLAIM_DET_TRANS B ON A.REG_SPAJ = B.REG_SPAJ AND A.KODE_TRANS = B.KODE_TRANS
+       		LEFT JOIN (SELECT DISTINCT MAX(TGL) AS TGL, REASON, REGSPAJ, KODE_TRANS_MPOL from EKA.SURATPU WHERE JENISSURAT = 1 GROUP BY TGL, REASON, REGSPAJ, KODE_TRANS_MPOL) C ON A.KODE_TRANS = C.KODE_TRANS_MPOL AND A.REG_SPAJ = C.REGSPAJ
+       		INNER JOIN EKA.MST_POLICY D ON A.REG_SPAJ = D.REG_SPAJ
+ 		WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+ 		ORDER BY REGAPLDATE DESC
+    	) o
+    	WHERE rownum <![CDATA[<]]> ((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1 )
+			)
+		WHERE r__ <![CDATA[>=]]> (((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize, jdbcType=INTEGER}) + 1)
+	</select>
+	
+	<select id="selectViewClaimsubmission" parameterType="HashMap" resultType="ClaimSubmission">
+		SELECT B.KODE_TRANS,
+			A.MSPO_POLICY_NO_FORMAT AS NO_POLIS,
+			PRODUCT_UTAMA.MCL_FIRST AS NM_PEMEGANG,
+			E.LMS_STATUS AS STATUS_POLIS,
+			B.DOUBLE_COVER_CLAIM,
+			PRODUCT_UTAMA.NM_PRODUCT,
+			PATIENNAME,
+			EKA.F_LSDBS(B.REG_SPAJ, B.LSBS_ID, B.LSDBS_NUMBER) AS NM_PRODUCT_CLAIM,
+			CASE
+          		WHEN B.JENISCLAIM = 1 THEN 'Rawat Jalan'
+          		WHEN B.JENISCLAIM = 2 THEN 'Rawat Inap'
+         		WHEN B.JENISCLAIM = 3 THEN 'Rawat Gigi'
+          		WHEN B.JENISCLAIM = 5 THEN 'Rawat Bersalin'
+          		WHEN B.JENISCLAIM = 9 THEN 'Penunjang Kesehatan'
+       		END AS JENISCLAIM,
+       		CASE 
+                WHEN B.ST_KLMSHT = 1 THEN 'Submitted'
+                WHEN B.ST_KLMSHT = 2 THEN 'Investigation'
+                WHEN B.ST_KLMSHT = 3 THEN 'Further Document'
+                WHEN B.ST_KLMSHT = 4 THEN 'Pending Hardcopy Document'
+                WHEN B.ST_KLMSHT = 5 THEN 'Accepted'
+                WHEN B.ST_KLMSHT = 6 THEN 'Decline'
+                WHEN B.ST_KLMSHT = 7 THEN 'Payment Process'
+            END AS STATUS,
+			B.DATE_RI_1,
+			B.DATE_RI_2,
+			C.AMT_CLAIM,
+			C.ACCOUNTNO AS REKENING,
+			F.LSBP_NAMA AS BANK,
+			B.PATH_CLAIM,
+			CASE 
+				WHEN B.ST_KLMSHT = 3 THEN H.REASON 
+			ELSE G.KETAKSEP 
+			END AS REASON,
+			B.REGAPLDATE,
+			NVL(TO_CHAR(B.DATE_UPDATE_STATUS, 'DD/MM/YYYY'), TO_CHAR(B.REGAPLDATE, 'DD/MM/YYYY')) AS DATE_STATUS
+		FROM EKA.MST_POLICY A 
+            INNER JOIN EKA.MST_MPOL_CLAIM_TRANS B ON A.REG_SPAJ = B.REG_SPAJ
+            INNER JOIN EKA.MST_MPOL_CLAIM_DET_TRANS C ON B.REG_SPAJ = C.REG_SPAJ AND B.KODE_TRANS = C.KODE_TRANS
+            INNER JOIN EKA.LST_POLICY_STATUS D ON B.LSSP_ID = D.LSSP_ID
+            INNER JOIN EKA.LST_MASTER_STATUS E ON D.LMS_ID = E.LMS_ID
+            INNER JOIN (SELECT X.REG_SPAJ, Z.MCL_FIRST, EKA.F_LSDBS_VIEW (Y.REG_SPAJ, Y.LSBS_ID, Y.LSDBS_NUMBER) AS NM_PRODUCT 
+                        FROM EKA.MST_POLICY X 
+                        INNER JOIN EKA.MST_PRODUCT_INSURED Y ON X.REG_SPAJ = Y.REG_SPAJ
+                        INNER JOIN EKA.MST_CLIENT_NEW Z ON X.MSPO_POLICY_HOLDER = Z.MCL_ID 
+                        WHERE X.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} AND Y.LSBS_ID <![CDATA[<]]> 300) PRODUCT_UTAMA ON PRODUCT_UTAMA.REG_SPAJ = A.REG_SPAJ
+            INNER JOIN EKA.LST_BANK_PUSAT F ON C.LSBP_ID = F.LSBP_ID
+            LEFT JOIN (SELECT KETAKSEP, REGSPAJ, KODE_TRANS_MPOLIS FROM EKA.ID_MST_CLM WHERE ST_ACP = 15) G ON B.KODE_TRANS = G.KODE_TRANS_MPOLIS AND B.REG_SPAJ = G.REGSPAJ
+            LEFT JOIN (SELECT DISTINCT MAX(TGL) AS TGL, REASON, REGSPAJ, KODE_TRANS_MPOL from EKA.SURATPU WHERE JENISSURAT = 1 GROUP BY TGL, REASON, REGSPAJ, KODE_TRANS_MPOL) H ON B.KODE_TRANS = H.KODE_TRANS_MPOL AND B.REG_SPAJ = H.REGSPAJ
+		WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+            AND B.KODE_TRANS = #{mpc_id, jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectAllTertanggungAndProductClaimSubmission" parameterType="HashMap" resultType="ClaimSubmission">
+		SELECT DISTINCT *
+  			FROM (SELECT C.MCL_FIRST AS NAMA_TERTANGGUNG
+  			<if test="type == 2">
+  				, EKA.F_LSDBS(A.REG_SPAJ, B.LSBS_ID, B.LSDBS_NUMBER) AS NM_PRODUCT, D.LSBS_ID, D.LSDBS_NUMBER, E.GROUPCLAIMJENIS, 'UTAMA' AS JENIS_TERTANGGUNG
+  			</if>
+          	FROM EKA.MST_INSURED A,
+               EKA.MST_PRODUCT_INSURED B,
+               EKA.MST_CLIENT_NEW C,
+               EKA.LST_DET_BISNIS D
+               <if test="type == 2">
+               		, EKA.LST_JN_PERAWATAN E
+               </if>
+         WHERE     A.REG_SPAJ = B.REG_SPAJ
+               AND A.MSTE_INSURED = C.MCL_ID
+               AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+               <if test="type == 2">
+               		AND C.MCL_FIRST = #{nama, jdbcType=VARCHAR}
+               		AND B.LSBS_ID = E.LSBS_ID
+               </if>
+               AND B.LSBS_ID = D.LSBS_ID
+               AND B.LSDBS_NUMBER = D.LSDBS_NUMBER
+               AND B.LSBS_ID <![CDATA[>=]]> 800
+               AND NOT EXISTS
+                      (SELECT 1
+                         FROM EKA.MST_PESERTA
+                        WHERE     REG_SPAJ = A.REG_SPAJ
+                              AND LSBS_ID = B.LSBS_ID
+                              AND LSDBS_NUMBER = B.LSDBS_NUMBER)
+        UNION ALL
+        SELECT A.NAMA AS NAMA_TERTANGGUNG
+        <if test="type == 2">
+        	, EKA.F_LSDBS(A.REG_SPAJ, B.LSBS_ID, B.LSDBS_NUMBER) AS NM_PRODUCT, B.LSBS_ID, B.LSDBS_NUMBER, C.GROUPCLAIMJENIS, 'TAMBAHAN' AS JENIS_TERTANGGUNG
+        </if>
+          FROM EKA.MST_PESERTA A, 
+          EKA.LST_DET_BISNIS B
+          <if test="type == 2">
+          		, EKA.LST_JN_PERAWATAN C
+          </if>
+         WHERE     A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+         		<if test="type == 2">
+               		AND A.NAMA =  #{nama, jdbcType=VARCHAR}
+               		AND A.LSBS_ID = C.LSBS_ID
+               	</if>
+               AND A.LSBS_ID = B.LSBS_ID
+               AND A.LSDBS_NUMBER = B.LSDBS_NUMBER) ORDER BY 1
+	</select>
+	
+	<select id="selectChooseJenisClaim" parameterType="String" resultType="com.app.model.ClaimSubmission">
+		SELECT DISTINCT *
+    	FROM (SELECT CASE 
+                    WHEN E.LJP_ID = '01' THEN 'Rawat Jalan'
+                    WHEN E.LJP_ID = '02' THEN 'Rawat Inap'
+                    WHEN E.LJP_ID = '03' THEN 'Rawat Gigi'
+                    WHEN E.LJP_ID = '05' THEN 'Rawat Bersalin'
+                 END AS JENISCLAIM, E.LJP_ID
+            FROM EKA.MST_INSURED A,
+                 EKA.MST_PRODUCT_INSURED B,
+                 EKA.MST_CLIENT_NEW C,
+                 EKA.LST_DET_BISNIS D,
+                 EKA.LST_JN_PERAWATAN E
+           WHERE     A.REG_SPAJ = B.REG_SPAJ
+                 AND A.MSTE_INSURED = C.MCL_ID
+                 AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+                 AND B.LSBS_ID = D.LSBS_ID
+                 AND B.LSBS_ID = E.LSBS_ID
+                 AND B.LSDBS_NUMBER = D.LSDBS_NUMBER
+                 AND B.LSBS_ID <![CDATA[>=]]> 800
+                 AND NOT EXISTS
+                        (SELECT 1
+                           FROM EKA.MST_PESERTA
+                          WHERE     REG_SPAJ = A.REG_SPAJ
+                                AND LSBS_ID = B.LSBS_ID
+                                AND LSDBS_NUMBER = B.LSDBS_NUMBER)
+          UNION ALL
+          SELECT CASE 
+                    WHEN C.LJP_ID = '01' THEN 'Rawat Jalan'
+                    WHEN C.LJP_ID = '02' THEN 'Rawat Inap'
+                    WHEN C.LJP_ID = '03' THEN 'Rawat Gigi'
+                    WHEN C.LJP_ID = '05' THEN 'Rawat Bersalin'
+                 END AS JENISCLAIM, C.LJP_ID
+            FROM EKA.MST_PESERTA A, 
+            EKA.LST_DET_BISNIS B, 
+            EKA.LST_JN_PERAWATAN C
+           WHERE     A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+                 AND A.LSBS_ID = B.LSBS_ID
+                 AND A.LSBS_ID = C.LSBS_ID
+                 AND A.LSDBS_NUMBER = B.LSDBS_NUMBER)
+		ORDER BY 1
+	</select>
+	
+	<select id="selectGeneratePdfClaim" parameterType="HashMap" resultType="com.app.model.ClaimSubmission">
+		<if test="type == 1">
+			SELECT C.MCL_FIRST AS NAMA,
+       			TRUNC(MONTHS_BETWEEN(SYSDATE,C.MSPE_DATE_BIRTH)/12) AS UMUR,
+       			C.MSPE_DATE_BIRTH AS TGL_LAHIR,
+       			K.LSRE_RELATION AS RELASI,
+       			D.ALAMAT_RUMAH,
+       			D.KOTA_RUMAH,
+      		 	DECODE (L.NO_HP, NULL, L.NO_HP2, L.NO_HP) AS NO_HP,
+       			L.E_MAIL AS EMAIL
+  			FROM EKA.MST_POLICY A,
+       			EKA.MST_INSURED B,
+       			EKA.MST_CLIENT_NEW C,
+       			EKA.MST_ADDRESS_NEW D,
+       			EKA.LST_RELATION K,
+       			EKA.MST_ADDRESS_BILLING L
+ 			WHERE     C.MCL_ID = D.MCL_ID
+       			AND A.REG_SPAJ = B.REG_SPAJ
+       			AND B.MSTE_INSURED = C.MCL_ID
+       			AND A.REG_SPAJ = L.REG_SPAJ
+       			AND A.LSRE_ID = K.LSRE_ID(+)
+       			AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+       			AND C.MCL_FIRST = #{nama, jdbcType=VARCHAR}
+		</if>
+		
+		<if test="type == 2">
+			SELECT A.NAMA,
+       			TRUNC(MONTHS_BETWEEN(SYSDATE, A.TGL_LAHIR)/12) AS UMUR,
+       			A.TGL_LAHIR AS TGL_LAHIR,
+       			B.LSRE_RELATION AS RELASI,
+       			D.ALAMAT_RUMAH,
+       			D.KOTA_RUMAH,
+       			DECODE(E.NO_HP, NULL, E.NO_HP2, E.NO_HP) AS NO_HP,
+       			E.E_MAIL AS EMAIL
+  			FROM EKA.MST_PESERTA A
+       			INNER JOIN EKA.LST_RELATION B ON A.LSRE_ID = B.LSRE_ID
+       			INNER JOIN EKA.MST_POLICY C ON A.REG_SPAJ = C.REG_SPAJ
+       			INNER JOIN EKA.MST_ADDRESS_NEW D ON C.MSPO_POLICY_HOLDER = D.MCL_ID
+       			INNER JOIN EKA.MST_ADDRESS_BILLING E ON A.REG_SPAJ = E.REG_SPAJ
+ 			WHERE     A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+       			AND A.NAMA = #{nama, jdbcType=VARCHAR}
+       			AND AKTIF = 1
+		</if>
+	</select>
+	
+	<select id="selectCountTransIdClaim" parameterType="String" resultType="Integer">
+		select count(*) from (
+			(select kode_trans from eka.mst_mpol_claim_trans where kode_trans = #{mpc_id, jdbcType=VARCHAR})
+		union all
+			(select kode_trans from eka.mst_mpol_claim_det_trans where kode_trans = #{mpc_id, jdbcType=VARCHAR}))
+	</select>
+	
+	<select id="storedProcedureSubmitFinancialTransaction" parameterType="java.util.HashMap" statementType="CALLABLE">
+    	CALL EKA.PACLINK.PROC_INS_MOB(
+    	#{reg_spaj, jdbcType=VARCHAR, mode=IN},
+    	#{kode_trans, jdbcType=INTEGER, mode=IN},
+    	#{hasil, jdbcType=VARCHAR, mode=OUT})
+	</select>
+	
+	<select id="selectCutoffTransactionLink" resultType="String">
+		select name
+    	from eka.mst_config 
+    	where mc_id = 788
+	</select>
+	
+	<select id="selectCutoffTransactionMagnaAndPrimeLink" resultType="String">
+		select name2
+    	from eka.mst_config 
+    	where mc_id = 788
+	</select>
+	
+	<select id="selectCheckDate" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) FROM (
+		(SELECT DATE'2020-01-01' + ROWNUM - 1 DT FROM DUAL CONNECT BY LEVEL <![CDATA[<=]]> 3650) A
+		LEFT JOIN 
+		(SELECT LH_DATE FROM EKA.LST_LIBUR) b ON A.DT = B.LH_DATE) WHERE LH_DATE IS NULL AND MOD(TO_CHAR(DT, 'J'), 7) + 1 NOT IN (6, 7) AND DT = TO_DATE(#{dateVal, jdbcType=VARCHAR}, 'DD/MM/YYYY')
+	</select>
+	
+	<select id="selectCheckBiayaTransaksi" parameterType="HashMap" resultType="Integer">
+		select count(*) 
+		from eka.mst_mpol_biaya_temp 
+		where mpt_id = #{mpt_id, jdbcType=VARCHAR} 
+		and reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+		and lt_id = #{lt_id, jdbcType=INTEGER}
+	</select>
+	
+	<select id="selectProductCode" parameterType="String" resultType="com.app.model.ProductUtama">
+		SELECT LSBS_ID, 
+			LSDBS_NUMBER
+  		FROM EKA.MST_PRODUCT_INSURED
+ 		WHERE REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} 
+ 			AND LSBS_ID <![CDATA[<]]> 300
+	</select>
+	
+	<select id="selectCheckUserCorporateRegister" parameterType="HashMap" resultType="UserCorporate">
+		SELECT A.REG_SPAJ,
+			A.MSPO_POLICY_NO AS NO_POLIS,
+			C.MSPE_MOBILE AS NO_HP, 
+			D.MST_MCL_ID AS MCL_ID_EMPLOYEE,
+			A.MSPO_END_DATE
+   		FROM EKA.MST_POLICY@EB A
+        	INNER JOIN EKA.MST_INSURED@EB B ON A.REG_SPAJ = B.REG_SPAJ
+        	INNER JOIN EKA.MST_PERSON@EB C ON B.MSTE_INSURED = C.MCL_ID
+        	INNER JOIN EKA.MST_PERSON_RELATION@EB D ON C.MCL_ID = D.MCL_ID
+        WHERE A.LSTB_ID = 3 
+         	AND A.LSSP_ID = 1
+         	AND B.MSTE_ACTIVE = 1
+         	AND A.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+         	AND TO_CHAR(C.MSPE_DATE_BIRTH, 'DDMMYYYY') = #{dob, jdbcType=VARCHAR}
+         	AND TRIM(UPPER(B.MSTE_NO_REG)) = #{kode, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCheckUserCorporateExistsMpolis" parameterType="HashMap" resultType="Integer">
+		SELECT COUNT (*)
+  		FROM EKA.LST_USER_SIMULTANEOUS
+ 		WHERE MCL_ID_EMPLOYEE = #{mcl_id_employee, jdbcType=VARCHAR}
+       		AND FLAG_ACTIVE = 1
+	</select>
+	
+	<select id="selectCheckUserCorporatePhoneNumberExistsMpolis" parameterType="String" resultType="Integer">
+		SELECT COUNT (MSPE_MOBILE)
+   		FROM EKA.LST_USER_SIMULTANEOUS A
+        	INNER JOIN EKA.MST_INSURED@EB B ON A.REG_SPAJ = B.REG_SPAJ
+        	INNER JOIN EKA.MST_PERSON@EB C ON B.MSTE_INSURED = C.MCL_ID
+  		WHERE C.MSPE_MOBILE = #{no_hp, jdbcType=VARCHAR}  
+  			AND A.FLAG_ACTIVE = 1
+	</select>
+	
+	<select id="selectListPolisCorporate" parameterType="HashMap" resultType="UserCorporate">
+		SELECT Z.NO_POLIS,
+         Z.MSPO_BEG_DATE,
+         Z.MSPO_END_DATE,
+         Z.REG_SPAJ,
+         C.MSTE_INSURED,
+         I.MCL_FIRST,
+         H.LSRE_RELATION,
+         G.LMS_STATUS,
+         H.LSRE_ID,
+         C.MSTE_NO_REG,
+         C.MSTE_ACTIVE,
+         NVL(Z.MSPO_TYPE_REK, 1) AS MSPO_TYPE_REK
+    	FROM (SELECT * FROM (SELECT A.MSPO_POLICY_NO AS NO_POLIS, A.MSPO_BEG_DATE, A.MSPO_END_DATE, A.REG_SPAJ, A.LSSP_ID, A.MSPO_TYPE_REK
+            FROM EKA.MST_POLICY@EB A
+                 LEFT JOIN EKA.MST_POLICY@EB B
+                    ON A.MSPO_OLDPOL_EB = B.MSPO_POLICY_NO
+                 INNER JOIN EKA.MST_INSURED@EB C ON A.REG_SPAJ = C.REG_SPAJ
+           WHERE     C.MSTE_INSURED = #{mcl_id_employee, jdbcType=VARCHAR}
+                 AND A.MSPO_POLICY_NO IS NOT NULL ORDER BY A.MSPO_BEG_DATE DESC) WHERE ROWNUM <![CDATA[<]]> 3) Z
+         INNER JOIN EKA.MST_INSURED@EB C ON Z.REG_SPAJ = C.REG_SPAJ
+         INNER JOIN EKA.MST_PERSON@EB D ON C.MSTE_INSURED = D.MCL_ID
+         INNER JOIN EKA.MST_PERSON_RELATION@EB E ON D.MCL_ID = E.MCL_ID
+         INNER JOIN EKA.LST_POLICY_STATUS@EB F ON Z.LSSP_ID = F.LSSP_ID
+         INNER JOIN EKA.LST_MASTER_STATUS@EB G ON F.LMS_ID = G.LMS_ID
+         INNER JOIN EKA.LST_RELATION@EB H ON E.LSRE_ID = H.LSRE_ID
+         INNER JOIN EKA.MST_CLIENT@EB I ON C.MSTE_INSURED = I.MCL_ID
+   		WHERE E.MST_MCL_ID = #{mcl_id_employee, jdbcType=VARCHAR} AND Z.LSSP_ID = 1
+		ORDER BY 2 DESC, 10 ASC, 6 ASC
+	</select>
+	
+	<select id="selectDataLstUserSimultaneous" parameterType="String" resultType="com.app.model.LstUserSimultaneous">
+		SELECT *
+		FROM EKA.LST_USER_SIMULTANEOUS 
+		WHERE USERNAME = #{username, jdbcType=VARCHAR}
+			AND FLAG_ACTIVE = 1
+	</select>
 	
 	<select id="selectUserCorporate" parameterType="String" resultType="UserCorporate">
 		SELECT *
@@ -173,40 +2723,139 @@
  		WHERE ROWNUM <![CDATA[<]]> 2
 	</select>
 	
-	<select id="decryptPassword" resultType="User" parameterType="User">
-		select eka.decrypt (#{key, jdbcType=VARCHAR}) as "KEY" from dual
+	<select id="selectListClaimCorporate" parameterType="HashMap" resultType="com.app.model.ClaimCorporate">
+		SELECT * FROM
+	(
+    SELECT a.*, rownum r__
+    FROM
+    (
+        SELECT A.MCE_NO_KLAIM AS NO_KLAIM,
+         A.MCE_TGL_1 AS TGL_RAWAT,
+         CASE WHEN A.LSSA_ID = 2 THEN A.MCE_TGL_BATAL WHEN A.LSSA_ID = 5 THEN A.MCE_TGL_AKSEP ELSE A.MCE_TGL_INPUT END AS TGL_STATUS,
+         DECODE(B.MDC_VALID, 1, I.MBC_TGL_BACK, NULL) AS TGL_BAYAR,
+         A.MCE_TGL_KLAIM AS TGL_KLAIM,
+         A.MCE_TGL_INPUT AS TGL_INPUT,
+         SUM (B.MDC_JLH_CLAIM) AS KLAIM_DIAJUKAN,
+         SUM (B.MDC_MAX_CLAIM) AS MAKS_KLAIM,
+         SUM (B.MDC_BAYAR) AS JML_DIBAYARKAN,
+         CASE WHEN (B.MDC_VALID IN (0, 3)) THEN 'Decline' WHEN (B.MDC_VALID = 1) THEN 'Accepted' WHEN (B.MDC_VALID = 2) THEN 'Incomplete Document' ELSE 'On progress' END AS STATUS,
+         E.LSDBS_NAME AS NM_PLAN,
+         TRIM(F.LSD_DESC || CASE WHEN NVL(G.LSD_DESC, '0') = '0' THEN '' ELSE '; ' || G.LSD_DESC END || CASE WHEN NVL(H.LSD_DESC, '0') = '0' THEN '' ELSE '; ' || H.LSD_DESC END) as DIAGNOSIS
+    FROM EKA.MST_CLAIM_EBN@EB A
+         INNER JOIN EKA.MST_DET_CLAIM_EBN@EB B
+            ON     A.REG_SPAJ = B.REG_SPAJ
+               AND A.MCE_NO_KLAIM = B.MCE_NO_KLAIM
+               AND A.LGC_GROUP_ID = B.LGC_GROUP_ID
+               AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+         INNER JOIN EKA.MST_INSURED@EB C
+            ON     A.REG_SPAJ = C.REG_SPAJ
+               AND A.MSTE_INSURED_NO = C.MSTE_INSURED_NO
+               AND C.MSTE_INSURED = #{mste_insured, jdbcType=VARCHAR}
+         INNER JOIN EKA.LST_DET_BISNIS@EB E ON A.MCE_LSBS_ID = E.LSBS_ID AND A.MCE_LSDBS_NUMBER = E.LSDBS_NUMBER
+         INNER JOIN EKA.LST_DIAGNOSIS@EB F ON A.LSD_ID = F.LSD_ID
+         LEFT JOIN EKA.LST_DIAGNOSIS@EB G ON A.LSD_ID2 = G.LSD_ID
+         LEFT JOIN EKA.LST_DIAGNOSIS@EB H ON A.LSD_ID3 = H.LSD_ID
+         LEFT JOIN EKA.MST_BATCH_CLAIM@EB I ON A.MBC_NO = I.MBC_NO
+         WHERE A.MBC_NO <![CDATA[<>]]> 'DUMMY'
+         AND B.MDC_VALID NOT IN (3)
+	GROUP BY A.MSTE_INSURED_NO,
+         A.REG_SPAJ,
+         A.MCE_NO_KLAIM,
+         A.MCE_TGL_BATAL,
+         A.MCE_TGL_1,
+         A.MCE_TGL_AKSEP,
+         A.LSSA_ID,
+         A.MCE_NO_KLAIM,
+         A.MCE_TGL_KLAIM,
+         A.MCE_TGL_INPUT,
+         B.MDC_VALID,
+         C.MSTE_INSURED,
+         E.LSDBS_NAME,
+         F.LSD_DESC,
+         G.LSD_DESC,
+         H.LSD_DESC,
+         I.MBC_TGL_BACK
+	ORDER BY 2 DESC
+    ) a
+    WHERE rownum <![CDATA[<]]>
+		((#{pageNumber} * #{pageSize}) + 1 )
+		)
+		WHERE r__ <![CDATA[>=]]>
+		(((#{pageNumber}-1) * #{pageSize}) + 1)
 	</select>
 	
-	<select id="selectProvinsi2" parameterType="HashMap" resultType="Provinsi">
-		select distinct propinsi, 
-			kabupaten, 
-			kecamatan, 
-			kelurahan, 
-			kodepos
-		from eka.v_propinsi
-		where lspr_id = #{lspr_id, jdbcType=INTEGER}
-			and lska_id = #{lska_id, jdbcType=INTEGER}
-			and lskc_id = #{lskc_id, jdbcType=INTEGER}
-			and lskl_id = #{lskl_id, jdbcType=INTEGER}
+	<select id="selectDetailClaimCorporate" parameterType="String" resultType="com.app.model.DetailClaimCorporate">
+		SELECT B.LJJ_JENIS_JAMINAN AS DETAIL,
+       		A.MDC_JLH_CLAIM AS JML_KLAIM,
+       		NVL(A.MDC_BAYAR, 0) AS JML_DIBAYAR
+  		FROM EKA.MST_DET_CLAIM_EBN@EB A
+       		INNER JOIN EKA.LST_JN_JAMINAN_EBN@EB B ON A.LGC_GROUP_ID = B.LGC_GROUP_ID AND A.LJJ_JENIS_ID = B.LJJ_JENIS_ID
+ 		WHERE A.MCE_NO_KLAIM = #{no_claim, jdbcType=VARCHAR}
 	</select>
 	
-	<select id="selectCheckDate" parameterType="String" resultType="Integer">
-		SELECT COUNT(*) FROM (
-		(SELECT DATE'2020-01-01' + ROWNUM - 1 DT FROM DUAL CONNECT BY LEVEL <![CDATA[<=]]> 3650) A
-		LEFT JOIN 
-		(SELECT LH_DATE FROM EKA.LST_LIBUR) b ON A.DT = B.LH_DATE) WHERE LH_DATE IS NULL AND MOD(TO_CHAR(DT, 'J'), 7) + 1 NOT IN (6, 7) AND DT = TO_DATE(#{dateVal, jdbcType=VARCHAR}, 'DD/MM/YYYY')
-	</select>
-	
-		<select id="selectCutoffTransactionLink" resultType="String">
-		select name
-    	from eka.mst_config 
-    	where mc_id = 788
-	</select>
-	
-	<select id="selectCutoffTransactionMagnaAndPrimeLink" resultType="String">
-		select name2
-    	from eka.mst_config 
-    	where mc_id = 788
+	<select id="selectListBenefitCorporate" parameterType="HashMap" resultType="com.app.model.BenefitCorporate">
+		 select LSDBS_NAME as NM_PLAN
+, LJJ_JENIS_JAMINAN as FASILITAS
+, REIMBURSE
+, NAIK_KELAS
+from (
+    select LST_DET_BISNIS.LSDBS_NAME
+    , LST_JN_JAMINAN_EBN.LJJ_JENIS_JAMINAN
+    , case 
+        when (MST_BENEFIT_POLICY.LJJ_GROUP in ('01','21') and MST_POLICY.MSPO_RJ_ASC = 1)
+            or (MST_BENEFIT_POLICY.LJJ_GROUP in ('02','22') and MST_POLICY.MSPO_RI_ASC = 1)
+            or (MST_BENEFIT_POLICY.LJJ_GROUP in ('03','23') and MST_POLICY.MSPO_RG_ASC = 1)
+            or (MST_BENEFIT_POLICY.LJJ_GROUP in ('04','24') and MST_POLICY.MSPO_KM_ASC = 1)
+            or (MST_BENEFIT_POLICY.LJJ_GROUP in ('05','25') and MST_POLICY.MSPO_RB_ASC = 1) then 'As Charged'
+        when LST_DET_BISNIS.LSBS_ID in (400, 401) then to_char(MST_BENEFIT_POLICY.MSTBP_MAX_CLAIM) || '% UP'
+        else to_char(MST_BENEFIT_POLICY.MSTBP_MAX_CLAIM)
+    end as REIMBURSE
+    , case 
+        when MST_BENEFIT_POLICY.LJJ_GROUP in ('02','22') and MST_POLICY.MSPO_RI_ASC = 1 then MST_BENEFIT_POLICY.MSTBP_MAX_CLAIM
+    end as NAIK_KELAS
+    , MST_BENEFIT_POLICY.LJJ_GROUP
+    , MST_BENEFIT_POLICY.MSTBP_BARIS_KE
+    from EKA.MST_POLICY@EB
+    inner join EKA.MST_INSURED@EB on MST_POLICY.REG_SPAJ = MST_INSURED.REG_SPAJ
+        and MST_INSURED.MSTE_ACTIVE = 1
+    inner join EKA.MST_PRODUCT_INSURED@EB on MST_INSURED.REG_SPAJ = MST_PRODUCT_INSURED.REG_SPAJ
+        and MST_INSURED.MSTE_INSURED_NO = MST_PRODUCT_INSURED.MSTE_INSURED_NO
+        and MST_PRODUCT_INSURED.MSPR_ACTIVE = 1
+    inner join EKA.LST_DET_BISNIS@EB on MST_PRODUCT_INSURED.LSBS_ID = LST_DET_BISNIS.LSBS_ID
+        and MST_PRODUCT_INSURED.LSDBS_NUMBER = LST_DET_BISNIS.LSDBS_NUMBER
+    inner join EKA.MST_BENEFIT_POLICY@EB on MST_PRODUCT_INSURED.REG_SPAJ = MST_BENEFIT_POLICY.REG_SPAJ
+        and MST_PRODUCT_INSURED.LSBS_ID = MST_BENEFIT_POLICY.LSBS_ID
+        and MST_PRODUCT_INSURED.LSDBS_NUMBER = MST_BENEFIT_POLICY.LSDBS_NUMBER
+    inner join EKA.LST_JN_JAMINAN_EBN@EB on MST_BENEFIT_POLICY.LJJ_GROUP = LST_JN_JAMINAN_EBN.LGC_GROUP_ID
+        and MST_BENEFIT_POLICY.LJJ_JENIS_ID = LST_JN_JAMINAN_EBN.LJJ_JENIS_ID
+        and LST_JN_JAMINAN_EBN.LJJ_AKTIF = 1
+    where MST_POLICY.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+    and MST_INSURED.MSTE_INSURED = #{mste_insured, jdbcType=VARCHAR}
+    and MST_BENEFIT_POLICY.MSTBP_MAX_CLAIM <![CDATA[>]]> 0
+    union
+    select LST_DET_BISNIS.LSDBS_NAME
+    , 'Batasan Klaim Per Tahun'
+    , to_char(MST_BENEFIT_YEARLY.MSTBY_YEARLY_MAX)
+    , null
+    , LST_DET_BISNIS.LSDBS_GRP_KLAIM
+    , 0
+    from EKA.MST_POLICY@EB
+    inner join EKA.MST_INSURED@EB on MST_POLICY.REG_SPAJ = MST_INSURED.REG_SPAJ
+        and MST_INSURED.MSTE_ACTIVE = 1
+    inner join EKA.MST_PRODUCT_INSURED@EB on MST_INSURED.REG_SPAJ = MST_PRODUCT_INSURED.REG_SPAJ
+        and MST_INSURED.MSTE_INSURED_NO = MST_PRODUCT_INSURED.MSTE_INSURED_NO
+        and MST_PRODUCT_INSURED.MSPR_ACTIVE = 1
+    inner join EKA.LST_DET_BISNIS@EB on MST_PRODUCT_INSURED.LSBS_ID = LST_DET_BISNIS.LSBS_ID
+        and MST_PRODUCT_INSURED.LSDBS_NUMBER = LST_DET_BISNIS.LSDBS_NUMBER
+    inner join EKA.MST_BENEFIT_YEARLY@EB on MST_PRODUCT_INSURED.REG_SPAJ = MST_BENEFIT_YEARLY.REG_SPAJ
+        and MST_PRODUCT_INSURED.LSBS_ID = MST_BENEFIT_YEARLY.LSBS_ID
+        and MST_PRODUCT_INSURED.LSDBS_NUMBER = MST_BENEFIT_YEARLY.LSDBS_NUMBER
+    where MST_POLICY.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+    and MST_INSURED.MSTE_INSURED = #{mste_insured, jdbcType=VARCHAR}
+    and MST_BENEFIT_YEARLY.MSTBY_YEARLY_MAX <![CDATA[>]]> 0
+)
+order by LJJ_GROUP
+, MSTBP_BARIS_KE
 	</select>
 	
 	<select id="selectListArticle" parameterType="HashMap" resultType="com.app.model.Article">
@@ -233,5 +2882,213 @@
 		)
 		WHERE r__ <![CDATA[>=]]>
 		(((#{pageNumber}-1) * #{pageSize}) + 1)
+	</select>
+	
+	<select id="selectBegDateEndDateCorporate" parameterType="String" resultType="com.app.model.UserCorporate">
+		select mspo_beg_date, mspo_end_date from eka.mst_policy@eb where mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectForgotUsernameCorporate" parameterType="HashMap" resultType="com.app.model.UserCorporate">
+		SELECT A.REG_SPAJ,
+			A.MSPO_POLICY_NO AS NO_POLIS,
+			C.MSPE_MOBILE AS NO_HP, 
+			D.MST_MCL_ID AS MCL_ID_EMPLOYEE,
+			E.USERNAME
+   		FROM EKA.MST_POLICY@EB A
+        	INNER JOIN EKA.MST_INSURED@EB B ON A.REG_SPAJ = B.REG_SPAJ
+        	INNER JOIN EKA.MST_PERSON@EB C ON B.MSTE_INSURED = C.MCL_ID
+        	INNER JOIN EKA.MST_PERSON_RELATION@EB D ON C.MCL_ID = D.MCL_ID
+        	INNER JOIN EKA.LST_USER_SIMULTANEOUS E ON D.MST_MCL_ID = E.MCL_ID_EMPLOYEE
+        WHERE A.LSTB_ID = 3 
+         	AND A.LSSP_ID = 1
+         	AND B.MSTE_ACTIVE = 1
+         	AND A.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+         	AND TO_CHAR(C.MSPE_DATE_BIRTH, 'DDMMYYYY') = #{dob, jdbcType=VARCHAR}
+         	AND TRIM(UPPER(B.MSTE_NO_REG)) = #{kode, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectClaimSubmissionCorporate" parameterType="HashMap" resultType="com.app.model.ClaimSubmissionCorporate">
+		SELECT SUBSTR (D.MSPO_POLICY_NO, 1, 2) || '.' || SUBSTR (D.MSPO_POLICY_NO, 3, 3) || '.' || SUBSTR (D.MSPO_POLICY_NO, 6, 4) || '.' || SUBSTR (D.MSPO_POLICY_NO, 10, 14) AS MSPO_POLICY_NO_FORMAT,
+       		C.MCL_FIRST,
+       		UPPER(A.MSTE_NO_REG) AS MSTE_NO_REG,
+       		UPPER(B.MSBC_BANK) AS MSBC_BANK,
+       		B.MSBC_ACC_NO,
+       		D.MSPO_TYPE_REK,
+       		D.LSSP_ID,
+       		E.MSPE_MOBILE
+  		FROM EKA.MST_INSURED@EB A
+       		LEFT JOIN EKA.MST_BANK_CLIENT@EB B ON A.REG_SPAJ = B.MSBC_SPAJ AND A.MSTE_INSURED = B.MCL_ID
+       		INNER JOIN EKA.MST_CLIENT@EB C ON A.MSTE_INSURED = C.MCL_ID
+       		INNER JOIN EKA.MST_POLICY@EB D ON A.REG_SPAJ = D.REG_SPAJ
+       		INNER JOIN EKA.MST_PERSON@EB E ON A.MSTE_INSURED = E.MCL_ID
+		WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} 
+			AND A.MSTE_INSURED = #{mste_insured, jdbcType=VARCHAR}
+			AND D.LSSP_ID = 1
+			AND A.MSTE_ACTIVE = 1
+	</select>
+	
+	<select id="selectJenisClaimSubmissionCorporate" parameterType="HashMap" resultType="com.app.model.ClaimSubmissionCorporate">
+		SELECT DISTINCT
+       	D.LGC_DESCRIPTION,
+       	CASE
+          WHEN D.LGC_DESCRIPTION = 'RJ' THEN 'Rawat Jalan'
+          WHEN D.LGC_DESCRIPTION = 'RI' THEN 'Rawat Inap'
+          WHEN D.LGC_DESCRIPTION = 'KM' THEN 'Kacamata'
+          WHEN D.LGC_DESCRIPTION = 'RB' THEN 'Rawat Bersalin'
+          WHEN D.LGC_DESCRIPTION = 'RG' THEN 'Rawat Gigi'
+          WHEN D.LGC_DESCRIPTION = 'RK' THEN 'Rawat Khusus'
+       END
+          AS LABEL
+  		FROM EKA.MST_INSURED@EB A
+       		INNER JOIN EKA.MST_PRODUCT_INSURED@EB B ON A.REG_SPAJ = B.REG_SPAJ AND A.MSTE_INSURED_NO = B.MSTE_INSURED_NO
+       		INNER JOIN EKA.LST_DET_BISNIS@EB C ON B.LSBS_ID = C.LSBS_ID AND B.LSDBS_NUMBER = C.LSDBS_NUMBER
+      	 	INNER JOIN EKA.LST_GROUP_CLAIM@EB D ON C.LSDBS_GRP_KLAIM = D.LGC_GROUP_ID
+ 		WHERE     A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+       		AND A.MSTE_INSURED = #{mste_insured, jdbcType=VARCHAR}
+       		AND B.MSPR_ACTIVE = 1
+       		AND A.MSTE_ACTIVE = 1
+       		AND C.LSBS_ID = 402
+       	ORDER BY 2
+	</select>
+	
+	<select id="selectDocumentJenisClaimCorporate" parameterType="HashMap" resultType="com.app.model.ClaimSubmissionCorporate">
+		SELECT 
+			<if test="language_id == 1">
+				DOCUMENT_NAME_IND as document_name
+			</if>
+			<if test="language_id == 2">
+				DOCUMENT_NAME_ENG as document_name
+			</if>
+    		FROM EKA.LST_JENIS_CLAIM_MAP A
+        INNER JOIN EKA.LST_GROUP_CLAIM@EB B ON B.LGC_DESCRIPTION = A.TYPE_CLAIM
+   		WHERE A.FLAG_ACTIVE = 1 AND A.POLICY_TYPE = 2 AND TRIM(A.TYPE_CLAIM) = #{value, jdbcType=VARCHAR}
+		ORDER BY 1
+	</select>
+	
+	<select id="selectListClaimSubmissionCorporate" parameterType="HashMap" resultType="com.app.model.ClaimSubmissionCorporate">
+		SELECT * FROM
+		(
+    	SELECT a.*, rownum r__
+    	FROM
+    	(
+        SELECT A.MPCC_ID,
+       		A.CREATED_DATE,
+       		A.DATE_UPDATE_STATUS,
+       		A.AMOUNT_DIBAYAR,
+       		CASE
+          		WHEN A.JENIS_CLAIM = 'RJ' THEN 'Rawat Jalan'
+          		WHEN A.JENIS_CLAIM = 'RI' THEN 'Rawat Inap'
+          		WHEN A.JENIS_CLAIM = 'KM' THEN 'Kacamata'
+          		WHEN A.JENIS_CLAIM = 'RB' THEN 'Rawat Bersalin'
+          		WHEN A.JENIS_CLAIM = 'RG' THEN 'Rawat Gigi'
+          		WHEN A.JENIS_CLAIM = 'RK' THEN 'Rawat Khusus'
+       		END
+          	AS JENIS_CLAIM,
+       		CASE
+          		WHEN A.STATUS = 1 THEN 'Submitted'
+          		WHEN A.STATUS = 2 THEN 'Incomplete Document'
+          		WHEN A.STATUS = 3 THEN 'Pending Hardcopy Document'
+          		WHEN A.STATUS = 4 THEN 'Accepted'
+          		WHEN A.STATUS = 5 THEN 'Decline'
+          		WHEN A.STATUS = 6 THEN 'Paid'
+       		END
+          	AS STATUS,
+          	CASE 
+                WHEN A.STATUS = 2 THEN B.MCE_JN_RUGI2
+          	ELSE 
+                NULL 
+            END 
+            AS REASON_FURTHER,
+            A.FLAG_SUSULAN,
+            A.STATUS AS ID_STATUS
+  		FROM EKA.MST_MPOL_CLAIM_CORPORATE_TRANS A
+  		LEFT JOIN EKA.MST_CLAIM_EBN@EB B ON A.NO_KLAIM = B.MCE_NO_KLAIM
+  		WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+  			AND A.MCL_ID = #{mste_insured, jdbcType=VARCHAR}
+  		ORDER BY 1 DESC
+    	) a
+    	WHERE rownum <![CDATA[<]]> ((#{pageNumber} * #{pageSize}) + 1 )
+		)
+		WHERE r__  <![CDATA[>=]]> (((#{pageNumber}-1) * #{pageSize}) + 1)
+	</select>
+	
+	<select id="selectViewClaimSubmissionCorporate" parameterType="HashMap" resultType="com.app.model.ClaimSubmissionCorporate">
+		SELECT MPCC_ID,
+       		CREATED_DATE,
+       		DATE_UPDATE_STATUS,
+       		AMOUNT_DIBAYAR,
+       		CASE
+          		WHEN JENIS_CLAIM = 'RJ' THEN 'Rawat Jalan'
+          		WHEN JENIS_CLAIM = 'RI' THEN 'Rawat Inap'
+         	 	WHEN JENIS_CLAIM = 'KM' THEN 'Kacamata'
+          		WHEN JENIS_CLAIM = 'RB' THEN 'Rawat Bersalin'
+          		WHEN JENIS_CLAIM = 'RG' THEN 'Rawat Gigi'
+          		WHEN JENIS_CLAIM = 'RK' THEN 'Rawat Khusus'
+      	 	END
+          	AS JENIS_CLAIM,
+       		CASE
+          		WHEN STATUS = 1 THEN 'Submitted'
+          		WHEN STATUS = 2 THEN 'Incomplete Document'
+          		WHEN STATUS = 3 THEN 'Pending Hardcopy Document'
+          		WHEN STATUS = 4 THEN 'Accepted'
+          		WHEN STATUS = 5 THEN 'Decline'
+         	 	WHEN STATUS = 6 THEN 'Paid'
+       		END
+          	AS STATUS,
+          	SUBSTR (D.MSPO_POLICY_NO, 1, 2) || '.' || SUBSTR (D.MSPO_POLICY_NO, 3, 3) || '.' || SUBSTR (D.MSPO_POLICY_NO, 6, 4) || '.' || SUBSTR (D.MSPO_POLICY_NO, 10, 14) AS MSPO_POLICY_NO_FORMAT,
+          	C.MCL_FIRST,
+          	A.START_DATE,
+          	A.END_DATE,
+          	A.DOUBLE_COVER_CLAIM,
+          	A.BANK,
+          	A.NO_REKENING,
+          	A.PATH_STORAGE,
+          	F.LMS_STATUS,
+          	A.REASON_DECLINE
+  		FROM EKA.MST_MPOL_CLAIM_CORPORATE_TRANS A
+  			INNER JOIN EKA.MST_INSURED@EB B ON A.REG_SPAJ = B.REG_SPAJ AND A.MCL_ID = B.MSTE_INSURED
+  			INNER JOIN EKA.MST_CLIENT@EB C ON A.MCL_ID = C.MCL_ID
+  			INNER JOIN EKA.MST_POLICY@EB D ON B.REG_SPAJ = D.REG_SPAJ
+  			INNER JOIN EKA.LST_POLICY_STATUS@EB E ON A.LSSP_ID = E.LSSP_ID
+  			INNER JOIN EKA.LST_MASTER_STATUS@EB F ON E.LMS_ID = F.LMS_ID
+  		WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+  			AND A.MCL_ID = #{mste_insured, jdbcType=VARCHAR}
+  			AND A.MPCC_ID = #{mpcc_id, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCheckMpccId" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) FROM EKA.MST_MPOL_CLAIM_CORPORATE_TRANS WHERE MPCC_ID = #{mpcc_id, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCheckRekeningNasabahIndividu" parameterType="String" resultType="com.app.model.Rekening">
+		SELECT B.MRC_NO_AC, C.LSBP_NAMA
+  		FROM EKA.MST_POLICY A
+  		INNER JOIN EKA.MST_REK_CLIENT B ON A.REG_SPAJ = B.REG_SPAJ
+       	INNER JOIN EKA.LST_BANK_PUSAT C ON B.LSBP_ID = C.LSBP_ID
+ 		WHERE A.MSPO_POLICY_NO = #{mspo_policy_no, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCheckRekeningNasabahCorporate" parameterType="HashMap" resultType="com.app.model.Rekening">
+		SELECT UPPER (MSBC_BANK) AS MSBC_BANK, MSBC_ACC_NO
+  		FROM EKA.MST_BANK_CLIENT@EB
+ 		WHERE MSBC_SPAJ = #{msbc_spaj, jdbcType=VARCHAR}
+ 			AND MCL_ID = #{mcl_id, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCheckPhoneNumberCorporate" parameterType="HashMap" resultType="com.app.model.UserCorporate">
+		SELECT C.MSPE_MOBILE AS NO_HP
+  		FROM EKA.MST_INSURED@EB A
+       		INNER JOIN EKA.MST_POLICY@EB B ON A.REG_SPAJ = B.REG_SPAJ
+       		INNER JOIN EKA.MST_PERSON@EB C ON A.MSTE_INSURED = C.MCL_ID
+ 		WHERE B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} 
+ 			AND A.MSTE_INSURED = #{mste_insured, jdbcType=VARCHAR}
+	</select>
+	
+	<select id="selectCheckPhoneNumberIndividu" parameterType="String" resultType="com.app.model.User">
+		SELECT DECODE(B.NO_HP, NULL, B.NO_HP2, NO_HP) AS NO_HP 
+		FROM EKA.MST_POLICY A
+ 		INNER JOIN EKA.MST_ADDRESS_BILLING B ON A.REG_SPAJ = B.REG_SPAJ
+ 		WHERE A.MSPO_POLICY_NO = #{mspo_policy_no, jdbcType=VARCHAR} 
+ 			AND A.LSTB_ID = 1
 	</select>
 </mapper>

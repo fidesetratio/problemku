@@ -55,7 +55,7 @@ import com.app.model.request.RequestReadAllInbox;
 import com.app.model.request.RequestUpdateInboxStatus;
 import com.app.model.request.RequestVersionCode;
 import com.app.model.request.RequestViewProvider;
-import com.app.utils.CustomResourceLoader;
+import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -75,7 +75,7 @@ public class PolicyIndividualCorporateController {
 	private VegaServices services;
 
 	@Autowired
-	private CustomResourceLoader customResourceLoader;
+	private VegaCustomResourceLoader customResourceLoader;
 
 	private DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");

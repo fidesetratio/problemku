@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.services.VegaServices;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.Pemegang;
+import com.app.model.ResponseData;
 import com.app.model.User;
 import com.app.model.UserCorporate;
 import com.app.model.request.RequestClearKey;
@@ -31,11 +32,16 @@ import com.app.model.request.RequestForgotUsername;
 import com.app.model.request.RequestLinkAccount;
 import com.app.model.request.RequestLogin;
 import com.app.model.request.RequestLoginEasypin;
+import com.app.model.request.RequestResendOTP;
 import com.app.model.request.RequestSMSOTP;
 import com.app.model.request.RequestSendOTP;
 import com.app.model.request.RequestUpdatePassword;
 import com.app.model.request.RequestValidateOTP;
-import com.app.utils.CustomResourceLoader;
+import com.app.constant.AccountManagementCons;
+import com.app.feignclient.ServiceEmail;
+import com.app.feignclient.ServiceOTP;
+import com.app.utils.CommonUtils;
+import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -51,7 +57,19 @@ public class LoginRegisterIndividualCorporateController {
 	private VegaServices services;
 
 	@Autowired
-	private CustomResourceLoader customResourceLoader;
+	private VegaCustomResourceLoader customResourceLoader;
+	
+	@Autowired
+	AccountManagementCons constant;
+
+	@Autowired
+	ServiceEmail serviceEmail;
+
+	@Autowired
+	ServiceOTP serviceOTP;
+	
+	@Autowired
+	CommonUtils utils;
 
 	@Value("${link.fcm.google}")
 	private String linkFcmGoogle;
@@ -1069,10 +1087,10 @@ public class LoginRegisterIndividualCorporateController {
 			String result = null;
 			String messagePost = null;
 			String otpReleasePost = null;
+			Boolean errorPost = false;
 			String dataJson = null;
 			JSONObject myResponse = null;
 			JSONObject myResponseData = null;
-			Boolean errorPost = false;
 
 			if (no_polis != null) {
 				// Find data Reg SPAJ
@@ -1085,8 +1103,21 @@ public class LoginRegisterIndividualCorporateController {
 				}
 			}
 
-			result = customResourceLoader.sendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
-
+			//result = customResourceLoader.sendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
+			
+			RequestSendOTP requestSendOTP = new RequestSendOTP();
+			requestSendOTP.setJenis_id(91);
+			requestSendOTP.setMenu_id(menu_id);
+			requestSendOTP.setUsername(no_hp);
+			requestSendOTP.setNo_polis(no_polis);
+			requestSendOTP.setReg_spaj(reg_spaj);
+			ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
+			
+			result = responseSendOTP.toString();
+			
+			errorPost = (Boolean) responseSendOTP.getError();
+			messagePost = (String) responseSendOTP.getMessage();
+			
 			myResponse = new JSONObject(result.toString());
 			dataJson = myResponse.get("data").toString();
 			myResponseData = new JSONObject(dataJson);
@@ -1179,8 +1210,21 @@ public class LoginRegisterIndividualCorporateController {
 				}
 			}
 
-			result = customResourceLoader.resendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
-
+			//result = customResourceLoader.resendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
+			
+			RequestResendOTP requestResendOTP = new RequestResendOTP();
+			requestResendOTP.setJenis_id(91);
+			requestResendOTP.setMenu_id(menu_id);
+			requestResendOTP.setUsername(no_hp);
+			requestResendOTP.setNo_polis(no_polis);
+			requestResendOTP.setReg_spaj(reg_spaj);
+			ResponseData responseResendOTP = serviceOTP.resendOTP(requestResendOTP);
+			
+			result = responseResendOTP.toString();
+			
+			errorPost = (Boolean) responseResendOTP.getError();
+			messagePost = (String) responseResendOTP.getMessage();
+			
 			myResponse = new JSONObject(result.toString());
 			dataJson = myResponse.get("data").toString();
 			myResponseData = new JSONObject(dataJson);
@@ -1225,14 +1269,14 @@ public class LoginRegisterIndividualCorporateController {
 	}
 
 	@RequestMapping(value = "/validateotp", produces = "application/json", method = RequestMethod.POST)
-	public String validateOtp(@RequestBody RequestValidateOTP requestValidateOTP, HttpServletRequest request)
+	public String validateOtp(@RequestBody RequestValidateOTP reqValidateOTP, HttpServletRequest request)
 			throws Exception {
 		Date start = new Date();
 		GsonBuilder builder = new GsonBuilder();
 		builder.serializeNulls();
 		Gson gson = new Gson();
 		gson = builder.create();
-		String req = gson.toJson(requestValidateOTP);
+		String req = gson.toJson(reqValidateOTP);
 		String res = null;
 		String resultErr = null;
 		String message = null;
@@ -1240,9 +1284,9 @@ public class LoginRegisterIndividualCorporateController {
 		HashMap<String, Object> map = new HashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
 
-		String no_hp = requestValidateOTP.getPhone_no();
-		Integer otp_no = requestValidateOTP.getOtp_no();
-		Integer menu_id = requestValidateOTP.getMenu_id();
+		String no_hp = reqValidateOTP.getPhone_no();
+		Integer otp_no = reqValidateOTP.getOtp_no();
+		Integer menu_id = reqValidateOTP.getMenu_id();
 		try {
 			Boolean errorPost = true;
 			Integer attemptPost = 0;
@@ -1252,8 +1296,17 @@ public class LoginRegisterIndividualCorporateController {
 			JSONObject myResponse = null;
 			JSONObject myResponseData = null;
 
-			result = customResourceLoader.validateOTP(91, menu_id, no_hp, otp_no);
-
+			//result = customResourceLoader.validateOTP(91, menu_id, no_hp, otp_no);
+			
+			RequestValidateOTP requestValidateOTP = new RequestValidateOTP();
+			requestValidateOTP.setJenis_id(91);
+			requestValidateOTP.setMenu_id(menu_id);
+			requestValidateOTP.setUsername(no_hp);
+			requestValidateOTP.setOtp_no(otp_no);
+			ResponseData responseValidateOTP = serviceOTP.validateOTP(requestValidateOTP);
+			
+			result = responseValidateOTP.toString();
+			
 			myResponse = new JSONObject(result.toString());
 			dataJson = myResponse.get("data").toString();
 			myResponseData = new JSONObject(dataJson);
@@ -1354,11 +1407,19 @@ public class LoginRegisterIndividualCorporateController {
 						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 								+ resultErr);
 					} else {
-						String result = customResourceLoader.sendOTP(91, requestForgotPassword.getMenu_id(), no_hp,
-								dataUserIndividual.getReg_spaj(), dataUserIndividual.getMspo_policy_no());
-						JSONObject myResponse = new JSONObject(result.toString());
-						Boolean errorPost = (Boolean) myResponse.get("error");
-
+						/*String result = customResourceLoader.sendOTP(91, requestForgotPassword.getMenu_id(), no_hp,
+								dataUserIndividual.getReg_spaj(), dataUserIndividual.getMspo_policy_no());*/
+						
+						RequestSendOTP requestSendOTP = new RequestSendOTP();
+						requestSendOTP.setJenis_id(91);
+						requestSendOTP.setMenu_id(requestForgotPassword.getMenu_id());
+						requestSendOTP.setUsername(no_hp);
+						requestSendOTP.setNo_polis(dataUserIndividual.getMspo_policy_no());
+						requestSendOTP.setReg_spaj(dataUserIndividual.getReg_spaj());
+						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
+						
+						Boolean errorPost = (Boolean) responseSendOTP.getError();
+						
 						if (errorPost == false) {
 							error = false;
 							message = "Account found in database";
@@ -1389,10 +1450,18 @@ public class LoginRegisterIndividualCorporateController {
 
 						if (no_hp != null) { // Check No HP empty or not
 
-							String result = customResourceLoader.sendOTP(91, requestForgotPassword.getMenu_id(), no_hp,
-									dataUserCorporate.getReg_spaj(), dataUserCorporate.getNo_polis());
-							JSONObject myResponse = new JSONObject(result.toString());
-							Boolean errorPost = (Boolean) myResponse.get("error");
+							/*result = customResourceLoader.sendOTP(91, requestForgotPassword.getMenu_id(), no_hp,
+									dataUserCorporate.getReg_spaj(), dataUserCorporate.getNo_polis());*/
+							
+							RequestSendOTP requestSendOTP = new RequestSendOTP();
+							requestSendOTP.setJenis_id(91);
+							requestSendOTP.setMenu_id(requestForgotPassword.getMenu_id());
+							requestSendOTP.setUsername(no_hp);
+							requestSendOTP.setNo_polis(dataUserCorporate.getReg_spaj());
+							requestSendOTP.setReg_spaj(dataUserCorporate.getNo_polis());
+							ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
+							
+							Boolean errorPost = (Boolean) responseSendOTP.getError();
 
 							if (errorPost == false) {
 								error = false;
@@ -1577,11 +1646,19 @@ public class LoginRegisterIndividualCorporateController {
 						logger.error("Path: " + request.getServletPath() + ", No. Polis/ KTP: " + ktp_or_nopolis
 								+ ", Error: " + resultErr);
 					} else {
-						String result = customResourceLoader.sendOTP(91, 2, no_hp, dataForgotUsername.getReg_spaj(),
-								dataForgotUsername.getMspo_policy_no());
+						/*String result = customResourceLoader.sendOTP(91, 2, no_hp, dataForgotUsername.getReg_spaj(),
+								dataForgotUsername.getMspo_policy_no());*/
+						
+						RequestSendOTP requestSendOTP = new RequestSendOTP();
+						requestSendOTP.setJenis_id(91);
+						requestSendOTP.setMenu_id(2);
+						requestSendOTP.setUsername(no_hp);
+						requestSendOTP.setNo_polis(dataForgotUsername.getReg_spaj());
+						requestSendOTP.setReg_spaj(dataForgotUsername.getMspo_policy_no());
+						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 
-						JSONObject myResponse = new JSONObject(result.toString());
-						Boolean errorPost = (Boolean) myResponse.get("error");
+						Boolean errorPost = (Boolean) responseSendOTP.getError();						
+						
 						if (errorPost == true) {
 							error = true;
 							message = "Phone number is blacklisted";
@@ -1619,11 +1696,18 @@ public class LoginRegisterIndividualCorporateController {
 						logger.error("Path: " + request.getServletPath() + ", No. Polis/ KTP: " + ktp_or_nopolis
 								+ ", Error: " + resultErr);
 					} else {
-						String result = customResourceLoader.sendOTP(91, 2, no_hp, dataForgotUsername.getReg_spaj(),
-								dataForgotUsername.getNo_polis());
+						/*String result = customResourceLoader.sendOTP(91, 2, no_hp, dataForgotUsername.getReg_spaj(),
+								dataForgotUsername.getNo_polis());*/
+						
+						RequestSendOTP requestSendOTP = new RequestSendOTP();
+						requestSendOTP.setJenis_id(91);
+						requestSendOTP.setMenu_id(2);
+						requestSendOTP.setUsername(no_hp);
+						requestSendOTP.setNo_polis(dataForgotUsername.getReg_spaj());
+						requestSendOTP.setReg_spaj(dataForgotUsername.getNo_polis());
+						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 
-						JSONObject myResponse = new JSONObject(result.toString());
-						Boolean errorPost = (Boolean) myResponse.get("error");
+						Boolean errorPost = (Boolean) responseSendOTP.getError();
 						if (errorPost == true) {
 							error = true;
 							message = "Phone number is blacklisted";

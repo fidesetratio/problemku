@@ -23,7 +23,7 @@ import com.app.model.UserCorporate;
 import com.app.model.request.RequestCreateUserCorporate;
 import com.app.model.request.RequestSignUpCorporate;
 import com.app.model.request.RequestUnlinkAccount;
-import com.app.utils.CustomResourceLoader;
+import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,7 +37,7 @@ public class LoginRegisterCorporateController {
 	private VegaServices services;
 
 	@Autowired
-	private CustomResourceLoader customResourceLoader;
+	private VegaCustomResourceLoader customResourceLoader;
 
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
 

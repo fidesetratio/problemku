@@ -21,5 +21,7 @@ public class TestController {
 		String printHit = vegaServices.selectEncrypt("test");
 		return printHit;
 	}
+	
+	
 
 }

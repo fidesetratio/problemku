@@ -89,7 +89,7 @@ import com.app.model.request.RequestViewSwitchingRedirection;
 import com.app.model.request.RequestViewUserInputTopup;
 import com.app.model.request.RequestViewWithdraw;
 import com.app.model.request.RequestWithdraw;
-import com.app.utils.CustomResourceLoader;
+import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -142,7 +142,7 @@ public class FinancialTransactionController {
 	private VegaServices services;
 
 	@Autowired
-	private CustomResourceLoader customResourceLoader;
+	private VegaCustomResourceLoader customResourceLoader;
 
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");

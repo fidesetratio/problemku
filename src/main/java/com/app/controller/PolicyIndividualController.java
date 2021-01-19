@@ -63,7 +63,7 @@ import com.app.model.request.RequestTertanggung;
 import com.app.model.request.RequestTrackingPolis;
 import com.app.model.request.RequestUpdatePemegangPolis;
 import com.app.model.request.RequestViewClaim;
-import com.app.utils.CustomResourceLoader;
+import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -98,7 +98,7 @@ public class PolicyIndividualController {
 	private VegaServices services;
 
 	@Autowired
-	private CustomResourceLoader customResourceLoader;
+	private VegaCustomResourceLoader customResourceLoader;
 
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");

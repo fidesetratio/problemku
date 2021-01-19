@@ -2,17 +2,17 @@ package com.app.model.request;
 
 import java.io.Serializable;
 
-public class RequestValidateOTP implements Serializable {
+public class RequestResendOTP implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2330852503871931676L;
-	private String phone_no;
+	private static final long serialVersionUID = 2234616292567994977L;
 	public Integer jenis_id;
 	public Integer menu_id;
 	public String username;
-	public Integer otp_no;
+	public String reg_spaj;
+	public String no_polis;
 
 	public Integer getJenis_id() {
 		return jenis_id;
@@ -38,20 +38,19 @@ public class RequestValidateOTP implements Serializable {
 		this.username = username;
 	}
 
-	public Integer getOtp_no() {
-		return otp_no;
+	public String getReg_spaj() {
+		return reg_spaj;
 	}
 
-	public void setOtp_no(Integer otp_no) {
-		this.otp_no = otp_no;
-	}
-	
-	public String getPhone_no() {
-		return phone_no;
+	public void setReg_spaj(String reg_spaj) {
+		this.reg_spaj = reg_spaj;
 	}
 
-	public void setPhone_no(String phone_no) {
-		this.phone_no = phone_no;
+	public String getNo_polis() {
+		return no_polis;
 	}
 
+	public void setNo_polis(String no_polis) {
+		this.no_polis = no_polis;
+	}
 }

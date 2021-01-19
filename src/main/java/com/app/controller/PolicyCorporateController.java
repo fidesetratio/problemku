@@ -29,7 +29,7 @@ import com.app.model.DetailClaimCorporate;
 import com.app.model.request.RequestBenefitCorporate;
 import com.app.model.request.RequestDetailClaimCorporate;
 import com.app.model.request.RequestListClaimCorporate;
-import com.app.utils.CustomResourceLoader;
+import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,7 +43,7 @@ public class PolicyCorporateController {
 	private VegaServices services;
 
 	@Autowired
-	private CustomResourceLoader customResourceLoader;
+	private VegaCustomResourceLoader customResourceLoader;
 
 	private DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
 	private NumberFormat nfZeroTwo = new DecimalFormat("#,##0.00;(#,##0.00)");

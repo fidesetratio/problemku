@@ -18,6 +18,8 @@ spring:
   application:
     name: api-vega
 
+kubernetes:
+  platform: 1
 ---
 
 spring:
@@ -58,10 +60,10 @@ jmx:
 
 
 link:
- redirect:
-  linkRedirectSendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/send
-  linkRedirectValidateOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/validate
-  linkRedirectResendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/resend
+ #redirect:
+  #linkRedirectSendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/send
+  #linkRedirectValidateOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/validate
+  #linkRedirectResendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/resend
  send:
   email: http://paymentcc.sinarmasmsiglife.co.id:8989/autosalestest/api/sendemail
  update:
@@ -142,10 +144,10 @@ logging:
 #   contextPath: /policy/api/json
 
 link:
- redirect:
-  linkRedirectSendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/send
-  linkRedirectValidateOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/validate
-  linkRedirectResendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/resend
+ #redirect:
+  #linkRedirectSendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/send
+  #linkRedirectValidateOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/validate
+  #linkRedirectResendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/resend
  send:
   email: http://paymentcc.sinarmasmsiglife.co.id:8989/autosalestest/api/sendemail
  update:
@@ -179,6 +181,8 @@ path:
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
 
+kubernetes:
+  platform: 1
 ---
 
 spring:

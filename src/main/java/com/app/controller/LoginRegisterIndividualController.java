@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
+import com.app.constant.AccountManagementCons;
+import com.app.feignclient.ServiceEmail;
+import com.app.feignclient.ServiceOTP;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.Pemegang;
 import com.app.model.User;
@@ -26,7 +28,10 @@ import com.app.model.request.RequestFindAccount;
 import com.app.model.request.RequestLastActivity;
 import com.app.model.request.RequestRegisterQR;
 import com.app.model.request.RequestValidatePolicy;
-import com.app.utils.CustomResourceLoader;
+import com.app.model.request.RequestSendOTP;
+import com.app.model.ResponseData;
+import com.app.utils.CommonUtils;
+import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -42,16 +47,19 @@ public class LoginRegisterIndividualController {
 	private VegaServices services;
 
 	@Autowired
-	private CustomResourceLoader customResourceLoader;
+	private VegaCustomResourceLoader customResourceLoader;
 
-	@Value("${link.redirect.linkRedirectSendOTP}")
-	private String linkRedirectSendOTP;
+	@Autowired
+	AccountManagementCons constant;
 
-	@Value("${link.redirect.linkRedirectValidateOTP}")
-	private String linkRedirectValidateOTP;
+	@Autowired
+	ServiceEmail serviceEmail;
 
-	@Value("${link.redirect.linkRedirectResendOTP}")
-	private String linkRedirectResendOTP;
+	@Autowired
+	ServiceOTP serviceOTP;
+	
+	@Autowired
+	CommonUtils utils;
 
 	@Value("${link.update.activity}")
 	private String linkUpdateActivity;
@@ -199,12 +207,19 @@ public class LoginRegisterIndividualController {
 							Integer checkPhoneNumber = services.selectCountPhoneNumber(no_hp_polis);
 							if (checkPhoneNumber == 0) {
 								// Send OTP
-								String result = customResourceLoader.sendOTP(91, 1, no_hp_polis, pemegang.getReg_spaj(),
-										pemegang.getMspo_policy_no());
+								/*String result = customResourceLoader.sendOTP(91, 1, no_hp_polis, pemegang.getReg_spaj(),
+										pemegang.getMspo_policy_no());*/
+								
+								RequestSendOTP requestSendOTP = new RequestSendOTP();
+								requestSendOTP.setJenis_id(91);
+								requestSendOTP.setMenu_id(1);
+								requestSendOTP.setUsername(no_hp_polis);
+								requestSendOTP.setNo_polis(pemegang.getReg_spaj());
+								requestSendOTP.setReg_spaj(pemegang.getMspo_policy_no());
+								ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 
-								JSONObject myResponse = new JSONObject(result.toString());
-								Boolean errorPost = (Boolean) myResponse.get("error");
-								String messagePost = (String) myResponse.get("message");
+								Boolean errorPost = (Boolean) responseSendOTP.getError();
+								String messagePost = (String) responseSendOTP.getMessage();
 
 								// Check kondisi yang didapatkan setelah HIT API OTP
 								if (errorPost == false) {
@@ -281,12 +296,19 @@ public class LoginRegisterIndividualController {
 								Integer checkPhoneNumber = services.selectCountPhoneNumber(no_hp_ktp);
 								if (checkPhoneNumber == 0) {
 									// Send OTP
-									String result = customResourceLoader.sendOTP(91, 1, no_hp_ktp,
-											resultKTP.getReg_spaj(), resultKTP.getMspo_policy_no());
+									/*String result = customResourceLoader.sendOTP(91, 1, no_hp_ktp,
+											resultKTP.getReg_spaj(), resultKTP.getMspo_policy_no());*/
+									
+									RequestSendOTP requestSendOTP = new RequestSendOTP();
+									requestSendOTP.setJenis_id(91);
+									requestSendOTP.setMenu_id(1);
+									requestSendOTP.setUsername(no_hp_ktp);
+									requestSendOTP.setNo_polis(resultKTP.getMspo_policy_no());
+									requestSendOTP.setReg_spaj(resultKTP.getReg_spaj());
+									ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 
-									JSONObject myResponse = new JSONObject(result.toString());
-									Boolean errorPost = (Boolean) myResponse.get("error");
-									String messagePost = (String) myResponse.get("message");
+									Boolean errorPost = (Boolean) responseSendOTP.getError();
+									String messagePost = (String) responseSendOTP.getMessage();
 
 									// Check kondisi yang didapatkan setelah HIT API OTP
 									if (errorPost == false) {
@@ -408,13 +430,20 @@ public class LoginRegisterIndividualController {
 							Integer checkPhoneNumber = services.selectCountPhoneNumber(no_hp);
 							if (checkPhoneNumber == 0) {
 								// Send OTP
-								String result = customResourceLoader.sendOTP(91, 1, no_hp, pemegang.getReg_spaj(),
-										no_polis);
+								/*String result = customResourceLoader.sendOTP(91, 1, no_hp, pemegang.getReg_spaj(),
+										no_polis);*/
+								
+								RequestSendOTP requestSendOTP = new RequestSendOTP();
+								requestSendOTP.setJenis_id(91);
+								requestSendOTP.setMenu_id(1);
+								requestSendOTP.setUsername(no_hp);
+								requestSendOTP.setNo_polis(no_polis);
+								requestSendOTP.setReg_spaj(pemegang.getReg_spaj());
+								ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 
 								// Check kondisi yang didapatkan setelah HIT API OTP
-								JSONObject myResponse = new JSONObject(result.toString());
-								Boolean errorPost = (Boolean) myResponse.get("error");
-								String messagePost = (String) myResponse.get("message");
+								Boolean errorPost = (Boolean) responseSendOTP.getError();
+								String messagePost = (String) responseSendOTP.getMessage();
 
 								if (errorPost == false) {
 									error = false;

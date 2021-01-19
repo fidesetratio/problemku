@@ -49,11 +49,11 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.app.services.VegaServices;
 import com.app.model.DetailWithdraw;
 import com.app.model.LstHistActivityWS;
 import com.app.model.Provinsi;
 import com.app.model.User;
+import com.app.services.VegaServices;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -62,8 +62,8 @@ import com.itextpdf.text.pdf.PdfStamper;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 
 @Component
-@ConditionalOnProperty(name = "kubernetes.platform", havingValue = "0")
-public class CustomResourceLoader implements ResourceLoaderAware {
+@ConditionalOnProperty(name = "kubernetes.platform", havingValue = "1")
+public class VegaCustomResourceLoader implements ResourceLoaderAware {
 
 	private static final Logger logger = LogManager.getLogger(CustomResourceLoader.class);
 
@@ -77,14 +77,14 @@ public class CustomResourceLoader implements ResourceLoaderAware {
 	@Autowired
 	private ResourceLoader resourceLoader;
 
-	@Value("${link.redirect.linkRedirectSendOTP}")
+	/*@Value("${link.redirect.linkRedirectSendOTP}")
 	private String linkRedirectSendOTP;
 
 	@Value("${link.redirect.linkRedirectValidateOTP}")
 	private String linkRedirectValidateOTP;
 
 	@Value("${link.redirect.linkRedirectResendOTP}")
-	private String linkRedirectResendOTP;
+	private String linkRedirectResendOTP;*/
 
 	@Value("${link.send.email}")
 	private String linkSendEmail;
@@ -112,7 +112,9 @@ public class CustomResourceLoader implements ResourceLoaderAware {
 
 	@Value("${path.pdf.formclaimsubmission}")
 	private String pathFormClaimSubmission;
-
+	
+	
+	
 	@Override
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 	}
@@ -515,7 +517,7 @@ public class CustomResourceLoader implements ResourceLoaderAware {
 		}
 	}
 
-	public String sendOTP(Integer jenis_id, Integer menu_id, String username, String reg_spaj, String no_polis) {
+	/*public String sendOTP(Integer jenis_id, Integer menu_id, String username, String reg_spaj, String no_polis) {
 		String jsonData = null;
 		JSONObject param = new JSONObject();
 		String restUrl = linkRedirectSendOTP;
@@ -529,9 +531,9 @@ public class CustomResourceLoader implements ResourceLoaderAware {
 		jsonData = param.toString();
 
 		return httpPostReq.executeReq(jsonData, httpPost);
-	}
+	}*/
 
-	public String validateOTP(Integer jenis_id, Integer menu_id, String username, Integer otp_no) {
+	/*public String validateOTP(Integer jenis_id, Integer menu_id, String username, Integer otp_no) {
 		String jsonData = null;
 		JSONObject param = new JSONObject();
 		String restUrl = linkRedirectValidateOTP;
@@ -544,9 +546,9 @@ public class CustomResourceLoader implements ResourceLoaderAware {
 		jsonData = param.toString();
 
 		return httpPostReq.executeReq(jsonData, httpPost);
-	}
+	}*/
 
-	public String resendOTP(Integer jenis_id, Integer menu_id, String username, String reg_spaj, String no_polis) {
+	/*public String resendOTP(Integer jenis_id, Integer menu_id, String username, String reg_spaj, String no_polis) {
 		String jsonData = null;
 		JSONObject param = new JSONObject();
 		String restUrl = linkRedirectResendOTP;
@@ -560,7 +562,7 @@ public class CustomResourceLoader implements ResourceLoaderAware {
 		jsonData = param.toString();
 
 		return httpPostReq.executeReq(jsonData, httpPost);
-	}
+	}*/
 
 	public String sendEmail(String to, String cc, String bcc, String subject, String body_message, Boolean isHtml,
 			String filepath) {

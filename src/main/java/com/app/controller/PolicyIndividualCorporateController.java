@@ -70,6 +70,9 @@ public class PolicyIndividualCorporateController {
 
 	@Value("${path.download.banner}")
 	private String pathDownloadBanner;
+	
+	@Value("${path.download.article}")
+	private String pathDownloadArticle;
 
 	@Autowired
 	private VegaServices services;
@@ -430,7 +433,7 @@ public class PolicyIndividualCorporateController {
 	}
 
 	@RequestMapping(value = "/downloadarticle", produces = "application/json", method = RequestMethod.POST)
-	public String downloadProofOfTransaction(@RequestBody RequestDownloadArticle requestDownloadArticle,
+	public String downloadProofOfTransaction(@RequestBody RequestDownloadArticle requestDownloadArticle, 
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		GsonBuilder builder = new GsonBuilder();
 		builder.serializeNulls();
@@ -444,11 +447,13 @@ public class PolicyIndividualCorporateController {
 		try {
 			// path file
 			String pathWS = requestDownloadArticle.getFile_path();
+			
+			String NewPathWS = pathDownloadArticle + File.separator + pathWS.substring(pathWS.lastIndexOf(File.separator) + 1);
 			String file_name = requestDownloadArticle.getTitle();
 			String file_type = requestDownloadArticle.getFile_type();
 
 			// path file yang mau di download
-			File file = new File(pathWS);
+			File file = new File(NewPathWS);
 
 			try {
 				// Content-Disposition

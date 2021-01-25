@@ -94,7 +94,7 @@ path:
   submitclaimsubmissioncorporate: E:\\API\\LogSubmitClaimSubmission\\Corporate\\
  download:
   banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=
-  article: /mnt/storage/pdfind/E-Sehat/upload/artikel
+  article: /mnt/storage/E-Sehat/upload/artikel
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
   
@@ -168,7 +168,7 @@ path:
  news:
   mpolicy: /mnt/storage/ajsmsig/mpolicytest/News
  pdf:
-  faq: \\\\storage\\pdfind\\ajsmsig\\mpolicytest\\FormPDF\\formulir_pengkinian_data.pdf
+  faq: /mnt/storage/ajsmsig/mpolicytest/FormPDF/formulir_pengkinian_data.pdf
   formwithdrawumum: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormUnitLinkUmum.pdf
   formwithdrawumumsyariah: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormUnitLinkUmumSyariah.pdf
   formwithdrawsimasmagnalink: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormSimasMagnaLinkUmum.pdf

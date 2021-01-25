@@ -179,7 +179,7 @@ path:
   submitclaimsubmissioncorporate: E:\\API\\LogSubmitClaimSubmission\\Corporate\\
  download:
   banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=
-  article: /mnt/storage/pdfind/E-Sehat/upload/artikel
+  article: /mnt/storage/E-Sehat/upload/artikel
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
 

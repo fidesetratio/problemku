@@ -9,7 +9,7 @@ import com.app.model.request.RequestSendOTP;
 import com.app.model.request.RequestValidateOTP;
 import com.app.model.ResponseData;
 
-@FeignClient(name = "api-otp", fallback = ServiceOTPCallback.class)
+@FeignClient(name = "api-otp", url = "http://128.21.33.70:8687/api-otp", fallback = ServiceOTPCallback.class)
 public interface ServiceOTP {
 
 	@RequestMapping("/send")

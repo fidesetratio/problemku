@@ -1084,12 +1084,10 @@ public class LoginRegisterIndividualCorporateController {
 		Integer menu_id = requestSMSOTP.getMenu_id();
 		try {
 			String reg_spaj = null;
-			String result = null;
 			String messagePost = null;
 			String otpReleasePost = null;
 			Boolean errorPost = false;
-			String dataJson = null;
-			JSONObject myResponse = null;
+			HashMap<String, Object> dataJson = null;
 			JSONObject myResponseData = null;
 
 			if (no_polis != null) {
@@ -1113,16 +1111,10 @@ public class LoginRegisterIndividualCorporateController {
 			requestSendOTP.setReg_spaj(reg_spaj);
 			ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 			
-			result = responseSendOTP.toString();
-			
 			errorPost = (Boolean) responseSendOTP.getError();
 			messagePost = (String) responseSendOTP.getMessage();
-			
-			myResponse = new JSONObject(result.toString());
-			dataJson = myResponse.get("data").toString();
+			dataJson = responseSendOTP.getData();
 			myResponseData = new JSONObject(dataJson);
-			errorPost = (Boolean) myResponse.get("error");
-			messagePost = (String) myResponse.get("message");
 
 			try {
 				otpReleasePost = (String) myResponseData.get("date_blacklist");
@@ -1190,11 +1182,9 @@ public class LoginRegisterIndividualCorporateController {
 		Integer menu_id = requestSendOTP.getMenu_id();
 		try {
 			String reg_spaj = null;
-			String result = null;
 			String messagePost = null;
 			String otpReleasePost = null;
-			String dataJson = null;
-			JSONObject myResponse = null;
+			HashMap<String, Object> dataJson = null;
 			JSONObject myResponseData = null;
 			Boolean errorPost = false;
 			Integer attemptSentOTPPost = 0;
@@ -1220,17 +1210,10 @@ public class LoginRegisterIndividualCorporateController {
 			requestResendOTP.setReg_spaj(reg_spaj);
 			ResponseData responseResendOTP = serviceOTP.resendOTP(requestResendOTP);
 			
-			result = responseResendOTP.toString();
-			
 			errorPost = (Boolean) responseResendOTP.getError();
 			messagePost = (String) responseResendOTP.getMessage();
-			
-			myResponse = new JSONObject(result.toString());
-			dataJson = myResponse.get("data").toString();
+			dataJson = responseResendOTP.getData();
 			myResponseData = new JSONObject(dataJson);
-			errorPost = (Boolean) myResponse.get("error");
-			messagePost = (String) myResponse.get("message");
-			attemptSentOTPPost = (Integer) myResponseData.get("attempt_sent_otp");
 
 			try {
 				otpReleasePost = (String) myResponseData.get("otp_release");
@@ -1290,13 +1273,9 @@ public class LoginRegisterIndividualCorporateController {
 		try {
 			Boolean errorPost = true;
 			Integer attemptPost = 0;
-			String result = null;
-			String dataJson = null;
+			HashMap<String, Object> dataJson = null;
 			String messagePost = null;
-			JSONObject myResponse = null;
 			JSONObject myResponseData = null;
-
-			//result = customResourceLoader.validateOTP(91, menu_id, no_hp, otp_no);
 			
 			RequestValidateOTP requestValidateOTP = new RequestValidateOTP();
 			requestValidateOTP.setJenis_id(91);
@@ -1305,14 +1284,10 @@ public class LoginRegisterIndividualCorporateController {
 			requestValidateOTP.setOtp_no(otp_no);
 			ResponseData responseValidateOTP = serviceOTP.validateOTP(requestValidateOTP);
 			
-			result = responseValidateOTP.toString();
-			
-			myResponse = new JSONObject(result.toString());
-			dataJson = myResponse.get("data").toString();
+			errorPost = (Boolean) responseValidateOTP.getError();
+			messagePost = (String) responseValidateOTP.getMessage();
+			dataJson = responseValidateOTP.getData();
 			myResponseData = new JSONObject(dataJson);
-
-			errorPost = (Boolean) myResponse.get("error");
-			messagePost = (String) myResponse.get("message");
 
 			try {
 				attemptPost = (Integer) myResponseData.get("attempt");
@@ -1418,9 +1393,7 @@ public class LoginRegisterIndividualCorporateController {
 						requestSendOTP.setReg_spaj(dataUserIndividual.getReg_spaj());
 						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 						
-						String result = responseSendOTP.toString();
-						JSONObject myResponse = new JSONObject(result.toString());
-						Boolean errorPost = (Boolean) myResponse.get("error");
+						Boolean errorPost = (Boolean) responseSendOTP.getError();
 						
 						if (errorPost == false) {
 							error = false;
@@ -1463,9 +1436,7 @@ public class LoginRegisterIndividualCorporateController {
 							requestSendOTP.setReg_spaj(dataUserCorporate.getNo_polis());
 							ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 							
-							String result = responseSendOTP.toString();
-							JSONObject myResponse = new JSONObject(result.toString());
-							Boolean errorPost = (Boolean) myResponse.get("error");
+							Boolean errorPost = (Boolean) responseSendOTP.getError();
 
 							if (errorPost == false) {
 								error = false;
@@ -1661,9 +1632,7 @@ public class LoginRegisterIndividualCorporateController {
 						requestSendOTP.setReg_spaj(dataForgotUsername.getMspo_policy_no());
 						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 						
-						String result = responseSendOTP.toString();
-						JSONObject myResponse = new JSONObject(result.toString());
-						Boolean errorPost = (Boolean) myResponse.get("error");						
+						Boolean errorPost = (Boolean) responseSendOTP.getError();					
 						
 						if (errorPost == true) {
 							error = true;
@@ -1714,6 +1683,7 @@ public class LoginRegisterIndividualCorporateController {
 						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 
 						Boolean errorPost = (Boolean) responseSendOTP.getError();
+						
 						if (errorPost == true) {
 							error = true;
 							message = "Phone number is blacklisted";

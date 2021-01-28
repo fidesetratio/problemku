@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -219,11 +218,8 @@ public class LoginRegisterIndividualController {
 								requestSendOTP.setReg_spaj(pemegang.getMspo_policy_no());
 								ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 								
-								String result = responseSendOTP.toString();
-								
-								JSONObject myResponse = new JSONObject(result.toString());
-								Boolean errorPost = (Boolean) myResponse.get("error");
-								String messagePost = (String) myResponse.get("message");
+								Boolean errorPost = (Boolean) responseSendOTP.getError();
+								String messagePost = (String) responseSendOTP.getMessage();
 
 								// Check kondisi yang didapatkan setelah HIT API OTP
 								if (errorPost == false) {
@@ -311,11 +307,8 @@ public class LoginRegisterIndividualController {
 									requestSendOTP.setReg_spaj(resultKTP.getReg_spaj());
 									ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 
-									String result = responseSendOTP.toString();
-									
-									JSONObject myResponse = new JSONObject(result.toString());
-									Boolean errorPost = (Boolean) myResponse.get("error");
-									String messagePost = (String) myResponse.get("message");
+									Boolean errorPost = (Boolean) responseSendOTP.getError();
+									String messagePost = (String) responseSendOTP.getMessage();
 
 									// Check kondisi yang didapatkan setelah HIT API OTP
 									if (errorPost == false) {
@@ -448,13 +441,10 @@ public class LoginRegisterIndividualController {
 								requestSendOTP.setReg_spaj(pemegang.getReg_spaj());
 								ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 								
-								String result = responseSendOTP.toString();
-								// Check kondisi yang didapatkan setelah HIT API OTP
+								Boolean errorPost = (Boolean) responseSendOTP.getError();
+								String messagePost = (String) responseSendOTP.getMessage();
 								
-								JSONObject myResponse = new JSONObject(result.toString());
-								Boolean errorPost = (Boolean) myResponse.get("error");
-								String messagePost = (String) myResponse.get("message");
-
+								// Check kondisi yang didapatkan setelah HIT API OTP
 								if (errorPost == false) {
 									error = false;
 									message = "Policy found in database";

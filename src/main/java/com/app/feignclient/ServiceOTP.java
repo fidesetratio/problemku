@@ -18,6 +18,6 @@ public interface ServiceOTP {
 	@RequestMapping("/resend")
 	public ResponseData resendOTP(@RequestBody RequestResendOTP requestsResendOTP);
 
-	@RequestMapping("/Validate")
+	@RequestMapping("/validate")
 	public ResponseData validateOTP(@RequestBody RequestValidateOTP requestsValidateOTP);
 }

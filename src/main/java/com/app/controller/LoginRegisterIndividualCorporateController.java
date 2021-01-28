@@ -1418,7 +1418,9 @@ public class LoginRegisterIndividualCorporateController {
 						requestSendOTP.setReg_spaj(dataUserIndividual.getReg_spaj());
 						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 						
-						Boolean errorPost = (Boolean) responseSendOTP.getError();
+						String result = responseSendOTP.toString();
+						JSONObject myResponse = new JSONObject(result.toString());
+						Boolean errorPost = (Boolean) myResponse.get("error");
 						
 						if (errorPost == false) {
 							error = false;
@@ -1461,7 +1463,9 @@ public class LoginRegisterIndividualCorporateController {
 							requestSendOTP.setReg_spaj(dataUserCorporate.getNo_polis());
 							ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 							
-							Boolean errorPost = (Boolean) responseSendOTP.getError();
+							String result = responseSendOTP.toString();
+							JSONObject myResponse = new JSONObject(result.toString());
+							Boolean errorPost = (Boolean) myResponse.get("error");
 
 							if (errorPost == false) {
 								error = false;
@@ -1656,8 +1660,10 @@ public class LoginRegisterIndividualCorporateController {
 						requestSendOTP.setNo_polis(dataForgotUsername.getReg_spaj());
 						requestSendOTP.setReg_spaj(dataForgotUsername.getMspo_policy_no());
 						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
-
-						Boolean errorPost = (Boolean) responseSendOTP.getError();						
+						
+						String result = responseSendOTP.toString();
+						JSONObject myResponse = new JSONObject(result.toString());
+						Boolean errorPost = (Boolean) myResponse.get("error");						
 						
 						if (errorPost == true) {
 							error = true;

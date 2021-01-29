@@ -13,11 +13,11 @@ import com.app.model.ResponseData;
 public interface ServiceOTP {
 
 	@RequestMapping("/send")
-	public ResponseData sendOTP(@RequestBody RequestSendOTP requestsSendOTP);
+	public ResponseData sendOTP(@RequestBody RequestSendOTP requestSendOTP);
 
 	@RequestMapping("/resend")
-	public ResponseData resendOTP(@RequestBody RequestResendOTP requestsResendOTP);
+	public ResponseData resendOTP(@RequestBody RequestResendOTP requestResendOTP);
 
 	@RequestMapping("/validate")
-	public ResponseData validateOTP(@RequestBody RequestValidateOTP requestsValidateOTP);
+	public ResponseData validateOTP(@RequestBody RequestValidateOTP requestValidateOTP);
 }

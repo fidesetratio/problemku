@@ -13,6 +13,15 @@ public class RequestValidateOTP implements Serializable {
 	public Integer menu_id;
 	public String username;
 	public Integer otp_no;
+	public Integer otp_number;
+
+	public Integer getOtp_number() {
+		return otp_number;
+	}
+
+	public void setOtp_number(Integer otp_number) {
+		this.otp_number = otp_number;
+	}
 
 	public Integer getJenis_id() {
 		return jenis_id;

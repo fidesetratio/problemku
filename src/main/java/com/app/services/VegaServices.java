@@ -28,6 +28,7 @@ import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
 import com.app.model.Nav;
 import com.app.model.Pemegang;
+import com.app.model.PenerimaManfaat;
 import com.app.model.PowerSave;
 import com.app.model.ProductRider;
 import com.app.model.ProductUtama;
@@ -310,6 +311,11 @@ public class VegaServices {
 	public Pemegang selectPemegang(Pemegang pemegang) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectPemegang(pemegang);
+	}
+	
+	public ArrayList<PenerimaManfaat> selectPenerimaManfaat(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectPenerimaManfaat(no_polis);
 	}
 
 	public DataUsulan selectDataUsulan(DataUsulan dataUsulan) {

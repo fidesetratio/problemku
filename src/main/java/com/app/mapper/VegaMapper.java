@@ -22,6 +22,7 @@ import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
 import com.app.model.Nav;
 import com.app.model.Pemegang;
+import com.app.model.PenerimaManfaat;
 import com.app.model.PowerSave;
 import com.app.model.ProductRider;
 import com.app.model.ProductUtama;
@@ -272,6 +273,8 @@ public interface VegaMapper {
 	public ProductUtama selectProductCode(String reg_spaj);
 	
 	public Rekening selectCheckRekeningNasabahIndividu(String mspo_policy_no);
+	
+	public ArrayList<PenerimaManfaat> selectPenerimaManfaat(String no_polis);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

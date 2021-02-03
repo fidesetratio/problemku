@@ -362,6 +362,17 @@
        		INNER JOIN eka.lst_relation b ON a.lsre_id = b.lsre_id
  		WHERE a.reg_spaj = #{spaj, jdbcType=VARCHAR} and aktif = 1
 	</select>
+	
+	<select id="selectPenerimaManfaat" parameterType="String" resultType="com.app.model.PenerimaManfaat">
+		SELECT  b.msaw_first,
+		        b.msaw_birth,
+		        b.lsre_id,
+		        b.msaw_persen
+		FROM    eka.mst_policy a,
+		        eka.mst_benefeciary b
+		WHERE   a.reg_spaj = b.reg_spaj
+		    AND a.mspo_policy_no = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+	</select>
 
 	<select id="selectDataUsulan" resultType="DataUsulan" parameterType="DataUsulan">
 		SELECT EKA.F_LSDBS_VIEW (a.reg_spaj, a.lsbs_id, a.lsdbs_number) "newname",

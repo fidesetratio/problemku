@@ -37,6 +37,7 @@ import com.app.model.Billing;
 import com.app.model.DataUsulan;
 import com.app.model.KlaimKesehatan;
 import com.app.model.Pemegang;
+import com.app.model.PenerimaManfaat;
 import com.app.model.PowerSave;
 import com.app.model.ProductRider;
 import com.app.model.Provinsi;
@@ -55,6 +56,7 @@ import com.app.model.request.RequestDetailInvestasiTransaksi;
 import com.app.model.request.RequestDetailStableLink;
 import com.app.model.request.RequestEmailCSMergeSimultan;
 import com.app.model.request.RequestPemegangPolis;
+import com.app.model.request.RequestPenerimaManfaat;
 import com.app.model.request.RequestProvinsi;
 import com.app.model.request.RequestStatement;
 import com.app.model.request.RequestStatementDownload;
@@ -414,6 +416,84 @@ public class PolicyIndividualController {
 		customResourceLoader.updateActivity(username);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 8, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/penerimamanfaat", produces = "application/json", method = RequestMethod.POST)
+	public String penerimaManfaat(@RequestBody RequestPenerimaManfaat requestPenerimaManfaat, HttpServletRequest request)
+			throws Exception {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String message = null;
+		boolean error = true;
+		String resultErr = null;
+		String req = gson.toJson(requestPenerimaManfaat);
+		String res = null;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+		ArrayList<Object> ahliWaris = new ArrayList<>();
+
+		String username = requestPenerimaManfaat.getUsername();
+		String key = requestPenerimaManfaat.getKey();
+		String no_polis = requestPenerimaManfaat.getNo_polis();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				ArrayList<PenerimaManfaat> dataBenef = services.selectPenerimaManfaat(no_polis);
+				ListIterator<PenerimaManfaat> liter = dataBenef.listIterator();
+				if (!dataBenef.isEmpty()) {
+					while (liter.hasNext()) {
+						try {
+							PenerimaManfaat m = liter.next();
+							HashMap<String, Object> ditunjuk = new HashMap<>();
+							String nama = m.getMsaw_first() != null ? m.getMsaw_first() : null;
+							Integer relasi = m.getLsre_id() != null ? m.getLsre_id() : null;
+							Date dob = m.getMsaw_birth() != null ? m.getMsaw_birth() : null;
+							Integer persen = m.getMsaw_persen() != null ? m.getMsaw_persen() : null;
+
+							ditunjuk.put("nama", nama);
+							ditunjuk.put("relasi", relasi);
+							ditunjuk.put("tahun_lahir", dob);
+							ditunjuk.put("persen", persen);
+							ahliWaris.add(ditunjuk);
+						} catch (Exception e) {
+							logger.error(
+									"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+						}
+					}
+					data.put("penerima_manfaat", ahliWaris);
+					error = false;
+					message = "Successfully get penerima manfaat details";
+				} else {
+					error = true;
+					message = "Policy is not active";
+					resultErr = "Data penerima manfaat kosong";
+					logger.error(
+							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				error = true;
+				message = "Policy is not active";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 6, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
 	}

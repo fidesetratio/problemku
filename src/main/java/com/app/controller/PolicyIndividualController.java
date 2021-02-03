@@ -147,6 +147,9 @@ public class PolicyIndividualController {
 					error = false;
 					message = "Successfully get pemegang polis details";
 					data.put("nama_pp", pemegang.getMcl_first());
+					data.put("gender", pemegang.getMspe_sex());
+					data.put("dob",pemegang.getMspe_date_birth());
+					data.put("agama", pemegang.getLsag_id());
 					data.put("no_telepon", pemegang.getNo_hp() != null ? pemegang.getNo_hp() : pemegang.getNo_hp2());
 					data.put("alamat", pemegang.getAlamat_rumah());
 					data.put("email", pemegang.getEmail());
@@ -360,6 +363,8 @@ public class PolicyIndividualController {
 					data.put("hubungan_pmg_ttg", tertanggung.getLsre_relation());
 					data.put("tahun_lahir", tertanggung.getTahun_lahir());
 					data.put("tertanggung_tambahan", ahliWaris);
+					data.put("gender", tertanggung.getMspe_sex());
+					data.put("dob", tertanggung.getMspe_date_birth());
 					String spaj = tertanggung.getReg_spaj();
 					ArrayList<TertanggungTambahan> dataBenef = services.selectTertanggungTambahan(spaj);
 					ListIterator<TertanggungTambahan> liter = dataBenef.listIterator();

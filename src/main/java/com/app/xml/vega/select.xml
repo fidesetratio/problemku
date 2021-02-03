@@ -263,42 +263,44 @@
 
 	<select id="selectPemegang" resultType="Pemegang" parameterType="Pemegang">
 		SELECT c.mcl_first,
-       		c.mcl_id,
-       		c.mspe_no_identity,
-       		c.mspe_place_birth,
-       		c.mspe_date_birth,
-       		TO_CHAR (c.mspe_date_birth, 'yyyy') year_birth_date,
-       		d.alamat_rumah,
-       		d.kd_pos_rumah,
-       		d.kota_rumah,
-       		m.no_hp,
-       		m.no_hp2,
-       		m.e_mail AS email,
-       		a.reg_spaj,
-       		a.mspo_policy_no,
-       		a.lssp_id,
-       		l.mrc_no_ac,
-       		k.lsbp_nama,
-       		d.lspr_id,
-       		d.lska_id,
-       		d.lskc_id,
-       		d.lskl_id
-  		FROM eka.mst_policy a,
-       		eka.mst_insured b,
-       		eka.mst_client_new c,
-       		eka.mst_address_new d,
-       		eka.lst_relation k,
-      	 	eka.mst_rek_client l,
-       		eka.lst_bank_pusat k,
-       		eka.mst_address_billing m
- 		WHERE     a.reg_spaj = b.reg_spaj
-       		AND a.mspo_policy_holder = c.mcl_id
-       		AND c.mcl_id = d.mcl_id
-       		AND a.lsre_id = k.lsre_id(+)
-       		AND a.reg_spaj = l.reg_spaj(+)
-       		AND l.lsbp_id = k.lsbp_id(+)
-       		AND a.reg_spaj = m.reg_spaj
-       		AND a.mspo_policy_no = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+		       c.mcl_id,
+		       c.mspe_no_identity,
+		       c.mspe_place_birth,
+		       c.mspe_date_birth,
+		       TO_CHAR (c.mspe_date_birth, 'yyyy') year_birth_date,
+		       c.lsag_id,
+		       c.mspe_sex,
+		       d.alamat_rumah,
+		       d.kd_pos_rumah,
+		       d.kota_rumah,
+		       m.no_hp,
+		       m.no_hp2,
+		       m.e_mail AS email,
+		       a.reg_spaj,
+		       a.mspo_policy_no,
+		       a.lssp_id,
+		       l.mrc_no_ac,
+		       k.lsbp_nama,
+		       d.lspr_id,
+		       d.lska_id,
+		       d.lskc_id,
+		       d.lskl_id
+		  FROM eka.mst_policy a,
+		       eka.mst_insured b,
+		       eka.mst_client_new c,
+		       eka.mst_address_new d,
+		       eka.lst_relation k,
+		       eka.mst_rek_client l,
+		       eka.lst_bank_pusat k,
+		       eka.mst_address_billing m
+		 WHERE a.reg_spaj = b.reg_spaj
+		       AND a.mspo_policy_holder = c.mcl_id
+		       AND c.mcl_id = d.mcl_id
+		       AND a.lsre_id = k.lsre_id(+)
+		       AND a.reg_spaj = l.reg_spaj(+)
+		       AND l.lsbp_id = k.lsbp_id(+)
+		       AND a.reg_spaj = m.reg_spaj
+		       AND a.mspo_policy_no = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
 	</select>
 
 	<select id="selectProductRider" parameterType="String" resultType="com.app.model.ProductRider">

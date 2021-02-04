@@ -266,7 +266,7 @@
 		        c.mcl_id,
 		        c.mspe_no_identity,
 		        c.mspe_place_birth,
-		        TO_CHAR (c.mspe_date_birth, 'dd Month yyyy') mspe_birth,
+		        TO_CHAR (c.mspe_date_birth, 'yyyy-MM-dd') mspe_birth,
 		        TO_CHAR (c.mspe_date_birth, 'yyyy') year_birth_date,
 		        n.lsag_name,
 		        CASE
@@ -330,7 +330,7 @@
 		SELECT c.mcl_first,
        		c.mcl_id,
        		c.mspe_place_birth,
-       		TO_CHAR (c.mspe_date_birth, 'dd Month yyyy') mspe_birth,
+       		TO_CHAR (c.mspe_date_birth, 'yyyy-MM-dd') mspe_birth,
        		CASE
 	            WHEN c.mspe_sex = 0
 	                THEN 'Wanita'
@@ -377,7 +377,7 @@
 	
 	<select id="selectPenerimaManfaat" parameterType="String" resultType="com.app.model.PenerimaManfaat">
 		SELECT  b.msaw_first,
-		        TO_CHAR (b.msaw_birth, 'dd Month yyyy') msaw_birth2,
+		        TO_CHAR (b.msaw_birth, 'yyyy-MM-dd') msaw_birth2,
 		        c.lsre_relation,
 		        b.msaw_persen
 		FROM    eka.mst_policy a,

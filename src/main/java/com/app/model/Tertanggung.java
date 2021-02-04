@@ -24,6 +24,7 @@ public class Tertanggung implements Serializable {
 	private Integer lside_id;
 	private String mspe_place_birth;
 	private Date mspe_date_birth;
+	private String mspe_birth;
 	private Integer mspe_sex;
 	private String mspe_sex2;
 	private String mspe_sts_mrt;
@@ -665,5 +666,13 @@ public class Tertanggung implements Serializable {
 
 	public void setKelurahan(String kelurahan) {
 		this.kelurahan = kelurahan;
+	}
+
+	public String getMspe_birth() {
+		return mspe_birth;
+	}
+
+	public void setMspe_birth(String mspe_birth) {
+		this.mspe_birth = mspe_birth;
 	}
 }

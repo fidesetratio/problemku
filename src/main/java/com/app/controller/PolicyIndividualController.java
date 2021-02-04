@@ -149,9 +149,9 @@ public class PolicyIndividualController {
 					error = false;
 					message = "Successfully get pemegang polis details";
 					data.put("nama_pp", pemegang.getMcl_first());
-					data.put("gender", pemegang.getMspe_sex());
-					data.put("dob",pemegang.getMspe_date_birth());
-					data.put("agama", pemegang.getLsag_id());
+					data.put("gender", pemegang.getMspe_sex2());
+					data.put("dob",pemegang.getMspe_birth());
+					data.put("agama", pemegang.getLsag_name());
 					data.put("no_telepon", pemegang.getNo_hp() != null ? pemegang.getNo_hp() : pemegang.getNo_hp2());
 					data.put("alamat", pemegang.getAlamat_rumah());
 					data.put("email", pemegang.getEmail());
@@ -260,6 +260,8 @@ public class PolicyIndividualController {
 									"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
 						}
 					}
+					
+					
 
 //						Check Manfaat.pdf
 //						String kodeCabang = services.getKodeCabang(no_polis);
@@ -365,8 +367,8 @@ public class PolicyIndividualController {
 					data.put("hubungan_pmg_ttg", tertanggung.getLsre_relation());
 					data.put("tahun_lahir", tertanggung.getTahun_lahir());
 					data.put("tertanggung_tambahan", ahliWaris);
-					data.put("gender", tertanggung.getMspe_sex());
-					data.put("dob", tertanggung.getMspe_date_birth());
+					data.put("gender", tertanggung.getMspe_sex2());
+					data.put("dob", tertanggung.getMspe_birth());
 					String spaj = tertanggung.getReg_spaj();
 					ArrayList<TertanggungTambahan> dataBenef = services.selectTertanggungTambahan(spaj);
 					ListIterator<TertanggungTambahan> liter = dataBenef.listIterator();
@@ -450,8 +452,8 @@ public class PolicyIndividualController {
 							PenerimaManfaat m = liter.next();
 							HashMap<String, Object> ditunjuk = new HashMap<>();
 							String nama = m.getMsaw_first() != null ? m.getMsaw_first() : null;
-							Integer relasi = m.getLsre_id() != null ? m.getLsre_id() : null;
-							Date dob = m.getMsaw_birth() != null ? m.getMsaw_birth() : null;
+							String relasi = m.getLsre_relation() != null ? m.getLsre_relation() : null;
+							String dob = m.getMsaw_birth2() != null ? m.getMsaw_birth2() : null;
 							Integer persen = m.getMsaw_persen() != null ? m.getMsaw_persen() : null;
 
 							ditunjuk.put("nama", nama);

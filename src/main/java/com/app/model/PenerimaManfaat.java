@@ -89,7 +89,7 @@ public class PenerimaManfaat implements Serializable {
 	private String msaw_first;
 	private Date msaw_birth;
 	private Integer msaw_persen;
-
+	private String msaw_birth2;
 	private Integer lspr_id;
 	private Integer lska_id;
 	private Integer lskc_id;
@@ -793,5 +793,13 @@ public class PenerimaManfaat implements Serializable {
 
 	public void setMsaw_persen(Integer msaw_persen) {
 		this.msaw_persen = msaw_persen;
+	}
+
+	public String getMsaw_birth2() {
+		return msaw_birth2;
+	}
+
+	public void setMsaw_birth2(String msaw_birth2) {
+		this.msaw_birth2 = msaw_birth2;
 	}
 }

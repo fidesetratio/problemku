@@ -367,7 +367,7 @@
 
 	<select id="selectTertanggungTambahan" parameterType="String" resultType="com.app.model.TertanggungTambahan">
 		SELECT nama,
-       		TO_CHAR (a.tgl_lahir, 'yyyy') tgl_lahir,
+       		TO_CHAR (a.tgl_lahir, 'yyyy-MM-dd') tgl_lahir,
        		CASE WHEN kelamin = 0 THEN 'Wanita' WHEN kelamin = 1 THEN 'Pria' END AS kelamin,
        		b.lsre_relation
   		FROM eka.mst_peserta a

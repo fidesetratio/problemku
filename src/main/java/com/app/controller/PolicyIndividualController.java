@@ -41,6 +41,7 @@ import com.app.model.PenerimaManfaat;
 import com.app.model.PowerSave;
 import com.app.model.ProductRider;
 import com.app.model.Provinsi;
+import com.app.model.Sales;
 import com.app.model.StableLink;
 import com.app.model.StableSave;
 import com.app.model.Tertanggung;
@@ -284,7 +285,17 @@ public class PolicyIndividualController {
 //						} else {
 //							data.put("file_manfaat_exist", false);
 //						}
-
+					
+					Sales sales = new Sales();
+					sales = services.selectSales(no_polis);
+						data.put("info sales:", null);
+						data.put("nama_sales", sales.getMcl_first());
+						data.put("no_tlp", sales.getMsag_smart_no());
+						data.put("email", sales.getMspe_email());
+						data.put("nama_leader", sales.getMcl_first_leader());
+						data.put("no_tlp_leader", sales.getMsag_smart_no_leader());
+						data.put("email_leader", sales.getMspe_email_leader());
+					
 					error = false;
 					message = "Successfully get data asuransi details";
 				} else {

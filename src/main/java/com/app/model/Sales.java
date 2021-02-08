@@ -10,6 +10,7 @@ public class Sales implements Serializable {
 	private static final long serialVersionUID = 7689007551827403805L;
 
 	private String reg_spaj;
+	private String mspo_policy_no;
 	private String mcl_first;
 	private String msag_smart_no;
 	private String mspe_email;
@@ -58,5 +59,11 @@ public class Sales implements Serializable {
 	}
 	public void setMspe_email_leader(String mspe_email_leader) {
 		this.mspe_email_leader = mspe_email_leader;
+	}
+	public String getMspo_policy_no() {
+		return mspo_policy_no;
+	}
+	public void setMspo_policy_no(String mspo_policy_no) {
+		this.mspo_policy_no = mspo_policy_no;
 	}
 }

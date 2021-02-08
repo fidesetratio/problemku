@@ -429,6 +429,26 @@
   			AND c.lstp_id = h.lstp_id(+)
   			AND c.lus_id = i.lus_id (+)
 	</select>
+	
+	<select id="selectSales" parameterType="String" resultType="com.app.model.Sales">
+		SELECT  a.reg_spaj,
+		        c.mcl_first,
+		        b.msag_smart_no,
+		        c.mspe_email,
+		        cc.mcl_first mcl_first_leader,
+		        bb.msag_smart_no msag_smart_no_leader,
+		        cc.mspe_email mspe_email_leader
+		FROM    eka.mst_policy a,
+		        eka.mst_agent b,
+		        eka.mst_agent bb,
+		        eka.mst_client_new c,
+		        eka.mst_client_new cc
+		WHERE   a.mspo_ao = b.msag_id
+		    AND b.mcl_id = c.mcl_id
+		    AND b.mst_leader = bb.msag_id
+		    AND bb.mcl_id = cc.mcl_id
+		    AND a.mspo_policy_no = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+	</select>
 
 	<select id="selectListNav" resultType="com.app.model.Nav">
 		SELECT A.LJI_ID,

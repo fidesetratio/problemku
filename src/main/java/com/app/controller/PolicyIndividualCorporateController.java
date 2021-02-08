@@ -260,8 +260,7 @@ public class PolicyIndividualCorporateController {
 					// Distinct no polis, masa pertanggungan, mspo_type_rek biar gak dobel2
 					List<String> distinctNoPolis = listNoPolis.stream().distinct().collect(Collectors.toList());
 					List<Date> distinctBegDate = listBegDate.stream().distinct().collect(Collectors.toList());
-					List<BigDecimal> distinctMspoTypeRek = listMspoTypeRek.stream().distinct()
-							.collect(Collectors.toList());
+					List<BigDecimal> distinctMspoTypeRek = listMspoTypeRek.stream().collect(Collectors.toList());
 
 					// Check polis corporate yang keluar ada 1 atau 2 dilihat dari masa berlaku
 					int z = 2;

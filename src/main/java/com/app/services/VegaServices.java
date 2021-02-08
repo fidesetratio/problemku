@@ -35,6 +35,7 @@ import com.app.model.ProductUtama;
 import com.app.model.Provider;
 import com.app.model.Provinsi;
 import com.app.model.Rekening;
+import com.app.model.Sales;
 import com.app.model.SmsServerOut;
 import com.app.model.StableLink;
 import com.app.model.StableSave;
@@ -321,6 +322,11 @@ public class VegaServices {
 	public DataUsulan selectDataUsulan(DataUsulan dataUsulan) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectDataUsulan(dataUsulan);
+	}
+	
+	public Sales selectSales(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectSales(no_polis);
 	}
 
 	public ArrayList<TertanggungTambahan> selectTertanggungTambahan(String spaj) {

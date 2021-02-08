@@ -29,6 +29,7 @@ import com.app.model.ProductUtama;
 import com.app.model.Provider;
 import com.app.model.Provinsi;
 import com.app.model.Rekening;
+import com.app.model.Sales;
 import com.app.model.SmsServerOut;
 import com.app.model.StableLink;
 import com.app.model.StableSave;
@@ -99,6 +100,8 @@ public interface VegaMapper {
 	public Pemegang selectPemegang(Pemegang pemegang);
 
 	public DataUsulan selectDataUsulan(DataUsulan dataUsulan);
+	
+	public Sales selectSales(String no_polis);
 
 	public ArrayList<TertanggungTambahan> selectTertanggungTambahan(String spaj);
 

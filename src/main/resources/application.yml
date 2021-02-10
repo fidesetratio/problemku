@@ -95,6 +95,7 @@ path:
  download:
   banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=
   article: /mnt/storage/E-Sehat/upload/artikel
+  polisall: \\\\ebserver\\pdfind\\polis\\
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
   
@@ -167,8 +168,6 @@ path:
   mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\LogoBank
  news:
   mpolicy: /mnt/storage/ajsmsig/mpolicytest/News
- polisall:
-  mpolicy: /mnt/ebserver/polis
  pdf:
   faq: /mnt/storage/ajsmsig/mpolicytest/FormPDF/formulir_pengkinian_data.pdf
   formwithdrawumum: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormUnitLinkUmum.pdf
@@ -182,6 +181,7 @@ path:
  download:
   banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=
   article: /mnt/storage/E-Sehat/upload/artikel
+  polisall: /mnt/ebserver/polis
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
 

@@ -59,6 +59,7 @@ import com.app.model.request.RequestDataAsuransi;
 import com.app.model.request.RequestDataAsuransiDownload;
 import com.app.model.request.RequestDetailInvestasiTransaksi;
 import com.app.model.request.RequestDetailStableLink;
+import com.app.model.request.RequestDownloadPolisAll;
 import com.app.model.request.RequestEmailCSMergeSimultan;
 import com.app.model.request.RequestPemegangPolis;
 import com.app.model.request.RequestPenerimaManfaat;
@@ -82,6 +83,9 @@ public class PolicyIndividualController {
 
 	@Value("${path.storage.mpolicy}")
 	private String storageMpolicy;
+	
+	@Value("${path.download.polisall}")
+	private String downloadPolisAll;
 
 	@Value("${path.manfaatpdf.mpolicy}")
 	private String manfaatpdfMpolicy;
@@ -364,39 +368,67 @@ public class PolicyIndividualController {
 		return res;
 	}
 	
-	/*@RequestMapping(value = "/downloadpolisall", method = RequestMethod.GET)
-	public ResponseEntity<String> downloadBanner(@RequestParam String value, HttpServletRequest request,
-			HttpServletResponse response) {
+	@RequestMapping(value = "/downloadpolisall", produces = "application/json", method = RequestMethod.POST)
+	public String downloadPolisAll(@RequestBody RequestDownloadPolisAll requestDownloadPolisAll, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String res = null;
+		String message = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
 		try {
-			// Set path file
-			String pathWS = pathNewsMpolicy + File.separator + value.replace("A", " ") + File.separator + "Image.jpg";
+			// path file
+			String pathWS = requestDownloadPolisAll.getFile_path();
+			
+			String NewPathWS = downloadPolisAll + File.separator + "09" + File.separator + "09210726887" + File.separator + pathWS.substring(pathWS.lastIndexOf(File.separator) + 1);
+			String file_name = requestDownloadPolisAll.getTitle();
+			String file_type = requestDownloadPolisAll.getFile_type();
 
-			// Path file yang mau di download
-			File file = new File(pathWS);
+			// path file yang mau di download
+			File file = new File(NewPathWS);
 
-			// Content-Disposition
-			response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Image.jpg");
+			try {
+				// Content-Disposition
+				response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+						"attachment; filename=" + file_name.replace("  ", "_").replace(" ", "_") + "." + file_type);
 
-			// Content-Length
-			response.setContentLength((int) file.length());
+				// Content-Length
+				response.setContentLength((int) file.length());
 
-			BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
-			BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+				BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+				BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
 
-			byte[] buffer = new byte[1024];
-			int bytesRead = 0;
-			while ((bytesRead = inStream.read(buffer)) != -1) {
-				outStream.write(buffer, 0, bytesRead);
+				byte[] buffer = new byte[1024];
+				int bytesRead = 0;
+				while ((bytesRead = inStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+				outStream.flush();
+				inStream.close();
+
+				error = false;
+				message = "Download Success";
+			} catch (Exception e) {
+				error = true;
+				message = "Download Failed";
+				logger.error("Path: " + request.getServletPath() + " Error: " + e);
 			}
-			outStream.flush();
-			inStream.close();
 		} catch (Exception e) {
-			logger.error("Path: " + request.getServletPath() + ", Error: " + e);
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			logger.error("Path: " + request.getServletPath() + " Error: " + e);
 		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
 
-		ResponseEntity<String> result = new ResponseEntity<String>("OK", HttpStatus.OK);
-		return result;
-	}*/
+		return res;
+	}
 
 	@RequestMapping(value = "/tertanggung", produces = "application/json", method = RequestMethod.POST)
 	public String tertanggung(@RequestBody RequestTertanggung requestTertanggung, HttpServletRequest request)

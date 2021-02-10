@@ -517,6 +517,11 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListInvestasiTopup(mpt_id);
 	}
+	
+	public ArrayList<Topup> selectListInvestasi(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListInvestasi(no_polis);
+	}
 
 	public Integer selectCountMessageInboxUnread(String username) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
@@ -1131,4 +1136,5 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateFurtherClaimCorporate(mpcc_id);
 	}
+
 }

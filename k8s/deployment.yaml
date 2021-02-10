@@ -21,12 +21,14 @@ spec:
           volumeMounts:
             - name: flexvol-mount
               mountPath: /mnt/storage
+              mountPath: /mnt/ebserver
           ports:
             - containerPort: 9092
       volumes:
         - name: flexvol-mount
           hostPath:
            path: /mnt/storage
+           path: /mnt/ebserver
 ---
 kind: Service
 apiVersion: v1

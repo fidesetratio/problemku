@@ -27,9 +27,12 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
@@ -46,6 +49,7 @@ import com.app.model.StableLink;
 import com.app.model.StableSave;
 import com.app.model.Tertanggung;
 import com.app.model.TertanggungTambahan;
+import com.app.model.Topup;
 import com.app.model.TrackingPolis;
 import com.app.model.UnitLink;
 import com.app.model.User;
@@ -208,6 +212,7 @@ public class PolicyIndividualController {
 		HashMap<String, Object> map = new HashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
 		ArrayList<Object> product_rider = new ArrayList<>();
+		ArrayList<Object> alokasi_dana = new ArrayList<>();
 
 		String username = requestDataAsuransi.getUsername();
 		String key = requestDataAsuransi.getKey();
@@ -253,6 +258,8 @@ public class PolicyIndividualController {
 							dataUsulan.getNext_premi() == null ? null : df3.format(dataUsulan.getNext_premi()));
 					data.put("product_rider", product_rider);
 					data.put("data_sales", sales);
+					data.put("alokasi_dana", alokasi_dana);
+					
 					String spaj = dataUsulan.getReg_spaj();
 					ArrayList<ProductRider> dataRider = services.selectProductRider(spaj);
 					ListIterator<ProductRider> liter = dataRider.listIterator();
@@ -275,6 +282,28 @@ public class PolicyIndividualController {
 						} catch (Exception e) {
 							logger.error(
 									"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+						}
+					}
+					
+					ArrayList<Object> fund = new ArrayList<>();
+					ArrayList<Topup> list = services.selectListInvestasi(no_polis);
+
+					ListIterator<Topup> liter2 = list.listIterator();
+					while (liter2.hasNext()) {
+						try {
+							Topup m = liter2.next();
+							HashMap<String, Object> listFund = new HashMap<>();
+
+							String name = m.getLji_invest();
+							Float percentage = m.getMdu_persen();
+							
+							listFund.put("name", name);
+							listFund.put("percentage", percentage.intValue());
+							fund.add(listFund);
+							data.put("fund", fund);
+						} catch (Exception e) {
+							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+									+ e);
 						}
 					}
 					
@@ -334,6 +363,40 @@ public class PolicyIndividualController {
 
 		return res;
 	}
+	
+	/*@RequestMapping(value = "/downloadpolisall", method = RequestMethod.GET)
+	public ResponseEntity<String> downloadBanner(@RequestParam String value, HttpServletRequest request,
+			HttpServletResponse response) {
+		try {
+			// Set path file
+			String pathWS = pathNewsMpolicy + File.separator + value.replace("A", " ") + File.separator + "Image.jpg";
+
+			// Path file yang mau di download
+			File file = new File(pathWS);
+
+			// Content-Disposition
+			response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Image.jpg");
+
+			// Content-Length
+			response.setContentLength((int) file.length());
+
+			BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+			BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+			byte[] buffer = new byte[1024];
+			int bytesRead = 0;
+			while ((bytesRead = inStream.read(buffer)) != -1) {
+				outStream.write(buffer, 0, bytesRead);
+			}
+			outStream.flush();
+			inStream.close();
+		} catch (Exception e) {
+			logger.error("Path: " + request.getServletPath() + ", Error: " + e);
+		}
+
+		ResponseEntity<String> result = new ResponseEntity<String>("OK", HttpStatus.OK);
+		return result;
+	}*/
 
 	@RequestMapping(value = "/tertanggung", produces = "application/json", method = RequestMethod.POST)
 	public String tertanggung(@RequestBody RequestTertanggung requestTertanggung, HttpServletRequest request)

@@ -51,6 +51,7 @@ public class Topup implements Serializable {
 	private Date end_active;
 	private String newname;
 	private BigDecimal mtu_jumlah;
+	private Float mdu_persen;
 
 	public String getMpt_id() {
 		return mpt_id;
@@ -370,5 +371,13 @@ public class Topup implements Serializable {
 
 	public void setMtu_jumlah(BigDecimal mtu_jumlah) {
 		this.mtu_jumlah = mtu_jumlah;
+	}
+
+	public Float getMdu_persen() {
+		return mdu_persen;
+	}
+
+	public void setMdu_persen(Float mdu_persen) {
+		this.mdu_persen = mdu_persen;
 	}
 }

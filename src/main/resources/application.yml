@@ -167,6 +167,8 @@ path:
   mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\LogoBank
  news:
   mpolicy: /mnt/storage/ajsmsig/mpolicytest/News
+ polisall:
+  mpolicy: /mnt/ebserver/polis
  pdf:
   faq: /mnt/storage/ajsmsig/mpolicytest/FormPDF/formulir_pengkinian_data.pdf
   formwithdrawumum: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormUnitLinkUmum.pdf

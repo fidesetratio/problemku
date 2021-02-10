@@ -156,6 +156,8 @@ public interface VegaMapper {
 	public Topup selectViewTopupPaper(HashMap<String, Object> hashMap);
 
 	public ArrayList<Topup> selectListInvestasiTopup(String mpt_id);
+	
+	public ArrayList<Topup> selectListInvestasi(String no_polis);
 
 	public ArrayList<Topup> selectInvestasiTopupPaper(HashMap<String, Object> hashMap);
 

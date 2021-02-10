@@ -389,50 +389,81 @@
 	</select>
 
 	<select id="selectDataUsulan" resultType="DataUsulan" parameterType="DataUsulan">
-		SELECT EKA.F_LSDBS_VIEW (a.reg_spaj, a.lsbs_id, a.lsdbs_number) "newname",
-       		a.reg_spaj,
-       		a.mspr_premium,
-       		eka.f_lsdbs (a.reg_spaj, a.lsbs_id, a.lsdbs_number) lsdbs_name,
-       		c.mspo_policy_no,
-       		d.mste_end_date,
-       		d.mste_beg_date,
-       		c.lku_id,
-       		f.lku_symbol,
-       		c.mspo_policy_no,
-       		c.mspo_installment,
-       		a.mspr_tsi,
-      	 	g.MU_JLH_TU,
-       		m.lscb_pay_mode
-  		FROM eka.mst_product_insured a,
-       		eka.lst_det_bisnis b,
-       		eka.mst_policy c,
-       		eka.lst_pay_mode m,
-       		eka.mst_insured d,
-       		eka.lst_kurs f,
-       		(SELECT reg_spaj, mu_jlh_tu
-          		FROM eka.mst_ulink
-         		WHERE reg_spaj = RPAD(REPLACE(#{reg_spaj, jdbcType=VARCHAR}, '.'), 11, ' ')
-  					AND mu_ke = 1
-  					AND mu_periodic_tu = 1) g,
-  			eka.lst_type_produk h, eka.lst_user i
-  		WHERE a.reg_spaj =
-  			rpad(replace(#{reg_spaj, jdbcType=VARCHAR},'.'),11,' ')
-  			AND a.lsbs_id <![CDATA[<]]> 300
-  			AND a.lsbs_id = b.lsbs_id(+)
-  			AND a.lsdbs_number = b.lsdbs_number(+)
-  			AND a.reg_spaj = c.reg_spaj
-  			AND c.reg_spaj = d.reg_spaj
-  			AND c.lscb_id = m.lscb_id
-  			AND c.lku_id = f.lku_id(+)
-  			AND a.reg_spaj = g.reg_spaj(+)
-  			AND c.lstb_id = h.lstb_id(+)
-  			AND c.lstp_id = h.lstp_id(+)
-  			AND c.lus_id = i.lus_id (+)
+		SELECT  EKA.F_LSDBS_VIEW (a.reg_spaj, a.lsbs_id, a.lsdbs_number) "newname",
+		        a.reg_spaj,
+		        a.mspr_premium,
+		        eka.f_lsdbs (a.reg_spaj, a.lsbs_id, a.lsdbs_number) lsdbs_name,
+		        c.mspo_policy_no,
+		        d.mste_end_date,
+		        d.mste_beg_date,
+		        c.lku_id,
+		        f.lku_symbol,
+		        c.mspo_policy_no,
+		        c.mspo_installment,
+		        a.mspr_tsi,
+		        g.MU_JLH_TU,
+		        m.lscb_pay_mode,
+		        CASE
+		            WHEN    d.mste_flag_cc = 0
+		                THEN    'tunai'
+		            WHEN    d.mste_flag_cc = 1
+		                THEN    'cc'
+		            WHEN    d.mste_flag_cc = 2
+		                THEN    'tabungan'
+		            WHEN    d.mste_flag_cc = 3
+		                THEN    'payroll'
+		        END cara_bayar,
+		        l.lsbp_nama,
+		        j.mar_expired,
+		        d.mste_beg_date commencement_date,
+		        j.tgl_debet last_premi,
+		        CASE
+		            WHEN    c.lscb_id = 0
+		                THEN    null
+		            WHEN    c.lscb_id = 1
+		                THEN    ADD_MONTHS(j.tgl_debet, 3)
+		            WHEN    c.lscb_id = 2
+		                THEN    ADD_MONTHS(j.tgl_debet, 6)
+		            WHEN    c.lscb_id = 3
+		                THEN    ADD_MONTHS(j.tgl_debet, 12)
+		            WHEN    c.lscb_id = 6
+		                THEN    ADD_MONTHS(j.tgl_debet, 1)
+		        END next_premi
+		FROM    eka.mst_product_insured a,
+		        eka.lst_det_bisnis b,
+		        eka.mst_policy c,
+		        eka.lst_pay_mode m,
+		        eka.mst_insured d,
+		        eka.lst_kurs f,
+		        (SELECT reg_spaj, mu_jlh_tu
+		         FROM   eka.mst_ulink
+		         WHERE  reg_spaj = RPAD(REPLACE(#{reg_spaj, jdbcType=VARCHAR}, '.'), 11, ' ')
+		              AND mu_ke = 1
+		              AND mu_periodic_tu = 1) g,
+		        eka.lst_type_produk h,
+		        eka.lst_user i,
+		        eka.mst_account_recur j,
+		        eka.lst_bank k,
+		        eka.lst_bank_pusat l
+		WHERE   a.reg_spaj = rpad(replace(#{reg_spaj, jdbcType=VARCHAR},'.'),11,' ')
+		    AND a.lsbs_id <![CDATA[<]]> 300
+		    AND a.lsbs_id = b.lsbs_id(+)
+		    AND a.lsdbs_number = b.lsdbs_number(+)
+		    AND a.reg_spaj = c.reg_spaj
+		    AND c.reg_spaj = d.reg_spaj
+		    AND d.reg_spaj = j.reg_spaj
+		    AND j.lbn_id = k.lbn_id
+		    AND k.lsbp_id = l.lsbp_id
+		    AND c.lscb_id = m.lscb_id
+		    AND c.lku_id = f.lku_id(+)
+		    AND a.reg_spaj = g.reg_spaj(+)
+		    AND c.lstb_id = h.lstb_id(+)
+		    AND c.lstp_id = h.lstp_id(+)
+		    AND c.lus_id = i.lus_id (+)
 	</select>
 	
 	<select id="selectSales" parameterType="String" resultType="com.app.model.Sales">
-		SELECT  a.reg_spaj,
-		        c.mcl_first,
+		SELECT  c.mcl_first,
 		        b.msag_smart_no,
 		        c.mspe_email,
 		        cc.mcl_first mcl_first_leader,

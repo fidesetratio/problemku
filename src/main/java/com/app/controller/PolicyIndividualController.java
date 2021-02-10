@@ -221,6 +221,11 @@ public class PolicyIndividualController {
 					DataUsulan dataUsulan = new DataUsulan();
 					dataUsulan.setReg_spaj(pemegang.getReg_spaj());
 					dataUsulan = services.selectDataUsulan(dataUsulan);
+					
+					Sales sales = new Sales();
+					sales.setMspo_policy_no(no_polis);
+					sales = services.selectSales(no_polis);
+					
 					data.put("produk", dataUsulan.getNewname());
 					data.put("masa_berlaku_awal",
 							dataUsulan.getMste_beg_date() == null ? null : df3.format(dataUsulan.getMste_beg_date()));
@@ -235,8 +240,19 @@ public class PolicyIndividualController {
 							(dataUsulan.getMspo_installment() == null ? null : (dataUsulan.getMspo_installment())));
 					data.put("mata_uang_pertanggungan", dataUsulan.getLku_symbol());
 					data.put("uang_pertanggungan", dataUsulan.getMspr_tsi());
-					data.put("cara_bayar", dataUsulan.getLscb_pay_mode());
+					data.put("frekuensi_bayar", dataUsulan.getLscb_pay_mode());
+					data.put("cara_bayar", dataUsulan.getCara_bayar());
+					data.put("lsbp_nama", dataUsulan.getLsbp_nama());
+					data.put("expired_date_cc",
+							dataUsulan.getMar_expired() == null ? null : df3.format(dataUsulan.getMar_expired()));
+					data.put("commencement_date",
+							dataUsulan.getMste_beg_date() == null ? null : df3.format(dataUsulan.getMste_beg_date()));
+					data.put("last_premi",
+							dataUsulan.getLast_premi() == null ? null : df3.format(dataUsulan.getLast_premi()));
+					data.put("next_premi",
+							dataUsulan.getNext_premi() == null ? null : df3.format(dataUsulan.getNext_premi()));
 					data.put("product_rider", product_rider);
+					data.put("data_sales", sales);
 					String spaj = dataUsulan.getReg_spaj();
 					ArrayList<ProductRider> dataRider = services.selectProductRider(spaj);
 					ListIterator<ProductRider> liter = dataRider.listIterator();
@@ -262,8 +278,6 @@ public class PolicyIndividualController {
 						}
 					}
 					
-					
-
 //						Check Manfaat.pdf
 //						String kodeCabang = services.getKodeCabang(no_polis);
 //						File folder = new File(manfaatpdfMpolicy + kodeCabang + '\\' + spaj);
@@ -286,18 +300,9 @@ public class PolicyIndividualController {
 //							data.put("file_manfaat_exist", false);
 //						}
 					
-					Sales sales = new Sales();
-					sales = services.selectSales(no_polis);
-						data.put("info sales:", null);
-						data.put("nama_sales", sales.getMcl_first());
-						data.put("no_tlp", sales.getMsag_smart_no());
-						data.put("email", sales.getMspe_email());
-						data.put("nama_leader", sales.getMcl_first_leader());
-						data.put("no_tlp_leader", sales.getMsag_smart_no_leader());
-						data.put("email_leader", sales.getMspe_email_leader());
-					
 					error = false;
 					message = "Successfully get data asuransi details";
+					
 				} else {
 					error = true;
 					message = "Policy is not active";
@@ -305,6 +310,7 @@ public class PolicyIndividualController {
 					logger.error(
 							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
 				}
+				
 			} else {
 				error = true;
 				message = "Username not register";

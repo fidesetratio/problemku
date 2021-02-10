@@ -9,7 +9,6 @@ public class Sales implements Serializable {
 	 */
 	private static final long serialVersionUID = 7689007551827403805L;
 
-	private String reg_spaj;
 	private String mspo_policy_no;
 	private String mcl_first;
 	private String msag_smart_no;
@@ -18,12 +17,6 @@ public class Sales implements Serializable {
 	private String msag_smart_no_leader;
 	private String mspe_email_leader;
 	
-	public String getReg_spaj() {
-		return reg_spaj;
-	}
-	public void setReg_spaj(String reg_spaj) {
-		this.reg_spaj = reg_spaj;
-	}
 	public String getMcl_first() {
 		return mcl_first;
 	}

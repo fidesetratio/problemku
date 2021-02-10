@@ -77,6 +77,11 @@ public class DataUsulan implements Serializable {
 	private String mspo_policy_no_format;
 	private String mata_uang;
 	private Double mu_jlh_tu;
+	private String cara_bayar;
+	private String lsbp_nama;
+	private Date mar_expired;
+	private Date last_premi;
+	private Date next_premi;
 
 	public Date getMste_tgl_recur() {
 		return mste_tgl_recur;
@@ -604,5 +609,45 @@ public class DataUsulan implements Serializable {
 
 	public void setMu_jlh_tu(Double mu_jlh_tu) {
 		this.mu_jlh_tu = mu_jlh_tu;
+	}
+
+	public String getCara_bayar() {
+		return cara_bayar;
+	}
+
+	public void setCara_bayar(String cara_bayar) {
+		this.cara_bayar = cara_bayar;
+	}
+
+	public String getLsbp_nama() {
+		return lsbp_nama;
+	}
+
+	public void setLsbp_nama(String lsbp_nama) {
+		this.lsbp_nama = lsbp_nama;
+	}
+
+	public Date getMar_expired() {
+		return mar_expired;
+	}
+
+	public void setMar_expired(Date mar_expired) {
+		this.mar_expired = mar_expired;
+	}
+
+	public Date getLast_premi() {
+		return last_premi;
+	}
+
+	public void setLast_premi(Date last_premi) {
+		this.last_premi = last_premi;
+	}
+
+	public Date getNext_premi() {
+		return next_premi;
+	}
+
+	public void setNext_premi(Date next_premi) {
+		this.next_premi = next_premi;
 	}
 }

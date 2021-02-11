@@ -374,7 +374,7 @@ public class PolicyIndividualController {
 			String cabang = tempPath[4].toString();
 			String reg_spaj = tempPath[5].toString();
 					
-			String NewPathWS = downloadPolisAll + File.separator + cabang + File.separator + reg_spaj + File.separator + pathWS.substring(pathWS.lastIndexOf(File.separator) + 1);
+			String NewPathWS = downloadPolisAll + File.separator + cabang + File.separator + reg_spaj + File.separator + pathWS.substring(pathWS.lastIndexOf("\"") + 1);
 			String file_name = requestDownloadPolisAll.getTitle();
 			String file_type = requestDownloadPolisAll.getFile_type();
 
@@ -389,7 +389,7 @@ public class PolicyIndividualController {
 				// Content-Length
 				response.setContentLength((int) file.length());
 
-				BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file_name));
+				BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
 				BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
 
 				byte[] buffer = new byte[1024];

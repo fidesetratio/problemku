@@ -389,7 +389,7 @@ public class PolicyIndividualController {
 				// Content-Length
 				response.setContentLength((int) file.length());
 
-				BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+				BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file_name));
 				BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
 
 				byte[] buffer = new byte[1024];

@@ -1180,13 +1180,16 @@
 	</select>
 	
 	<select id="selectListInvestasi" parameterType="String" resultType="com.app.model.Topup">
-		SELECT  C.LJI_INVEST, 
+		SELECT  C.LJI_ID,
+				C.LJI_INVEST, 
 		        A.MDU_PERSEN
 		FROM    EKA.MST_DET_ULINK A,
 		        EKA.MST_POLICY B,
 		        EKA.LST_JENIS_INVEST C
 		WHERE   A.REG_SPAJ = B.REG_SPAJ
 		    AND A.LJI_ID = C.LJI_ID
+		    AND A.MDU_AKTIF = 1
+		    AND A.MU_KE = 1
 		    AND B.MSPO_POLICY_NO = replace(#{mspo_policy_no, jdbcType=VARCHAR}, '.', '')
 	</select>
 

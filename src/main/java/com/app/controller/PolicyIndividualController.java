@@ -21,6 +21,7 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -216,7 +217,6 @@ public class PolicyIndividualController {
 		HashMap<String, Object> map = new HashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
 		ArrayList<Object> product_rider = new ArrayList<>();
-		ArrayList<Object> alokasi_dana = new ArrayList<>();
 
 		String username = requestDataAsuransi.getUsername();
 		String key = requestDataAsuransi.getKey();
@@ -234,7 +234,6 @@ public class PolicyIndividualController {
 					Sales sales = new Sales();
 					
 					if (mspo_ao != null) {
-						
 						sales.setMspo_policy_no(no_polis);
 						sales = services.selectSales(no_polis);
 					} else {
@@ -268,7 +267,6 @@ public class PolicyIndividualController {
 							dataUsulan.getNext_premi() == null ? null : df3.format(dataUsulan.getNext_premi()));
 					data.put("product_rider", product_rider);
 					data.put("data_sales", sales);
-					data.put("alokasi_dana", alokasi_dana);
 					
 					String spaj = dataUsulan.getReg_spaj();
 					ArrayList<ProductRider> dataRider = services.selectProductRider(spaj);
@@ -303,14 +301,16 @@ public class PolicyIndividualController {
 						try {
 							Topup m = liter2.next();
 							HashMap<String, Object> listFund = new HashMap<>();
-
+							
+							String lji_id = m.getLji_id();
 							String name = m.getLji_invest();
 							Float percentage = m.getMdu_persen();
 							
+							listFund.put("lji_id", lji_id);
 							listFund.put("name", name);
 							listFund.put("percentage", percentage.intValue());
 							fund.add(listFund);
-							data.put("fund", fund);
+							data.put("alokasi_dana", fund);
 						} catch (Exception e) {
 							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 									+ e);
@@ -367,8 +367,14 @@ public class PolicyIndividualController {
 		try {
 			// path file
 			String pathWS = requestDownloadPolisAll.getFile_path();
+			String tempPathWS = pathWS.replace("\\", "/");
+			tempPathWS = tempPathWS.replace("//", "/");
+			String tempPath[] = tempPathWS.split("/");
 			
-			String NewPathWS = downloadPolisAll + File.separator + "09" + File.separator + "09210726887" + File.separator + pathWS.substring(pathWS.lastIndexOf(File.separator) + 1);
+			String cabang = tempPath[4].toString();
+			String reg_spaj = tempPath[5].toString();
+					
+			String NewPathWS = downloadPolisAll + File.separator + cabang + File.separator + reg_spaj + File.separator + pathWS.substring(pathWS.lastIndexOf(File.separator) + 1);
 			String file_name = requestDownloadPolisAll.getTitle();
 			String file_type = requestDownloadPolisAll.getFile_type();
 

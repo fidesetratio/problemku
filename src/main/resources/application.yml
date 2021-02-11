@@ -95,7 +95,7 @@ path:
  download:
   banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=
   article: /mnt/storage/E-Sehat/upload/artikel
-  polisall: \\\\ebserver\\pdfind\\polis\\
+  polisall: \\\\storage\\pdfind\\Polis_Testing\\
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
   
@@ -181,7 +181,7 @@ path:
  download:
   banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=
   article: /mnt/storage/E-Sehat/upload/artikel
-  polisall: /mnt/ebserver/polis
+  polisall: /mnt/storage/Polis_Testing
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
 

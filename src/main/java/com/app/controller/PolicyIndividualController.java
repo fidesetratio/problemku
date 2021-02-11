@@ -373,8 +373,9 @@ public class PolicyIndividualController {
 			
 			String cabang = tempPath[4].toString();
 			String reg_spaj = tempPath[5].toString();
+			String file_download = tempPath[6].toString();
 					
-			String NewPathWS = downloadPolisAll + File.separator + cabang + File.separator + reg_spaj + File.separator + pathWS.substring(pathWS.lastIndexOf("\"") + 1);
+			String NewPathWS = downloadPolisAll + File.separator + cabang + File.separator + reg_spaj + File.separator + file_download;
 			String file_name = requestDownloadPolisAll.getTitle();
 			String file_type = requestDownloadPolisAll.getFile_type();
 

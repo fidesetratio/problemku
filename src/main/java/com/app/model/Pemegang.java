@@ -87,6 +87,7 @@ public class Pemegang implements Serializable {
 	private String mspe_email;
 	private String year_birth_date;
 	private String lku_id;
+	private String mspo_ao;
 
 	private Integer lspr_id;
 	private Integer lska_id;
@@ -775,5 +776,13 @@ public class Pemegang implements Serializable {
 
 	public void setMspe_birth(String mspe_birth) {
 		this.mspe_birth = mspe_birth;
+	}
+
+	public String getMspo_ao() {
+		return mspo_ao;
+	}
+
+	public void setMspo_ao(String mspo_ao) {
+		this.mspo_ao = mspo_ao;
 	}
 }

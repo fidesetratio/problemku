@@ -230,10 +230,16 @@ public class PolicyIndividualController {
 					DataUsulan dataUsulan = new DataUsulan();
 					dataUsulan.setReg_spaj(pemegang.getReg_spaj());
 					dataUsulan = services.selectDataUsulan(dataUsulan);
-					
+					String mspo_ao = pemegang.getMspo_ao();
 					Sales sales = new Sales();
-					sales.setMspo_policy_no(no_polis);
-					sales = services.selectSales(no_polis);
+					
+					if (mspo_ao != null) {
+						
+						sales.setMspo_policy_no(no_polis);
+						sales = services.selectSales(no_polis);
+					} else {
+						sales = null;
+					}
 					
 					data.put("produk", dataUsulan.getNewname());
 					data.put("masa_berlaku_awal",
@@ -310,28 +316,6 @@ public class PolicyIndividualController {
 									+ e);
 						}
 					}
-					
-//						Check Manfaat.pdf
-//						String kodeCabang = services.getKodeCabang(no_polis);
-//						File folder = new File(manfaatpdfMpolicy + kodeCabang + '\\' + spaj);
-//
-//						if (folder.isDirectory()) {
-//							File files[] = folder.listFiles();
-//							ArrayList<Object> listName = new ArrayList<>();
-//							for (File f : files) {
-//								if (f.getName().toLowerCase().contains("manfaat.pdf")) {
-//									listName.add(f.getName());
-//								}
-//							}
-//
-//							if (!listName.isEmpty()) {
-//								data.put("file_manfaat_exist", true);
-//							} else {
-//								data.put("file_manfaat_exist", false);
-//							}
-//						} else {
-//							data.put("file_manfaat_exist", false);
-//						}
 					
 					error = false;
 					message = "Successfully get data asuransi details";

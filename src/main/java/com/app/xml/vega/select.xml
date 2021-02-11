@@ -289,7 +289,8 @@
 		        d.lspr_id,
 		        d.lska_id,
 		        d.lskc_id,
-		        d.lskl_id
+		        d.lskl_id,
+		        a.mspo_ao
 		FROM    eka.mst_policy a,
 		        eka.mst_insured b,
 		        eka.mst_client_new c,

@@ -450,11 +450,9 @@ public class PolicyIndividualCorporateController {
 			tempPathWS = tempPathWS.replace("//", "/");
 			String tempPath[] = tempPathWS.split("/");
 			
-			String cabang = tempPath[4].toString();
-			String reg_spaj = tempPath[5].toString();
 			String file_download = tempPath[6].toString();
 					
-			String NewPathWS = pathDownloadArticle + File.separator + cabang + File.separator + reg_spaj + File.separator + file_download;
+			String NewPathWS = pathDownloadArticle + File.separator + file_download;
 			String file_name = requestDownloadArticle.getTitle();
 			String file_type = requestDownloadArticle.getFile_type();
 

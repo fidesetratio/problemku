@@ -452,9 +452,9 @@
 		    AND a.lsdbs_number = b.lsdbs_number(+)
 		    AND a.reg_spaj = c.reg_spaj
 		    AND c.reg_spaj = d.reg_spaj
-		    AND d.reg_spaj = j.reg_spaj
-		    AND j.lbn_id = k.lbn_id
-		    AND k.lsbp_id = l.lsbp_id
+		    AND d.reg_spaj = j.reg_spaj(+)
+		    AND j.lbn_id = k.lbn_id(+)
+		    AND k.lsbp_id = l.lsbp_id(+)
 		    AND c.lscb_id = m.lscb_id
 		    AND c.lku_id = f.lku_id(+)
 		    AND a.reg_spaj = g.reg_spaj(+)

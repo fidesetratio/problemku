@@ -392,6 +392,7 @@
 	<select id="selectDataUsulan" resultType="DataUsulan" parameterType="DataUsulan">
 		SELECT  EKA.F_LSDBS_VIEW (a.reg_spaj, a.lsbs_id, a.lsdbs_number) "newname",
 		        a.reg_spaj,
+		        c.lca_id,
 		        a.mspr_premium,
 		        eka.f_lsdbs (a.reg_spaj, a.lsbs_id, a.lsdbs_number) lsdbs_name,
 		        c.mspo_policy_no,

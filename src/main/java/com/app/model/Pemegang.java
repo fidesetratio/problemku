@@ -97,7 +97,7 @@ public class Pemegang implements Serializable {
 	private String kabupaten;
 	private String kecamatan;
 	private String kelurahan;
-
+	
 	public String getId() {
 		return id;
 	}

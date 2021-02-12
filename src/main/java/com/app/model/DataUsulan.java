@@ -82,6 +82,7 @@ public class DataUsulan implements Serializable {
 	private Date mar_expired;
 	private Date last_premi;
 	private Date next_premi;
+	private String lca_id;
 
 	public Date getMste_tgl_recur() {
 		return mste_tgl_recur;
@@ -649,5 +650,13 @@ public class DataUsulan implements Serializable {
 
 	public void setNext_premi(Date next_premi) {
 		this.next_premi = next_premi;
+	}
+
+	public String getLca_id() {
+		return lca_id;
+	}
+
+	public void setLca_id(String lca_id) {
+		this.lca_id = lca_id;
 	}
 }

@@ -233,6 +233,14 @@ public class PolicyIndividualController {
 					String mspo_ao = pemegang.getMspo_ao();
 					Sales sales = new Sales();
 					
+					String lca_id = dataUsulan.getLca_id();
+					String reg_spaj = dataUsulan.getReg_spaj();
+					
+					String title = "Polis_All_" + reg_spaj;
+					String file_type = "pdf";
+					String file_path = "\\\\storage\\pdfind\\Polis_Testing\\" + lca_id + "\\" + reg_spaj + "\\" + title +
+							"." + file_type;
+					
 					if (mspo_ao != null) {
 						sales.setMspo_policy_no(no_polis);
 						sales = services.selectSales(no_polis);
@@ -267,6 +275,9 @@ public class PolicyIndividualController {
 							dataUsulan.getNext_premi() == null ? null : df3.format(dataUsulan.getNext_premi()));
 					data.put("product_rider", product_rider);
 					data.put("data_sales", sales);
+					data.put("file_path", file_path);
+					data.put("title", title);
+					data.put("file_type", file_type);
 					
 					String spaj = dataUsulan.getReg_spaj();
 					ArrayList<ProductRider> dataRider = services.selectProductRider(spaj);

@@ -12,6 +12,8 @@ public class PowerSave implements Serializable {
 	private static final long serialVersionUID = -3603123166536880011L;
 	private Date beg_date;
 	private Date end_date;
+	private String beg_date_format;
+	private String end_date_format;
 	private BigDecimal id;
 	private BigDecimal rate;
 	private BigDecimal deposit;
@@ -91,4 +93,22 @@ public class PowerSave implements Serializable {
 	public void setJenis(String jenis) {
 		this.jenis = jenis;
 	}
+
+	public String getBeg_date_format() {
+		return beg_date_format;
+	}
+
+	public void setBeg_date_format(String beg_date_format) {
+		this.beg_date_format = beg_date_format;
+	}
+
+	public String getEnd_date_format() {
+		return end_date_format;
+	}
+
+	public void setEnd_date_format(String end_date_format) {
+		this.end_date_format = end_date_format;
+	}
+	
+	
 }

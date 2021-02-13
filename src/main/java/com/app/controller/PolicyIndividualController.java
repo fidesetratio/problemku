@@ -817,6 +817,8 @@ public class PolicyIndividualController {
 									maper.put("id_power_save", m.getId());
 									maper.put("begin_period", df1.format(m.getBeg_date()));
 									maper.put("end_period", df1.format(m.getEnd_date()));
+									maper.put("begin_period_format", m.getBeg_date_format());
+									maper.put("end_period_format", m.getEnd_date_format());
 									maper.put("rate", m.getRate());
 									maper.put("deposit_premium", m.getDeposit());
 									maper.put("interest_premium", m.getInterest());

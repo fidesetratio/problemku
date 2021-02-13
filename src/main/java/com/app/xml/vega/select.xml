@@ -1268,55 +1268,55 @@
 	</select>
 
 	<select id="selectPowerSave" parameterType="User" resultType="com.app.model.PowerSave">
-		SELECT * FROM
-		(
-		SELECT a.*, rownum r__
-		FROM
-		(
-		SELECT rownum as id,
-		b.MPR_RATE as rate, 
-		to_date(b.MPR_TGL_RATE, 'dd/MM/yyyy') as tgl_rate,
-		case 
-		when a.lku_id = '01' then trunc(b.MPR_DEPOSIT/1000, 0) 
-		else b.MPR_DEPOSIT end as deposit,
-		case 
-		when a.lku_id = '01' then trunc(b.MPR_INTEREST/1000, 0) 
-		else b.MPR_INTEREST end as interest,
-		b.MPR_INSURANCE as insurance, 
-		c.lku_symbol,
-		b.MPR_DEBET as debet,
-		to_date(b.mps_deposit_date, 'dd/MM/yyyy') as beg_date,
-		b.MPR_JANGKA_INVEST,
-		to_date(b.MPR_MATURE_DATE, 'dd/MM/yyyy') as end_date, 
-		case 
-		when b.mps_kode = 5 then 'First Entry' 
-		when b.MPR_JNS_RO = 1 then 'All' 
-		when b.MPR_JNS_RO = 2 then 'RO Premi'
-		when b.MPR_JNS_RO = 3 then 'Auto Break' end as jenis, 
-		b.mps_kode
-		FROM EKA.MST_POLICY a
-		inner join EKA.MST_POWERSAVE_RO b on a.REG_SPAJ =
-		b.REG_SPAJ
-		inner join
-		EKA.LST_KURS c on a.lku_id = c.lku_id
-		WHERE b.REG_SPAJ = #{reg_spaj,
-		jdbcType=VARCHAR} AND MPS_KODE IN (2,3,5)
-		<if test="startDate != null">
-			AND b.mps_deposit_date <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM')
-		</if>
-		<if test="endDate != null">
-			AND b.mps_deposit_date <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
-		</if>
-		order by mps_deposit_date desc
-		) a
-		WHERE rownum <![CDATA[<]]>
-		((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1
-		)
-		)
-		WHERE r__ <![CDATA[>=]]>
-		(((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize,
-		jdbcType=INTEGER}) + 1)
-	</select>
+		SELECT  *
+		FROM    (
+		        SELECT  a.*,
+		                rownum r__
+		        FROM    (
+		                SELECT  rownum as id,
+		                        b.MPR_RATE as rate, 
+		                        TO_CHAR (b.MPR_TGL_RATE, 'yyyy-MM-dd') as tgl_rate,
+		                        case 
+		                            when a.lku_id = '01'
+		                                then trunc(b.MPR_DEPOSIT/1000, 0) 
+		                            else b.MPR_DEPOSIT end as deposit,
+		                        case 
+		                            when a.lku_id = '01'
+		                                then trunc(b.MPR_INTEREST/1000, 0) 
+		                            else b.MPR_INTEREST end as interest,
+		                        b.MPR_INSURANCE as insurance, 
+		                        c.lku_symbol,
+		                        b.MPR_DEBET as debet,
+		                        to_date(b.mps_deposit_date, 'dd/MM/yyyy') as beg_date,
+		                        TO_CHAR(b.mps_deposit_date, 'yyyy-MM-dd') as beg_date_format,
+		                        b.MPR_JANGKA_INVEST,
+		                        to_date(b.MPR_MATURE_DATE, 'dd/MM/yyyy') as end_date,
+		                        TO_CHAR(b.MPR_MATURE_DATE, 'yyyy-MM-dd') as end_date_format, 
+		                        case 
+		                            when b.mps_kode = 5
+		                                then 'First Entry' 
+		                            when b.MPR_JNS_RO = 1
+		                                then 'All' 
+		                            when b.MPR_JNS_RO = 2
+		                                then 'RO Premi'
+		                            when b.MPR_JNS_RO = 3
+		                                then 'Auto Break' end as jenis, 
+		                        b.mps_kode
+		                FROM    EKA.MST_POLICY a
+		                        inner join EKA.MST_POWERSAVE_RO b on a.REG_SPAJ = b.REG_SPAJ
+		                        inner join EKA.LST_KURS c on a.lku_id = c.lku_id
+		                WHERE   b.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		                    AND MPS_KODE IN (2,3,5)
+		                    <if test="startDate != null">
+		                        AND b.mps_deposit_date <![CDATA[>=]]> to_date(#{startDate}, 'YYYY-MM')
+		                    </if>
+		                    <if test="endDate != null">
+		                        AND b.mps_deposit_date <![CDATA[<=]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+		                    </if>
+		                order by mps_deposit_date desc) a
+		        WHERE   rownum <![CDATA[<]]> ((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1))
+		WHERE r__ <![CDATA[>=]]> (((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize, jdbcType=INTEGER}) + 1)
+			</select>
 
 	<select id="selectStableSave" parameterType="User" resultType="com.app.model.StableSave">
 		SELECT * FROM

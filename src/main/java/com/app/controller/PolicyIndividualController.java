@@ -232,6 +232,7 @@ public class PolicyIndividualController {
 					dataUsulan = services.selectDataUsulan(dataUsulan);
 					String mspo_ao = pemegang.getMspo_ao();
 					Sales sales = new Sales();
+					ArrayList<Object> fund = new ArrayList<>();
 					
 					String lca_id = dataUsulan.getLca_id();
 					String reg_spaj = dataUsulan.getReg_spaj();
@@ -274,6 +275,7 @@ public class PolicyIndividualController {
 					data.put("next_premi",
 							dataUsulan.getNext_premi() == null ? null : df3.format(dataUsulan.getNext_premi()));
 					data.put("product_rider", product_rider);
+					data.put("alokasi_dana", fund);
 					data.put("data_sales", sales);
 					data.put("file_path", file_path);
 					data.put("title", title);
@@ -304,7 +306,6 @@ public class PolicyIndividualController {
 						}
 					}
 					
-					ArrayList<Object> fund = new ArrayList<>();
 					ArrayList<Topup> list = services.selectListInvestasi(no_polis);
 
 					ListIterator<Topup> liter2 = list.listIterator();
@@ -321,7 +322,6 @@ public class PolicyIndividualController {
 							listFund.put("name", name);
 							listFund.put("percentage", percentage.intValue());
 							fund.add(listFund);
-							data.put("alokasi_dana", fund);
 						} catch (Exception e) {
 							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 									+ e);

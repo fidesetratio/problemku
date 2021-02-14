@@ -86,7 +86,7 @@ public class PolicyIndividualController {
 	private String storageMpolicy;
 	
 	@Value("${path.download.polisall}")
-	private String downloadPolisAll;
+	private String pathDownloadPolisAll;
 
 	@Value("${path.manfaatpdf.mpolicy}")
 	private String manfaatpdfMpolicy;
@@ -237,10 +237,10 @@ public class PolicyIndividualController {
 					String lca_id = dataUsulan.getLca_id();
 					String reg_spaj = dataUsulan.getReg_spaj();
 					
-					String title = "Polis_All_" + reg_spaj;
+					String title = "polis_all";
 					String file_type = "pdf";
-					String file_path = "\\\\storage\\pdfind\\Polis_Testing\\" + lca_id + "\\" + reg_spaj + "\\" + title +
-							"." + file_type;
+					String file_path = pathDownloadPolisAll + lca_id + File.separator + reg_spaj + File.separator
+							+ title + "." + file_type;
 					
 					if (mspo_ao != null) {
 						sales.setMspo_policy_no(no_polis);
@@ -277,9 +277,17 @@ public class PolicyIndividualController {
 					data.put("product_rider", product_rider);
 					data.put("alokasi_dana", fund);
 					data.put("data_sales", sales);
-					data.put("file_path", file_path);
-					data.put("title", title);
-					data.put("file_type", file_type);
+					
+					File checkPolisAll = new File(file_path);
+					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) { 
+						data.put("file_path", file_path);
+						data.put("title", title);
+						data.put("file_type", file_type);
+					} else {
+						data.put("file_path", null);
+						data.put("title", null);
+						data.put("file_type", null);
+					}
 					
 					String spaj = dataUsulan.getReg_spaj();
 					ArrayList<ProductRider> dataRider = services.selectProductRider(spaj);
@@ -390,7 +398,7 @@ public class PolicyIndividualController {
 			String reg_spaj = tempPath[5].toString();
 			String file_download = tempPath[6].toString();
 					
-			String NewPathWS = downloadPolisAll + File.separator + cabang + File.separator + reg_spaj + File.separator + file_download;
+			String NewPathWS = pathDownloadPolisAll + File.separator + cabang + File.separator + reg_spaj + File.separator + file_download;
 			String file_name = requestDownloadPolisAll.getTitle();
 			String file_type = requestDownloadPolisAll.getFile_type();
 

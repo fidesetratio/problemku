@@ -240,8 +240,9 @@ public class PolicyIndividualController {
 					String title = "polis_all";
 					String file_type = "pdf";
 					String file_name = title + "." + file_type;
-					String file_path = pathDownloadPolisAll + File.separator + lca_id + File.separator + reg_spaj + File.separator
+					String file_path_check = pathDownloadPolisAll + File.separator + lca_id + File.separator + reg_spaj + File.separator
 							+ file_name;
+					String file_path = "\\\\storage\\pdfind\\Polis_Testing\\" + lca_id + "\\" + reg_spaj + "\\" + file_name;
 					
 					if (mspo_ao != null) {
 						sales.setMspo_policy_no(no_polis);
@@ -279,7 +280,7 @@ public class PolicyIndividualController {
 					data.put("alokasi_dana", fund);
 					data.put("data_sales", sales);
 					
-					File checkPolisAll = new File(file_path);
+					File checkPolisAll = new File(file_path_check);
 					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) { 
 						data.put("file_path", file_path);
 						data.put("title", title);

@@ -318,9 +318,13 @@ public class PolicyIndividualController {
 							String name = m.getLji_invest();
 							Float percentage = m.getMdu_persen();
 							
-							listFund.put("lji_id", lji_id);
-							listFund.put("name", name);
-							listFund.put("percentage", percentage.intValue());
+							if (percentage != 0) {
+								listFund.put("lji_id", lji_id);
+								listFund.put("name", name);
+								listFund.put("percentage", percentage.intValue());
+							}
+							
+							
 							fund.add(listFund);
 						} catch (Exception e) {
 							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "

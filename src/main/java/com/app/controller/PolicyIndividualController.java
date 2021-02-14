@@ -239,8 +239,9 @@ public class PolicyIndividualController {
 					
 					String title = "polis_all";
 					String file_type = "pdf";
-					String file_path = pathDownloadPolisAll + lca_id + File.separator + reg_spaj + File.separator
-							+ title + "." + file_type;
+					String file_name = title + "." + file_type;
+					String file_path = pathDownloadPolisAll + File.separator + lca_id + File.separator + reg_spaj + File.separator
+							+ file_name;
 					
 					if (mspo_ao != null) {
 						sales.setMspo_policy_no(no_polis);

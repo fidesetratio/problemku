@@ -332,10 +332,8 @@ public class PolicyIndividualController {
 								listFund.put("lji_id", lji_id);
 								listFund.put("name", name);
 								listFund.put("percentage", percentage.intValue());
+								fund.add(listFund);
 							}
-							
-							
-							fund.add(listFund);
 						} catch (Exception e) {
 							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 									+ e);

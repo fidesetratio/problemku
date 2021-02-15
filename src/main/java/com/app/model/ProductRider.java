@@ -15,6 +15,7 @@ public class ProductRider implements Serializable {
 	private BigDecimal mspr_tsi;
 	private String newname;
 	private String lku_symbol;
+	private Integer lsbs_id;
 
 	public String getLsdbs_name() {
 		return lsdbs_name;
@@ -62,5 +63,13 @@ public class ProductRider implements Serializable {
 
 	public void setLku_symbol(String lku_symbol) {
 		this.lku_symbol = lku_symbol;
+	}
+
+	public Integer getLsbs_id() {
+		return lsbs_id;
+	}
+
+	public void setLsbs_id(Integer lsbs_id) {
+		this.lsbs_id = lsbs_id;
 	}
 }

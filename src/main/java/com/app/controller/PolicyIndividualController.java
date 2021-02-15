@@ -303,6 +303,11 @@ public class PolicyIndividualController {
 							String masa_berlaku_akhir = m.getMspr_end_date() != null ? m.getMspr_end_date() : null;
 							BigDecimal uang_pertanggungan = m.getMspr_tsi() != null ? m.getMspr_tsi() : null;
 							String mata_uang = m.getLku_symbol() != null ? m.getLku_symbol() : null;
+							Integer lsbs_id = m.getLsbs_id() != null ? m.getLsbs_id() : null;
+							
+							if(lsbs_id == 804) {
+								nama_rider = nama_rider.replaceAll("\\s+","");
+							}
 
 							dataResult.put("nama_rider", nama_rider);
 							dataResult.put("masa_berlaku_awal", masa_berlaku_awal);

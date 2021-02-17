@@ -4355,22 +4355,22 @@ public class FinancialTransactionController {
 				// Path File
 				// 1 Rawat Inap
 				if (typeFile.equals(1)) {
-					pathFile = folder.toString() + '\\' + "FormRawatInap" + ".pdf";
-					// 2 Rawat Jalan
+					pathFile = folder.toString() + File.separator + "FormRawatInap" + ".pdf";
+				// 2 Rawat Jalan
 				} else if (typeFile.equals(2)) {
-					pathFile = folder.toString() + '\\' + "FormRawatJalan" + ".pdf";
-					// 3 Personal Accident
+					pathFile = folder.toString() + File.separator + "FormRawatJalan" + ".pdf";
+				// 3 Personal Accident
 				} else if (typeFile.equals(3)) {
-					pathFile = folder.toString() + '\\' + "FormPersonalAccident" + ".pdf";
+					pathFile = folder.toString() + File.separator + "FormPersonalAccident" + ".pdf";
 				} else if (typeFile.equals(4)) {
-					// 4 Document yang diupload user
+				// 4 Document yang diupload user
 					pathFile = requestDownloadFileClaimSubmission.getPathFile();
 				} else if (typeFile.equals(5)) {
-					// 5 Rawat Jalan Corporate
-					pathFile = folder.toString() + '\\' + "FormRawatJalanCorporate" + ".pdf";
+				// 5 Rawat Jalan Corporate
+					pathFile = folder.toString() + File.separator + "FormRawatJalanCorporate" + ".pdf";
 				} else if (typeFile.equals(6)) {
-					// 6 Rawat Inap Corporate
-					pathFile = folder.toString() + '\\' + "FormRawatInapCorporate" + ".pdf";
+				// 6 Rawat Inap Corporate
+					pathFile = folder.toString() + File.separator + "FormRawatInapCorporate" + ".pdf";
 				}
 
 				// Path File yang mau di download

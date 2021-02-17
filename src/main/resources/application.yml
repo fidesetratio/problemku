@@ -161,7 +161,7 @@ path:
  direct:
   notification: http://paymentcc.sinarmasmsiglife.co.id:9886/notif/api/json/pushnotif
  storage:
-  mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\
+  mpolicy: /mnt/storage/Polis_Testing/m-Policytest
  manfaatpdf:
   mpolicy: \\\\ebserver\\pdfind\\Polis\\
  logoBank:
@@ -174,7 +174,7 @@ path:
   formwithdrawumumsyariah: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormUnitLinkUmumSyariah.pdf
   formwithdrawsimasmagnalink: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormSimasMagnaLinkUmum.pdf
   formwithdrawsimasmagnalinksyariah: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormSimasMagnaLinkSyariah.pdf
-  formclaimsubmission: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormClaimSubmission
+  formclaimsubmission: /mnt/storage/ajsmsig/mpolicytest/FormClaimSubmission
  log:
   submitclaimsubmission: E:\\API\\LogSubmitClaimSubmission\\
   submitclaimsubmissioncorporate: E:\\API\\LogSubmitClaimSubmission\\Corporate\\

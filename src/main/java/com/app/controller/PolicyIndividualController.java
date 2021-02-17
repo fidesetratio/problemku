@@ -1561,7 +1561,7 @@ public class PolicyIndividualController {
 								message = "Successfully get data m-Statment";
 							}
 						} else if (code == 500) {
-							File folderSuratClaim = new File(basePath + kodeCabang + '\\' + spaj + '\\' + "SuratClaim");
+							File folderSuratClaim = new File(basePath + kodeCabang + File.separator + spaj + File.separator + "SuratClaim");
 							if (!folderSuratClaim.exists()) {
 								folderSuratClaim.mkdirs();
 								error = false;
@@ -2243,6 +2243,7 @@ public class PolicyIndividualController {
 			}
 			outStream.flush();
 			inStream.close();
+			
 		} catch (Exception e) {
 			error = true;
 			message = ResponseMessage.ERROR_SYSTEM;
@@ -2504,7 +2505,7 @@ public class PolicyIndividualController {
 							+ no_hp
 							+ " <br> </td> </tr> </tbody> </table><br/><span style='font-family: helvetica; font-size: 14px;'>Email ini terkirim secara otomatis oleh sistem, harap jangan mereply email ini.</span> </br><br/><br/><span style='font-family: helvetica; font-size: 14px;'>Terima Kasih</span>";
 
-					String result = customResourceLoader.sendEmail("CS@sinarmasmsiglife.co.id;", "", "",
+					String result = customResourceLoader.sendEmail("marisya.islamy@sinarmasmsiglife.co.id;", "", "",
 							"Merge id Simultan M-Polis SPAJ: " + reg_spaj, messageHTML, true, "");
 
 					JSONObject myResponse = new JSONObject(result.toString());

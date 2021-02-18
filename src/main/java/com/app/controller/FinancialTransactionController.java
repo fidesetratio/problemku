@@ -4248,7 +4248,7 @@ public class FinancialTransactionController {
 						String tempPathArray[] = tempPathClaim.split("/");
 						
 						String tempPathClaimJoin = tempPathArray[4].toString() + "/" + tempPathArray[5].toString() + "/" 
-								+ tempPathArray[6].toString() + tempPathArray[7].toString();
+								+ tempPathArray[6].toString() + "/" + tempPathArray[7].toString();
 						
 						tempPathClaimJoin = storageClaimMpolicy + "/" + tempPathClaimJoin;
 

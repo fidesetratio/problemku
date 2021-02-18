@@ -104,6 +104,9 @@ public class FinancialTransactionController {
 
 	@Value("${path.storage.mpolicy}")
 	private String storageMpolicy;
+	
+	@Value("${path.storage.claim}")
+	private String storageClaimMpolicy;
 
 	@Value("${path.manfaatpdf.mpolicy}")
 	private String manfaatpdfMpolicy;
@@ -4244,11 +4247,10 @@ public class FinancialTransactionController {
 						tempPathClaim = tempPathClaim.replace("//", "/");
 						String tempPathArray[] = tempPathClaim.split("/");
 						
-						String tempPathClaimJoin = tempPathArray[2].toString() + "/" + tempPathArray[3].toString() + "/" 
-								+ tempPathArray[4].toString() + "/" + tempPathArray[5].toString() + "/" 
-								+ tempPathArray[6].toString() + "/" + tempPathArray[7].toString();
+						String tempPathClaimJoin = tempPathArray[4].toString() + "/" + tempPathArray[5].toString() + "/" 
+								+ tempPathArray[6].toString() + tempPathArray[7].toString();
 						
-						tempPathClaimJoin = storageMpolicy + "/" + tempPathClaimJoin;
+						tempPathClaimJoin = storageClaimMpolicy + "/" + tempPathClaimJoin;
 
 						Boolean boolean_double_cover_claim = false;
 

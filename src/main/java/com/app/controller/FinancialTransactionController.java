@@ -4237,6 +4237,17 @@ public class FinancialTransactionController {
 						Date date_insert = dataViewClaimSubmission.getRegapldate();
 						String status = dataViewClaimSubmission.getStatus();
 						String date_status = dataViewClaimSubmission.getDate_status();
+						
+						/*\\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\09\09170016255\DocumentClaimSubmission\2020000410*/
+						
+						//String tempPathClaim = path_claim.replace("\\", "/");
+						//tempPathClaim = tempPathClaim.replace("//", "/");
+						//String tempPath[] = tempPathClaim.split("/");
+						
+						//String cabang = tempPath[0].toString();
+						
+						//String tempPathClaim = path_claim.substring( 3, path_claim.indexOf("\\"));
+						
 
 						Boolean boolean_double_cover_claim = false;
 
@@ -4275,7 +4286,7 @@ public class FinancialTransactionController {
 									&& (!name.toLowerCase().substring(0, 1).equals("."))
 									&& (!name.toLowerCase().contains("formrawatinapgenerate.pdf"))) {
 								hashMapPathClaim.put("name", name.replace("MPOLIS_", "").replace("_", " "));
-								hashMapPathClaim.put("path_file", path_claim + "\\" + name);
+								hashMapPathClaim.put("path_file", path_claim + File.separator + name);
 
 								arrayTemp.add(hashMapPathClaim);
 							}

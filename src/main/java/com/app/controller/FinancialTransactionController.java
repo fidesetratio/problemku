@@ -4240,14 +4240,15 @@ public class FinancialTransactionController {
 						
 						/*\\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\09\09170016255\DocumentClaimSubmission\2020000410*/
 						
-						//String tempPathClaim = path_claim.replace("\\", "/");
-						//tempPathClaim = tempPathClaim.replace("//", "/");
-						//String tempPath[] = tempPathClaim.split("/");
+						String tempPathClaim = path_claim.replace("\\", "/");
+						tempPathClaim = tempPathClaim.replace("//", "/");
+						String tempPathArray[] = tempPathClaim.split("/");
 						
-						//String cabang = tempPath[0].toString();
+						String tempPathClaimJoin = tempPathArray[2].toString() + "/" + tempPathArray[3].toString() + "/" 
+								+ tempPathArray[4].toString() + "/" + tempPathArray[5].toString() + "/" 
+								+ tempPathArray[6].toString() + "/" + tempPathArray[7].toString();
 						
-						//String tempPathClaim = path_claim.substring( 3, path_claim.indexOf("\\"));
-						
+						tempPathClaimJoin = storageMpolicy + "/" + tempPathClaimJoin;
 
 						Boolean boolean_double_cover_claim = false;
 
@@ -4279,7 +4280,7 @@ public class FinancialTransactionController {
 
 						// List file in folder claim
 						ArrayList<HashMap<String, Object>> arrayTemp = new ArrayList<>();
-						List<String> pathFileClaim = customResourceLoader.listFilesUsingJavaIO2CustomSorted(path_claim);
+						List<String> pathFileClaim = customResourceLoader.listFilesUsingJavaIO2CustomSorted(tempPathClaimJoin);
 						for (String name : pathFileClaim) {
 							HashMap<String, Object> hashMapPathClaim = new HashMap<>();
 							if ((!name.toLowerCase().contains("form_rawat_inap.pdf"))

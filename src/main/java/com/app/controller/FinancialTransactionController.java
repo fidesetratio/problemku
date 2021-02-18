@@ -4379,6 +4379,15 @@ public class FinancialTransactionController {
 				} else if (typeFile.equals(4)) {
 				// 4 Document yang diupload user
 					pathFile = requestDownloadFileClaimSubmission.getPathFile();
+					/*\\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\09\\09170016255\\DocumentClaimSubmission\\2020000410\\MPOLIS_Photocopy_of_prescription_and_diagnostic_test_reading_results.pdf*/
+					String tempPathFile = pathFile.replace("\\", "/");
+					tempPathFile = tempPathFile.replace("//", "/");
+					String tempPathArray[] = tempPathFile.split("/");
+					
+					String tempPathClaimJoin = tempPathArray[4].toString() + "/" + tempPathArray[5].toString() + "/" 
+							+ tempPathArray[6].toString() + "/" + tempPathArray[7].toString() + "/" + tempPathArray[8].toString();
+					
+					pathFile = storageClaimMpolicy + "/" + tempPathClaimJoin;
 				} else if (typeFile.equals(5)) {
 				// 5 Rawat Jalan Corporate
 					pathFile = folder.toString() + File.separator + "FormRawatJalanCorporate" + ".pdf";

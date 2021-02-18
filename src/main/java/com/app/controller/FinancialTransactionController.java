@@ -4289,7 +4289,7 @@ public class FinancialTransactionController {
 									&& (!name.toLowerCase().substring(0, 1).equals("."))
 									&& (!name.toLowerCase().contains("formrawatinapgenerate.pdf"))) {
 								hashMapPathClaim.put("name", name.replace("MPOLIS_", "").replace("_", " "));
-								hashMapPathClaim.put("path_file", path_claim + File.separator + name);
+								hashMapPathClaim.put("path_file", path_claim + "\\" + name);
 
 								arrayTemp.add(hashMapPathClaim);
 							}

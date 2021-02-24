@@ -4652,7 +4652,7 @@ public class FinancialTransactionController {
 				if (type.equals(1)) {
 					if ((name_file != null) && (file_base64 != null) && (reg_spaj != null) && (mpc_id != null)
 							&& (name_file != "") && (file_base64 != "") && (reg_spaj != "")) {
-						String path_claim = storageMpolicy + kodeCabang + File.separator + reg_spaj + File.separator
+						String path_claim = storageMpolicy + File.separator + kodeCabang + File.separator + reg_spaj + File.separator
 								+ "DocumentClaimSubmission" + File.separator + mpc_id;
 
 						System.out.println("Upload Start: " + new Date());

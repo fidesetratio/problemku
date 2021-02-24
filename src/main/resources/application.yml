@@ -177,7 +177,7 @@ path:
   formwithdrawsimasmagnalinksyariah: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\ajsmsig\\mpolicytest\\FormWithdraw\\FormSimasMagnaLinkSyariah.pdf
   formclaimsubmission: /mnt/storage/ajsmsig/mpolicytest/FormClaimSubmission
  log:
-  submitclaimsubmission: E:\\API\\LogSubmitClaimSubmission\\
+  submitclaimsubmission: /mnt/storage/Polis_Testing/m-Policytest/LogSubmitClaimSubmission
   submitclaimsubmissioncorporate: E:\\API\\LogSubmitClaimSubmission\\Corporate\\
  download:
   banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=

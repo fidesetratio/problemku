@@ -4696,7 +4696,7 @@ public class FinancialTransactionController {
 				} else if (type.equals(2)) {
 					if ((name_file != null) && (reg_spaj != null) && (mpc_id != null) && (name_file != "")
 							&& (reg_spaj != "")) {
-						String path_claim = storageMpolicy + kodeCabang + File.separator + reg_spaj + File.separator
+						String path_claim = storageMpolicy + File.separator + kodeCabang + File.separator + reg_spaj + File.separator
 								+ "DocumentClaimSubmission" + File.separator + mpc_id + File.separator + name_file + ".pdf";
 
 						String pathLogClaimRequest = pathLogSubmitClaimSubmission + mpc_id + File.separator + "request-"
@@ -4740,7 +4740,7 @@ public class FinancialTransactionController {
 					}
 				} else if (type.equals(3)) {
 					if ((reg_spaj != null) && (mpc_id != null) && (reg_spaj != "")) {
-						String path_claim = storageMpolicy + kodeCabang + File.separator + reg_spaj + File.separator
+						String path_claim = storageMpolicy + File.separator + kodeCabang + File.separator + reg_spaj + File.separator
 								+ "DocumentClaimSubmission" + File.separator + mpc_id;
 
 						String pathLogClaimSubmission = pathLogSubmitClaimSubmission + mpc_id;

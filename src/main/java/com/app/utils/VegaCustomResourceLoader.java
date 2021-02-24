@@ -1599,7 +1599,7 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 
 		try {
 			byte[] fileByte = Base64.getDecoder().decode(fileBase64);
-			String directory = folder + "\\" + fileName + ".pdf";
+			String directory = folder + File.separator + fileName + ".pdf";
 
 			FileOutputStream fos = new FileOutputStream(directory);
 			fos.write(fileByte);

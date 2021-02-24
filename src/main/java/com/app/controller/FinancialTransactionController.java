@@ -4652,8 +4652,8 @@ public class FinancialTransactionController {
 				if (type.equals(1)) {
 					if ((name_file != null) && (file_base64 != null) && (reg_spaj != null) && (mpc_id != null)
 							&& (name_file != "") && (file_base64 != "") && (reg_spaj != "")) {
-						String path_claim = storageMpolicy + kodeCabang + "\\" + reg_spaj + "\\"
-								+ "DocumentClaimSubmission" + "\\" + mpc_id;
+						String path_claim = storageMpolicy + kodeCabang + File.separator + reg_spaj + File.separator
+								+ "DocumentClaimSubmission" + File.separator + mpc_id;
 
 						System.out.println("Upload Start: " + new Date());
 						Boolean uploadFile = customResourceLoader.uploadFileToStorage(path_claim, file_base64,
@@ -4661,7 +4661,7 @@ public class FinancialTransactionController {
 						System.out.println("Upload Done: " + new Date());
 
 						if (uploadFile.equals(true)) {
-							String filePath = path_claim + "\\" + name_file + ".pdf";
+							String filePath = path_claim + File.separator + name_file + ".pdf";
 							Boolean validateFilePdf = customResourceLoader.validateFilePdf(filePath, username,
 									mpc_id.toString());
 							if (validateFilePdf.equals(true)) {
@@ -4696,12 +4696,12 @@ public class FinancialTransactionController {
 				} else if (type.equals(2)) {
 					if ((name_file != null) && (reg_spaj != null) && (mpc_id != null) && (name_file != "")
 							&& (reg_spaj != "")) {
-						String path_claim = storageMpolicy + kodeCabang + "\\" + reg_spaj + "\\"
-								+ "DocumentClaimSubmission" + "\\" + mpc_id + "\\" + name_file + ".pdf";
+						String path_claim = storageMpolicy + kodeCabang + File.separator + reg_spaj + File.separator
+								+ "DocumentClaimSubmission" + File.separator + mpc_id + File.separator + name_file + ".pdf";
 
-						String pathLogClaimRequest = pathLogSubmitClaimSubmission + mpc_id + "\\" + "request-"
+						String pathLogClaimRequest = pathLogSubmitClaimSubmission + mpc_id + File.separator + "request-"
 								+ name_file + ".txt";
-						String pathLogClaimResponse = pathLogSubmitClaimSubmission + mpc_id + "\\" + "response-"
+						String pathLogClaimResponse = pathLogSubmitClaimSubmission + mpc_id + File.separator + "response-"
 								+ name_file + ".txt";
 
 						try {
@@ -4740,8 +4740,8 @@ public class FinancialTransactionController {
 					}
 				} else if (type.equals(3)) {
 					if ((reg_spaj != null) && (mpc_id != null) && (reg_spaj != "")) {
-						String path_claim = storageMpolicy + kodeCabang + "\\" + reg_spaj + "\\"
-								+ "DocumentClaimSubmission" + "\\" + mpc_id;
+						String path_claim = storageMpolicy + kodeCabang + File.separator + reg_spaj + File.separator
+								+ "DocumentClaimSubmission" + File.separator + mpc_id;
 
 						String pathLogClaimSubmission = pathLogSubmitClaimSubmission + mpc_id;
 

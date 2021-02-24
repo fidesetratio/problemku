@@ -4527,8 +4527,8 @@ public class FinancialTransactionController {
 						double_cover_claim_res = 1;
 					}
 
-					String path_claim = storageMpolicy + kodeCabang + "\\" + reg_spaj + "\\" + "DocumentClaimSubmission"
-							+ "\\" + mpc_id;
+					String path_claim = storageMpolicy + kodeCabang + File.separator + reg_spaj + File.separator + "DocumentClaimSubmission"
+							+ File.separator + mpc_id;
 
 					// Insert Claim Trans
 					services.insertClaimSubmissionTrans(mpc_id, reg_spaj, mste_insured_no, patienname, lku_id, lsbs_id,
@@ -4551,7 +4551,7 @@ public class FinancialTransactionController {
 							folder.mkdirs();
 						}
 
-						String path_output = folder + "\\" + "Form_rawat_inap" + ".pdf";
+						String path_output = folder + File.separator + "Form_rawat_inap" + ".pdf";
 
 						ClaimSubmission dataGeneratePdf = services.selectGeneratePdfClaim(typeSelect, reg_spaj,
 								patienname);

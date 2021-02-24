@@ -4699,9 +4699,9 @@ public class FinancialTransactionController {
 						String path_claim = storageMpolicy + File.separator + kodeCabang + File.separator + reg_spaj + File.separator
 								+ "DocumentClaimSubmission" + File.separator + mpc_id + File.separator + name_file + ".pdf";
 
-						String pathLogClaimRequest = pathLogSubmitClaimSubmission + mpc_id + File.separator + "request-"
+						String pathLogClaimRequest = pathLogSubmitClaimSubmission + File.separator + mpc_id + File.separator + "request-"
 								+ name_file + ".txt";
-						String pathLogClaimResponse = pathLogSubmitClaimSubmission + mpc_id + File.separator + "response-"
+						String pathLogClaimResponse = pathLogSubmitClaimSubmission + File.separator + mpc_id + File.separator + "response-"
 								+ name_file + ".txt";
 
 						try {

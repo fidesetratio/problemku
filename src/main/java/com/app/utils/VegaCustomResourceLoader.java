@@ -1617,10 +1617,10 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 
 	public Boolean createTxt(String mpc_id, String text, String file_name, Integer type) throws IOException {
 		// Type 1: Individual Type 2: Corporate
-		String pathLog = pathLogSubmitClaimSubmission + mpc_id;
+		String pathLog = pathLogSubmitClaimSubmission + File.separator + mpc_id;
 
 		if (type.equals(2)) {
-			pathLog = pathLogSubmitClaimSubmissionCorp + mpc_id;
+			pathLog = pathLogSubmitClaimSubmissionCorp + File.separator + mpc_id;
 		}
 
 		File folder = new File(pathLog);
@@ -1629,7 +1629,7 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 		}
 
 		try {
-			FileWriter writer = new FileWriter(pathLog + "\\" + file_name + ".txt", true);
+			FileWriter writer = new FileWriter(pathLog + File.separator + file_name + ".txt", true);
 			BufferedWriter bufferedWriter = new BufferedWriter(writer);
 			bufferedWriter.write(text);
 			bufferedWriter.close();

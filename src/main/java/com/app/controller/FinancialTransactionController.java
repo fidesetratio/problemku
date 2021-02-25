@@ -105,6 +105,9 @@ public class FinancialTransactionController {
 	@Value("${path.storage.mpolicy}")
 	private String storageMpolicy;
 	
+	@Value("${path.storage.mpolicydb}")
+	private String storageMpolicyDB;
+	
 	@Value("${path.storage.claim}")
 	private String storageClaimMpolicy;
 
@@ -4529,10 +4532,13 @@ public class FinancialTransactionController {
 
 					String path_claim = storageMpolicy + File.separator + kodeCabang + File.separator + reg_spaj + File.separator + "DocumentClaimSubmission"
 							+ File.separator + mpc_id;
+					
+					String path_claim_db = storageMpolicyDB + kodeCabang + "\\" + reg_spaj + "\\" + "DocumentClaimSubmission"
+							+ "\\" + mpc_id;
 
 					// Insert Claim Trans
 					services.insertClaimSubmissionTrans(mpc_id, reg_spaj, mste_insured_no, patienname, lku_id, lsbs_id,
-							lsdbs_number, date_ri_1, date_ri_2, amount_ri, jenisclaim, no_hp, email, path_claim,
+							lsdbs_number, date_ri_1, date_ri_2, amount_ri, jenisclaim, no_hp, email, path_claim_db,
 							lssp_id, groupclaimjenis, double_cover_claim_res);
 
 					// Insert Detail Claim Trans

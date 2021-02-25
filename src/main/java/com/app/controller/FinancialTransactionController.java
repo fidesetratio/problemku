@@ -4527,7 +4527,7 @@ public class FinancialTransactionController {
 						double_cover_claim_res = 1;
 					}
 
-					String path_claim = storageMpolicy + kodeCabang + File.separator + reg_spaj + File.separator + "DocumentClaimSubmission"
+					String path_claim = storageMpolicy + File.separator + kodeCabang + File.separator + reg_spaj + File.separator + "DocumentClaimSubmission"
 							+ File.separator + mpc_id;
 
 					// Insert Claim Trans

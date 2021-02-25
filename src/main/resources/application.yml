@@ -162,7 +162,7 @@ path:
   notification: http://paymentcc.sinarmasmsiglife.co.id:9886/notif/api/json/pushnotif
  storage:
   mpolicy: /mnt/storage/Polis_Testing/m-Policytest
-  mpolicydb: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\
+  mpolicydb: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\
   claim: /mnt/storage/m-Policytest
  manfaatpdf:
   mpolicy: \\\\ebserver\\pdfind\\Polis\\

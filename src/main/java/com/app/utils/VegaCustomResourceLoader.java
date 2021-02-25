@@ -1477,7 +1477,7 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 			String path_output) throws IOException, DocumentException {
 		Integer font_size = 7;
 
-		String pathInputDokumen = pathFormClaimSubmission + "\\" + "FormRawatInapGenerate.pdf";
+		String pathInputDokumen = pathFormClaimSubmission + File.separator + "FormRawatInapGenerate.pdf";
 
 		Integer mpc_id_x = 275;
 		Integer mpc_id_y = 698;

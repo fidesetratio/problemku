@@ -105,6 +105,9 @@ public class FinancialTransactionController {
 	@Value("${path.storage.mpolicy}")
 	private String storageMpolicy;
 	
+	@Value("${path.storage.withdraw}")
+	private String storageWithdraw;
+	
 	@Value("${path.storage.mpolicydb}")
 	private String storageMpolicyDB;
 	
@@ -3717,14 +3720,14 @@ public class FinancialTransactionController {
 					Withdraw dataFormWithdraw = services.selectDataFormWithdraw(reg_spaj);
 					String kodeCabang = services.getKodeCabang(no_polis);
 
-					String basePath = storageMpolicy;
-					File folder = new File(basePath + kodeCabang + '\\' + reg_spaj + '\\' + "Dokumen_Withdraw");
+					String basePath = storageWithdraw;
+					File folder = new File(basePath + File.separator + kodeCabang + File.separator + reg_spaj + File.separator + "Dokumen_Withdraw");
 					if (!folder.exists()) {
 						folder.mkdirs();
 					}
 
 					// Get Path File
-					String pathFile = folder + "\\" + mpt_id + ".pdf";
+					String pathFile = folder + File.separator + mpt_id + ".pdf";
 
 					// Get tanggal transaksi
 					ProductUtama dataProductCode = services.selectProductCode(reg_spaj);

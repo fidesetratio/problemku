@@ -408,13 +408,15 @@
 		        m.lscb_pay_mode,
 		        CASE
 		            WHEN    d.mste_flag_cc = 0
-		                THEN    'tunai'
+		                THEN    'Transfer'
 		            WHEN    d.mste_flag_cc = 1
-		                THEN    'cc'
+		                THEN    'Debet Rekening Credit Card'
 		            WHEN    d.mste_flag_cc = 2
-		                THEN    'tabungan'
+		                THEN    'Debet Rekening Tabungan'
 		            WHEN    d.mste_flag_cc = 3
-		                THEN    'payroll'
+		                THEN    'Payroll'
+		            ELSE
+		                        'Transfer'
 		        END cara_bayar,
 		        l.lsbp_nama,
 		        j.mar_expired,
@@ -431,7 +433,8 @@
 		                THEN    ADD_MONTHS(j.tgl_debet, 12)
 		            WHEN    c.lscb_id = 6
 		                THEN    ADD_MONTHS(j.tgl_debet, 1)
-		        END next_premi
+		        END next_premi,
+		        n.lms_status_id status
 		FROM    eka.mst_product_insured a,
 		        eka.lst_det_bisnis b,
 		        eka.mst_policy c,
@@ -447,9 +450,13 @@
 		        eka.lst_user i,
 		        eka.mst_account_recur j,
 		        eka.lst_bank k,
-		        eka.lst_bank_pusat l
+		        eka.lst_bank_pusat l,
+		        eka.lst_policy_status m,
+		        eka.lst_master_status n
 		WHERE   a.reg_spaj = rpad(replace(#{reg_spaj, jdbcType=VARCHAR},'.'),11,' ')
 		    AND a.lsbs_id <![CDATA[<]]> 300
+		    AND c.lssp_id = m.lssp_id
+		    AND m.lms_id = n.lms_id
 		    AND a.lsbs_id = b.lsbs_id(+)
 		    AND a.lsdbs_number = b.lsdbs_number(+)
 		    AND a.reg_spaj = c.reg_spaj

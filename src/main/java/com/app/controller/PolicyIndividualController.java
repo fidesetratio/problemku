@@ -276,6 +276,7 @@ public class PolicyIndividualController {
 							dataUsulan.getLast_premi() == null ? null : df3.format(dataUsulan.getLast_premi()));
 					data.put("next_premi",
 							dataUsulan.getNext_premi() == null ? null : df3.format(dataUsulan.getNext_premi()));
+					data.put("status_polis", dataUsulan.getStatus());
 					data.put("product_rider", product_rider);
 					data.put("alokasi_dana", fund);
 					data.put("data_sales", sales);

@@ -4276,7 +4276,7 @@ public class FinancialTransactionController {
 						data.put("nm_product_claim", nm_product_claim);
 						data.put("jenis_claim", jenis_claim);
 						data.put("date_ri_1", df1.format(date_ri_1));
-						data.put("date_ri_2", df1.format(date_ri_2));
+						data.put("date_ri_2", date_ri_2 != null ? df1.format(date_ri_2) : null);
 						data.put("amt_claim", amt_claim);
 						data.put("rekening", rekening);
 						data.put("bank", bank);

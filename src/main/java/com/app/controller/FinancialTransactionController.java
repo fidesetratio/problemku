@@ -3349,9 +3349,6 @@ public class FinancialTransactionController {
 							dataTemp.put("date_status", date_status != null ? date_status_format : null);
 							dataTemp.put("description", description);
 							
-							mpt_jumlah.toString();
-							
-							
 							if (type_penarikan.equalsIgnoreCase("unit")) {
 								if (count_value.intValue() == 1) {
 									amount = mpt_unit.toString();;
@@ -3362,10 +3359,20 @@ public class FinancialTransactionController {
 								}
 							} else {
 								if (count_value.intValue() == 1) {
-									amount = lku_symbol + " " + nfZeroTwo.format(mpt_jumlah);
+									String mpt_jumlah_format = nfZeroTwo.format(mpt_jumlah);
+									mpt_jumlah_format = mpt_jumlah_format.toString().replace('.', '+');
+									mpt_jumlah_format = mpt_jumlah_format.toString().replace(',', '.');
+									mpt_jumlah_format = mpt_jumlah_format.toString().replace('+', ',');
+									
+									amount = lku_symbol + " " + mpt_jumlah_format;
 									dataTemp.put("amount", amount);
 								} else {
-									amount = lku_symbol + " " + nfZeroTwo.format(mpt_jumlah) + " (+"
+									String mpt_jumlah_format = nfZeroTwo.format(mpt_jumlah);
+									mpt_jumlah_format = mpt_jumlah_format.toString().replace('.', '+');
+									mpt_jumlah_format = mpt_jumlah_format.toString().replace(',', '.');
+									mpt_jumlah_format = mpt_jumlah_format.toString().replace('+', ',');
+									
+									amount = lku_symbol + " " + mpt_jumlah_format + " (+"
 											+ Integer.toString((count_value.intValue() - 1)) + ")";
 									dataTemp.put("amount", amount);
 								}

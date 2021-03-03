@@ -156,8 +156,9 @@ public class FinancialTransactionController {
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
 	private DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
+	private DateFormat df3 = new SimpleDateFormat("dd MMM yyyy");
 	private NumberFormat nfZeroTwo = new DecimalFormat("#,##0.00;(#,##0.00)");
-	private NumberFormat nfZeroFour = new DecimalFormat("#,##0.0000;(#,##0.0000)");
+	//private NumberFormat nfZeroFour = new DecimalFormat("#,##0.0000;(#,##0.0000)");
 
 	@RequestMapping(value = "/checkstatustransaction", produces = "application/json", method = RequestMethod.POST)
 	public String checkStatusTransaction(@RequestBody RequestCheckStatusTransaction requestCheckStatusTransaction,
@@ -3341,16 +3342,15 @@ public class FinancialTransactionController {
 							Date date_status = m.getDate_status();
 
 							dataTemp.put("mpt_id", mpt_id);
-							dataTemp.put("date_req", req_date != null ? df1.format(req_date) : null);
-							dataTemp.put("date_status", date_status != null ? df1.format(date_status) : null);
+							dataTemp.put("date_req", req_date != null ? df3.format(req_date) : null);
+							dataTemp.put("date_status", date_status != null ? df3.format(date_status) : null);
 							dataTemp.put("description", description);
 
 							if (type_penarikan.equalsIgnoreCase("unit")) {
 								if (count_value.intValue() == 1) {
-									dataTemp.put("amount", nfZeroFour.format(mpt_unit));
+									dataTemp.put("amount", mpt_unit);
 								} else {
-									dataTemp.put("amount",
-											nfZeroFour.format(mpt_unit) + " (+" + (count_value.intValue() - 1) + ")");
+									dataTemp.put("amount", mpt_unit + " (+" + (count_value.intValue() - 1) + ")");
 								}
 							} else {
 								if (count_value.intValue() == 1) {

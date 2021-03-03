@@ -3342,24 +3342,32 @@ public class FinancialTransactionController {
 							Date date_status = m.getDate_status();
 							String req_date_format = m.getReq_date_format();
 							String date_status_format = m.getDate_status_format();
+							String amount = null;
 
 							dataTemp.put("mpt_id", mpt_id);
 							dataTemp.put("date_req", req_date != null ? req_date_format : null);
 							dataTemp.put("date_status", date_status != null ? date_status_format : null);
 							dataTemp.put("description", description);
-
+							
+							mpt_jumlah.toString();
+							
+							
 							if (type_penarikan.equalsIgnoreCase("unit")) {
 								if (count_value.intValue() == 1) {
-									dataTemp.put("amount", mpt_unit);
+									amount = mpt_unit.toString();;
+									dataTemp.put("amount", amount);
 								} else {
-									dataTemp.put("amount", mpt_unit + " (+" + (count_value.intValue() - 1) + ")");
+									amount = mpt_unit.toString() + " (+" + Integer.toString((count_value.intValue() - 1)) + ")";
+									dataTemp.put("amount", amount);
 								}
 							} else {
 								if (count_value.intValue() == 1) {
-									dataTemp.put("amount", lku_symbol + " " + nfZeroTwo.format(mpt_jumlah));
+									amount = lku_symbol + " " + nfZeroTwo.format(mpt_jumlah);
+									dataTemp.put("amount", amount);
 								} else {
-									dataTemp.put("amount", lku_symbol + " " + nfZeroTwo.format(mpt_jumlah) + " (+"
-											+ (count_value.intValue() - 1) + ")");
+									amount = lku_symbol + " " + nfZeroTwo.format(mpt_jumlah) + " (+"
+											+ Integer.toString((count_value.intValue() - 1)) + ")";
+									dataTemp.put("amount", amount);
 								}
 							}
 

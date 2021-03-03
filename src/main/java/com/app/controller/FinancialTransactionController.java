@@ -3340,10 +3340,12 @@ public class FinancialTransactionController {
 							BigDecimal count_value = m.getCount_value();
 							Date req_date = m.getReq_date();
 							Date date_status = m.getDate_status();
+							String req_date_format = m.getReq_date_format();
+							String date_status_format = m.getDate_status_format();
 
 							dataTemp.put("mpt_id", mpt_id);
-							dataTemp.put("date_req", req_date != null ? df3.format(req_date) : null);
-							dataTemp.put("date_status", date_status != null ? df3.format(date_status) : null);
+							dataTemp.put("date_req", req_date != null ? req_date_format : null);
+							dataTemp.put("date_status", date_status != null ? date_status_format : null);
 							dataTemp.put("description", description);
 
 							if (type_penarikan.equalsIgnoreCase("unit")) {

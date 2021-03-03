@@ -14,6 +14,8 @@ public class Withdraw implements Serializable {
 	private String mpt_id;
 	private Date req_date;
 	private Date date_status;
+	private String req_date_format;
+	private String date_status_format;
 	private String description;
 	private BigDecimal total_penarikan;
 	private Integer lt_id;
@@ -280,5 +282,21 @@ public class Withdraw implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getReq_date_format() {
+		return req_date_format;
+	}
+
+	public void setReq_date_format(String req_date_format) {
+		this.req_date_format = req_date_format;
+	}
+
+	public String getDate_status_format() {
+		return date_status_format;
+	}
+
+	public void setDate_status_format(String date_status_format) {
+		this.date_status_format = date_status_format;
 	}
 }

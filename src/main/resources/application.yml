@@ -179,7 +179,7 @@ path:
   faq: /mnt/storage/ajsmsig/mpolicytest/FormPDF/formulir_pengkinian_data.pdf
   formwithdrawumum: /mnt/storage/ajsmsig/mpolicytest/FormWithdraw/FormUnitLinkUmum.pdf
   formwithdrawumumsyariah: /mnt/storage/ajsmsig/mpolicytest/FormWithdraw/FormUnitLinkUmumSyariah.pdf
-  formwithdrawsimasmagnalink: /mnt/storage/pdfind/ajsmsig/mpolicytest/FormWithdraw/FormSimasMagnaLinkUmum.pdf
+  formwithdrawsimasmagnalink: /mnt/storage/ajsmsig/mpolicytest/FormWithdraw/FormSimasMagnaLinkUmum.pdf
   formwithdrawsimasmagnalinksyariah: /mnt/storage/ajsmsig/mpolicytest/FormWithdraw/FormSimasMagnaLinkSyariah.pdf
   formclaimsubmission: /mnt/storage/ajsmsig/mpolicytest/FormClaimSubmission
  log:

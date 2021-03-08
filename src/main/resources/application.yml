@@ -177,10 +177,10 @@ path:
   mpolicy: /mnt/storage/ajsmsig/mpolicytest/News
  pdf:
   faq: /mnt/storage/ajsmsig/mpolicytest/FormPDF/formulir_pengkinian_data.pdf
-  formwithdrawumum: /mnt/storage/mpolicytest/FormWithdraw/FormUnitLinkUmum.pdf
-  formwithdrawumumsyariah: /mnt/storage/mpolicytest/FormWithdraw/FormUnitLinkUmumSyariah.pdf
+  formwithdrawumum: /mnt/storage/ajsmsig/mpolicytest/FormWithdraw/FormUnitLinkUmum.pdf
+  formwithdrawumumsyariah: /mnt/storage/ajsmsig/mpolicytest/FormWithdraw/FormUnitLinkUmumSyariah.pdf
   formwithdrawsimasmagnalink: /mnt/storage/pdfind/ajsmsig/mpolicytest/FormWithdraw/FormSimasMagnaLinkUmum.pdf
-  formwithdrawsimasmagnalinksyariah: /mnt/storage/mpolicytest/FormWithdraw/FormSimasMagnaLinkSyariah.pdf
+  formwithdrawsimasmagnalinksyariah: /mnt/storage/ajsmsig/mpolicytest/FormWithdraw/FormSimasMagnaLinkSyariah.pdf
   formclaimsubmission: /mnt/storage/ajsmsig/mpolicytest/FormClaimSubmission
  log:
   submitclaimsubmission: /mnt/storage/Polis_Testing/m-Policytest/LogSubmitClaimSubmission

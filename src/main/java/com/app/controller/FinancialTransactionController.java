@@ -3746,10 +3746,11 @@ public class FinancialTransactionController {
 						folder.mkdirs();
 					}
 					
+					String folderGenerate = basePath + File.separator + kodeCabang + File.separator + reg_spaj + File.separator + "Dokumen_Withdraw";
 					String folderDB = storageWithdrawDB + kodeCabang + '\\' + reg_spaj + '\\' + "Dokumen_Withdraw";
 
 					// Get Path File
-					String pathFile = folder + File.separator + mpt_id + ".pdf";
+					String pathFile = folderGenerate + File.separator + mpt_id + ".pdf";
 					String pathFileDB = folderDB + '\\' + mpt_id + ".pdf";
 
 					// Get tanggal transaksi

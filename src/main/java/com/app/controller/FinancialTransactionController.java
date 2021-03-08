@@ -108,6 +108,9 @@ public class FinancialTransactionController {
 	@Value("${path.storage.withdraw}")
 	private String storageWithdraw;
 	
+	@Value("${path.storage.withdrawdb}")
+	private String storageWithdrawDB;
+	
 	@Value("${path.storage.mpolicydb}")
 	private String storageMpolicyDB;
 	
@@ -3742,9 +3745,12 @@ public class FinancialTransactionController {
 					if (!folder.exists()) {
 						folder.mkdirs();
 					}
+					
+					String folderDB = storageWithdrawDB + kodeCabang + '\\' + reg_spaj + '\\' + "Dokumen_Withdraw";
 
 					// Get Path File
 					String pathFile = folder + File.separator + mpt_id + ".pdf";
+					String pathFileDB = folderDB + '\\' + mpt_id + ".pdf";
 
 					// Get tanggal transaksi
 					ProductUtama dataProductCode = services.selectProductCode(reg_spaj);
@@ -3769,7 +3775,7 @@ public class FinancialTransactionController {
 					// Insert EKA.MST_MPOL_TRANS
 					services.insertWithdraw(mpt_id, customResourceLoader.getDatetimeJava1(), reg_spaj, lt_id, lku_id,
 							mpt_jumlah, mpt_unit, customResourceLoader.getDatetimeJava(), payor_name, rekening,
-							bank_name, pathFile, dateTransaction);
+							bank_name, pathFileDB, dateTransaction);
 
 					for (Integer i = 0; i < arrayList.size(); i++) {
 						String lji_id = requestSubmitWithdraw.getWithdraw().getDetail_withdraw().get(i).getLji_id();

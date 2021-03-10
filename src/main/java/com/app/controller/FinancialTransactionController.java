@@ -4561,6 +4561,10 @@ public class FinancialTransactionController {
 					
 					String path_claim_db = storageMpolicyDB + kodeCabang + "\\" + reg_spaj + "\\" + "DocumentClaimSubmission"
 							+ "\\" + mpc_id;
+					
+					if(date_ri_2.equals(null)) {
+						date_ri_2 = date_ri_1;
+					}
 
 					// Insert Claim Trans
 					services.insertClaimSubmissionTrans(mpc_id, reg_spaj, mste_insured_no, patienname, lku_id, lsbs_id,

@@ -79,6 +79,7 @@ path:
   mpolicydb: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\
   claim: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\
   withdraw: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\
+  withdrawdb: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\
  manfaatpdf:
   mpolicy: \\\\ebserver\\pdfind\\Polis\\
  logoBank:

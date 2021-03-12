@@ -161,7 +161,7 @@ public class FinancialTransactionController {
 	private DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
 	private DateFormat df3 = new SimpleDateFormat("dd MMM yyyy");
 	private NumberFormat nfZeroTwo = new DecimalFormat("#,##0.00;(#,##0.00)");
-	//private NumberFormat nfZeroFour = new DecimalFormat("#,##0.0000;(#,##0.0000)");
+	private NumberFormat nfZeroFour = new DecimalFormat("#,##0.0000;(#,##0.0000)");
 
 	@RequestMapping(value = "/checkstatustransaction", produces = "application/json", method = RequestMethod.POST)
 	public String checkStatusTransaction(@RequestBody RequestCheckStatusTransaction requestCheckStatusTransaction,
@@ -3354,10 +3354,20 @@ public class FinancialTransactionController {
 							
 							if (type_penarikan.equalsIgnoreCase("unit")) {
 								if (count_value.intValue() == 1) {
-									amount = mpt_unit.toString();;
+									String mpt_unit_format = nfZeroFour.format(mpt_unit);
+									mpt_unit_format = mpt_unit_format.toString().replace('.', '+');
+									mpt_unit_format = mpt_unit_format.toString().replace(',', '.');
+									mpt_unit_format = mpt_unit_format.toString().replace('+', ',');
+									
+									amount = mpt_unit_format;
 									dataTemp.put("amount", amount);
 								} else {
-									amount = mpt_unit.toString() + " (+" + Integer.toString((count_value.intValue() - 1)) + ")";
+									String mpt_unit_format = nfZeroFour.format(mpt_unit);
+									mpt_unit_format = mpt_unit_format.toString().replace('.', '+');
+									mpt_unit_format = mpt_unit_format.toString().replace(',', '.');
+									mpt_unit_format = mpt_unit_format.toString().replace('+', ',');
+									
+									amount = mpt_unit_format + " (+" + Integer.toString((count_value.intValue() - 1)) + ")";
 									dataTemp.put("amount", amount);
 								}
 							} else {

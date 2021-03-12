@@ -4572,7 +4572,7 @@ public class FinancialTransactionController {
 					String path_claim_db = storageMpolicyDB + kodeCabang + "\\" + reg_spaj + "\\" + "DocumentClaimSubmission"
 							+ "\\" + mpc_id;
 					
-					if(date_ri_2.equals(null)) {
+					if(date_ri_2 == null) {
 						date_ri_2 = date_ri_1;
 					}
 

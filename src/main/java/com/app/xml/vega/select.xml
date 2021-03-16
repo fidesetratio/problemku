@@ -1905,11 +1905,17 @@
 		                                            THEN    MPT_ID
 		                                    END AS MPT_ID,
 		                                    A.REQ_DATE,
+		                                    TO_CHAR(A.REQ_DATE, 'DD Mon YYYY') REQ_DATE_FORMAT,
 		                                    CASE
 		                                        WHEN A.MODIFIED_DATE IS NOT NULL
 		                                            THEN TO_DATE(A.MODIFIED_DATE, 'DD/MM/YYYY')
 		                                        ELSE TO_DATE(A.CREATED_DATE, 'DD/MM/YYYY')
 		                                    END AS DATE_STATUS,
+		                                    CASE
+		                                        WHEN A.MODIFIED_DATE IS NOT NULL
+		                                            THEN TO_CHAR(A.MODIFIED_DATE, 'DD Mon YYYY')
+		                                        ELSE TO_CHAR(A.CREATED_DATE, 'DD Mon YYYY')
+		                                    END AS DATE_STATUS_FORMAT,
 		                                    CASE
 		                                        WHEN a.lt_id = 19 AND a.collaborate_mpt_id IS NOT NULL
 		                                            THEN (
@@ -1947,16 +1953,18 @@
 		                                    INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
 		                                    INNER JOIN EKA.LST_TRANSAKSI C ON A.LT_ID = C.LT_ID
 		                            WHERE   B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
-		                                AND A.LT_ID IN (4, 19, 20)
+		                                AND A.LT_ID IN (4)
 		                            )
 		                    WHERE MPT_ID IS NOT NULL
 		                ORDER BY MPT_ID DESC)
 		                UNION ALL(
 		                SELECT  NVL (
 		                        A.NO_REGISTER,
-		                        TO_CHAR (TO_CHAR (TRANS.MTU_TGL_TRANS, 'yyyymmdd') || TRANS.MU_KE)) AS MPT_ID,
+		                        TO_CHAR(TO_CHAR(TRANS.MTU_TGL_TRANS, 'yyyymmdd') || TRANS.MU_KE)) AS MPT_ID,
 		                        A.MU_TGL_TRANS REQ_DATE,
-		                        TO_DATE (NVL(TRANS.TGL_FILLING, A.MU_TGL_TRANS), 'DD/MM/YYYY') AS DATE_STATUS,
+		                        TO_CHAR(A.MU_TGL_TRANS, 'DD Mon YYYY') REQ_DATE_FORMAT,
+		                        TO_DATE(NVL(TRANS.TGL_FILLING, A.MU_TGL_TRANS), 'DD/MM/YYYY') AS DATE_STATUS,
+		                        TO_CHAR(NVL(TRANS.TGL_FILLING, A.MU_TGL_TRANS), 'DD Mon YYYY') AS DATE_STATUS_FORMAT,
 		                        (CASE
 		                            WHEN A.LT_ID IN (2, 4)
 		                                THEN

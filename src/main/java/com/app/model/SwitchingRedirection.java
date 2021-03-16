@@ -32,6 +32,8 @@ public class SwitchingRedirection implements Serializable {
 	private String lku_symbol;
 	private String lji_invest;
 	private String id;
+	private String req_date_format;
+	private String date_status_format;
 
 	private String date_created_java1;
 	private String date_created_java2;
@@ -263,5 +265,21 @@ public class SwitchingRedirection implements Serializable {
 
 	public void setType_penarikan(String type_penarikan) {
 		this.type_penarikan = type_penarikan;
+	}
+
+	public String getReq_date_format() {
+		return req_date_format;
+	}
+
+	public void setReq_date_format(String req_date_format) {
+		this.req_date_format = req_date_format;
+	}
+
+	public String getDate_status_format() {
+		return date_status_format;
+	}
+
+	public void setDate_status_format(String date_status_format) {
+		this.date_status_format = date_status_format;
 	}
 }

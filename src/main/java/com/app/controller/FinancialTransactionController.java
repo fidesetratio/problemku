@@ -1731,7 +1731,7 @@ public class FinancialTransactionController {
 					message = "List switching & redirection empty";
 				} else {
 					error = false;
-					message = "Successfully get data switching & redirection";
+					message = "Successfully get data switching ";
 
 					for (Integer i = 0; i < arrayList.size(); i++) {
 						try {
@@ -1743,17 +1743,20 @@ public class FinancialTransactionController {
 							String jenis_transaksi = m.getJenis_transaksi();
 							Date req_date = m.getReq_date();
 							Date date_status = m.getDate_status();
+							String req_date_format = m.getReq_date_format();
+							String date_status_format = m.getDate_status_format();
 
-							String a = mpt_id;
-							ArrayList<String> arrayMptId = new ArrayList<>();
-							List<String> items = Arrays.asList(a.split("\\s*,\\s*"));
-							for (Integer b = 0; b < items.size(); b++) {
-								arrayMptId.add(items.get(b));
-							}
+							/*
+							 * String a = mpt_id; ArrayList<String> arrayMptId = new ArrayList<>();
+							 * List<String> items = Arrays.asList(a.split("\\s*,\\s*")); for (Integer b = 0;
+							 * b < items.size(); b++) { arrayMptId.add(items.get(b)); }
+							 */
 
-							dataTemp.put("mpt_id", arrayMptId);
+							dataTemp.put("mpt_id", mpt_id);
 							dataTemp.put("date_req", req_date != null ? df1.format(req_date) : null);
 							dataTemp.put("date_status", date_status != null ? df1.format(date_status) : null);
+							dataTemp.put("date_req_format", req_date_format != null ? req_date_format : null);
+							dataTemp.put("date_status_format", date_status_format != null ? date_status_format : null);
 							dataTemp.put("description", description);
 							dataTemp.put("jenis_transaksi", jenis_transaksi);
 

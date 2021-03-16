@@ -71,6 +71,7 @@ import com.app.model.request.RequestGetInfoTopup;
 import com.app.model.request.RequestGetTopupList;
 import com.app.model.request.RequestListClaimSubmission;
 import com.app.model.request.RequestListClaimSubmissionCorporate;
+import com.app.model.request.RequestListSwitching;
 import com.app.model.request.RequestListSwitchingRedirection;
 import com.app.model.request.RequestListWithdraw;
 import com.app.model.request.RequestRekening;
@@ -85,6 +86,7 @@ import com.app.model.request.RequestUploadDeleteFileClaimSubCorp;
 import com.app.model.request.RequestValidateSwitchingRedirection;
 import com.app.model.request.RequestViewClaimSubmission;
 import com.app.model.request.RequestViewClaimSubmissionCorporate;
+import com.app.model.request.RequestViewSwitching;
 import com.app.model.request.RequestViewSwitchingRedirection;
 import com.app.model.request.RequestViewUserInputTopup;
 import com.app.model.request.RequestViewWithdraw;
@@ -1694,6 +1696,100 @@ public class FinancialTransactionController {
 		return res;
 	}
 
+	@RequestMapping(value = "/listswitching", produces = "application/json", method = RequestMethod.POST)
+	public String listSwitchingRedirection(@RequestBody RequestListSwitching requestListSwitching,
+			HttpServletRequest request, HttpServletResponse response) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestListSwitching);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<HashMap<String, Object>> data = new ArrayList<>();
+
+		String username = requestListSwitching.getUsername();
+		String key = requestListSwitching.getKey();
+		String no_polis = customResourceLoader.clearData(requestListSwitching.getNo_polis());
+		Integer pageNumber = requestListSwitching.getPageNumber();
+		Integer pageSize = requestListSwitching.getPageSize();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				// Get SPAJ
+				Pemegang paramGetSPAJ = new Pemegang();
+				paramGetSPAJ.setMspo_policy_no(no_polis);
+				Pemegang dataSPAJ = services.selectGetSPAJ(paramGetSPAJ);
+
+				ArrayList<SwitchingRedirection> arrayList = services
+						.selectListSwitching(dataSPAJ.getReg_spaj(), pageNumber, pageSize);
+				if (arrayList.isEmpty()) {
+					error = false;
+					message = "List switching & redirection empty";
+				} else {
+					error = false;
+					message = "Successfully get data switching & redirection";
+
+					for (Integer i = 0; i < arrayList.size(); i++) {
+						try {
+							HashMap<String, Object> dataTemp = new HashMap<>();
+							SwitchingRedirection m = arrayList.get(i);
+
+							String mpt_id = m.getMpt_id();
+							String description = m.getDescription();
+							String jenis_transaksi = m.getJenis_transaksi();
+							Date req_date = m.getReq_date();
+							Date date_status = m.getDate_status();
+
+							String a = mpt_id;
+							ArrayList<String> arrayMptId = new ArrayList<>();
+							List<String> items = Arrays.asList(a.split("\\s*,\\s*"));
+							for (Integer b = 0; b < items.size(); b++) {
+								arrayMptId.add(items.get(b));
+							}
+
+							dataTemp.put("mpt_id", arrayMptId);
+							dataTemp.put("date_req", req_date != null ? df1.format(req_date) : null);
+							dataTemp.put("date_status", date_status != null ? df1.format(date_status) : null);
+							dataTemp.put("description", description);
+							dataTemp.put("jenis_transaksi", jenis_transaksi);
+
+							data.add(dataTemp);
+						} catch (Exception e) {
+							logger.error(
+									"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+						}
+					}
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 51, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
 	@RequestMapping(value = "/viewswitchingandredirection", produces = "application/json", method = RequestMethod.POST)
 	public String viewSwitchingRedirection(@RequestBody RequestViewSwitchingRedirection requestViewSwitchingRedirection,
 			HttpServletRequest request, HttpServletResponse response) {
@@ -2058,6 +2154,268 @@ public class FinancialTransactionController {
 						message = "Successfully get data";
 						data.put("switching", hashMapSwitching);
 						data.put("redirection", hashMapRedirection);
+					} else {
+						error = true;
+						message = "MPT_ID or No. polis incorrect";
+						resultErr = "Data mpt_id atau no. polis yang dimasukkan salah";
+						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+								+ resultErr);
+					}
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 52, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/viewswitching", produces = "application/json", method = RequestMethod.POST)
+	public String viewSwitching(@RequestBody RequestViewSwitching requestViewSwitching,
+			HttpServletRequest request, HttpServletResponse response) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestViewSwitching);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+
+		String username = requestViewSwitching.getUsername();
+		String key = requestViewSwitching.getKey();
+		String no_polis = customResourceLoader.clearData(requestViewSwitching.getNo_polis());
+		ArrayList<String> arrayData = requestViewSwitching.getMpt_id();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				SwitchingRedirection dataViewSwitchingRedirection = services.selectViewSwitchingRedirection1(arrayData,
+						no_polis);
+
+				// Get SPAJ
+				Pemegang paramGetSPAJ = new Pemegang();
+				paramGetSPAJ.setMspo_policy_no(no_polis);
+				Pemegang dataSPAJ = services.selectGetSPAJ(paramGetSPAJ);
+
+				// M-POLIS
+				if (dataViewSwitchingRedirection != null) {
+					String id = dataViewSwitchingRedirection.getId().trim();
+					String mspo_policy_no_format = dataViewSwitchingRedirection.getMspo_policy_no_format();
+					String payor_name = dataViewSwitchingRedirection.getPayor_name();
+					String status_polis = dataViewSwitchingRedirection.getStatus_polis();
+					String nm_product = dataViewSwitchingRedirection.getNm_product();
+					String jenis_transaksi = dataViewSwitchingRedirection.getLt_transksi();
+					String reason_fu = dataViewSwitchingRedirection.getReason_fu();
+					String description = dataViewSwitchingRedirection.getDescription();
+					String lku_symbol_result = dataViewSwitchingRedirection.getLku_symbol();
+					Date req_date = dataViewSwitchingRedirection.getReq_date();
+					Date status_date = dataViewSwitchingRedirection.getDate_status();
+
+					data.put("id", id);
+					data.put("no_polis", mspo_policy_no_format);
+					data.put("name", payor_name);
+					data.put("status_polis", status_polis);
+					data.put("nm_product", nm_product);
+					data.put("jenis_transaksi", jenis_transaksi);
+					data.put("reason_fu", reason_fu);
+					data.put("description", description);
+					data.put("date_req", req_date != null ? df1.format(req_date) : null);
+					data.put("date_status", status_date != null ? df1.format(status_date) : null);
+
+					// DATA DETAIL TRANSACTION
+					ArrayList<SwitchingRedirection> dataArray = services.selectViewSwitchingRedirection2(arrayData,
+							no_polis);
+					HashMap<String, Object> hashMapSwitching = new HashMap<>();
+					HashMap<String, Object> hashMapRedirection = new HashMap<>();
+					for (Integer a = 0; a < dataArray.size(); a++) {
+						String mpt_id = dataArray.get(a).getMpt_id();
+						BigDecimal lt_id = dataArray.get(a).getLt_id();
+
+						if (lt_id.intValue() == 4) { // 4: Switching
+							ArrayList<SwitchingRedirection> dataSwitching = services
+									.selectViewSwitchingRedirection3(mpt_id, no_polis);
+							ArrayList<HashMap<String, Object>> sourceFundSwitching = new ArrayList<>();
+							ArrayList<HashMap<String, Object>> destFundSwitching = new ArrayList<>();
+							for (Integer b = 0; b < dataSwitching.size(); b++) {
+								HashMap<String, Object> dataTempSwitchingD = new HashMap<>();
+								HashMap<String, Object> dataTempSwitchingK = new HashMap<>();
+								String lji_id = dataSwitching.get(b).getLji_id();
+								String lji_invest = dataSwitching.get(b).getLji_invest();
+								String lku_symbol = dataSwitching.get(b).getLku_symbol();
+								String mpt_dk = dataSwitching.get(b).getMpt_dk();
+								Integer mpt_persen = dataSwitching.get(b).getMpt_persen().intValue();
+								BigDecimal mpt_jumlah = dataSwitching.get(b).getMpt_jumlah();
+								BigDecimal mpt_unit = dataSwitching.get(b).getMpt_unit();
+
+								if (mpt_dk.equalsIgnoreCase("k")) {
+									dataTempSwitchingK.put("lji_id", lji_id);
+									dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
+									dataTempSwitchingK.put("mpt_unit", mpt_unit);
+									dataTempSwitchingK.put("mpt_dk", mpt_dk);
+									dataTempSwitchingK.put("lji_invest", lji_invest);
+									dataTempSwitchingK.put("lku_symbol", lku_symbol);
+
+									sourceFundSwitching.add(dataTempSwitchingK);
+								} else {
+									dataTempSwitchingD.put("lji_id", lji_id);
+									dataTempSwitchingD.put("mpt_persen", mpt_persen);
+									dataTempSwitchingD.put("mpt_jumlah", mpt_jumlah);
+									dataTempSwitchingD.put("mpt_unit", mpt_unit);
+									dataTempSwitchingD.put("mpt_dk", mpt_dk);
+									dataTempSwitchingD.put("lji_invest", lji_invest);
+									dataTempSwitchingD.put("lku_symbol", lku_symbol);
+
+									destFundSwitching.add(dataTempSwitchingD);
+								}
+							}
+
+							// GET ADMIN FEE & PERCENTAGE ADMIN FEE
+							String biaya = null;
+							ArrayList<CostFinancialTransaction> resultSelect = services
+									.selectBiayaForFinancialTransaction(dataSPAJ.getReg_spaj(), mpt_id);
+							if (!resultSelect.isEmpty()) {
+								CostFinancialTransaction m = resultSelect.get(0);
+								BigDecimal jumlahBiaya = m.getJumlah();
+								BigDecimal persenBiaya = m.getPersen();
+
+								if (persenBiaya.intValue() == 0 && jumlahBiaya.intValue() == 0) {
+									biaya = lku_symbol_result + " " + nfZeroTwo.format(jumlahBiaya);
+								} else if (persenBiaya.intValue() != 0 && jumlahBiaya.intValue() == 0) {
+									biaya = persenBiaya.intValue() + "%";
+								} else {
+									biaya = lku_symbol_result + " " + nfZeroTwo.format(jumlahBiaya);
+								}
+							}
+
+							hashMapSwitching.put("admin_fee_switching", biaya);
+							hashMapSwitching.put("sourceFund", sourceFundSwitching);
+							hashMapSwitching.put("destFund", destFundSwitching);
+							hashMapRedirection = null;
+						}
+					}
+
+					error = false;
+					message = "Successfully get data";
+					data.put("switching", hashMapSwitching);
+					data.put("redirection", hashMapRedirection);
+				} else {
+					SwitchingRedirection dataViewSwitchingPaper = services.selectViewSwitchingPaper(arrayData,
+							dataSPAJ.getReg_spaj());
+					// Paper
+					if (dataViewSwitchingPaper != null) {
+						String id = dataViewSwitchingPaper.getId().trim();
+						String mspo_policy_no_format = dataViewSwitchingPaper.getMspo_policy_no_format();
+						String payor_name = dataViewSwitchingPaper.getPayor_name();
+						String status_polis = dataViewSwitchingPaper.getStatus_polis();
+						String nm_product = dataViewSwitchingPaper.getNm_product();
+						String jenis_transaksi = dataViewSwitchingPaper.getLt_transksi();
+						String reason_fu = null;
+						String description = dataViewSwitchingPaper.getDescription();
+						String reg_spaj = dataViewSwitchingPaper.getReg_spaj();
+						String lku_symbol_result = dataViewSwitchingPaper.getLku_symbol();
+						BigDecimal biaya = dataViewSwitchingPaper.getBiaya();
+						Date req_date = dataViewSwitchingPaper.getReq_date();
+						Date status_date = dataViewSwitchingPaper.getDate_status();
+
+						data.put("id", id);
+						data.put("no_polis", mspo_policy_no_format);
+						data.put("name", payor_name);
+						data.put("status_polis", status_polis);
+						data.put("nm_product", nm_product);
+						data.put("jenis_transaksi", jenis_transaksi);
+						data.put("reason_fu", reason_fu);
+						data.put("description", description);
+						data.put("date_req", req_date != null ? df1.format(req_date) : null);
+						data.put("date_status", status_date != null ? df1.format(status_date) : null);
+
+						HashMap<String, Object> hashMapSwitching = new HashMap<>();
+
+						ArrayList<SwitchingRedirection> dataSwitchingPaper = services.selectViewDetailSwitchingPaper(id,
+								reg_spaj);
+						ArrayList<HashMap<String, Object>> sourceFundSwitching = new ArrayList<>();
+						ArrayList<HashMap<String, Object>> destFundSwitching = new ArrayList<>();
+						for (int x = 0; x < dataSwitchingPaper.size(); x++) {
+							HashMap<String, Object> dataTempSwitchingD = new HashMap<>();
+							HashMap<String, Object> dataTempSwitchingK = new HashMap<>();
+							String lji_id = dataSwitchingPaper.get(x).getLji_id();
+							String lji_invest = dataSwitchingPaper.get(x).getLji_invest();
+							String lku_symbol = dataSwitchingPaper.get(x).getLku_symbol();
+							String mpt_dk = dataSwitchingPaper.get(x).getMpt_dk();
+							BigDecimal mpt_jumlah = dataSwitchingPaper.get(x).getMpt_jumlah();
+							BigDecimal mpt_unit = dataSwitchingPaper.get(x).getMpt_unit();
+							String type_penarikan = dataSwitchingPaper.get(x).getType_penarikan();
+
+							if (mpt_dk.equalsIgnoreCase("k")) {
+								if (type_penarikan.equalsIgnoreCase("unit")) {
+									dataTempSwitchingK.put("mpt_jumlah", 0);
+									dataTempSwitchingK.put("mpt_unit", mpt_unit);
+								} else {
+									dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
+									dataTempSwitchingK.put("mpt_unit", 0);
+								}
+
+								dataTempSwitchingK.put("lji_id", lji_id);
+								dataTempSwitchingK.put("mpt_dk", mpt_dk);
+								dataTempSwitchingK.put("lji_invest", lji_invest);
+								dataTempSwitchingK.put("lku_symbol", lku_symbol);
+
+								sourceFundSwitching.add(dataTempSwitchingK);
+							} else {
+								dataTempSwitchingD.put("mpt_persen", 0);
+								dataTempSwitchingD.put("mpt_jumlah", 0);
+								dataTempSwitchingD.put("mpt_unit", mpt_unit != null ? mpt_unit : 0);
+								dataTempSwitchingD.put("lji_id", lji_id);
+								dataTempSwitchingD.put("mpt_dk", mpt_dk);
+								dataTempSwitchingD.put("lji_invest", lji_invest);
+								dataTempSwitchingD.put("lku_symbol", lku_symbol);
+
+								destFundSwitching.add(dataTempSwitchingD);
+							}
+						}
+
+						String biayaResult = biaya.toString();
+						String admin_fee = null;
+
+						if (lku_symbol_result.equalsIgnoreCase("rp.")) {
+							if (biayaResult.equals("0")) {
+								admin_fee = lku_symbol_result + " " + nfZeroTwo.format(new BigDecimal(biayaResult));
+							} else if (!biayaResult.equals("0") && biayaResult.length() <= 3) {
+								admin_fee = biayaResult + "%";
+							} else {
+								admin_fee = lku_symbol_result + " " + nfZeroTwo.format(new BigDecimal(biayaResult));
+							}
+						} else {
+							admin_fee = lku_symbol_result + " " + biayaResult;
+						}
+
+						hashMapSwitching.put("admin_fee_switching", admin_fee);
+						hashMapSwitching.put("sourceFund", sourceFundSwitching);
+						hashMapSwitching.put("destFund", destFundSwitching);
+
+						error = false;
+						message = "Successfully get data";
+						data.put("switching", hashMapSwitching);
 					} else {
 						error = true;
 						message = "MPT_ID or No. polis incorrect";

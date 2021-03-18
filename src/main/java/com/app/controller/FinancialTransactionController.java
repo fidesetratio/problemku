@@ -1963,7 +1963,7 @@ public class FinancialTransactionController {
 						.selectListSwitching(dataSPAJ.getReg_spaj(), pageNumber, pageSize);
 				if (arrayList.isEmpty()) {
 					error = false;
-					message = "List switching & redirection empty";
+					message = "List switching empty";
 				} else {
 					error = false;
 					message = "Successfully get data switching ";
@@ -1980,12 +1980,6 @@ public class FinancialTransactionController {
 							Date date_status = m.getDate_status();
 							String req_date_format = m.getReq_date_format();
 							String date_status_format = m.getDate_status_format();
-
-							/*
-							 * String a = mpt_id; ArrayList<String> arrayMptId = new ArrayList<>();
-							 * List<String> items = Arrays.asList(a.split("\\s*,\\s*")); for (Integer b = 0;
-							 * b < items.size(); b++) { arrayMptId.add(items.get(b)); }
-							 */
 
 							dataTemp.put("mpt_id", mpt_id);
 							dataTemp.put("date_req", req_date != null ? df1.format(req_date) : null);

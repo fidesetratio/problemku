@@ -2202,10 +2202,7 @@
           		AND X.MU_KE = BIAYA_ULINK.MU_KE(+)
           		AND X.LT_ID = 4 
           		AND Y.MTU_KE = 1
-          		AND NVL(X.NO_REGISTER, TO_CHAR (TO_CHAR (Y.MTU_TGL_TRANS, 'yyyymmdd') || Y.MU_KE)) IN 
-          		<foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
-              		#{mpt_id, jdbcType=VARCHAR}
-              	</foreach>
+          		AND NVL(X.NO_REGISTER, TO_CHAR (TO_CHAR (Y.MTU_TGL_TRANS, 'yyyymmdd') || Y.MU_KE)) = #{mpt_id, jdbcType=VARCHAR}
           		) ULINK 
           		ON A.REG_SPAJ = ULINK.REG_SPAJ
  			WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} AND C.LSBS_ID <![CDATA[<]]> 300
@@ -2330,10 +2327,7 @@
                INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
                INNER JOIN EKA.LST_KURS G ON B.LKU_ID = G.LKU_ID
          WHERE b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
-               AND mpt_id IN 
-               <foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
-                    #{mpt_id, jdbcType=VARCHAR}
-                </foreach>
+               AND mpt_id = #{mpt_id, jdbcType=VARCHAR}
                AND D.LSBS_ID <![CDATA[<]]> 300)
  		WHERE mpt_id IS NOT NULL
 	</select>
@@ -2348,10 +2342,7 @@
           		AS jenis_transaksi
   			FROM eka.mst_mpol_trans a
   			inner join eka.mst_policy b on a.reg_spaj = b.reg_spaj
- 			WHERE mpt_id IN 
-			<foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
-				#{mpt_id, jdbcType=VARCHAR}
-			</foreach>
+ 			WHERE mpt_id = #{mpt_id, jdbcType=VARCHAR}
 			and b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
 	</select>
 	

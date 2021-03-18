@@ -709,11 +709,11 @@ public class VegaServices {
 		return dao.selectListSwitching(hashMap);
 	}
 
-	public SwitchingRedirection selectViewSwitchingPaper(ArrayList<String> arrayData, String reg_spaj) {
+	public SwitchingRedirection selectViewSwitchingPaper(String mpt_id, String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
 		hashMap.put("reg_spaj", reg_spaj);
-		hashMap.put("arrayData", arrayData);
+		hashMap.put("arrayData", mpt_id);
 		return dao.selectViewSwitchingPaper(hashMap);
 	}
 
@@ -725,19 +725,19 @@ public class VegaServices {
 		return dao.selectViewDetailSwitchingPaper(hashMap);
 	}
 
-	public SwitchingRedirection selectViewSwitchingRedirection1(ArrayList<String> arrayData, String no_polis) {
+	public SwitchingRedirection selectViewSwitchingRedirection1(String mpt_id, String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
-		hashMap.put("arrayData", arrayData);
+		hashMap.put("arrayData", mpt_id);
 		hashMap.put("no_polis", no_polis);
 		return dao.selectViewSwitchingRedirection1(hashMap);
 	}
 
-	public ArrayList<SwitchingRedirection> selectViewSwitchingRedirection2(ArrayList<String> arrayData,
+	public ArrayList<SwitchingRedirection> selectViewSwitchingRedirection2(String mpt_id,
 			String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
-		hashMap.put("arrayData", arrayData);
+		hashMap.put("arrayData", mpt_id);
 		hashMap.put("no_polis", no_polis);
 		return dao.selectViewSwitchingRedirection2(hashMap);
 	}

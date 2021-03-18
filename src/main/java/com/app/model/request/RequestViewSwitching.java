@@ -12,7 +12,7 @@ public class RequestViewSwitching implements Serializable {
 	private String username;
 	private String key;
 	private String no_polis;
-	private ArrayList<String> mpt_id;
+	private String mpt_id;
 
 	public String getUsername() {
 		return username;
@@ -24,10 +24,6 @@ public class RequestViewSwitching implements Serializable {
 
 	public String getNo_polis() {
 		return no_polis;
-	}
-
-	public ArrayList<String> getMpt_id() {
-		return mpt_id;
 	}
 
 	public void setUsername(String username) {
@@ -42,7 +38,11 @@ public class RequestViewSwitching implements Serializable {
 		this.no_polis = no_polis;
 	}
 
-	public void setMpt_id(ArrayList<String> mpt_id) {
+	public String getMpt_id() {
+		return mpt_id;
+	}
+
+	public void setMpt_id(String mpt_id) {
 		this.mpt_id = mpt_id;
 	}
 }

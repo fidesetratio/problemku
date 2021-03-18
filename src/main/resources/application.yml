@@ -14,7 +14,7 @@ management:
 # Remember that the name of the application has to be the same name of the registered service in the service discovery tool
 spring:
   profiles:
-    active: "uatprod"
+    active: "dev"
   application:
     name: api-vega
 

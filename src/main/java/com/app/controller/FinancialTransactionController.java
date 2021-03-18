@@ -1719,12 +1719,7 @@ public class FinancialTransactionController {
 									tempData.put("policy_value", nilai.setScale(2));
 									tempData.put("unit_price", harga_Unit.setScale(5).doubleValue());
 									tempData.put("total_unit", total_Unit.setScale(5).doubleValue());
-									
-									if (fund.isEmpty()) {
-										tempData.put("list_fund_destination", null);
-									} else {
-										tempData.put("list_fund_destination", fund);
-									}
+									tempData.put("bentuk_pengalihan", bentukPengalihan);
 
 									investment.add(tempData);
 								}
@@ -1782,8 +1777,13 @@ public class FinancialTransactionController {
 							error = false;
 							message = "Successfully get data";
 							dataJenis.put("formulir_switching", hashMapBasicInformation);
-							dataJenis.put("bentuk_pengalihan", bentukPengalihan);
 							dataJenis.put("soure_jenis_dana_investasi", investment);
+
+							if (fund.isEmpty()) {
+								hashMapBasicInformation.put("list_fund_destination", null);
+							} else {
+								hashMapBasicInformation.put("list_fund_destination", fund);
+							}
 
 							dataJenis.put("keterangan", keterangan);
 

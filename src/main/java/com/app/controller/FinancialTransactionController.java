@@ -3608,6 +3608,213 @@ public class FinancialTransactionController {
 
 		return res;
 	}
+	
+	@RequestMapping(value = "/submitswitching", produces = "application/json", method = RequestMethod.POST)
+	public String submitSwitching(
+			@RequestBody RequestSubmitSwitchingRedirection requestSubmitSwitchingRedirection,
+			HttpServletRequest request, HttpServletResponse response) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestSubmitSwitchingRedirection);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+
+		String username = requestSubmitSwitchingRedirection.getUsername();
+		String key = requestSubmitSwitchingRedirection.getKey();
+		String no_polis = requestSubmitSwitchingRedirection.getNo_polis();
+		Integer lt_id = requestSubmitSwitchingRedirection.getLt_id();
+		Integer language_id = requestSubmitSwitchingRedirection.getLanguage_id();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+
+				// Select Configuration M-Polis
+				HashMap<String, Object> dataConfiguration = services.configuration();
+
+				if (lt_id.equals(4)) { // 4: Switching
+					String mpt_id_switching = requestSubmitSwitchingRedirection.getSwitching().getMpt_id_switching();
+					String lku_id = requestSubmitSwitchingRedirection.getSwitching().getLku_id();
+					BigDecimal mpt_jumlah = requestSubmitSwitchingRedirection.getSwitching().getMpt_jumlah();
+					BigDecimal mpt_unit = requestSubmitSwitchingRedirection.getSwitching().getMpt_unit();
+					String payor_name = requestSubmitSwitchingRedirection.getSwitching().getPayor_name();
+
+					// Check detail switching empty or not
+					DetailSwitching listDetailSwitching = requestSubmitSwitchingRedirection.getSwitching()
+							.getDetail_switching();
+					Integer checkTransId = services.selectCountTransId(mpt_id_switching.toString());
+
+					// Check jumlah fund yang dimasukkan (jumlah fund harus 100)
+					List<Float> sumPercentageFund = new ArrayList<>();
+					JSONArray fundsCheck = new JSONArray(
+							requestSubmitSwitchingRedirection.getSwitching().getDetail_switching().getDestination());
+					float sum = 0;
+					for (int i = 0; i < fundsCheck.length(); i++) {
+						try {
+							float percentage = fundsCheck.getJSONObject(i).getFloat("mpt_persen");
+							sumPercentageFund.add(percentage);
+							sum += sumPercentageFund.get(i);
+						} catch (Exception e) {
+							logger.error(
+									"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+						}
+					}
+
+					Integer sumInt = (int) sum;
+
+					if (listDetailSwitching == null) {
+						error = true;
+						message = "Data detail switching empty";
+						resultErr = "Data detail switching tidak boleh kosong, mpt_id: " + mpt_id_switching;
+						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+								+ resultErr);
+					} else if ((mpt_jumlah == BigDecimal.ZERO && mpt_unit == BigDecimal.ZERO) || (mpt_jumlah == null)
+							|| (mpt_unit == null)) {
+						error = true;
+						message = "MPT_JUMLAH & MPT_UNIT empty";
+						resultErr = "MPT_JUMLAH & MPT_UNIT Kosong/ ada data yang null, MPT_ID: " + mpt_id_switching;
+						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+								+ resultErr);
+					} else if (checkTransId > 0) {
+						error = true;
+						message = "MPT_ID has been used";
+						resultErr = "MPT_ID yang disubmit sudah pernah digunakan, MPT_ID: " + mpt_id_switching;
+						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+								+ resultErr);
+					} else if (!sumInt.equals(100)) {
+						error = true;
+						message = "Percentage destination fund not 100%";
+						resultErr = "Persentase fund destination tidak 100%, MPT_ID: " + mpt_id_switching;
+						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+								+ resultErr);
+					} else {
+						// Get SPAJ
+						Pemegang paramGetSPAJ = new Pemegang();
+						paramGetSPAJ.setMspo_policy_no(no_polis);
+						Pemegang dataSPAJ = services.selectGetSPAJ(paramGetSPAJ);
+
+						// Get tanggal transaksi
+						ProductUtama dataProductCode = services.selectProductCode(dataSPAJ.getReg_spaj());
+						BigDecimal lsbs_id = dataProductCode.getLsbs_id();
+						BigDecimal lsdbs_number = dataProductCode.getLsdbs_number();
+
+						String lsbs_idToStr = lsbs_id.toString();
+						String lsdbs_numberToStr = lsdbs_number.toString();
+						String combinationProductCode = lsbs_idToStr + lsdbs_numberToStr;
+						Integer group_product = 0;
+
+						if (lsbs_idToStr.equals("213") || lsbs_idToStr.equals("216")) {
+							group_product = 1;
+						} else if (combinationProductCode.equals("1345") || combinationProductCode.equals("13410")
+								|| combinationProductCode.equals("13411") || combinationProductCode.equals("13412")
+								|| combinationProductCode.equals("2151")) {
+							group_product = 1;
+						}
+
+						String dateTransaction = customResourceLoader.getDateTransaction(group_product);
+
+						// Insert EKA.MST_MPOL_TRANS
+						services.insertSwitching(mpt_id_switching, customResourceLoader.getDatetimeJava1(),
+								dataSPAJ.getReg_spaj(), lt_id, lku_id, mpt_jumlah, mpt_unit,
+								customResourceLoader.getDatetimeJava(), payor_name, dateTransaction);
+
+						for (Integer a = 0; a < listDetailSwitching.getSource().size(); a++) {
+							try {
+								String lji_id = requestSubmitSwitchingRedirection.getSwitching().getDetail_switching()
+										.getSource().get(a).getLji_id();
+								BigDecimal mpt_jumlah_det = requestSubmitSwitchingRedirection.getSwitching()
+										.getDetail_switching().getSource().get(a).getMpt_jumlah();
+								BigDecimal mpt_unit_det = requestSubmitSwitchingRedirection.getSwitching()
+										.getDetail_switching().getSource().get(a).getMpt_unit();
+								String mpt_dk = requestSubmitSwitchingRedirection.getSwitching().getDetail_switching()
+										.getSource().get(a).getMpt_dk();
+
+								// Insert EKA.MST_MPOL_TRANS_DET
+								services.insertDetailSwitching(mpt_id_switching, lji_id, 0, mpt_jumlah_det,
+										mpt_unit_det, mpt_dk);
+							} catch (Exception e) {
+								logger.error("Path: " + request.getServletPath() + ", case: looping source switching"
+										+ ", Username: " + username + " Error: " + e.getMessage());
+							}
+						}
+
+						for (Integer a = 0; a < listDetailSwitching.getDestination().size(); a++) {
+							try {
+								String lji_id = requestSubmitSwitchingRedirection.getSwitching().getDetail_switching()
+										.getDestination().get(a).getLji_id();
+								BigDecimal mpt_jumlah_det = requestSubmitSwitchingRedirection.getSwitching()
+										.getDetail_switching().getDestination().get(a).getMpt_jumlah();
+								BigDecimal mpt_unit_det = requestSubmitSwitchingRedirection.getSwitching()
+										.getDetail_switching().getDestination().get(a).getMpt_unit();
+								Integer mpt_persen = requestSubmitSwitchingRedirection.getSwitching()
+										.getDetail_switching().getDestination().get(a).getMpt_persen();
+								String mpt_dk = requestSubmitSwitchingRedirection.getSwitching().getDetail_switching()
+										.getDestination().get(a).getMpt_dk();
+
+								// Insert EKA.MST_MPOL_TRANS_DET
+								services.insertDetailSwitching(mpt_id_switching, lji_id, mpt_persen, mpt_jumlah_det,
+										mpt_unit_det, mpt_dk);
+							} catch (Exception e) {
+								logger.error("Path: " + request.getServletPath() + ", case: looping dest switching"
+										+ ", Username: " + username + " Error: " + e.getMessage());
+							}
+						}
+
+						// Hit SP Bang Billi Jalanin transaksi
+						services.storedProcedureSubmitFinancialTransaction(dataSPAJ.getReg_spaj(), mpt_id_switching);
+
+						// Send Notification
+						String messageNotif = null;
+
+						if (language_id.equals(1)) {
+							messageNotif = (String) dataConfiguration.get("NOTIFICATION_SWITCHING_IDN");
+						} else {
+							messageNotif = (String) dataConfiguration.get("NOTIFICATION_SWITCHING_ENG");
+						}
+
+						customResourceLoader.pushNotif(username, messageNotif, no_polis, dataSPAJ.getReg_spaj(), 11, 0);
+
+						error = false;
+						message = "Successfully submit switching";
+					}
+				} else { // Type not found
+					error = true;
+					message = "Failed get data";
+					resultErr = "Type submit yang dimasukkan tidak sesuai";
+					logger.error(
+							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			// Push Notification Telegram
+			customResourceLoader.pushTelegram("@mfajarsep_bot",
+					"Path: " + request.getServletPath() + " username: " + username + "," + " Error: " + e);
+
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 53, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
 
 	@RequestMapping(value = "/withdraw", produces = "application/json", method = RequestMethod.POST)
 	public String withdraw(@RequestBody RequestWithdraw requestWithdraw, HttpServletRequest request,

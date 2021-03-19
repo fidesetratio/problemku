@@ -9,6 +9,7 @@ import com.app.model.Article;
 import com.app.model.BenefitCorporate;
 import com.app.model.Billing;
 import com.app.model.ClaimCorporate;
+import com.app.model.ClaimLimit;
 import com.app.model.ClaimSubmission;
 import com.app.model.ClaimSubmissionCorporate;
 import com.app.model.CostFinancialTransaction;
@@ -256,6 +257,8 @@ public interface VegaMapper {
 	public ArrayList<Fund> selectFundOfProductSwitching(HashMap<String, Object> hashMap);
 
 	public ArrayList<ClaimSubmission> selectListClaimSubmission(HashMap<String, Object> hashMap);
+	
+	public ArrayList<ClaimLimit> selectClaimLimit(HashMap<String, Object> hashMap);
 
 	public ClaimSubmission selectViewClaimsubmission(HashMap<String, Object> hashMap);
 

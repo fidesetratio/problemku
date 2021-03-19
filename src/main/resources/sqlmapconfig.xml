@@ -42,6 +42,7 @@
 		<typeAlias type="com.app.model.Withdraw" alias="Withdraw"/>
 		<typeAlias type="com.app.model.DetailWithdraw" alias="DetailWithdraw"/>
 		<typeAlias type="com.app.model.ClaimSubmission" alias="ClaimSubmission"/>
+		<typeAlias type="com.app.model.ClaimLimit" alias="ClaimLimit"/>
 		<typeAlias type="com.app.model.MpolisConfiguration" alias="MpolisConfiguration"/>
 		<typeAlias type="com.app.model.request.RequestTrackingPolis" alias="RequestTrackingPolis"/>
 		<typeAlias type="com.app.model.UserCorporate" alias="UserCorporate"/>

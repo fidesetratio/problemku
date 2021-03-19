@@ -15,6 +15,7 @@ import com.app.model.Article;
 import com.app.model.BenefitCorporate;
 import com.app.model.Billing;
 import com.app.model.ClaimCorporate;
+import com.app.model.ClaimLimit;
 import com.app.model.ClaimSubmission;
 import com.app.model.ClaimSubmissionCorporate;
 import com.app.model.CostFinancialTransaction;
@@ -844,6 +845,13 @@ public class VegaServices {
 		hashMap.put("pageNumber", pageNumber);
 		hashMap.put("pageSize", pageSize);
 		return dao.selectListClaimSubmission(hashMap);
+	}
+	
+	public ArrayList<ClaimLimit> selectClaimLimit(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("no_polis", no_polis);
+		return dao.selectClaimLimit(hashMap);
 	}
 
 	public ClaimSubmission selectViewClaimsubmission(String reg_spaj, BigInteger mpc_id) {

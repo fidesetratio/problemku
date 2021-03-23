@@ -709,6 +709,11 @@ public class VegaServices {
 		hashMap.put("pageSize", pageSize);
 		return dao.selectListSwitching(hashMap);
 	}
+	
+	public String selectFlagTrans(String mpt_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectFlagTrans(mpt_id);
+	}
 
 	public SwitchingRedirection selectViewSwitchingPaper(String mpt_id, String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);

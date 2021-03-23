@@ -2014,6 +2014,22 @@
 		WHERE   r__ <![CDATA[>=]]> (((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize, jdbcType=INTEGER}) + 1)
 	</select>
 	
+	<select id="selectFlagTrans" parameterType="String" resultType="String">
+		SELECT  CASE
+		            WHEN RES = 0
+		                THEN 'new'
+		            ELSE 'old'
+		        END AS FLAG_TRANS
+		FROM    (
+		        SELECT  COUNT (*) AS res
+		        FROM    EKA.MST_MPOL_TRANS_DET
+		        WHERE   MPT_ID = '2019001439'
+		            AND LJI_ID_KE IS NULL
+		            AND PERSEN_KE IS NULL
+		            AND JUMLAH_KE IS NULL
+		            AND UNIT_KE IS NULL)
+	</select>
+	
 	<select id="selectListWithdraw" parameterType="HashMap" resultType="com.app.model.Withdraw">
 	    SELECT * FROM
         (

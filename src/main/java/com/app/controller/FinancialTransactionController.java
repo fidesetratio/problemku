@@ -31,6 +31,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -1990,6 +1991,9 @@ public class FinancialTransactionController {
 							dataTemp.put("date_status_format", date_status_format != null ? date_status_format : null);
 							dataTemp.put("description", description);
 							dataTemp.put("jenis_transaksi", jenis_transaksi);
+							
+							String flag_trans = services.selectFlagTrans(mpt_id);
+							dataTemp.put("flag_trans", flag_trans);
 
 							data.add(dataTemp);
 						} catch (Exception e) {
@@ -3648,14 +3652,16 @@ public class FinancialTransactionController {
 							.getDetail_switching();
 					Integer checkTransId = services.selectCountTransId(mpt_id_switching.toString());
 
-					// Check jumlah fund yang dimasukkan (jumlah fund harus 100)
+					/*// Check jumlah fund yang dimasukkan (jumlah fund harus 100)
 					List<Float> sumPercentageFund = new ArrayList<>();
-					JSONArray fundsCheck = new JSONArray(
-							requestSubmitSwitchingRedirection.getSwitching().getDetail_switching().getDestination());
+					JSONArray sourceCheck = new JSONArray(
+							requestSubmitSwitchingRedirection.getSwitching().getDetail_switching().getSource());
 					float sum = 0;
-					for (int i = 0; i < fundsCheck.length(); i++) {
+					for (int i = 0; i < sourceCheck.length(); i++) {
 						try {
-							float percentage = fundsCheck.getJSONObject(i).getFloat("mpt_persen");
+							JSONObject source = sourceCheck.getJSONObject(i);
+							
+							
 							sumPercentageFund.add(percentage);
 							sum += sumPercentageFund.get(i);
 						} catch (Exception e) {
@@ -3664,7 +3670,7 @@ public class FinancialTransactionController {
 						}
 					}
 
-					Integer sumInt = (int) sum;
+					Integer sumInt = (int) sum;*/
 
 					if (listDetailSwitching == null) {
 						error = true;
@@ -3685,13 +3691,13 @@ public class FinancialTransactionController {
 						resultErr = "MPT_ID yang disubmit sudah pernah digunakan, MPT_ID: " + mpt_id_switching;
 						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 								+ resultErr);
-					} else if (!sumInt.equals(100)) {
+					}/* else if (!sumInt.equals(100)) {
 						error = true;
 						message = "Percentage destination fund not 100%";
 						resultErr = "Persentase fund destination tidak 100%, MPT_ID: " + mpt_id_switching;
 						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 								+ resultErr);
-					} else {
+					}*/ else {
 						// Get SPAJ
 						Pemegang paramGetSPAJ = new Pemegang();
 						paramGetSPAJ.setMspo_policy_no(no_polis);

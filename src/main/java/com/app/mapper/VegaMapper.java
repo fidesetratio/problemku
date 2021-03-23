@@ -222,6 +222,8 @@ public interface VegaMapper {
 
 	public ArrayList<SwitchingRedirection> selectListSwitching(HashMap<String, Object> hashMap);
 	
+	public String selectFlagTrans(String mpt_id);
+	
 	public SwitchingRedirection selectViewSwitchingRedirection1(HashMap<String, Object> hashMap);
 
 	public ArrayList<SwitchingRedirection> selectViewSwitchingRedirection2(HashMap<String, Object> hashMap);

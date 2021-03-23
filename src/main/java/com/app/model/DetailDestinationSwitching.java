@@ -2,30 +2,25 @@ package com.app.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 
-public class DetailSourceSwitching implements Serializable {
+public class DetailDestinationSwitching implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4795632694832076271L;
+	private static final long serialVersionUID = -5571045687715024853L;
 	private String lji_id;
+	private Integer mpt_persen;
 	private BigDecimal mpt_jumlah;
 	private BigDecimal mpt_unit;
 	private String mpt_dk;
-	ArrayList<DetailDestSwitching> destination;
-
-	public ArrayList<DetailDestSwitching> getDestination() {
-		return destination;
-	}
-
-	public void setDestination(ArrayList<DetailDestSwitching> destination) {
-		this.destination = destination;
-	}
 
 	public String getLji_id() {
 		return lji_id;
+	}
+
+	public Integer getMpt_persen() {
+		return mpt_persen;
 	}
 
 	public BigDecimal getMpt_jumlah() {
@@ -42,6 +37,10 @@ public class DetailSourceSwitching implements Serializable {
 
 	public void setLji_id(String lji_id) {
 		this.lji_id = lji_id;
+	}
+
+	public void setMpt_persen(Integer mpt_persen) {
+		this.mpt_persen = mpt_persen;
 	}
 
 	public void setMpt_jumlah(BigDecimal mpt_jumlah) {

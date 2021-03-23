@@ -2078,7 +2078,7 @@ public class FinancialTransactionController {
 					data.put("status_polis", status_polis);
 					data.put("nm_product", nm_product);
 					data.put("jenis_transaksi", jenis_transaksi);
-					data.put("reason_fu", reason_fu);
+					data.put("reason_fu", reason_fu != null ? reason_fu : null);
 					data.put("description", description);
 					data.put("date_req", req_date != null ? df1.format(req_date) : null);
 					data.put("date_status", status_date != null ? df1.format(status_date) : null);
@@ -2337,7 +2337,7 @@ public class FinancialTransactionController {
 					data.put("status_polis", status_polis);
 					data.put("nm_product", nm_product);
 					data.put("jenis_transaksi", jenis_transaksi);
-					data.put("reason_fu", reason_fu);
+					data.put("reason_fu", reason_fu != null ? reason_fu : null);
 					data.put("description", description);
 					data.put("date_req", req_date != null ? df1.format(req_date) : null);
 					data.put("date_status", status_date != null ? df1.format(status_date) : null);
@@ -2366,15 +2366,13 @@ public class FinancialTransactionController {
 								BigDecimal mpt_jumlah = dataSwitching.get(b).getMpt_jumlah();
 								BigDecimal mpt_unit = dataSwitching.get(b).getMpt_unit();
 
-								if (mpt_dk.equalsIgnoreCase("k")) {
+								if (b==0 || lji_id!=dataSwitching.get(b-1).getLji_id()) {
 									dataTempSwitchingK.put("lji_id", lji_id);
 									dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
 									dataTempSwitchingK.put("mpt_unit", mpt_unit);
 									dataTempSwitchingK.put("mpt_dk", mpt_dk);
 									dataTempSwitchingK.put("lji_invest", lji_invest);
 									dataTempSwitchingK.put("lku_symbol", lku_symbol);
-
-									sourceFundSwitching.add(dataTempSwitchingK);
 								} else {
 									dataTempSwitchingD.put("lji_id", lji_id);
 									dataTempSwitchingD.put("mpt_persen", mpt_persen);
@@ -2383,9 +2381,10 @@ public class FinancialTransactionController {
 									dataTempSwitchingD.put("mpt_dk", mpt_dk);
 									dataTempSwitchingD.put("lji_invest", lji_invest);
 									dataTempSwitchingD.put("lku_symbol", lku_symbol);
-
-									destFundSwitching.add(dataTempSwitchingD);
 								}
+								
+								sourceFundSwitching.add(dataTempSwitchingK);
+								destFundSwitching.add(dataTempSwitchingD);
 							}
 
 							// GET ADMIN FEE & PERCENTAGE ADMIN FEE

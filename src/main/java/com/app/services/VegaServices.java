@@ -734,7 +734,7 @@ public class VegaServices {
 	public SwitchingRedirection selectViewSwitchingRedirection1(String mpt_id, String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
-		hashMap.put("arrayData", mpt_id);
+		hashMap.put("mpt_id", mpt_id);
 		hashMap.put("no_polis", no_polis);
 		return dao.selectViewSwitchingRedirection1(hashMap);
 	}
@@ -743,7 +743,7 @@ public class VegaServices {
 			String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
-		hashMap.put("arrayData", mpt_id);
+		hashMap.put("mpt_id", mpt_id);
 		hashMap.put("no_polis", no_polis);
 		return dao.selectViewSwitchingRedirection2(hashMap);
 	}

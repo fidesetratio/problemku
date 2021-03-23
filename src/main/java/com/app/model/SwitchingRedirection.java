@@ -28,6 +28,10 @@ public class SwitchingRedirection implements Serializable {
 	private String lji_id;
 	private Float mpt_persen;
 	private String mpt_dk;
+	private String lji_id_ke; 
+	private String persen_ke;
+	private String jumlah_ke;
+	private String unit_ke;
 	private String jenis_transaksi;
 	private String lku_symbol;
 	private String lji_invest;
@@ -42,6 +46,38 @@ public class SwitchingRedirection implements Serializable {
 	private BigInteger mpt_id_switching;
 	private BigDecimal biaya;
 	private String type_penarikan;
+	
+	public String getLji_id_ke() {
+		return lji_id_ke;
+	}
+
+	public void setLji_id_ke(String lji_id_ke) {
+		this.lji_id_ke = lji_id_ke;
+	}
+
+	public String getPersen_ke() {
+		return persen_ke;
+	}
+
+	public void setPersen_ke(String persen_ke) {
+		this.persen_ke = persen_ke;
+	}
+
+	public String getJumlah_ke() {
+		return jumlah_ke;
+	}
+
+	public void setJumlah_ke(String jumlah_ke) {
+		this.jumlah_ke = jumlah_ke;
+	}
+
+	public String getUnit_ke() {
+		return unit_ke;
+	}
+
+	public void setUnit_ke(String unit_ke) {
+		this.unit_ke = unit_ke;
+	}
 
 	public String getMspo_policy_no_format() {
 		return mspo_policy_no_format;

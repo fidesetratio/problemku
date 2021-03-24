@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -2346,6 +2347,9 @@ public class FinancialTransactionController {
 					ArrayList<SwitchingRedirection> dataArray = services.selectViewSwitchingRedirection2(mpt_id,
 							no_polis);
 					HashMap<String, Object> hashMapSwitching = new HashMap<>();
+					HashMap<String, Object> sourceHashMapSwitching = new HashMap<>();
+					HashMap<String, Object> destHashMapSwitching = new HashMap<>();
+					
 					for (Integer a = 0; a < dataArray.size(); a++) {
 						String mpt_id2 = dataArray.get(a).getMpt_id();
 						BigDecimal lt_id = dataArray.get(a).getLt_id();
@@ -2353,38 +2357,74 @@ public class FinancialTransactionController {
 						if (lt_id.intValue() == 4) { // 4: Switching
 							ArrayList<SwitchingRedirection> dataSwitching = services
 									.selectViewSwitchingRedirection3(mpt_id2, no_polis);
-							ArrayList<HashMap<String, Object>> sourceFundSwitching = new ArrayList<>();
-							ArrayList<HashMap<String, Object>> destFundSwitching = new ArrayList<>();
-							for (Integer b = 0; b < dataSwitching.size(); b++) {
+							
+							//GET DESTINATION
+							ArrayList<HashMap<String, Object>> destinationSwitching = new ArrayList<>();
+							for (int i = 0; i < dataSwitching.size(); i++) {
 								HashMap<String, Object> dataTempSwitchingD = new HashMap<>();
-								HashMap<String, Object> dataTempSwitchingK = new HashMap<>();
-								String lji_id = dataSwitching.get(b).getLji_id();
-								String lji_invest = dataSwitching.get(b).getLji_invest();
-								String lku_symbol = dataSwitching.get(b).getLku_symbol();
-								String mpt_dk = dataSwitching.get(b).getMpt_dk();
-								Integer mpt_persen = dataSwitching.get(b).getMpt_persen().intValue();
-								BigDecimal mpt_jumlah = dataSwitching.get(b).getMpt_jumlah();
-								BigDecimal mpt_unit = dataSwitching.get(b).getMpt_unit();
-
-								if (b==0 || lji_id!=dataSwitching.get(b-1).getLji_id()) {
-									dataTempSwitchingK.put("lji_id", lji_id);
-									dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
-									dataTempSwitchingK.put("mpt_unit", mpt_unit);
-									dataTempSwitchingK.put("mpt_dk", mpt_dk);
-									dataTempSwitchingK.put("lji_invest", lji_invest);
-									dataTempSwitchingK.put("lku_symbol", lku_symbol);
-								} else {
-									dataTempSwitchingD.put("lji_id", lji_id);
-									dataTempSwitchingD.put("mpt_persen", mpt_persen);
-									dataTempSwitchingD.put("mpt_jumlah", mpt_jumlah);
-									dataTempSwitchingD.put("mpt_unit", mpt_unit);
-									dataTempSwitchingD.put("mpt_dk", mpt_dk);
-									dataTempSwitchingD.put("lji_invest", lji_invest);
-									dataTempSwitchingD.put("lku_symbol", lku_symbol);
-								}
 								
-								sourceFundSwitching.add(dataTempSwitchingK);
-								destFundSwitching.add(dataTempSwitchingD);
+								String lji_id = dataSwitching.get(i).getLji_id();
+								String lji_id_ke = dataSwitching.get(i).getLji_id_ke();
+								Integer persen_ke = dataSwitching.get(i).getPersen_ke().intValue();
+								BigDecimal jumlah_ke = dataSwitching.get(i).getJumlah_ke();
+								BigDecimal unit_ke = dataSwitching.get(i).getUnit_ke();
+								String mpt_dk = dataSwitching.get(i).getMpt_dk();
+								String lji_invest = dataSwitching.get(i).getLji_invest();
+								String lku_symbol = dataSwitching.get(i).getLku_symbol();
+								
+								dataTempSwitchingD.put("lji_id", lji_id);
+								dataTempSwitchingD.put("lji_id_ke", lji_id_ke);
+								dataTempSwitchingD.put("persen_ke", persen_ke);
+								dataTempSwitchingD.put("jumlah_ke", jumlah_ke);
+								dataTempSwitchingD.put("unit_ke", unit_ke);
+								dataTempSwitchingD.put("mpt_dk", mpt_dk);
+								dataTempSwitchingD.put("lji_invest", lji_invest);
+								dataTempSwitchingD.put("lku_symbol", lku_symbol);
+								
+								destinationSwitching.add(dataTempSwitchingD);
+							}
+							
+							//GET SOURCE
+							ArrayList<HashMap<String, Object>> sourceSwitching = new ArrayList<>();
+							for (int i = 0; i < dataSwitching.size(); i++) {
+								HashMap<String, Object> dataTempSwitchingK = new HashMap<>();
+								
+								String lji_id = dataSwitching.get(i).getLji_id();
+								//Integer mpt_persen = dataSwitching.get(i).getMpt_persen().intValue();
+								BigDecimal mpt_jumlah = dataSwitching.get(i).getMpt_jumlah();
+								BigDecimal mpt_unit = dataSwitching.get(i).getMpt_unit();
+								String mpt_dk = dataSwitching.get(i).getMpt_dk();
+								String lji_invest = dataSwitching.get(i).getLji_invest();
+								String lku_symbol = dataSwitching.get(i).getLku_symbol();
+								
+								dataTempSwitchingK.put("lji_id", lji_id);
+								dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
+								dataTempSwitchingK.put("mpt_unit", mpt_unit);
+								//dataTempSwitchingK.put("mpt_persen", mpt_persen);
+								dataTempSwitchingK.put("mpt_dk", mpt_dk);
+								dataTempSwitchingK.put("lji_invest", lji_invest);
+								dataTempSwitchingK.put("lku_symbol", lku_symbol);
+								
+								sourceSwitching.add(dataTempSwitchingK);
+							}
+							
+							List<HashMap<String, Object>> newSource = sourceSwitching.stream().distinct().collect(Collectors.toList());
+							sourceHashMapSwitching.put("sourceFund", newSource);
+							
+							
+							
+							//MAPPING DEST TO SOURCE
+							for (int i = 0; i < newSource.size(); i++) {
+								HashMap<String, Object> hashmapS = newSource.get(i);
+								String lji_id1 = (String) hashmapS.get("lji_id");
+								for (int j = 0; j < destinationSwitching.size(); j ++) {
+									HashMap<String, Object> hashmapK = destinationSwitching.get(j);
+									String lji_id2 = (String) hashmapK.get("lji_id");
+									
+									if(lji_id1.equals(lji_id2)) {
+										sourceHashMapSwitching.put("destFund", destinationSwitching);
+									}
+								}
 							}
 
 							// GET ADMIN FEE & PERCENTAGE ADMIN FEE
@@ -2406,8 +2446,9 @@ public class FinancialTransactionController {
 							}
 
 							hashMapSwitching.put("admin_fee_switching", biaya);
-							hashMapSwitching.put("sourceFund", sourceFundSwitching);
-							hashMapSwitching.put("destFund", destFundSwitching);
+							hashMapSwitching.putAll(sourceHashMapSwitching);
+							//hashMapSwitching.put("sourceFund", sourceFundSwitching);
+							//hashMapSwitching.put("destFund", destFundSwitching);
 						}
 					}
 
@@ -5552,6 +5593,49 @@ public class FinancialTransactionController {
 					error = false;
 					message = "Data claim limit is empty";
 				} else {
+					List<String> listClaim = new ArrayList<String>();
+					for (int i = 0; i < arrayList.size(); i++) {
+						String distinctClaim = arrayList.get(i).getLsdbs_name();
+						listClaim.add(distinctClaim);
+					}
+
+					List<String> distinctClaim = listClaim.stream().distinct().collect(Collectors.toList());
+					for (int x = 0; x < distinctClaim.size(); x++) {
+						HashMap<String, Object> dataTemp = new HashMap<>();
+						String nm_produk = distinctClaim.get(x);
+						dataTemp.put("lsdbs_name", nm_produk);
+						ArrayList<HashMap<String, Object>> detailsClaim = new ArrayList<>();
+						for (int y = 0; y < arrayList.size(); y++) {
+							if (arrayList.get(y).getLsdbs_name().equals(distinctClaim.get(x))) {
+								HashMap<String, Object> dataClaimDetails = new HashMap<>();
+								Integer lgc_group_id = arrayList.get(y).getLgc_group_id();
+								String lgc_description = arrayList.get(y).getLgc_description();
+								Integer ljj_jenis_id = arrayList.get(y).getLjj_jenis_id();
+								String ljj_jenis_jaminan = arrayList.get(y).getLjj_jenis_jaminan();
+								String lmc_max_claim = arrayList.get(y).getLmc_max_claim();
+								String lmc_batasan = arrayList.get(y).getLmc_batasan();
+								String lmc_max_batasan = arrayList.get(y).getLmc_max_batasan();
+								String mpl_max_disability = arrayList.get(y).getMpl_max_disability();
+								String mpl_max_yearly = arrayList.get(y).getMpl_max_yearly();
+								
+								dataClaimDetails.put("lgc_group_id", lgc_group_id);
+								dataClaimDetails.put("lgc_description", lgc_description);
+								dataClaimDetails.put("ljj_jenis_id", ljj_jenis_id);
+								dataClaimDetails.put("ljj_jenis_jaminan", ljj_jenis_jaminan);
+								dataClaimDetails.put("lmc_max_claim", lmc_max_claim);
+								dataClaimDetails.put("lmc_batasan", lmc_batasan != null ? lmc_batasan : null);
+								dataClaimDetails.put("lmc_max_batasan", lmc_max_batasan != null ? lmc_max_batasan : null);
+								dataClaimDetails.put("mpl_max_disability", mpl_max_disability);
+								dataClaimDetails.put("mpl_max_yearly", mpl_max_yearly);
+
+								detailsClaim.add(dataClaimDetails);
+							}
+						}
+
+						dataTemp.put("details", detailsClaim);
+						data.add(dataTemp);
+					}
+					/*
 					for (int i = 0; i < arrayList.size(); i++) {
 						
 						String lsdbs_name = arrayList.get(i).getLsdbs_name();
@@ -5578,7 +5662,7 @@ public class FinancialTransactionController {
 						hashMapTemp.put("mpl_max_yearly", mpl_max_yearly);
 
 						data.add(hashMapTemp);
-					}
+					}*/
 
 					error = false;
 					message = "Successfully get list data claim submission";

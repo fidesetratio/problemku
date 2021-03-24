@@ -5617,6 +5617,7 @@ public class FinancialTransactionController {
 								String lmc_max_batasan = arrayList.get(y).getLmc_max_batasan();
 								String mpl_max_disability = arrayList.get(y).getMpl_max_disability();
 								String mpl_max_yearly = arrayList.get(y).getMpl_max_yearly();
+								String limit = arrayList.get(y).getLimit();
 								
 								dataClaimDetails.put("lgc_group_id", lgc_group_id);
 								dataClaimDetails.put("lgc_description", lgc_description);
@@ -5627,6 +5628,7 @@ public class FinancialTransactionController {
 								dataClaimDetails.put("lmc_max_batasan", lmc_max_batasan != null ? lmc_max_batasan : null);
 								dataClaimDetails.put("mpl_max_disability", mpl_max_disability);
 								dataClaimDetails.put("mpl_max_yearly", mpl_max_yearly);
+								dataClaimDetails.put("limit", limit);
 
 								detailsClaim.add(dataClaimDetails);
 							}

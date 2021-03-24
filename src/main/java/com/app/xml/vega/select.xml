@@ -2677,7 +2677,7 @@
 		    AND G.REG_SPAJ = H.REG_SPAJ
 		    AND B.LSBS_ID = H.LSBS_ID
 		    AND B.LSDBS_NUMBER = H.LSDBS_NUMBER
-		    AND G.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+		    AND G.MSPO_POLICY_NO = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
 		ORDER BY B.LJJ_JENIS_ID ASC
 	</select>
 	

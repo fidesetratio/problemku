@@ -2023,7 +2023,7 @@
 		FROM    (
 		        SELECT  COUNT (*) AS res
 		        FROM    EKA.MST_MPOL_TRANS_DET
-		        WHERE   MPT_ID = '2019001439'
+		        WHERE   MPT_ID = #{mpt_id, jdbcType=VARCHAR}
 		            AND LJI_ID_KE IS NULL
 		            AND PERSEN_KE IS NULL
 		            AND JUMLAH_KE IS NULL

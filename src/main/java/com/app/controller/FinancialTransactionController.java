@@ -2348,7 +2348,6 @@ public class FinancialTransactionController {
 							no_polis);
 					HashMap<String, Object> hashMapSwitching = new HashMap<>();
 					HashMap<String, Object> sourceHashMapSwitching = new HashMap<>();
-					HashMap<String, Object> destHashMapSwitching = new HashMap<>();
 					
 					for (Integer a = 0; a < dataArray.size(); a++) {
 						String mpt_id2 = dataArray.get(a).getMpt_id();

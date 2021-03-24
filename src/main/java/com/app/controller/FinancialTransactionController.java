@@ -2406,26 +2406,24 @@ public class FinancialTransactionController {
 								dataTempSwitchingK.put("lku_symbol", lku_symbol);
 								
 								sourceSwitching.add(dataTempSwitchingK);
+								
+								//MAPPING DEST TO SOURCE
+								//for (int j = 0; j < sourceSwitching.size(); j++) {
+									HashMap<String, Object> hashmapS = sourceSwitching.get(i);
+									String lji_id1 = (String) hashmapS.get("lji_id");
+									for (int k = 0; k < destinationSwitching.size(); k ++) {
+										HashMap<String, Object> hashmapK = destinationSwitching.get(k);
+										String lji_id2 = (String) hashmapK.get("lji_id");
+										
+										if(lji_id1.equals(lji_id2)) {
+											dataTempSwitchingK.put("destFund", destinationSwitching);
+										}
+									}
+								//}
 							}
 							
 							List<HashMap<String, Object>> newSource = sourceSwitching.stream().distinct().collect(Collectors.toList());
 							sourceHashMapSwitching.put("sourceFund", newSource);
-							
-							
-							
-							//MAPPING DEST TO SOURCE
-							for (int i = 0; i < newSource.size(); i++) {
-								HashMap<String, Object> hashmapS = newSource.get(i);
-								String lji_id1 = (String) hashmapS.get("lji_id");
-								for (int j = 0; j < destinationSwitching.size(); j ++) {
-									HashMap<String, Object> hashmapK = destinationSwitching.get(j);
-									String lji_id2 = (String) hashmapK.get("lji_id");
-									
-									if(lji_id1.equals(lji_id2)) {
-										sourceHashMapSwitching.put("destFund", destinationSwitching);
-									}
-								}
-							}
 
 							// GET ADMIN FEE & PERCENTAGE ADMIN FEE
 							String biaya = null;

@@ -2643,6 +2643,13 @@
 	    SELECT  G.MSPO_POLICY_NO,
 		        C.LSDBS_NAME,
 		        F.*,
+		        case
+		            when c.lsdbs_name like '%MEDICAL%' then D.mpl_max_yearly 
+		            when c.lsdbs_name like '%HOSPITAL%' then B.lmc_max_claim 
+		            when c.lsdbs_name like '%Critical%' then H.mspr_tsi
+		            when c.lsdbs_name like '%Personal Accident%' then H.mspr_tsi
+		            else D.mpl_max_yearly 
+		        end as limit,
 		        A.LJJ_JENIS_ID,
 		        A.LJJ_JENIS_JAMINAN,
 		        B.LMC_MAX_CLAIM,

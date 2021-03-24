@@ -19,7 +19,14 @@ public class ClaimLimit implements Serializable {
 	private String lmc_max_batasan;
 	private String mpl_max_disability;
 	private String mpl_max_yearly;
+	private String limit;
 	
+	public String getLimit() {
+		return limit;
+	}
+	public void setLimit(String limit) {
+		this.limit = limit;
+	}
 	public String getMspo_policy_no() {
 		return mspo_policy_no;
 	}

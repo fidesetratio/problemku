@@ -2327,6 +2327,8 @@
                END
                   AS DESCRIPTION from eka.mst_mpol_trans x where x.mpt_id = a.mpt_id)
                END as DESCRIPTION,
+               A.MPT_JUMLAH AS MPT_JUMLAH_MST,
+               A.MPT_UNIT AS MPT_UNIT_MST,
                C.LT_TRANSKSI,
                A.payor_name,
                B.mspo_policy_no_format,

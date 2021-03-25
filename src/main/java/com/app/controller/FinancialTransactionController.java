@@ -2325,6 +2325,8 @@ public class FinancialTransactionController {
 				if (dataViewSwitchingRedirection != null) {
 					String id = dataViewSwitchingRedirection.getId().trim();
 					String mspo_policy_no_format = dataViewSwitchingRedirection.getMspo_policy_no_format();
+					String mpt_jumlah_mst = dataViewSwitchingRedirection.getMpt_jumlah_mst();
+					String mpt_unit_mst = dataViewSwitchingRedirection.getMpt_unit_mst();
 					String payor_name = dataViewSwitchingRedirection.getPayor_name();
 					String status_polis = dataViewSwitchingRedirection.getStatus_polis();
 					String nm_product = dataViewSwitchingRedirection.getNm_product();
@@ -2337,6 +2339,8 @@ public class FinancialTransactionController {
 
 					data.put("id", id);
 					data.put("no_polis", mspo_policy_no_format);
+					data.put("mpt_jumlah_mst", mpt_jumlah_mst);
+					data.put("mpt_unit_mst", mpt_unit_mst);
 					data.put("name", payor_name);
 					data.put("status_polis", status_polis);
 					data.put("nm_product", nm_product);

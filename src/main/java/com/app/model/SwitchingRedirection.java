@@ -38,6 +38,24 @@ public class SwitchingRedirection implements Serializable {
 	private String id;
 	private String req_date_format;
 	private String date_status_format;
+	private String mpt_jumlah_mst;
+    private String mpt_unit_mst;
+
+	public String getMpt_jumlah_mst() {
+		return mpt_jumlah_mst;
+	}
+
+	public void setMpt_jumlah_mst(String mpt_jumlah_mst) {
+		this.mpt_jumlah_mst = mpt_jumlah_mst;
+	}
+
+	public String getMpt_unit_mst() {
+		return mpt_unit_mst;
+	}
+
+	public void setMpt_unit_mst(String mpt_unit_mst) {
+		this.mpt_unit_mst = mpt_unit_mst;
+	}
 
 	private String date_created_java1;
 	private String date_created_java2;

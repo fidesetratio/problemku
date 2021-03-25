@@ -1268,7 +1268,7 @@ public class LoginRegisterIndividualCorporateController {
 		HashMap<String, Object> data = new HashMap<>();
 
 		String no_hp = reqValidateOTP.getPhone_no();
-		Integer otp_number = reqValidateOTP.getOtp_no();
+		Integer otp_no = reqValidateOTP.getOtp_no();
 		Integer menu_id = reqValidateOTP.getMenu_id();
 		try {
 			Boolean errorPost = true;
@@ -1281,7 +1281,7 @@ public class LoginRegisterIndividualCorporateController {
 			requestValidateOTP.setJenis_id(91);
 			requestValidateOTP.setMenu_id(menu_id);
 			requestValidateOTP.setUsername(no_hp);
-			requestValidateOTP.setOtp_number(otp_number);
+			requestValidateOTP.setOtp_no(otp_no);
 			ResponseData responseValidateOTP = serviceOTP.validateOTP(requestValidateOTP);
 			
 			errorPost = (Boolean) responseValidateOTP.getError();

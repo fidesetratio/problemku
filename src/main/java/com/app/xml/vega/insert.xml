@@ -125,7 +125,8 @@
                 created_date,
                 payor_name,
                 flag_paid,
-                working_days)
+                working_days,
+                flag_source)
      	VALUES (#{mpt_id_switching, jdbcType=VARCHAR},
   				to_date(#{date_created_java1, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
   				#{reg_spaj, jdbcType=VARCHAR},
@@ -137,7 +138,8 @@
   				to_date(#{date_created_java2, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS'),
   				#{payor_name, jdbcType=VARCHAR},
   				0,
-  				to_date(#{working_days, jdbcType=VARCHAR}, 'DD/MM/YYYY'))
+  				to_date(#{working_days, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
+  				93)
 	</insert>
 	
 	<insert id="insertRedirection">

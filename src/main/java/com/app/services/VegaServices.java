@@ -149,7 +149,7 @@ public class VegaServices {
 	}
 
 	public void insertDetailSwitching(String mpt_id, String lji_id, Integer mpt_persen, BigDecimal mpt_jumlah,
-			BigDecimal mpt_unit, String mpt_dk) {
+			BigDecimal mpt_unit, String mpt_dk, String lji_id_ke, Integer persen_ke, BigDecimal jumlah_ke, BigDecimal unit_ke) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
 		hashMap.put("mpt_id", mpt_id);
@@ -158,6 +158,10 @@ public class VegaServices {
 		hashMap.put("mpt_jumlah", mpt_jumlah);
 		hashMap.put("mpt_unit", mpt_unit);
 		hashMap.put("mpt_dk", mpt_dk);
+		hashMap.put("lji_id_ke", lji_id_ke);
+		hashMap.put("persen_ke", persen_ke);
+		hashMap.put("jumlah", jumlah_ke);
+		hashMap.put("unit_ke", unit_ke);
 		dao.insertDetailSwitching(hashMap);
 	}
 

@@ -14,13 +14,14 @@ public class DetailSourceSwitching implements Serializable {
 	private BigDecimal mpt_jumlah;
 	private BigDecimal mpt_unit;
 	private String mpt_dk;
-	ArrayList<DetailDestSwitching> destination;
+	private Integer mpt_persen;
+	ArrayList<DetailDestinationSwitching> destination;
 
-	public ArrayList<DetailDestSwitching> getDestination() {
+	public ArrayList<DetailDestinationSwitching> getDestination() {
 		return destination;
 	}
 
-	public void setDestination(ArrayList<DetailDestSwitching> destination) {
+	public void setDestination(ArrayList<DetailDestinationSwitching> destination) {
 		this.destination = destination;
 	}
 
@@ -54,5 +55,13 @@ public class DetailSourceSwitching implements Serializable {
 
 	public void setMpt_dk(String mpt_dk) {
 		this.mpt_dk = mpt_dk;
+	}
+
+	public Integer getMpt_persen() {
+		return mpt_persen;
+	}
+
+	public void setMpt_persen(Integer mpt_persen) {
+		this.mpt_persen = mpt_persen;
 	}
 }

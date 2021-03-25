@@ -1281,7 +1281,7 @@ public class LoginRegisterIndividualCorporateController {
 			requestValidateOTP.setJenis_id(91);
 			requestValidateOTP.setMenu_id(menu_id);
 			requestValidateOTP.setUsername(no_hp);
-			requestValidateOTP.setOtp_no(otp_no);
+			requestValidateOTP.setOtp_number(otp_no);
 			ResponseData responseValidateOTP = serviceOTP.validateOTP(requestValidateOTP);
 			
 			errorPost = (Boolean) responseValidateOTP.getError();

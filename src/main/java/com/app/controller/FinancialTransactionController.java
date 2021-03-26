@@ -2405,7 +2405,7 @@ public class FinancialTransactionController {
 									HashMap<String, Object> dataTempSwitchingK = new HashMap<>();
 									
 									String lji_id = dataSwitching.get(i).getLji_id();
-									//Integer mpt_persen = dataSwitching.get(i).getMpt_persen().intValue();
+									Integer mpt_persen = dataSwitching.get(i).getMpt_persen().intValue();
 									BigDecimal mpt_jumlah = dataSwitching.get(i).getMpt_jumlah();
 									BigDecimal mpt_unit = dataSwitching.get(i).getMpt_unit();
 									String mpt_dk = dataSwitching.get(i).getMpt_dk();
@@ -2415,7 +2415,7 @@ public class FinancialTransactionController {
 									dataTempSwitchingK.put("lji_id", lji_id);
 									dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
 									dataTempSwitchingK.put("mpt_unit", mpt_unit);
-									//dataTempSwitchingK.put("mpt_persen", mpt_persen);
+									dataTempSwitchingK.put("mpt_persen", mpt_persen);
 									dataTempSwitchingK.put("mpt_dk", mpt_dk);
 									dataTempSwitchingK.put("lji_invest_source", lji_invest_source);
 									dataTempSwitchingK.put("lku_symbol", lku_symbol);
@@ -2454,7 +2454,7 @@ public class FinancialTransactionController {
 										lji_id_bfr = dataSwitching.get(i-1).getLji_id();
 									}
 									
-									//Integer mpt_persen = dataSwitching.get(i).getMpt_persen().intValue();
+									Integer mpt_persen = dataSwitching.get(i).getMpt_persen().intValue();
 									BigDecimal mpt_jumlah = dataSwitching.get(i).getMpt_jumlah();
 									BigDecimal mpt_unit = dataSwitching.get(i).getMpt_unit();
 									String mpt_dk = dataSwitching.get(i).getMpt_dk();
@@ -2465,7 +2465,7 @@ public class FinancialTransactionController {
 									dataTempSwitchingK.put("lji_id", lji_id);
 									dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
 									dataTempSwitchingK.put("mpt_unit", mpt_unit);
-									//dataTempSwitchingK.put("mpt_persen", mpt_persen);
+									dataTempSwitchingK.put("mpt_persen", mpt_persen);
 									dataTempSwitchingK.put("mpt_dk", mpt_dk);
 									dataTempSwitchingK.put("lji_invest_source", lji_invest_source);
 									dataTempSwitchingK.put("lku_symbol", lku_symbol);
@@ -3832,14 +3832,7 @@ public class FinancialTransactionController {
 						resultErr = "Data detail switching tidak boleh kosong, mpt_id: " + mpt_id_switching;
 						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 								+ resultErr);
-					}/* else if ((mpt_jumlah == BigDecimal.ZERO && mpt_unit == BigDecimal.ZERO) || (mpt_jumlah == null)
-							|| (mpt_unit == null)) {
-						error = true;
-						message = "MPT_JUMLAH & MPT_UNIT empty";
-						resultErr = "MPT_JUMLAH & MPT_UNIT Kosong/ ada data yang null, MPT_ID: " + mpt_id_switching;
-						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
-								+ resultErr);
-					}*/ else if (checkTransId > 0) {
+					} else if (checkTransId > 0) {
 						error = true;
 						message = "MPT_ID has been used";
 						resultErr = "MPT_ID yang disubmit sudah pernah digunakan, MPT_ID: " + mpt_id_switching;

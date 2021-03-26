@@ -2355,6 +2355,7 @@ public class FinancialTransactionController {
 							no_polis);
 					HashMap<String, Object> hashMapSwitching = new HashMap<>();
 					HashMap<String, Object> sourceHashMapSwitching = new HashMap<>();
+					Integer flag_double = 0;
 					
 					for (Integer a = 0; a < dataArray.size(); a++) {
 						String mpt_id2 = dataArray.get(a).getMpt_id();
@@ -2371,6 +2372,12 @@ public class FinancialTransactionController {
 								
 								String lji_id = dataSwitching.get(i).getLji_id();
 								String lji_id_ke = dataSwitching.get(i).getLji_id_ke();
+								if(i > 0) {
+									String lji_id_bfr = dataSwitching.get(i-1).getLji_id();
+									if(lji_id_bfr.equals(lji_id)) {
+										flag_double = 1;
+									}
+								}
 								Integer persen_ke = dataSwitching.get(i).getPersen_ke().intValue();
 								BigDecimal jumlah_ke = dataSwitching.get(i).getJumlah_ke();
 								BigDecimal unit_ke = dataSwitching.get(i).getUnit_ke();
@@ -2388,48 +2395,133 @@ public class FinancialTransactionController {
 								dataTempSwitchingD.put("lku_symbol", lku_symbol);
 								
 								destinationSwitching.add(dataTempSwitchingD);
+								
 							}
 							
-							//GET SOURCE
-							ArrayList<HashMap<String, Object>> sourceSwitching = new ArrayList<>();
-							for (int i = 0; i < dataSwitching.size(); i++) {
-								HashMap<String, Object> dataTempSwitchingK = new HashMap<>();
-								
-								String lji_id = dataSwitching.get(i).getLji_id();
-								//Integer mpt_persen = dataSwitching.get(i).getMpt_persen().intValue();
-								BigDecimal mpt_jumlah = dataSwitching.get(i).getMpt_jumlah();
-								BigDecimal mpt_unit = dataSwitching.get(i).getMpt_unit();
-								String mpt_dk = dataSwitching.get(i).getMpt_dk();
-								String lji_invest = dataSwitching.get(i).getLji_invest();
-								String lku_symbol = dataSwitching.get(i).getLku_symbol();
-								
-								dataTempSwitchingK.put("lji_id", lji_id);
-								dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
-								dataTempSwitchingK.put("mpt_unit", mpt_unit);
-								//dataTempSwitchingK.put("mpt_persen", mpt_persen);
-								dataTempSwitchingK.put("mpt_dk", mpt_dk);
-								dataTempSwitchingK.put("lji_invest", lji_invest);
-								dataTempSwitchingK.put("lku_symbol", lku_symbol);
-								
-								sourceSwitching.add(dataTempSwitchingK);
-								
-								//MAPPING DEST TO SOURCE
-								//for (int j = 0; j < sourceSwitching.size(); j++) {
+							if(flag_double == 1) {
+								//GET SOURCE
+								ArrayList<HashMap<String, Object>> sourceSwitching = new ArrayList<>();
+								for (int i = 0; i < dataSwitching.size(); i++) {
+									HashMap<String, Object> dataTempSwitchingK = new HashMap<>();
+									
+									String lji_id = dataSwitching.get(i).getLji_id();
+									//Integer mpt_persen = dataSwitching.get(i).getMpt_persen().intValue();
+									BigDecimal mpt_jumlah = dataSwitching.get(i).getMpt_jumlah();
+									BigDecimal mpt_unit = dataSwitching.get(i).getMpt_unit();
+									String mpt_dk = dataSwitching.get(i).getMpt_dk();
+									String lji_invest = dataSwitching.get(i).getLji_invest();
+									String lku_symbol = dataSwitching.get(i).getLku_symbol();
+									
+									dataTempSwitchingK.put("lji_id", lji_id);
+									dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
+									dataTempSwitchingK.put("mpt_unit", mpt_unit);
+									//dataTempSwitchingK.put("mpt_persen", mpt_persen);
+									dataTempSwitchingK.put("mpt_dk", mpt_dk);
+									dataTempSwitchingK.put("lji_invest", lji_invest);
+									dataTempSwitchingK.put("lku_symbol", lku_symbol);
+									
+									sourceSwitching.add(dataTempSwitchingK);
+									
+									//MAPPING DEST TO SOURCE
 									HashMap<String, Object> hashmapS = sourceSwitching.get(i);
 									String lji_id1 = (String) hashmapS.get("lji_id");
-									for (int k = 0; k < destinationSwitching.size(); k ++) {
-										HashMap<String, Object> hashmapK = destinationSwitching.get(k);
+									
+									for(int j = 0; j < destinationSwitching.size(); j++) {
+										HashMap<String, Object> hashmapK = destinationSwitching.get(j);
 										String lji_id2 = (String) hashmapK.get("lji_id");
 										
 										if(lji_id1.equals(lji_id2)) {
 											dataTempSwitchingK.put("destFund", destinationSwitching);
 										}
 									}
-								//}
+								}
+								
+								List<HashMap<String, Object>> newSource = sourceSwitching.stream().distinct().collect(Collectors.toList());
+								sourceHashMapSwitching.put("sourceFund", newSource);
+
+							}else {
+								List<HashMap<String, Object>> newDest = destinationSwitching.stream().distinct().collect(Collectors.toList());
+								Integer count = 0;
+								//GET SOURCE
+								ArrayList<HashMap<String, Object>> sourceSwitching = new ArrayList<>();
+								for (int i = 0; i < dataSwitching.size(); i++) {
+									HashMap<String, Object> dataTempSwitchingK = new HashMap<>();
+									
+									String lji_id = dataSwitching.get(i).getLji_id();
+									String lji_id_bfr = null;
+									if(i > 0) {
+										lji_id_bfr = dataSwitching.get(i-1).getLji_id();
+									}
+									
+									//Integer mpt_persen = dataSwitching.get(i).getMpt_persen().intValue();
+									BigDecimal mpt_jumlah = dataSwitching.get(i).getMpt_jumlah();
+									BigDecimal mpt_unit = dataSwitching.get(i).getMpt_unit();
+									String mpt_dk = dataSwitching.get(i).getMpt_dk();
+									String lji_invest = dataSwitching.get(i).getLji_invest();
+									String lku_symbol = dataSwitching.get(i).getLku_symbol();
+									
+									
+									dataTempSwitchingK.put("lji_id", lji_id);
+									dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
+									dataTempSwitchingK.put("mpt_unit", mpt_unit);
+									//dataTempSwitchingK.put("mpt_persen", mpt_persen);
+									dataTempSwitchingK.put("mpt_dk", mpt_dk);
+									dataTempSwitchingK.put("lji_invest", lji_invest);
+									dataTempSwitchingK.put("lku_symbol", lku_symbol);
+									
+									sourceSwitching.add(dataTempSwitchingK);
+									
+									if(lji_id_bfr != null && !lji_id_bfr.isEmpty()) {
+										if(lji_id.equals(lji_id_bfr)) {
+											sourceSwitching.remove(i-count);
+											count = count + 1;
+											
+											HashMap<String, Object> hashmapS = sourceSwitching.get(i-count);
+											String lji_id1 = (String) hashmapS.get("lji_id");
+											HashMap<String, Object> hashmapK = newDest.get(i);
+											String lji_id2 = (String) hashmapK.get("lji_id");
+											
+											
+											if(lji_id1.equals(lji_id2)) {
+												dataTempSwitchingK.put("destFund", newDest.get(i));
+											}
+										} else {
+											HashMap<String, Object> hashmapS = sourceSwitching.get(i-count);
+											String lji_id1 = (String) hashmapS.get("lji_id");
+											HashMap<String, Object> hashmapK = newDest.get(i);
+											String lji_id2 = (String) hashmapK.get("lji_id");
+											
+											
+											if(lji_id1.equals(lji_id2)) {
+												dataTempSwitchingK.put("destFund", newDest.get(i));
+											}
+										}
+									} else {
+										HashMap<String, Object> hashmapS = sourceSwitching.get(i-count);
+										String lji_id1 = (String) hashmapS.get("lji_id");
+										HashMap<String, Object> hashmapK = newDest.get(i);
+										String lji_id2 = (String) hashmapK.get("lji_id");
+										
+										
+										if(lji_id1.equals(lji_id2)) {
+											dataTempSwitchingK.put("destFund", newDest.get(i));
+										}
+									}
+									
+									/*HashMap<String, Object> hashmapS = sourceSwitching.get(i);
+									String lji_id1 = (String) hashmapS.get("lji_id");
+									HashMap<String, Object> hashmapK = newDest.get(i);
+									String lji_id2 = (String) hashmapK.get("lji_id");
+									
+									
+									if(lji_id1.equals(lji_id2)) {
+										dataTempSwitchingK.put("destFund", newDest.get(i));
+									}*/
+								}
+								
+								List<HashMap<String, Object>> newSource = sourceSwitching.stream().distinct().collect(Collectors.toList());
+								sourceHashMapSwitching.put("sourceFund", newSource);
 							}
-							
-							List<HashMap<String, Object>> newSource = sourceSwitching.stream().distinct().collect(Collectors.toList());
-							sourceHashMapSwitching.put("sourceFund", newSource);
 
 							// GET ADMIN FEE & PERCENTAGE ADMIN FEE
 							String biaya = null;

@@ -167,15 +167,14 @@
 	
 	<insert id="insertDetailSwitching" parameterType="HashMap">
 		INSERT INTO eka.mst_mpol_trans_det(MPT_ID, LJI_ID, MPT_PERSEN, MPT_JUMLAH, MPT_UNIT, 
-		    MPT_DK, AMOUNT_PROCESS, NAV_PROCESS, UNIT_PROCESS, LJI_ID_KE, 
-		    PERSEN_KE, JUMLAH_KE, UNIT_KE)
+		    MPT_DK, LJI_ID_KE, PERSEN_KE, JUMLAH_KE, UNIT_KE)
 		VALUES
 		    (#{mpt_id, jdbcType=VARCHAR}, 
 		    #{lji_id, jdbcType=VARCHAR}, 
 		    #{mpt_persen, jdbcType=INTEGER}, 
 		    #{mpt_jumlah, jdbcType=DOUBLE},
 		    #{mpt_unit, jdbcType=INTEGER},
-		    'K', NULL, NULL, NULL,
+		    'K',
 		    #{lji_id_ke, jdbcType=VARCHAR}, 
 		    #{persen_ke, jdbcType=INTEGER}, 
 		    #{jumlah_ke, jdbcType=DOUBLE},

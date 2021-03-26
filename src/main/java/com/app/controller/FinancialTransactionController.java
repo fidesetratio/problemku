@@ -2440,12 +2440,13 @@ public class FinancialTransactionController {
 								sourceHashMapSwitching.put("sourceFund", newSource);
 
 							}else {
-								List<HashMap<String, Object>> newDest = destinationSwitching.stream().distinct().collect(Collectors.toList());
+								//List<HashMap<String, Object>> newDest = destinationSwitching.stream().distinct().collect(Collectors.toList());
 								Integer count = 0;
 								//GET SOURCE
 								ArrayList<HashMap<String, Object>> sourceSwitching = new ArrayList<>();
 								for (int i = 0; i < dataSwitching.size(); i++) {
 									HashMap<String, Object> dataTempSwitchingK = new HashMap<>();
+									ArrayList<HashMap<String, Object>> dataTemp = new ArrayList<>();
 									
 									String lji_id = dataSwitching.get(i).getLji_id();
 									String lji_id_bfr = null;
@@ -2478,35 +2479,37 @@ public class FinancialTransactionController {
 											
 											HashMap<String, Object> hashmapS = sourceSwitching.get(i-count);
 											String lji_id1 = (String) hashmapS.get("lji_id");
-											HashMap<String, Object> hashmapK = newDest.get(i);
+											HashMap<String, Object> hashmapK = destinationSwitching.get(i);
 											String lji_id2 = (String) hashmapK.get("lji_id");
 											
 											
 											if(lji_id1.equals(lji_id2)) {
-												dataTempSwitchingK.put("destFund", newDest.get(i));
+												dataTemp.add(destinationSwitching.get(i));
 											}
 										} else {
 											HashMap<String, Object> hashmapS = sourceSwitching.get(i-count);
 											String lji_id1 = (String) hashmapS.get("lji_id");
-											HashMap<String, Object> hashmapK = newDest.get(i);
+											HashMap<String, Object> hashmapK = destinationSwitching.get(i);
 											String lji_id2 = (String) hashmapK.get("lji_id");
 											
 											
 											if(lji_id1.equals(lji_id2)) {
-												dataTempSwitchingK.put("destFund", newDest.get(i));
+												dataTemp.add(destinationSwitching.get(i));
 											}
 										}
 									} else {
 										HashMap<String, Object> hashmapS = sourceSwitching.get(i-count);
 										String lji_id1 = (String) hashmapS.get("lji_id");
-										HashMap<String, Object> hashmapK = newDest.get(i);
+										HashMap<String, Object> hashmapK = destinationSwitching.get(i);
 										String lji_id2 = (String) hashmapK.get("lji_id");
 										
 										
 										if(lji_id1.equals(lji_id2)) {
-											dataTempSwitchingK.put("destFund", newDest.get(i));
+											dataTemp.add(destinationSwitching.get(i));
 										}
 									}
+									
+									dataTempSwitchingK.put("destFund", dataTemp);
 									
 									/*HashMap<String, Object> hashmapS = sourceSwitching.get(i);
 									String lji_id1 = (String) hashmapS.get("lji_id");

@@ -3832,14 +3832,14 @@ public class FinancialTransactionController {
 						resultErr = "Data detail switching tidak boleh kosong, mpt_id: " + mpt_id_switching;
 						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 								+ resultErr);
-					} else if ((mpt_jumlah == BigDecimal.ZERO && mpt_unit == BigDecimal.ZERO) || (mpt_jumlah == null)
+					}/* else if ((mpt_jumlah == BigDecimal.ZERO && mpt_unit == BigDecimal.ZERO) || (mpt_jumlah == null)
 							|| (mpt_unit == null)) {
 						error = true;
 						message = "MPT_JUMLAH & MPT_UNIT empty";
 						resultErr = "MPT_JUMLAH & MPT_UNIT Kosong/ ada data yang null, MPT_ID: " + mpt_id_switching;
 						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 								+ resultErr);
-					} else if (checkTransId > 0) {
+					}*/ else if (checkTransId > 0) {
 						error = true;
 						message = "MPT_ID has been used";
 						resultErr = "MPT_ID yang disubmit sudah pernah digunakan, MPT_ID: " + mpt_id_switching;

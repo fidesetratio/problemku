@@ -2382,7 +2382,7 @@ public class FinancialTransactionController {
 								BigDecimal jumlah_ke = dataSwitching.get(i).getJumlah_ke();
 								BigDecimal unit_ke = dataSwitching.get(i).getUnit_ke();
 								String mpt_dk = dataSwitching.get(i).getMpt_dk();
-								String lji_invest = dataSwitching.get(i).getLji_invest();
+								String lji_invest_dest = dataSwitching.get(i).getLji_invest_dest();
 								String lku_symbol = dataSwitching.get(i).getLku_symbol();
 								
 								dataTempSwitchingD.put("lji_id", lji_id);
@@ -2391,7 +2391,7 @@ public class FinancialTransactionController {
 								dataTempSwitchingD.put("jumlah_ke", jumlah_ke);
 								dataTempSwitchingD.put("unit_ke", unit_ke);
 								dataTempSwitchingD.put("mpt_dk", mpt_dk);
-								dataTempSwitchingD.put("lji_invest", lji_invest);
+								dataTempSwitchingD.put("lji_invest_dest", lji_invest_dest);
 								dataTempSwitchingD.put("lku_symbol", lku_symbol);
 								
 								destinationSwitching.add(dataTempSwitchingD);
@@ -2409,7 +2409,7 @@ public class FinancialTransactionController {
 									BigDecimal mpt_jumlah = dataSwitching.get(i).getMpt_jumlah();
 									BigDecimal mpt_unit = dataSwitching.get(i).getMpt_unit();
 									String mpt_dk = dataSwitching.get(i).getMpt_dk();
-									String lji_invest = dataSwitching.get(i).getLji_invest();
+									String lji_invest_source = dataSwitching.get(i).getLji_invest_source();
 									String lku_symbol = dataSwitching.get(i).getLku_symbol();
 									
 									dataTempSwitchingK.put("lji_id", lji_id);
@@ -2417,7 +2417,7 @@ public class FinancialTransactionController {
 									dataTempSwitchingK.put("mpt_unit", mpt_unit);
 									//dataTempSwitchingK.put("mpt_persen", mpt_persen);
 									dataTempSwitchingK.put("mpt_dk", mpt_dk);
-									dataTempSwitchingK.put("lji_invest", lji_invest);
+									dataTempSwitchingK.put("lji_invest_source", lji_invest_source);
 									dataTempSwitchingK.put("lku_symbol", lku_symbol);
 									
 									sourceSwitching.add(dataTempSwitchingK);
@@ -2458,7 +2458,7 @@ public class FinancialTransactionController {
 									BigDecimal mpt_jumlah = dataSwitching.get(i).getMpt_jumlah();
 									BigDecimal mpt_unit = dataSwitching.get(i).getMpt_unit();
 									String mpt_dk = dataSwitching.get(i).getMpt_dk();
-									String lji_invest = dataSwitching.get(i).getLji_invest();
+									String lji_invest_source = dataSwitching.get(i).getLji_invest_source();
 									String lku_symbol = dataSwitching.get(i).getLku_symbol();
 									
 									
@@ -2467,7 +2467,7 @@ public class FinancialTransactionController {
 									dataTempSwitchingK.put("mpt_unit", mpt_unit);
 									//dataTempSwitchingK.put("mpt_persen", mpt_persen);
 									dataTempSwitchingK.put("mpt_dk", mpt_dk);
-									dataTempSwitchingK.put("lji_invest", lji_invest);
+									dataTempSwitchingK.put("lji_invest_source", lji_invest_source);
 									dataTempSwitchingK.put("lku_symbol", lku_symbol);
 									
 									sourceSwitching.add(dataTempSwitchingK);

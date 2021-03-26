@@ -2365,13 +2365,22 @@
 	</select>
 	
 	<select id="selectViewSwitchingRedirection3" parameterType="HashMap" resultType="SwitchingRedirection">
-		SELECT B.*, D.LJI_INVEST, D.LKU_ID, E.LKU_SYMBOL
-  			FROM EKA.MST_MPOL_TRANS A
-       			INNER JOIN EKA.MST_MPOL_TRANS_DET B ON A.MPT_ID = B.MPT_ID
-       			INNER JOIN EKA.MST_POLICY C ON A.REG_SPAJ = C.REG_SPAJ
-       			INNER JOIN EKA.LST_JENIS_INVEST D ON B.LJI_ID = D.LJI_ID
-       			INNER JOIN EKA.LST_KURS E ON D.LKU_ID = E.LKU_ID
- 		WHERE A.MPT_ID = #{mpt_id, jdbcType=VARCHAR} AND C.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+		SELECT  B.*,
+				D.LJI_INVEST,
+		        D.LJI_INVEST AS LJI_INVEST_SOURCE,
+		        (
+		            SELECT  DD.LJI_INVEST
+		            FROM    EKA.LST_JENIS_INVEST DD
+		            WHERE   B.LJI_ID_KE = DD.LJI_ID) AS LJI_INVEST_DEST,
+		        D.LKU_ID,
+		        E.LKU_SYMBOL
+		FROM    EKA.MST_MPOL_TRANS A
+		        INNER JOIN EKA.MST_MPOL_TRANS_DET B ON A.MPT_ID = B.MPT_ID
+		        INNER JOIN EKA.MST_POLICY C ON A.REG_SPAJ = C.REG_SPAJ
+		        INNER JOIN EKA.LST_JENIS_INVEST D ON B.LJI_ID = D.LJI_ID
+		        INNER JOIN EKA.LST_KURS E ON D.LKU_ID = E.LKU_ID
+		WHERE   A.MPT_ID = #{mpt_id, jdbcType=VARCHAR}
+		    AND C.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
 	</select>
 	
 	<select id="selectViewWithdrawPaper" parameterType="HashMap" resultType="Withdraw">

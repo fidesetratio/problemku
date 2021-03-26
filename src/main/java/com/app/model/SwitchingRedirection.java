@@ -35,11 +35,37 @@ public class SwitchingRedirection implements Serializable {
 	private String jenis_transaksi;
 	private String lku_symbol;
 	private String lji_invest;
+	private String lji_invest_source;
+	private String lji_invest_dest;
 	private String id;
 	private String req_date_format;
 	private String date_status_format;
 	private String mpt_jumlah_mst;
     private String mpt_unit_mst;
+
+	private String date_created_java1;
+	private String date_created_java2;
+	private String reg_spaj;
+	private String lku_id;
+	private BigInteger mpt_id_switching;
+	private BigDecimal biaya;
+	private String type_penarikan;
+	
+	public String getLji_invest_source() {
+		return lji_invest_source;
+	}
+
+	public void setLji_invest_source(String lji_invest_source) {
+		this.lji_invest_source = lji_invest_source;
+	}
+
+	public String getLji_invest_dest() {
+		return lji_invest_dest;
+	}
+
+	public void setLji_invest_dest(String lji_invest_dest) {
+		this.lji_invest_dest = lji_invest_dest;
+	}
 
 	public String getMpt_jumlah_mst() {
 		return mpt_jumlah_mst;
@@ -56,14 +82,6 @@ public class SwitchingRedirection implements Serializable {
 	public void setMpt_unit_mst(String mpt_unit_mst) {
 		this.mpt_unit_mst = mpt_unit_mst;
 	}
-
-	private String date_created_java1;
-	private String date_created_java2;
-	private String reg_spaj;
-	private String lku_id;
-	private BigInteger mpt_id_switching;
-	private BigDecimal biaya;
-	private String type_penarikan;
 
 	public String getLji_id_ke() {
 		return lji_id_ke;

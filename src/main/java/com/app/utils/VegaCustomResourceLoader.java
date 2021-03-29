@@ -51,6 +51,7 @@ import org.springframework.stereotype.Component;
 
 import com.app.model.DetailWithdraw;
 import com.app.model.LstHistActivityWS;
+import com.app.model.LstUserSimultaneous;
 import com.app.model.Provinsi;
 import com.app.model.User;
 import com.app.services.VegaServices;
@@ -125,6 +126,20 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 		User keyDecrypt = services.decryptPassword(paramSelectDecryptPassword);
 
 		if (username.equals(keyDecrypt.getKey())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public Boolean clearKey(String username, String key) {
+		LstUserSimultaneous dataUser = services.selectDataLstUserSimultaneous(username);
+		
+		User paramSelectDecryptPassword = new User();
+		paramSelectDecryptPassword.setKey(dataUser.getPASSWORD());
+		User keyDecrypt = services.decryptPassword(paramSelectDecryptPassword);
+
+		if (key.equals(keyDecrypt.getKey())) {
 			return true;
 		} else {
 			return false;

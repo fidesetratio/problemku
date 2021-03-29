@@ -131,20 +131,6 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 			return false;
 		}
 	}
-	
-	public Boolean clearKey(String username, String key) {
-		LstUserSimultaneous dataUser = services.selectDataLstUserSimultaneous(username);
-		
-		User paramSelectDecryptPassword = new User();
-		paramSelectDecryptPassword.setKey(dataUser.getPASSWORD());
-		User keyDecrypt = services.decryptPassword(paramSelectDecryptPassword);
-
-		if (key.equals(keyDecrypt.getKey())) {
-			return true;
-		} else {
-			return false;
-		}
-	}
 
 	// show list all files in directory
 	public Set<String> listFilesUsingJavaIO(String dir) {

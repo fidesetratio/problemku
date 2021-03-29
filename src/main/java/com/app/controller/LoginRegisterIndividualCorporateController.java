@@ -945,7 +945,7 @@ public class LoginRegisterIndividualCorporateController {
 		String key = requestClearKey.getKey();
 		String token = requestClearKey.getToken();
 		try {
-			if (customResourceLoader.clearKey(username, key)) {
+			if (customResourceLoader.validateCredential(username, key)) {
 				LstUserSimultaneous dataUser = services.selectDataLstUserSimultaneous(username);
 
 				if (dataUser != null) {

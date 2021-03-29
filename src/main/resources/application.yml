@@ -127,8 +127,8 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 3000
-        readTimeout: 60000
+        connectTimeout: 8000000
+        readTimeout: 8000000
 
 eureka:
   instance:

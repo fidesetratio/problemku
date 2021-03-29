@@ -123,6 +123,13 @@ ribbon:
   ConnectTimeout: 3000
   ReadTimeout: 60000
 
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 3000
+        readTimeout: 60000
+
 eureka:
   instance:
     preferIpAddress: true

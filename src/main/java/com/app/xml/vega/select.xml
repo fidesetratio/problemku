@@ -2224,6 +2224,73 @@
  			WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} AND C.LSBS_ID <![CDATA[<]]> 300
 	</select>
 	
+	<select id="selectViewSwitchingPaper_1" parameterType="HashMap" resultType="SwitchingRedirection">
+	   		SELECT ULINK.ID,
+				A.REG_SPAJ,
+				ULINK.REQ_DATE,
+				NVL(ULINK.TGL_FILLING, ULINK.REQ_DATE) AS DATE_STATUS,
+				B.MCL_FIRST AS PAYOR_NAME,
+				A.MSPO_POLICY_NO_FORMAT,
+				EKA.F_LSDBS_VIEW (C.REG_SPAJ, C.LSBS_ID, C.LSDBS_NUMBER) AS NM_PRODUCT,
+				ULINK.BIAYA,
+				D.LKU_SYMBOL,
+				LMS_STATUS AS STATUS_POLIS,
+				ULINK.LT_TRANSKSI,
+				ULINK.DESCRIPTION 
+  			FROM EKA.MST_POLICY A
+       			INNER JOIN EKA.MST_CLIENT_NEW B ON A.MSPO_POLICY_HOLDER = B.MCL_ID
+       			INNER JOIN EKA.MST_PRODUCT_INSURED C ON A.REG_SPAJ = C.REG_SPAJ
+       			INNER JOIN EKA.LST_KURS D ON A.LKU_ID = D.LKU_ID
+       			INNER JOIN EKA.LST_POLICY_STATUS E ON A.LSSP_ID = E.LSSP_ID 
+       			INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
+       			INNER JOIN (
+       			SELECT NVL(X.NO_REGISTER, TO_CHAR (TO_CHAR (Y.MTU_TGL_TRANS, 'yyyymmdd') || Y.MU_KE)) ID,
+    			X.REG_SPAJ,
+    			Y.MTU_TGL_TRANS REQ_DATE,
+    			(CASE
+                	WHEN Y.LT_ID IN (2, 4) THEN  NVL(TRUNC(Y.MTU_TGL_PROSES), Y.MTU_TGL_TRANS)
+               	 	WHEN Y.LT_ID IN (3, 11) THEN V.MUB_TGL_TRANSFER
+            	END) TGL_FILLING,
+    				NVL(BIAYA_ULINK.BIAYA, 0)/ (SELECT COUNT (*) FROM EKA.MST_TRANS_ULINK H WHERE H.REG_SPAJ = Y.REG_SPAJ AND H.MU_KE = Y.MU_KE) BIAYA,
+    				Z.LT_TRANSKSI,
+    			(CASE
+           			WHEN X.LT_ID IN (2, 4)
+           			THEN
+              	(CASE
+                  WHEN X.MU_LSPD_ID IN (46, 47) THEN 'On progress'
+                  ELSE 'Accepted'
+               		END)
+           			WHEN X.LT_ID IN (3, 11)
+           			THEN
+            	(CASE
+                	WHEN X.MU_LSPD_ID IN (46, 47, 54) THEN 'On progress'
+            		ELSE 'Accepted'
+               		END)
+        		END) AS DESCRIPTION
+  				FROM EKA.MST_ULINK X,
+       			EKA.MST_TRANS_ULINK Y,
+       			EKA.LST_TRANSAKSI Z,
+       			EKA.MST_ULINK_BAYAR V,
+       			(SELECT X.REG_SPAJ, X.MU_KE, SUM (NVL (X.MBU_JUMLAH, 0)) BIAYA FROM EKA.MST_BIAYA_ULINK X GROUP BY X.REG_SPAJ, X.MU_KE) BIAYA_ULINK
+          		WHERE X.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+          		AND X.REG_SPAJ = Y.REG_SPAJ 
+          		AND X.MU_KE = Y.MU_KE
+          		AND X.LT_ID = Z.LT_ID
+          		AND Y.REG_SPAJ = V.REG_SPAJ(+)
+          		AND Y.MU_KE = V.MU_KE(+)
+          		AND X.REG_SPAJ = BIAYA_ULINK.REG_SPAJ(+)
+          		AND X.MU_KE = BIAYA_ULINK.MU_KE(+)
+          		AND X.LT_ID = 4 
+          		AND Y.MTU_KE = 1
+          		AND NVL(X.NO_REGISTER, TO_CHAR (TO_CHAR (Y.MTU_TGL_TRANS, 'yyyymmdd') || Y.MU_KE)) IN 
+          		<foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
+              		#{mpt_id, jdbcType=VARCHAR}
+              	</foreach>
+          		) ULINK 
+          		ON A.REG_SPAJ = ULINK.REG_SPAJ
+ 			WHERE A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR} AND C.LSBS_ID <![CDATA[<]]> 300
+	</select>
+	
 	<select id="selectViewDetailSwitchingPaper" parameterType="HashMap" resultType="SwitchingRedirection">
 		SELECT NVL(L.NO_REGISTER, TO_CHAR (TO_CHAR (I.MTU_TGL_TRANS, 'yyyymmdd') || I.MU_KE)) MPT_ID,
                J.LJI_ID,
@@ -2344,7 +2411,7 @@
                INNER JOIN EKA.LST_POLICY_STATUS E ON B.LSSP_ID = E.LSSP_ID
                INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
                INNER JOIN EKA.LST_KURS G ON B.LKU_ID = G.LKU_ID
-         WHERE b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+         WHERE b.mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
                AND mpt_id = #{mpt_id, jdbcType=VARCHAR}
                AND D.LSBS_ID <![CDATA[<]]> 300)
  		WHERE mpt_id IS NOT NULL
@@ -2425,7 +2492,7 @@
                INNER JOIN EKA.LST_POLICY_STATUS E ON B.LSSP_ID = E.LSSP_ID
                INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
                INNER JOIN EKA.LST_KURS G ON B.LKU_ID = G.LKU_ID
-         WHERE b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+         WHERE b.mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
                AND mpt_id IN 
                <foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
                     #{mpt_id, jdbcType=VARCHAR}
@@ -2445,7 +2512,7 @@
   			FROM eka.mst_mpol_trans a
   			inner join eka.mst_policy b on a.reg_spaj = b.reg_spaj
  			WHERE mpt_id = #{mpt_id, jdbcType=VARCHAR}
-			and b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+			and b.mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
 	</select>
 	
 		<select id="selectViewSwitchingRedirection2_2" parameterType="HashMap" resultType="SwitchingRedirection">
@@ -2462,7 +2529,7 @@
 			<foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
 				#{mpt_id, jdbcType=VARCHAR}
 			</foreach>
-			and b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+			and b.mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
 	</select>
 	
 	<select id="selectViewSwitchingRedirection3" parameterType="HashMap" resultType="SwitchingRedirection">
@@ -2481,7 +2548,7 @@
 		        INNER JOIN EKA.LST_JENIS_INVEST D ON B.LJI_ID = D.LJI_ID
 		        INNER JOIN EKA.LST_KURS E ON D.LKU_ID = E.LKU_ID
 		WHERE   A.MPT_ID = #{mpt_id, jdbcType=VARCHAR}
-		    AND C.MSPO_POLICY_NO = #{no_polis, jdbcType=VARCHAR}
+		    AND C.MSPO_POLICY_NO = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
 	</select>
 	
 	<select id="selectViewWithdrawPaper" parameterType="HashMap" resultType="Withdraw">

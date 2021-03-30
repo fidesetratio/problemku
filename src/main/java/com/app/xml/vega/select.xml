@@ -2448,6 +2448,23 @@
 			and b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
 	</select>
 	
+		<select id="selectViewSwitchingRedirection2_2" parameterType="HashMap" resultType="SwitchingRedirection">
+			SELECT mpt_id,
+				lt_id,
+       			CASE WHEN collaborate_mpt_id IS NULL 
+       				THEN 'Switching'
+          			ELSE 'Redirection'
+       			END
+          		AS jenis_transaksi
+  			FROM eka.mst_mpol_trans a
+  			inner join eka.mst_policy b on a.reg_spaj = b.reg_spaj
+ 			WHERE mpt_id IN 
+			<foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
+				#{mpt_id, jdbcType=VARCHAR}
+			</foreach>
+			and b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+	</select>
+	
 	<select id="selectViewSwitchingRedirection3" parameterType="HashMap" resultType="SwitchingRedirection">
 		SELECT  B.*,
 				D.LJI_INVEST,

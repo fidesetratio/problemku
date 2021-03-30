@@ -228,9 +228,9 @@ public interface VegaMapper {
 	
 	public SwitchingRedirection selectViewSwitchingRedirection1_1(HashMap<String, Object> hashMap);
 
-	public ArrayList<SwitchingRedirection> selectViewSwitchingRedirection2_2(HashMap<String, Object> hashMap);
-
 	public ArrayList<SwitchingRedirection> selectViewSwitchingRedirection2(HashMap<String, Object> hashMap);
+
+	public ArrayList<SwitchingRedirection> selectViewSwitchingRedirection2_2(HashMap<String, Object> hashMap);
 
 	public ArrayList<SwitchingRedirection> selectViewSwitchingRedirection3(HashMap<String, Object> hashMap);
 

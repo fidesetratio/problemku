@@ -120,8 +120,8 @@ spring:
     baseUrl: http://notyfyd-zipkin.default.svc.cluster.local:9411
 
 ribbon:
-  ConnectTimeout: 3000
-  ReadTimeout: 60000
+  ConnectTimeout: 8000000
+  ReadTimeout: 8000000
 
 feign:
   client:

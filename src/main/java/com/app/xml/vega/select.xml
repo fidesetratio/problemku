@@ -2349,6 +2349,90 @@
                AND D.LSBS_ID <![CDATA[<]]> 300)
  		WHERE mpt_id IS NOT NULL
 	</select>
+	
+	<select id="selectViewSwitchingRedirection1_1" parameterType="HashMap" resultType="SwitchingRedirection">
+		SELECT *
+  			FROM (SELECT CASE
+                  WHEN a.lt_id = 19 AND a.collaborate_mpt_id IS NOT NULL
+                  THEN
+                     collaborate_mpt_id
+                  WHEN (a.lt_id != 19 AND (a.collaborate_mpt_id IS NULL or a.collaborate_mpt_id = 0))
+                  THEN
+                     mpt_id
+               END
+                  AS id,
+               CASE
+                  WHEN a.lt_id = 19 AND a.collaborate_mpt_id IS NOT NULL
+                  THEN
+                     collaborate_mpt_id || ', ' || mpt_id
+                  WHEN (a.lt_id != 19 AND (a.collaborate_mpt_id IS NULL or a.collaborate_mpt_id = 0))
+                  THEN
+                     mpt_id
+               END
+                  AS mpt_id,
+               a.req_date,
+               CASE
+                  WHEN a.MODIFIED_DATE IS NOT NULL THEN MODIFIED_DATE
+                  ELSE a.CREATED_DATE
+               END
+                  DATE_STATUS,
+               CASE
+                  WHEN a.lt_id = 19 AND a.collaborate_mpt_id IS NOT NULL
+                  THEN
+                     (SELECT CASE WHEN x.MPT_STATUS IN (0, 1, 45, 46, 47)
+                  THEN
+                     'On progress'
+                  WHEN x.MPT_STATUS in (7, 54)
+                  THEN
+                     'Accepted'
+                  WHEN x.MPT_STATUS = 8
+                  THEN
+                     'Canceled'
+                  WHEN x.MPT_STATUS = 9
+                  THEN
+                     'Canceled'
+               END
+                  AS DESCRIPTION from eka.mst_mpol_trans x where x.mpt_id = a.collaborate_mpt_id)
+                  WHEN (a.lt_id != 19 AND (a.collaborate_mpt_id IS NULL or a.collaborate_mpt_id = 0))
+                  THEN
+                      (SELECT CASE WHEN x.MPT_STATUS IN (0, 1, 45, 46, 47)
+                  THEN
+                     'On progress'
+                  WHEN x.MPT_STATUS in (7, 54)
+                  THEN
+                     'Accepted'
+                  WHEN x.MPT_STATUS = 8
+                  THEN
+                     'Canceled'
+                  WHEN x.MPT_STATUS = 9
+                  THEN
+                     'Canceled'
+               END
+                  AS DESCRIPTION from eka.mst_mpol_trans x where x.mpt_id = a.mpt_id)
+               END as DESCRIPTION,
+               C.LT_TRANSKSI,
+               A.payor_name,
+               B.mspo_policy_no_format,
+               A.REASON_FU,
+               G.LKU_SYMBOL,
+               F.LMS_STATUS AS STATUS_POLIS,
+               EKA.F_LSDBS_VIEW (D.REG_SPAJ, D.LSBS_ID, D.LSDBS_NUMBER)
+                  AS nm_product
+          FROM eka.mst_mpol_trans a
+               INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+               INNER JOIN EKA.LST_TRANSAKSI C ON A.LT_ID = C.LT_ID
+               INNER JOIN EKA.MST_PRODUCT_INSURED D ON B.REG_SPAJ = D.REG_SPAJ
+               INNER JOIN EKA.LST_POLICY_STATUS E ON B.LSSP_ID = E.LSSP_ID
+               INNER JOIN EKA.LST_MASTER_STATUS F ON E.LMS_ID = F.LMS_ID
+               INNER JOIN EKA.LST_KURS G ON B.LKU_ID = G.LKU_ID
+         WHERE b.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+               AND mpt_id IN 
+               <foreach item="mpt_id" index="index" collection="arrayData" open="(" separator="," close=")">
+                    #{mpt_id, jdbcType=VARCHAR}
+                </foreach>
+               AND D.LSBS_ID <![CDATA[<]]> 300)
+ 		WHERE mpt_id IS NOT NULL
+	</select>
 
 	<select id="selectViewSwitchingRedirection2" parameterType="HashMap" resultType="SwitchingRedirection">
 			SELECT mpt_id,

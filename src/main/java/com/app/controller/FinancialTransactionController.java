@@ -1874,14 +1874,14 @@ public class FinancialTransactionController {
 	}
 	
 	@RequestMapping(value = "/viewswitchingold", produces = "application/json", method = RequestMethod.POST)
-	public String viewSwitchingOld(@RequestBody RequestViewSwitching requestViewSwitching,
+	public String viewSwitchingOld(@RequestBody RequestViewSwitchingRedirection requestViewSwitchingRedirection,
 			HttpServletRequest request, HttpServletResponse response) {
 		Date start = new Date();
 		GsonBuilder builder = new GsonBuilder();
 		builder.serializeNulls();
 		Gson gson = new Gson();
 		gson = builder.create();
-		String req = gson.toJson(requestViewSwitching);
+		String req = gson.toJson(requestViewSwitchingRedirection);
 		String res = null;
 		String message = null;
 		String resultErr = null;
@@ -1889,13 +1889,13 @@ public class FinancialTransactionController {
 		HashMap<String, Object> map = new HashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
 
-		String username = requestViewSwitching.getUsername();
-		String key = requestViewSwitching.getKey();
-		String no_polis = customResourceLoader.clearData(requestViewSwitching.getNo_polis());
-		String mpt_id = requestViewSwitching.getMpt_id();
+		String username = requestViewSwitchingRedirection.getUsername();
+		String key = requestViewSwitchingRedirection.getKey();
+		String no_polis = customResourceLoader.clearData(requestViewSwitchingRedirection.getNo_polis());
+		ArrayList<String> arrayData = requestViewSwitchingRedirection.getMpt_id();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
-				SwitchingRedirection dataViewSwitchingRedirection = services.selectViewSwitchingRedirection1(mpt_id,
+				SwitchingRedirection dataViewSwitchingRedirection = services.selectViewSwitchingRedirection1_1(arrayData,
 						no_polis);
 
 				// Get SPAJ
@@ -1923,22 +1923,120 @@ public class FinancialTransactionController {
 					data.put("status_polis", status_polis);
 					data.put("nm_product", nm_product);
 					data.put("jenis_transaksi", jenis_transaksi);
-					data.put("reason_fu", reason_fu != null ? reason_fu : null);
+					data.put("reason_fu", reason_fu);
 					data.put("description", description);
 					data.put("date_req", req_date != null ? df1.format(req_date) : null);
 					data.put("date_status", status_date != null ? df1.format(status_date) : null);
 
 					// DATA DETAIL TRANSACTION
-					ArrayList<SwitchingRedirection> dataArray = services.selectViewSwitchingRedirection2(mpt_id,
+					ArrayList<SwitchingRedirection> dataArray = services.selectViewSwitchingRedirection2_2(arrayData,
 							no_polis);
 					HashMap<String, Object> hashMapSwitching = new HashMap<>();
+					HashMap<String, Object> hashMapRedirection = new HashMap<>();
 					for (Integer a = 0; a < dataArray.size(); a++) {
-						String mpt_id2 = dataArray.get(a).getMpt_id();
+						String categoryType = dataArray.get(a).getJenis_transaksi();
+						String mpt_id = dataArray.get(a).getMpt_id();
 						BigDecimal lt_id = dataArray.get(a).getLt_id();
 
-						if (lt_id.intValue() == 4) { // 4: Switching
+						if (lt_id.intValue() == 19) { // 19: Switching & Redirection
+							if (categoryType.equalsIgnoreCase("switching")) {
+								ArrayList<SwitchingRedirection> dataSwitching = services
+										.selectViewSwitchingRedirection3(mpt_id, no_polis);
+								ArrayList<HashMap<String, Object>> sourceFundSwitching = new ArrayList<>();
+								ArrayList<HashMap<String, Object>> destFundSwitching = new ArrayList<>();
+								for (Integer b = 0; b < dataSwitching.size(); b++) {
+									HashMap<String, Object> dataTempSwitchingD = new HashMap<>();
+									HashMap<String, Object> dataTempSwitchingK = new HashMap<>();
+									String lji_id = dataSwitching.get(b).getLji_id();
+									String lji_invest = dataSwitching.get(b).getLji_invest();
+									String lku_symbol = dataSwitching.get(b).getLku_symbol();
+									String mpt_dk = dataSwitching.get(b).getMpt_dk();
+									Integer mpt_persen = dataSwitching.get(b).getMpt_persen().intValue();
+									BigDecimal mpt_jumlah = dataSwitching.get(b).getMpt_jumlah();
+									BigDecimal mpt_unit = dataSwitching.get(b).getMpt_unit();
+
+									if (mpt_dk.equalsIgnoreCase("k")) {
+										dataTempSwitchingK.put("lji_id", lji_id);
+										dataTempSwitchingK.put("mpt_jumlah", mpt_jumlah);
+										dataTempSwitchingK.put("mpt_unit", mpt_unit);
+										dataTempSwitchingK.put("mpt_dk", mpt_dk);
+										dataTempSwitchingK.put("lji_invest", lji_invest);
+										dataTempSwitchingK.put("lku_symbol", lku_symbol);
+
+										sourceFundSwitching.add(dataTempSwitchingK);
+									} else {
+										dataTempSwitchingD.put("lji_id", lji_id);
+										dataTempSwitchingD.put("mpt_persen", mpt_persen);
+										dataTempSwitchingD.put("mpt_jumlah", mpt_jumlah);
+										dataTempSwitchingD.put("mpt_unit", mpt_unit);
+										dataTempSwitchingD.put("mpt_dk", mpt_dk);
+										dataTempSwitchingD.put("lji_invest", lji_invest);
+										dataTempSwitchingD.put("lku_symbol", lku_symbol);
+
+										destFundSwitching.add(dataTempSwitchingD);
+									}
+								}
+
+								// GET ADMIN FEE & PERCENTAGE ADMIN FEE
+								String biaya = null;
+								ArrayList<CostFinancialTransaction> resultSelect = services
+										.selectBiayaForFinancialTransaction(dataSPAJ.getReg_spaj(), mpt_id);
+								if (!resultSelect.isEmpty()) {
+									CostFinancialTransaction m = resultSelect.get(0);
+									BigDecimal jumlahBiaya = m.getJumlah();
+									BigDecimal persenBiaya = m.getPersen();
+
+									if (persenBiaya.intValue() == 0 && jumlahBiaya.intValue() == 0) {
+										biaya = lku_symbol_result + " " + nfZeroTwo.format(jumlahBiaya);
+									} else if (persenBiaya.intValue() != 0 && jumlahBiaya.intValue() == 0) {
+										biaya = persenBiaya.intValue() + "%";
+									} else {
+										biaya = lku_symbol_result + " " + nfZeroTwo.format(jumlahBiaya);
+									}
+								}
+
+								hashMapSwitching.put("admin_fee_switching", biaya);
+								hashMapSwitching.put("sourceFund", sourceFundSwitching);
+								hashMapSwitching.put("destFund", destFundSwitching);
+							} else {
+								ArrayList<SwitchingRedirection> dataRedirection = services
+										.selectViewSwitchingRedirection3(mpt_id, no_polis);
+								ArrayList<HashMap<String, Object>> sourceFundRedirection = new ArrayList<>();
+								ArrayList<HashMap<String, Object>> destFundRedirection = new ArrayList<>();
+								for (Integer b = 0; b < dataRedirection.size(); b++) {
+									HashMap<String, Object> dataTempRedirectionD = new HashMap<>();
+									HashMap<String, Object> dataTempRedirectionK = new HashMap<>();
+									String lji_id = dataRedirection.get(b).getLji_id();
+									String lji_invest = dataRedirection.get(b).getLji_invest();
+									String lku_symbol = dataRedirection.get(b).getLku_symbol();
+									String mpt_dk = dataRedirection.get(b).getMpt_dk();
+									Integer mpt_persen = dataRedirection.get(b).getMpt_persen().intValue();
+
+									if (mpt_dk.equalsIgnoreCase("k")) {
+										dataTempRedirectionK.put("lji_id", lji_id);
+										dataTempRedirectionK.put("mpt_persen", mpt_persen);
+										dataTempRedirectionK.put("mpt_dk", mpt_dk);
+										dataTempRedirectionK.put("lji_invest", lji_invest);
+										dataTempRedirectionK.put("lku_symbol", lku_symbol);
+
+										sourceFundRedirection.add(dataTempRedirectionK);
+									} else {
+										dataTempRedirectionD.put("lji_id", lji_id);
+										dataTempRedirectionD.put("mpt_persen", mpt_persen);
+										dataTempRedirectionD.put("mpt_dk", mpt_dk);
+										dataTempRedirectionD.put("lji_invest", lji_invest);
+										dataTempRedirectionD.put("lku_symbol", lku_symbol);
+
+										destFundRedirection.add(dataTempRedirectionD);
+									}
+								}
+
+								hashMapRedirection.put("sourceFund", sourceFundRedirection);
+								hashMapRedirection.put("destFund", destFundRedirection);
+							}
+						} else if (lt_id.intValue() == 4) { // 4: Switching
 							ArrayList<SwitchingRedirection> dataSwitching = services
-									.selectViewSwitchingRedirection3(mpt_id2, no_polis);
+									.selectViewSwitchingRedirection3(mpt_id, no_polis);
 							ArrayList<HashMap<String, Object>> sourceFundSwitching = new ArrayList<>();
 							ArrayList<HashMap<String, Object>> destFundSwitching = new ArrayList<>();
 							for (Integer b = 0; b < dataSwitching.size(); b++) {
@@ -1977,7 +2075,7 @@ public class FinancialTransactionController {
 							// GET ADMIN FEE & PERCENTAGE ADMIN FEE
 							String biaya = null;
 							ArrayList<CostFinancialTransaction> resultSelect = services
-									.selectBiayaForFinancialTransaction(dataSPAJ.getReg_spaj(), mpt_id2);
+									.selectBiayaForFinancialTransaction(dataSPAJ.getReg_spaj(), mpt_id);
 							if (!resultSelect.isEmpty()) {
 								CostFinancialTransaction m = resultSelect.get(0);
 								BigDecimal jumlahBiaya = m.getJumlah();
@@ -1995,14 +2093,16 @@ public class FinancialTransactionController {
 							hashMapSwitching.put("admin_fee_switching", biaya);
 							hashMapSwitching.put("sourceFund", sourceFundSwitching);
 							hashMapSwitching.put("destFund", destFundSwitching);
+							hashMapRedirection = null;
 						}
 					}
 
 					error = false;
 					message = "Successfully get data";
 					data.put("switching", hashMapSwitching);
+					data.put("redirection", hashMapRedirection);
 				} else {
-					SwitchingRedirection dataViewSwitchingPaper = services.selectViewSwitchingPaper(mpt_id,
+					SwitchingRedirection dataViewSwitchingPaper = services.selectViewSwitchingPaper_1(arrayData,
 							dataSPAJ.getReg_spaj());
 					// Paper
 					if (dataViewSwitchingPaper != null) {
@@ -2032,6 +2132,7 @@ public class FinancialTransactionController {
 						data.put("date_status", status_date != null ? df1.format(status_date) : null);
 
 						HashMap<String, Object> hashMapSwitching = new HashMap<>();
+						HashMap<String, Object> hashMapRedirection = new HashMap<>();
 
 						ArrayList<SwitchingRedirection> dataSwitchingPaper = services.selectViewDetailSwitchingPaper(id,
 								reg_spaj);
@@ -2094,10 +2195,12 @@ public class FinancialTransactionController {
 						hashMapSwitching.put("admin_fee_switching", admin_fee);
 						hashMapSwitching.put("sourceFund", sourceFundSwitching);
 						hashMapSwitching.put("destFund", destFundSwitching);
+						hashMapRedirection = null;
 
 						error = false;
 						message = "Successfully get data";
 						data.put("switching", hashMapSwitching);
+						data.put("redirection", hashMapRedirection);
 					} else {
 						error = true;
 						message = "MPT_ID or No. polis incorrect";

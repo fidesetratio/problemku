@@ -225,6 +225,10 @@ public interface VegaMapper {
 	public String selectFlagTrans(String mpt_id);
 	
 	public SwitchingRedirection selectViewSwitchingRedirection1(HashMap<String, Object> hashMap);
+	
+	public SwitchingRedirection selectViewSwitchingRedirection1_1(HashMap<String, Object> hashMap);
+
+	public ArrayList<SwitchingRedirection> selectViewSwitchingRedirection2_2(HashMap<String, Object> hashMap);
 
 	public ArrayList<SwitchingRedirection> selectViewSwitchingRedirection2(HashMap<String, Object> hashMap);
 
@@ -247,6 +251,8 @@ public interface VegaMapper {
 	public String selectCheckOTP(HashMap<String, Object> hashMap);
 
 	public SwitchingRedirection selectViewSwitchingPaper(HashMap<String, Object> hashMap);
+	
+	public SwitchingRedirection selectViewSwitchingPaper_1(HashMap<String, Object> hashMap);
 
 	public ArrayList<SwitchingRedirection> selectViewDetailSwitchingPaper(HashMap<String, Object> hashMap);
 

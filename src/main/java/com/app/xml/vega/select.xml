@@ -1953,7 +1953,7 @@
 		                                    INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
 		                                    INNER JOIN EKA.LST_TRANSAKSI C ON A.LT_ID = C.LT_ID
 		                            WHERE   B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
-		                                AND A.LT_ID IN (4)
+		                                AND A.LT_ID IN (4, 19)
 		                            )
 		                    WHERE MPT_ID IS NOT NULL
 		                ORDER BY MPT_ID DESC)

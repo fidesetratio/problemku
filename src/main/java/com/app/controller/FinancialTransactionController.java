@@ -5644,7 +5644,7 @@ public class FinancialTransactionController {
 				} else {
 					List<String> listClaim = new ArrayList<String>();
 					for (int i = 0; i < arrayList.size(); i++) {
-						String distinctClaim = arrayList.get(i).getLsdbs_name();
+						String distinctClaim = arrayList.get(i).getNama_produk();
 						listClaim.add(distinctClaim);
 					}
 
@@ -5655,29 +5655,43 @@ public class FinancialTransactionController {
 						dataTemp.put("lsdbs_name", nm_produk);
 						ArrayList<HashMap<String, Object>> detailsClaim = new ArrayList<>();
 						for (int y = 0; y < arrayList.size(); y++) {
-							if (arrayList.get(y).getLsdbs_name().equals(distinctClaim.get(x))) {
+							if (arrayList.get(y).getNama_produk().equals(distinctClaim.get(x))) {
 								HashMap<String, Object> dataClaimDetails = new HashMap<>();
-								Integer lgc_group_id = arrayList.get(y).getLgc_group_id();
-								String lgc_description = arrayList.get(y).getLgc_description();
-								Integer ljj_jenis_id = arrayList.get(y).getLjj_jenis_id();
-								String ljj_jenis_jaminan = arrayList.get(y).getLjj_jenis_jaminan();
-								String lmc_max_claim = arrayList.get(y).getLmc_max_claim();
-								String lmc_batasan = arrayList.get(y).getLmc_batasan();
-								String lmc_max_batasan = arrayList.get(y).getLmc_max_batasan();
-								String mpl_max_disability = arrayList.get(y).getMpl_max_disability();
-								String mpl_max_yearly = arrayList.get(y).getMpl_max_yearly();
+								String regclaim = arrayList.get(y).getRegclaim();
+								String mspo_policy_no = arrayList.get(y).getMspo_policy_no();
+								String reg_spaj = arrayList.get(y).getReg_spaj();
+								String nama_produk = arrayList.get(y).getNama_produk();
+								Integer lsbs_id = arrayList.get(y).getLsbs_id();
+								Integer lsdbs_number = arrayList.get(y).getLsdbs_number();
+								String beg_date = arrayList.get(y).getBeg_date();
+								String now = arrayList.get(y).getNow();
+								String end_date = arrayList.get(y).getEnd_date();
+								String jenis_jaminan = arrayList.get(y).getJenis_jaminan();
+								String limit_per = arrayList.get(y).getLimit_per();
+								String per_jaminan = arrayList.get(y).getPer_jaminan();
 								String limit = arrayList.get(y).getLimit();
-								
-								dataClaimDetails.put("lgc_group_id", lgc_group_id);
-								dataClaimDetails.put("lgc_description", lgc_description);
-								dataClaimDetails.put("ljj_jenis_id", ljj_jenis_id);
-								dataClaimDetails.put("ljj_jenis_jaminan", ljj_jenis_jaminan);
-								dataClaimDetails.put("lmc_max_claim", lmc_max_claim);
-								dataClaimDetails.put("lmc_batasan", lmc_batasan != null ? lmc_batasan : null);
-								dataClaimDetails.put("lmc_max_batasan", lmc_max_batasan != null ? lmc_max_batasan : null);
-								dataClaimDetails.put("mpl_max_disability", mpl_max_disability);
-								dataClaimDetails.put("mpl_max_yearly", mpl_max_yearly);
+								String as_charge = arrayList.get(y).getAs_charge();
+								String bayar_klaim = arrayList.get(y).getBayar_klaim();
+								String tgl_akseptasi = arrayList.get(y).getTgl_akseptasi();
+								String sisa_limit = arrayList.get(y).getSisa_limit();
+																
+								dataClaimDetails.put("regclaim", regclaim);
+								dataClaimDetails.put("mspo_policy_no", mspo_policy_no);
+								dataClaimDetails.put("reg_spaj", reg_spaj);
+								dataClaimDetails.put("nama_produk", nama_produk);
+								dataClaimDetails.put("lsbs_id", lsbs_id);
+								dataClaimDetails.put("lsdbs_number", lsdbs_number);
+								dataClaimDetails.put("beg_date", beg_date);
+								dataClaimDetails.put("now", now);
+								dataClaimDetails.put("end_date", end_date);
+								dataClaimDetails.put("jenis_jaminan", jenis_jaminan);
+								dataClaimDetails.put("limit_per", limit_per);
+								dataClaimDetails.put("per_jaminan", per_jaminan);
 								dataClaimDetails.put("limit", limit);
+								dataClaimDetails.put("as_charge", as_charge);
+								dataClaimDetails.put("bayar_klaim", bayar_klaim);
+								dataClaimDetails.put("tgl_akseptasi", tgl_akseptasi);
+								dataClaimDetails.put("sisa_limit", sisa_limit);								
 
 								detailsClaim.add(dataClaimDetails);
 							}
@@ -5686,34 +5700,6 @@ public class FinancialTransactionController {
 						dataTemp.put("details", detailsClaim);
 						data.add(dataTemp);
 					}
-					/*
-					for (int i = 0; i < arrayList.size(); i++) {
-						
-						String lsdbs_name = arrayList.get(i).getLsdbs_name();
-						Integer lgc_group_id = arrayList.get(i).getLgc_group_id();
-						String lgc_description = arrayList.get(i).getLgc_description();
-						Integer ljj_jenis_id = arrayList.get(i).getLjj_jenis_id();
-						String ljj_jenis_jaminan = arrayList.get(i).getLjj_jenis_jaminan();
-						String lmc_max_claim = arrayList.get(i).getLmc_max_claim();
-						String lmc_batasan = arrayList.get(i).getLmc_batasan();
-						String lmc_max_batasan = arrayList.get(i).getLmc_max_batasan();
-						String mpl_max_disability = arrayList.get(i).getMpl_max_disability();
-						String mpl_max_yearly = arrayList.get(i).getMpl_max_yearly();
-						
-						HashMap<String, Object> hashMapTemp = new HashMap<>();
-						hashMapTemp.put("lsdbs_name", lsdbs_name);
-						hashMapTemp.put("lgc_group_id", lgc_group_id);
-						hashMapTemp.put("lgc_description", lgc_description);
-						hashMapTemp.put("ljj_jenis_id", ljj_jenis_id);
-						hashMapTemp.put("ljj_jenis_jaminan", ljj_jenis_jaminan);
-						hashMapTemp.put("lmc_max_claim", lmc_max_claim);
-						hashMapTemp.put("lmc_batasan", lmc_batasan != null ? lmc_batasan : null);
-						hashMapTemp.put("lmc_max_batasan", lmc_max_batasan != null ? lmc_max_batasan : null);
-						hashMapTemp.put("mpl_max_disability", mpl_max_disability);
-						hashMapTemp.put("mpl_max_yearly", mpl_max_yearly);
-
-						data.add(hashMapTemp);
-					}*/
 
 					error = false;
 					message = "Successfully get list data claim submission";

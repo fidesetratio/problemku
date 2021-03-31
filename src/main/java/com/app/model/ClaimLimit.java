@@ -7,25 +7,31 @@ public class ClaimLimit implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2356621085798776512L;
+	private static final long serialVersionUID = 2356621085798776512L;	
+	private String regclaim;
 	private String mspo_policy_no;
-	private String lsdbs_name;
-	private Integer lgc_group_id;
-	private String lgc_description;
-	private Integer ljj_jenis_id;
-	private String ljj_jenis_jaminan;
-	private String lmc_max_claim;
-	private String lmc_batasan;
-	private String lmc_max_batasan;
-	private String mpl_max_disability;
-	private String mpl_max_yearly;
+	private String reg_spaj;
+	private String nama_produk;
+	private Integer lsbs_id;
+	private Integer lsdbs_number;
+	private String beg_date;
+	private String now;
+	private String end_date;
+	private String jenis_jaminan;
+	private String limit_per;
+	private String per_jaminan;
 	private String limit;
+	private String as_charge;
+	private String bayar_klaim;
+	private String tgl_akseptasi;
+	private String sisa_limit;
 	
-	public String getLimit() {
-		return limit;
+	
+	public String getRegclaim() {
+		return regclaim;
 	}
-	public void setLimit(String limit) {
-		this.limit = limit;
+	public void setRegclaim(String regclaim) {
+		this.regclaim = regclaim;
 	}
 	public String getMspo_policy_no() {
 		return mspo_policy_no;
@@ -33,66 +39,96 @@ public class ClaimLimit implements Serializable {
 	public void setMspo_policy_no(String mspo_policy_no) {
 		this.mspo_policy_no = mspo_policy_no;
 	}
-	public String getLsdbs_name() {
-		return lsdbs_name;
+	public String getReg_spaj() {
+		return reg_spaj;
 	}
-	public void setLsdbs_name(String lsdbs_name) {
-		this.lsdbs_name = lsdbs_name;
+	public void setReg_spaj(String reg_spaj) {
+		this.reg_spaj = reg_spaj;
 	}
-	public Integer getLgc_group_id() {
-		return lgc_group_id;
+	public String getNama_produk() {
+		return nama_produk;
 	}
-	public void setLgc_group_id(Integer lgc_group_id) {
-		this.lgc_group_id = lgc_group_id;
+	public void setNama_produk(String nama_produk) {
+		this.nama_produk = nama_produk;
 	}
-	public String getLgc_description() {
-		return lgc_description;
+	public Integer getLsbs_id() {
+		return lsbs_id;
 	}
-	public void setLgc_description(String lgc_description) {
-		this.lgc_description = lgc_description;
+	public void setLsbs_id(Integer lsbs_id) {
+		this.lsbs_id = lsbs_id;
 	}
-	public Integer getLjj_jenis_id() {
-		return ljj_jenis_id;
+	public Integer getLsdbs_number() {
+		return lsdbs_number;
 	}
-	public void setLjj_jenis_id(Integer ljj_jenis_id) {
-		this.ljj_jenis_id = ljj_jenis_id;
+	public void setLsdbs_number(Integer lsdbs_number) {
+		this.lsdbs_number = lsdbs_number;
 	}
-	public String getLjj_jenis_jaminan() {
-		return ljj_jenis_jaminan;
+	public String getBeg_date() {
+		return beg_date;
 	}
-	public void setLjj_jenis_jaminan(String ljj_jenis_jaminan) {
-		this.ljj_jenis_jaminan = ljj_jenis_jaminan;
+	public void setBeg_date(String beg_date) {
+		this.beg_date = beg_date;
 	}
-	public String getLmc_max_claim() {
-		return lmc_max_claim;
+	public String getNow() {
+		return now;
 	}
-	public void setLmc_max_claim(String lmc_max_claim) {
-		this.lmc_max_claim = lmc_max_claim;
+	public void setNow(String now) {
+		this.now = now;
 	}
-	public String getLmc_batasan() {
-		return lmc_batasan;
+	public String getEnd_date() {
+		return end_date;
 	}
-	public void setLmc_batasan(String lmc_batasan) {
-		this.lmc_batasan = lmc_batasan;
+	public void setEnd_date(String end_date) {
+		this.end_date = end_date;
 	}
-	public String getLmc_max_batasan() {
-		return lmc_max_batasan;
+	public String getJenis_jaminan() {
+		return jenis_jaminan;
 	}
-	public void setLmc_max_batasan(String lmc_max_batasan) {
-		this.lmc_max_batasan = lmc_max_batasan;
+	public void setJenis_jaminan(String jenis_jaminan) {
+		this.jenis_jaminan = jenis_jaminan;
 	}
-	public String getMpl_max_disability() {
-		return mpl_max_disability;
+	public String getLimit_per() {
+		return limit_per;
 	}
-	public void setMpl_max_disability(String mpl_max_disability) {
-		this.mpl_max_disability = mpl_max_disability;
+	public void setLimit_per(String limit_per) {
+		this.limit_per = limit_per;
 	}
-	public String getMpl_max_yearly() {
-		return mpl_max_yearly;
+	public String getPer_jaminan() {
+		return per_jaminan;
 	}
-	public void setMpl_max_yearly(String mpl_max_yearly) {
-		this.mpl_max_yearly = mpl_max_yearly;
+	public void setPer_jaminan(String per_jaminan) {
+		this.per_jaminan = per_jaminan;
 	}
-
+	public String getLimit() {
+		return limit;
+	}
+	public void setLimit(String limit) {
+		this.limit = limit;
+	}
+	public String getAs_charge() {
+		return as_charge;
+	}
+	public void setAs_charge(String as_charge) {
+		this.as_charge = as_charge;
+	}
+	public String getBayar_klaim() {
+		return bayar_klaim;
+	}
+	public void setBayar_klaim(String bayar_klaim) {
+		this.bayar_klaim = bayar_klaim;
+	}
+	public String getTgl_akseptasi() {
+		return tgl_akseptasi;
+	}
+	public void setTgl_akseptasi(String tgl_akseptasi) {
+		this.tgl_akseptasi = tgl_akseptasi;
+	}
+	public String getSisa_limit() {
+		return sisa_limit;
+	}
+	public void setSisa_limit(String sisa_limit) {
+		this.sisa_limit = sisa_limit;
+	}
+	
 	
 }

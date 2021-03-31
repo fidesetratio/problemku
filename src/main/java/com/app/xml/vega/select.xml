@@ -2819,45 +2819,71 @@
 	</select>
 	
 	<select id="selectClaimLimit" parameterType="String" resultType="ClaimLimit">
-	    SELECT  G.MSPO_POLICY_NO,
-		        C.LSDBS_NAME,
-		        F.*,
-		        case
-		            when c.lsdbs_name like '%MEDICAL%' then D.mpl_max_yearly 
-		            when c.lsdbs_name like '%HOSPITAL%' then B.lmc_max_claim 
-		            when c.lsdbs_name like '%Critical%' then H.mspr_tsi
-		            when c.lsdbs_name like '%Personal Accident%' then H.mspr_tsi
-		            else D.mpl_max_yearly 
-		        end as limit,
-		        A.LJJ_JENIS_ID,
-		        A.LJJ_JENIS_JAMINAN,
-		        B.LMC_MAX_CLAIM,
-		        B.LMC_BATASAN,
-		        B.LMC_MAX_BATASAN,
-		        D.MPL_MAX_DISABILITY,
-		        D.MPL_MAX_YEARLY
-		FROM    EKA.LST_JN_JAMINAN_EBN A,
-		        EKA.LST_MAX_CLAIM B,
-		        EKA.LST_DET_BISNIS C,
-		        EKA.MST_PLAN_LIMIT D,
-		        EKA.LST_GROUP_CLAIM F,
-		        EKA.MST_POLICY G,
-		        EKA.MST_PRODUCT_INSURED H
-		WHERE   A.LGC_GROUP_ID = B.LJJ_GROUP
-		    AND A.LJJ_JENIS_ID = B.LJJ_JENIS_ID
-		    AND A.LGC_GROUP_ID = F.LGC_GROUP_ID
-		    AND B.LJJ_GROUP = F.LGC_GROUP_ID
-		    AND B.LSBS_ID = C.LSBS_ID
-		    AND B.LSDBS_NUMBER = C.LSDBS_NUMBER
-		    AND B.LSBS_ID = D.MPL_LSBS_ID
-		    AND B.LSDBS_NUMBER = D.MPL_LSDBS_NUMBER
-		    AND C.LSBS_ID = D.MPL_LSBS_ID
-		    AND C.LSDBS_NUMBER = D.MPL_LSDBS_NUMBER
-		    AND G.REG_SPAJ = H.REG_SPAJ
-		    AND B.LSBS_ID = H.LSBS_ID
-		    AND B.LSDBS_NUMBER = H.LSDBS_NUMBER
-		    AND G.MSPO_POLICY_NO = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
-		ORDER BY B.LJJ_JENIS_ID ASC
+		SELECT  A.*,
+		        (A.limit - A.bayar_klaim) as sisa_limit
+		FROM
+		        (SELECT  
+		            clm.REGCLAIM ,
+		            clm.mspo_policy_no, 
+		            ins.reg_spaj,
+		            UPPER(detbis.lsdbs_name) NAMA_PRODUK,
+		            detbis.lsbs_id,
+		            detbis.lsdbs_number,
+		            UPPER(gbis.lsgb_name) JENIS_PRODUK,
+		            to_char(pi.mspr_beg_date,'dd/mm/yyyy') as beg_date,
+		            (select to_char(sysdate,'dd/mm/yyyy')from dual) now,
+		            to_char(pi.mspr_end_date,'dd/mm/yyyy') as end_date,
+		            case
+		                when detbis.lsbs_id in ('825','195','826','204','832','833') then jmneb.ljj_jenis_jaminan
+		                else jmn.ljj_jenis_jaminan
+		            end as jenis_jaminan,
+		            maxcl.lmc_batasan as limit_per,
+		            maxcl.lmc_max_claim as per_jaminan,
+		            case
+		                when detbis.lsbs_id IN ('183','820','823','825','832','833','838','839','848','189','840','841') then pl.mpl_max_yearly
+		                when detbis.lsbs_id IN ('813')  then pi.mspr_tsi --critical ilness
+		                when gbis.lsgb_id IN ('7','11') then pi.mspr_tsi -- personal accident
+		                when detbis.lsbs_id IN ('195','826','204') then maxcl.lmc_max_claim --hcp
+		                else pl.mpl_max_yearly
+		            end as limit,        
+		            CASE
+		                WHEN maxcl.lmc_max_claim = pl.mpl_max_yearly THEN 'AS CHARGE'
+		            END as_charge,
+		            (select sum(pay_claim) from EKA.ID_TRX_CLMDTL where regclaim = clm.regclaim) as bayar_klaim,
+		            to_char(clm.tglfinance,'dd/mm/yyyy') as tgl_akseptasi
+		        FROM EKA.MST_INSURED ins,
+		            EKA.MST_PRODUCT_INSURED pi,
+		            EKA.LST_DET_BISNIS detbis,
+		            EKA.LST_BISNIS bis,
+		            EKA.LST_GROUP_BISNIS gbis,
+		            EKA.LST_MAX_CLAIM maxcl,
+		            EKA.LST_JN_JAMINAN_EBN jmn,
+		            EKA.LST_JN_JAMINAN_EBN@eb jmneb,       
+		            EKA.MST_PLAN_LIMIT pl,
+		            EKA.ID_MST_CLM clm,
+		            EKA.MST_POLICY pol
+		        WHERE clm.regspaj(+) = ins.reg_spaj
+		            AND ins.reg_spaj = pi.reg_spaj
+		            AND clm.regspaj(+) = pi.reg_spaj
+		            AND detbis.lsbs_id = pi.lsbs_id
+		            AND detbis.lsdbs_number = pi.lsdbs_number
+		            AND bis.lsbs_id = pi.lsbs_id
+		            AND bis.lsgb_id = gbis.lsgb_id
+		            AND maxcl.lsbs_id(+) = pi.lsbs_id
+		            AND maxcl.lsdbs_number(+) = pi.lsdbs_number
+		            AND JMN.LGC_GROUP_ID(+) = MAXCL.LJJ_GROUP
+		            AND JMN.LJJ_JENIS_ID(+) = MAXCL.LJJ_JENIS_ID
+		            AND JMNEB.LGC_GROUP_ID(+) = MAXCL.LJJ_GROUP
+		            AND JMNEB.LJJ_JENIS_ID(+) = MAXCL.LJJ_JENIS_ID
+		            AND pl.mpl_lsbs_id(+) = pi.lsbs_id
+		            AND pl.mpl_lsdbs_number(+) = pi.lsdbs_number
+		            AND CLM.LSBS_ID(+) = PI.LSBS_ID
+		            AND CLM.LSDBS_NUMBER(+) = PI.LSDBS_NUMBER
+		            AND gbis.lsgb_id <![CDATA[<>]]> 17
+		            AND pol.reg_spaj = ins.reg_spaj
+		            AND pol.mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
+		        ORDER BY detbis.lsbs_id asc
+		        ) A
 	</select>
 	
 	<select id="selectViewClaimsubmission" parameterType="HashMap" resultType="ClaimSubmission">

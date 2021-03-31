@@ -1837,8 +1837,12 @@ public class FinancialTransactionController {
 							dataTemp.put("description", description);
 							dataTemp.put("jenis_transaksi", jenis_transaksi);
 							
-							String flag_trans = services.selectFlagTrans(mpt_id);
-							dataTemp.put("flag_trans", flag_trans);
+							if(jenis_transaksi.equalsIgnoreCase("switching dan redirection")) {
+								dataTemp.put("flag_trans", "old");
+							} else {
+								String flag_trans = services.selectFlagTrans(mpt_id);
+								dataTemp.put("flag_trans", flag_trans);
+							}
 
 							data.add(dataTemp);
 						} catch (Exception e) {

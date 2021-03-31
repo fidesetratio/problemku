@@ -71,6 +71,7 @@ import com.app.model.request.RequestStatusEmailCS;
 import com.app.model.request.RequestTertanggung;
 import com.app.model.request.RequestTrackingPolis;
 import com.app.model.request.RequestUpdatePemegangPolis;
+import com.app.model.request.RequestViewBeneficiary;
 import com.app.model.request.RequestViewClaim;
 import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
@@ -2609,4 +2610,104 @@ public class PolicyIndividualController {
 
 		return res;
 	}
+	
+	/*@RequestMapping(value = "/viewbeneficiary", produces = "application/json", method = RequestMethod.POST)
+	public String viewBeneficiary(@RequestBody RequestViewBeneficiary requestViewBeneficiary, HttpServletRequest request)
+			throws Exception {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestViewBeneficiary);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = true;
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<Object> data = new ArrayList<>();
+
+		String username = requestViewBeneficiary.getUsername();
+		String key = requestViewBeneficiary.getKey();
+		String no_polis = requestViewBeneficiary.getNo_polis();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				// Get REG_SPAJ
+				Pemegang paramCheckSpaj = new Pemegang();
+				paramCheckSpaj.setMspo_policy_no(no_polis);
+				Pemegang dataSpaj = services.selectGetSPAJ(paramCheckSpaj);
+
+				ArrayList<Beneficiary> listbeneficiary = services.selectKlaimkesehatan(dataSpaj.getReg_spaj(),
+						requestViewClaim.getPageNumber(), requestViewClaim.getPageSize(),
+						requestViewClaim.getStartDate(), requestViewClaim.getEndDate());
+				if (!listklaim.isEmpty()) {
+					ListIterator<KlaimKesehatan> liter = listklaim.listIterator();
+					while (liter.hasNext()) {
+						try {
+							KlaimKesehatan m = liter.next();
+							HashMap<String, Object> mapper = new HashMap<>();
+
+							Date tglRawat = m.getRegapldate();
+							Date tanggalStatus = m.getClm_paid_date();
+							String jenisKlaim = m.getJenis_claim();
+							String diagnosa = m.getNm_diagnos();
+							String lkuSymbol = m.getLku_symbol();
+							BigDecimal JumlahKlaim = m.getAmt_claim();
+							BigDecimal jumlahBayar = m.getPay_claim();
+							BigDecimal id_status = m.getId_status_accept();
+
+							mapper.put("jumlah_klaim", JumlahKlaim);
+							mapper.put("tanggal_rawat", tglRawat != null ? df.format(tglRawat) : null);
+							mapper.put("jenis_klaim", jenisKlaim);
+							mapper.put("diagnosa", diagnosa);
+							mapper.put("jumlah_bayar", jumlahBayar);
+							mapper.put("tanggal", tanggalStatus != null ? df.format(tanggalStatus) : null);
+							mapper.put("currency", lkuSymbol);
+
+							if ((id_status.intValue() == 1 || id_status.intValue() == 2
+									|| id_status.intValue() == 16)) {
+								mapper.put("status_paid_id", 1);
+							} else if ((id_status.intValue() == 10 || id_status.intValue() == 20)) {
+								mapper.put("status_paid_id", 2);
+							} else if (id_status.intValue() == 5 || id_status.intValue() == 15) {
+								mapper.put("status_paid_id", 3);
+							}
+
+							error = false;
+							message = "Successfully get data claim";
+							data.add(mapper);
+						} catch (Exception e) {
+							logger.error(
+									"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+						}
+					}
+				} else {
+					error = false;
+					message = "Data claim kosong";
+					resultErr = "Data claim kosong";
+				}
+			} else {
+				error = true;
+				message = "Can't get data claim";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 22, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}*/
+	
 }

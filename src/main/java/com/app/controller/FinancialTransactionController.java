@@ -1732,12 +1732,16 @@ public class FinancialTransactionController {
 							String jenis_transaksi = m.getJenis_transaksi();
 							Date req_date = m.getReq_date();
 							Date date_status = m.getDate_status();
+							String req_date_format = m.getReq_date_format();
+							String date_status_format = m.getDate_status_format();
 
 							dataTemp.put("mpt_id", mpt_id);
 							dataTemp.put("date_req", req_date != null ? df1.format(req_date) : null);
 							dataTemp.put("date_status", date_status != null ? df1.format(date_status) : null);
 							dataTemp.put("description", description);
 							dataTemp.put("jenis_transaksi", jenis_transaksi);
+							dataTemp.put("date_req_format", req_date_format != null ? req_date_format : null);
+							dataTemp.put("date_status_format", date_status_format != null ? date_status_format : null);
 
 							data.add(dataTemp);
 						} catch (Exception e) {

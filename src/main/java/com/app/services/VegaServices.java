@@ -714,6 +714,16 @@ public class VegaServices {
 		return dao.selectListSwitching(hashMap);
 	}
 	
+	public ArrayList<SwitchingRedirection> selectListRedirection(String reg_spaj, Integer pageNumber,
+			Integer pageSize) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("reg_spaj", reg_spaj);
+		hashMap.put("pageNumber", pageNumber);
+		hashMap.put("pageSize", pageSize);
+		return dao.selectListRedirection(hashMap);
+	}
+	
 	public String selectFlagTrans(String mpt_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectFlagTrans(mpt_id);

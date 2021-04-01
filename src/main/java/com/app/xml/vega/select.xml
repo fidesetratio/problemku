@@ -2014,6 +2014,132 @@
 		WHERE   r__ <![CDATA[>=]]> (((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize, jdbcType=INTEGER}) + 1)
 	</select>
 	
+	<select id="selectListRedirection" parameterType="HashMap" resultType="com.app.model.SwitchingRedirection">
+		SELECT  *
+		FROM    (
+		        SELECT  o.*,
+		                rownum r__
+		        FROM    (
+		                SELECT  *
+		                FROM    (
+		                    SELECT  *
+		                    FROM    (
+		                            SELECT  CASE
+		                                        WHEN A.LT_ID = 19 AND A.COLLABORATE_MPT_ID IS NOT NULL
+		                                            THEN    COLLABORATE_MPT_ID || ', ' || MPT_ID
+		                                        WHEN (A.LT_ID != 19 AND (A.COLLABORATE_MPT_ID IS NULL OR A.COLLABORATE_MPT_ID = 0))
+		                                            THEN    MPT_ID
+		                                    END AS MPT_ID,
+		                                    A.REQ_DATE,
+		                                    TO_CHAR(A.REQ_DATE, 'DD Mon YYYY') REQ_DATE_FORMAT,
+		                                    CASE
+		                                        WHEN A.MODIFIED_DATE IS NOT NULL
+		                                            THEN TO_DATE(A.MODIFIED_DATE, 'DD/MM/YYYY')
+		                                        ELSE TO_DATE(A.CREATED_DATE, 'DD/MM/YYYY')
+		                                    END AS DATE_STATUS,
+		                                    CASE
+		                                        WHEN A.MODIFIED_DATE IS NOT NULL
+		                                            THEN TO_CHAR(A.MODIFIED_DATE, 'DD Mon YYYY')
+		                                        ELSE TO_CHAR(A.CREATED_DATE, 'DD Mon YYYY')
+		                                    END AS DATE_STATUS_FORMAT,
+		                                    CASE
+		                                        WHEN a.lt_id = 19 AND a.collaborate_mpt_id IS NOT NULL
+		                                            THEN (
+		                                                SELECT  CASE
+		                                                            WHEN x.MPT_STATUS IN (0, 1, 45, 46, 47)
+		                                                                THEN 'On progress'
+		                                                            WHEN x.MPT_STATUS in (7, 54)
+		                                                                THEN 'Accepted'
+		                                                            WHEN x.MPT_STATUS = 8
+		                                                                THEN 'Canceled'
+		                                                            WHEN x.MPT_STATUS = 9
+		                                                                THEN 'Canceled'
+		                                                        END AS DESCRIPTION
+		                                                FROM    eka.mst_mpol_trans x
+		                                                WHERE   x.mpt_id = a.collaborate_mpt_id
+		                                                )
+		                                            WHEN (a.lt_id != 19 AND (a.collaborate_mpt_id IS NULL or a.collaborate_mpt_id = 0))
+		                                            THEN (
+		                                                SELECT  CASE
+		                                                            WHEN x.MPT_STATUS IN (0, 1, 45, 46, 47)
+		                                                                THEN 'On progress'
+		                                                            WHEN x.MPT_STATUS in (7, 54)
+		                                                                THEN 'Accepted'
+		                                                            WHEN x.MPT_STATUS = 8
+		                                                                THEN 'Canceled'
+		                                                            WHEN x.MPT_STATUS = 9
+		                                                                THEN 'Canceled'
+		                                                            END AS DESCRIPTION
+		                                                FROM    eka.mst_mpol_trans x
+		                                                WHERE   x.mpt_id = a.mpt_id
+		                                                )
+		                                    END as DESCRIPTION,
+		                                    C.LT_TRANSKSI AS JENIS_TRANSAKSI
+		                            FROM    EKA.MST_MPOL_TRANS A
+		                                    INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+		                                    INNER JOIN EKA.LST_TRANSAKSI C ON A.LT_ID = C.LT_ID
+		                            WHERE   B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		                                AND A.LT_ID IN (20)
+		                            )
+		                    WHERE MPT_ID IS NOT NULL
+		                ORDER BY MPT_ID DESC)
+		                UNION ALL(
+		                SELECT  NVL (
+		                        A.NO_REGISTER,
+		                        TO_CHAR(TO_CHAR(TRANS.MTU_TGL_TRANS, 'yyyymmdd') || TRANS.MU_KE)) AS MPT_ID,
+		                        A.MU_TGL_TRANS REQ_DATE,
+		                        TO_CHAR(A.MU_TGL_TRANS, 'DD Mon YYYY') REQ_DATE_FORMAT,
+		                        TO_DATE(NVL(TRANS.TGL_FILLING, A.MU_TGL_TRANS), 'DD/MM/YYYY') AS DATE_STATUS,
+		                        TO_CHAR(NVL(TRANS.TGL_FILLING, A.MU_TGL_TRANS), 'DD Mon YYYY') AS DATE_STATUS_FORMAT,
+		                        (CASE
+		                            WHEN A.LT_ID IN (2, 4)
+		                                THEN
+		                                   (CASE
+		                                        WHEN A.MU_LSPD_ID IN (46, 47)
+		                                            THEN 'On progress'
+		                                        ELSE 'Accepted'
+		                                    END)
+		                            WHEN A.LT_ID IN (3, 11)
+		                                THEN
+		                                   (CASE
+		                                        WHEN A.MU_LSPD_ID IN (46, 47, 54)
+		                                            THEN 'On progress'
+		                                        ELSE 'Accepted'
+		                                    END)
+		                        END)AS DESCRIPTION,
+		                        C.LT_TRANSKSI JENIS_TRANSAKSI
+		                FROM    EKA.MST_ULINK A,
+		                        EKA.LST_TRANSAKSI C,
+		                        EKA.MST_ULINK_BAYAR D,
+		                        (SELECT X.MTU_TGL_TRANS,
+		                                X.REG_SPAJ,
+		                                X.MU_KE,
+		                                (CASE
+		                                    WHEN X.LT_ID IN (2, 4)
+		                                        THEN  nvl(trunc(X.MTU_TGL_PROSES),X.MTU_TGL_TRANS)
+		                                    WHEN X.LT_ID IN (3, 11)
+		                                        THEN Y.MUB_TGL_TRANSFER
+		                                END) AS TGL_FILLING
+		                        FROM    EKA.MST_TRANS_ULINK X,
+		                                EKA.MST_ULINK_BAYAR Y
+		                        WHERE   X.REG_SPAJ = Y.REG_SPAJ(+)
+		                                AND X.MU_KE = Y.MU_KE(+)
+		                                AND X.MTU_KE = 1) TRANS
+		                WHERE   A.LT_ID = C.LT_ID
+		                    AND A.REG_SPAJ = TRANS.REG_SPAJ
+		                    AND A.MU_KE = TRANS.MU_KE
+		                    AND A.LT_ID IN (20)
+		                    AND A.REG_SPAJ = D.REG_SPAJ(+)
+		                    AND A.MU_KE = D.MU_KE(+)
+		                    AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		                    AND A.ID_MOBILE IS NULL)
+		                ORDER BY 2 DESC, 1 DESC
+		                ) o
+		        WHERE   rownum <![CDATA[<]]> ((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1 )
+		        )
+		WHERE   r__ <![CDATA[>=]]> (((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize, jdbcType=INTEGER}) + 1)
+	</select>
+	
 	<select id="selectFlagTrans" parameterType="String" resultType="String">
 		SELECT  CASE
 		            WHEN RES = 0

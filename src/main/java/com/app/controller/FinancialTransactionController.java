@@ -1714,7 +1714,7 @@ public class FinancialTransactionController {
 				Pemegang dataSPAJ = services.selectGetSPAJ(paramGetSPAJ);
 
 				ArrayList<SwitchingRedirection> arrayList = services
-						.selectListSwitchingAndRedirection(dataSPAJ.getReg_spaj(), pageNumber, pageSize);
+						.selectListRedirection(dataSPAJ.getReg_spaj(), pageNumber, pageSize);
 				if (arrayList.isEmpty()) {
 					error = false;
 					message = "List redirection empty";
@@ -1733,14 +1733,7 @@ public class FinancialTransactionController {
 							Date req_date = m.getReq_date();
 							Date date_status = m.getDate_status();
 
-							String a = mpt_id;
-							ArrayList<String> arrayMptId = new ArrayList<>();
-							List<String> items = Arrays.asList(a.split("\\s*,\\s*"));
-							for (Integer b = 0; b < items.size(); b++) {
-								arrayMptId.add(items.get(b));
-							}
-
-							dataTemp.put("mpt_id", arrayMptId);
+							dataTemp.put("mpt_id", mpt_id);
 							dataTemp.put("date_req", req_date != null ? df1.format(req_date) : null);
 							dataTemp.put("date_status", date_status != null ? df1.format(date_status) : null);
 							dataTemp.put("description", description);

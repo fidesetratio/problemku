@@ -5691,8 +5691,8 @@ public class FinancialTransactionController {
 								dataClaimDetails.put("jenis_jaminan", jenis_jaminan);
 								dataClaimDetails.put("limit_per", limit_per);
 								dataClaimDetails.put("per_jaminan", per_jaminan);
-								dataClaimDetails.put("limit", limit);
-								dataTemp.put("limit_per", limit);
+								dataClaimDetails.put("limit_per", limit);
+								dataTemp.put("limit", limit);
 								dataClaimDetails.put("as_charge", as_charge);
 								dataClaimDetails.put("bayar_klaim", bayar_klaim);
 								dataClaimDetails.put("tgl_akseptasi", tgl_akseptasi);

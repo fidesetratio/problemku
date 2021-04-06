@@ -93,6 +93,7 @@ import com.app.model.request.RequestUploadDeleteFileClaimSubCorp;
 import com.app.model.request.RequestValidateSwitchingRedirection;
 import com.app.model.request.RequestViewClaimSubmission;
 import com.app.model.request.RequestViewClaimSubmissionCorporate;
+import com.app.model.request.RequestViewPolicyAlteration;
 import com.app.model.request.RequestViewSwitching;
 import com.app.model.request.RequestViewSwitchingRedirection;
 import com.app.model.request.RequestViewUserInputTopup;
@@ -6714,4 +6715,156 @@ public class FinancialTransactionController {
 
 		return res;
 	}
+	
+	/*@RequestMapping(value = "/viewpremiumholiday", produces = "application/json", method = RequestMethod.POST)
+	public String viewPremiumHoliday(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestViewPolicyAlteration);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+
+		String username = requestViewPolicyAlteration.getUsername();
+		String key = requestViewPolicyAlteration.getKey();
+		String no_polis = requestViewPolicyAlteration.getNo_polis();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				// Get REG_SPAJ
+				Pemegang paramCheckSpaj = new Pemegang();
+				paramCheckSpaj.setMspo_policy_no(no_polis);
+				Pemegang dataSpaj = services.selectGetSPAJ(paramCheckSpaj);
+
+				if (dataSpaj != null) {
+					ClaimSubmission dataViewClaimSubmission = services.selectViewClaimsubmission(dataSpaj.getReg_spaj(),
+							mpc_id);
+
+					if (dataViewClaimSubmission != null) {
+						BigInteger kode_trans = dataViewClaimSubmission.getKode_trans();
+						String mspo_policy_no_format = dataViewClaimSubmission.getNo_polis();
+						String nm_pemegang = dataViewClaimSubmission.getNm_pemegang();
+						String status_polis = dataViewClaimSubmission.getStatus_polis();
+						String nm_product = dataViewClaimSubmission.getNm_product();
+						String patienname = dataViewClaimSubmission.getPatienname();
+						String nm_product_claim = dataViewClaimSubmission.getNm_product_claim();
+						String jenis_claim = dataViewClaimSubmission.getJenisclaim();
+						Date date_ri_1 = dataViewClaimSubmission.getDate_ri_1();
+						Date date_ri_2 = dataViewClaimSubmission.getDate_ri_2();
+						BigDecimal amt_claim = dataViewClaimSubmission.getAmt_claim();
+						String rekeningClient = dataViewClaimSubmission.getRekening() != null
+								? customResourceLoader.clearData(dataViewClaimSubmission.getRekening())
+								: null;
+						String bank = dataViewClaimSubmission.getBank();
+						String path_claim = dataViewClaimSubmission.getPath_claim();
+						String reason = dataViewClaimSubmission.getReason();
+						Integer double_cover_claim = dataViewClaimSubmission.getDouble_cover_claim();
+						Date date_insert = dataViewClaimSubmission.getRegapldate();
+						String status = dataViewClaimSubmission.getStatus();
+						String date_status = dataViewClaimSubmission.getDate_status();
+						
+						// \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\09\09170016255\DocumentClaimSubmission\2020000410
+						
+						String tempPathClaim = path_claim.replace("\\", "/");
+						tempPathClaim = tempPathClaim.replace("//", "/");
+						String tempPathArray[] = tempPathClaim.split("/");
+						
+						String tempPathClaimJoin = tempPathArray[4].toString() + "/" + tempPathArray[5].toString() + "/" 
+								+ tempPathArray[6].toString() + "/" + tempPathArray[7].toString();
+						
+						tempPathClaimJoin = storageClaimMpolicy + "/" + tempPathClaimJoin;
+
+						Boolean boolean_double_cover_claim = false;
+
+						if (double_cover_claim.equals(1)) {
+							boolean_double_cover_claim = true;
+						}
+
+						// Rekening
+						String rekening = customResourceLoader.formatRekening(rekeningClient);
+
+						data.put("kode_trans", kode_trans);
+						data.put("mspo_policy_no_format", mspo_policy_no_format);
+						data.put("nm_pemegang", nm_pemegang);
+						data.put("status_polis", status_polis);
+						data.put("nm_product", nm_product);
+						data.put("patienname", patienname);
+						data.put("nm_product_claim", nm_product_claim);
+						data.put("jenis_claim", jenis_claim);
+						data.put("date_ri_1", df1.format(date_ri_1));
+						data.put("date_ri_2", date_ri_2 != null ? df1.format(date_ri_2) : null);
+						data.put("amt_claim", amt_claim);
+						data.put("rekening", rekening);
+						data.put("bank", bank);
+						data.put("double_cover_claim", boolean_double_cover_claim);
+						data.put("reason", reason);
+						data.put("date_insert", df.format(date_insert));
+						data.put("status", status);
+						data.put("date_status", date_status);
+
+						// List file in folder claim
+						ArrayList<HashMap<String, Object>> arrayTemp = new ArrayList<>();
+						List<String> pathFileClaim = customResourceLoader.listFilesUsingJavaIO2CustomSorted(tempPathClaimJoin);
+						for (String name : pathFileClaim) {
+							HashMap<String, Object> hashMapPathClaim = new HashMap<>();
+							if ((!name.toLowerCase().contains("form_rawat_inap.pdf"))
+									&& (!name.toLowerCase().substring(0, 1).equals("."))
+									&& (!name.toLowerCase().contains("formrawatinapgenerate.pdf"))) {
+								hashMapPathClaim.put("name", name.replace("MPOLIS_", "").replace("_", " "));
+								hashMapPathClaim.put("path_file", path_claim + "\\" + name);
+
+								arrayTemp.add(hashMapPathClaim);
+							}
+						}
+
+						data.put("data_claim", arrayTemp);
+
+						error = false;
+						message = "Successfully get view claim submission";
+					} else {
+						// Kode trans tidak ditemukan
+						error = true;
+						message = "Transaction code not found";
+						resultErr = "Kode transaksi tidak ditemukan (" + mpc_id + ")";
+						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+								+ resultErr);
+					}
+				} else {
+					// SPAJ tidak ditemukan
+					error = true;
+					message = "Failed get data";
+					resultErr = "REG SPAJ tidak ditemukan, No polis: " + no_polis;
+					logger.error(
+							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}*/
 }

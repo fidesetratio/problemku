@@ -1198,5 +1198,14 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateFurtherClaimCorporate(mpcc_id);
 	}
+	
+	public String selectCheckOTP(String no_hp, Integer jenis_id, Integer menu_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("no_hp", no_hp);
+		hashMap.put("jenis_id", jenis_id);
+		hashMap.put("menu_id", menu_id);
+		return dao.selectCheckOTP(hashMap);
+	}
 
 }

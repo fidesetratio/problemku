@@ -82,6 +82,10 @@ public interface VegaMapper {
 	public void insertDetailClaimSubmissionTrans(HashMap<String, Object> hashMap);
 	
 	public void insertClaimSubmissionCorporate(HashMap<String, Object> hashMap);
+	
+	public void insertEndorse(HashMap<String, Object> hashMap);
+	
+	public void insertDetailEndorse(HashMap<String, Object> hashMap);
 
 	// Select
 	public ArrayList<MpolisConfiguration> selectMpolisConfiguration();
@@ -181,6 +185,8 @@ public interface VegaMapper {
 	public ArrayList<StableLink> selectDetailStableLink(User user);
 
 	public BigInteger selectGetMptId();
+	
+	public String selectGetNoEndors();
 
 	public BigInteger selectGetMpcId();
 

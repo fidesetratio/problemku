@@ -1333,7 +1333,6 @@ public class FinancialTransactionController {
 					String reg_spaj_result = dataBasicInformation.getReg_spaj();
 					String lku_id_result = dataBasicInformation.getLku_id();
 					Integer lsbs_id_result = dataBasicInformation.getLsbs_id();
-					String lku_symbol_result = dataBasicInformation.getLku_symbol();
 
 					hashMapBasicInformation.put("no_polis", dataBasicInformation.getNo_polis());
 					hashMapBasicInformation.put("reg_spaj", dataBasicInformation.getReg_spaj());
@@ -2671,7 +2670,6 @@ public class FinancialTransactionController {
 					String jenis_transaksi = dataViewSwitchingRedirection.getLt_transksi();
 					String reason_fu = dataViewSwitchingRedirection.getReason_fu();
 					String description = dataViewSwitchingRedirection.getDescription();
-					String lku_symbol_result = dataViewSwitchingRedirection.getLku_symbol();
 					Date req_date = dataViewSwitchingRedirection.getReq_date();
 					Date status_date = dataViewSwitchingRedirection.getDate_status();
 
@@ -2692,8 +2690,6 @@ public class FinancialTransactionController {
 					HashMap<String, Object> hashMapSwitching = new HashMap<>();
 					HashMap<String, Object> hashMapRedirection = new HashMap<>();
 					for (Integer a = 0; a < dataArray.size(); a++) {
-						String categoryType = dataArray.get(a).getJenis_transaksi();
-						String mpt_id2 = dataArray.get(a).getMpt_id();
 						BigDecimal lt_id = dataArray.get(a).getLt_id();
 
 						if (lt_id.intValue() == 20) { // 20: Redirection
@@ -6716,8 +6712,8 @@ public class FinancialTransactionController {
 		return res;
 	}
 	
-	/*@RequestMapping(value = "/viewpremiumholiday", produces = "application/json", method = RequestMethod.POST)
-	public String viewPremiumHoliday(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
+	@RequestMapping(value = "/submitpremiumholiday", produces = "application/json", method = RequestMethod.POST)
+	public String submitPremiumHoliday(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
 			HttpServletRequest request) {
 		Date start = new Date();
 		GsonBuilder builder = new GsonBuilder();
@@ -6735,106 +6731,30 @@ public class FinancialTransactionController {
 		String username = requestViewPolicyAlteration.getUsername();
 		String key = requestViewPolicyAlteration.getKey();
 		String no_polis = requestViewPolicyAlteration.getNo_polis();
+		String tanggal_awal = requestViewPolicyAlteration.getTanggal_awal();
+		String tanggal_akhir = requestViewPolicyAlteration.getTanggal_akhir();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
-				// Get REG_SPAJ
-				Pemegang paramCheckSpaj = new Pemegang();
-				paramCheckSpaj.setMspo_policy_no(no_polis);
-				Pemegang dataSpaj = services.selectGetSPAJ(paramCheckSpaj);
+				// Get SPAJ
+				Pemegang paramSelectSPAJ = new Pemegang();
+				paramSelectSPAJ.setMspo_policy_no(no_polis);
+				Pemegang dataSPAJ = services.selectGetSPAJ(paramSelectSPAJ);
 
-				if (dataSpaj != null) {
-					ClaimSubmission dataViewClaimSubmission = services.selectViewClaimsubmission(dataSpaj.getReg_spaj(),
-							mpc_id);
-
-					if (dataViewClaimSubmission != null) {
-						BigInteger kode_trans = dataViewClaimSubmission.getKode_trans();
-						String mspo_policy_no_format = dataViewClaimSubmission.getNo_polis();
-						String nm_pemegang = dataViewClaimSubmission.getNm_pemegang();
-						String status_polis = dataViewClaimSubmission.getStatus_polis();
-						String nm_product = dataViewClaimSubmission.getNm_product();
-						String patienname = dataViewClaimSubmission.getPatienname();
-						String nm_product_claim = dataViewClaimSubmission.getNm_product_claim();
-						String jenis_claim = dataViewClaimSubmission.getJenisclaim();
-						Date date_ri_1 = dataViewClaimSubmission.getDate_ri_1();
-						Date date_ri_2 = dataViewClaimSubmission.getDate_ri_2();
-						BigDecimal amt_claim = dataViewClaimSubmission.getAmt_claim();
-						String rekeningClient = dataViewClaimSubmission.getRekening() != null
-								? customResourceLoader.clearData(dataViewClaimSubmission.getRekening())
-								: null;
-						String bank = dataViewClaimSubmission.getBank();
-						String path_claim = dataViewClaimSubmission.getPath_claim();
-						String reason = dataViewClaimSubmission.getReason();
-						Integer double_cover_claim = dataViewClaimSubmission.getDouble_cover_claim();
-						Date date_insert = dataViewClaimSubmission.getRegapldate();
-						String status = dataViewClaimSubmission.getStatus();
-						String date_status = dataViewClaimSubmission.getDate_status();
-						
-						// \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\09\09170016255\DocumentClaimSubmission\2020000410
-						
-						String tempPathClaim = path_claim.replace("\\", "/");
-						tempPathClaim = tempPathClaim.replace("//", "/");
-						String tempPathArray[] = tempPathClaim.split("/");
-						
-						String tempPathClaimJoin = tempPathArray[4].toString() + "/" + tempPathArray[5].toString() + "/" 
-								+ tempPathArray[6].toString() + "/" + tempPathArray[7].toString();
-						
-						tempPathClaimJoin = storageClaimMpolicy + "/" + tempPathClaimJoin;
-
-						Boolean boolean_double_cover_claim = false;
-
-						if (double_cover_claim.equals(1)) {
-							boolean_double_cover_claim = true;
-						}
-
-						// Rekening
-						String rekening = customResourceLoader.formatRekening(rekeningClient);
-
-						data.put("kode_trans", kode_trans);
-						data.put("mspo_policy_no_format", mspo_policy_no_format);
-						data.put("nm_pemegang", nm_pemegang);
-						data.put("status_polis", status_polis);
-						data.put("nm_product", nm_product);
-						data.put("patienname", patienname);
-						data.put("nm_product_claim", nm_product_claim);
-						data.put("jenis_claim", jenis_claim);
-						data.put("date_ri_1", df1.format(date_ri_1));
-						data.put("date_ri_2", date_ri_2 != null ? df1.format(date_ri_2) : null);
-						data.put("amt_claim", amt_claim);
-						data.put("rekening", rekening);
-						data.put("bank", bank);
-						data.put("double_cover_claim", boolean_double_cover_claim);
-						data.put("reason", reason);
-						data.put("date_insert", df.format(date_insert));
-						data.put("status", status);
-						data.put("date_status", date_status);
-
-						// List file in folder claim
-						ArrayList<HashMap<String, Object>> arrayTemp = new ArrayList<>();
-						List<String> pathFileClaim = customResourceLoader.listFilesUsingJavaIO2CustomSorted(tempPathClaimJoin);
-						for (String name : pathFileClaim) {
-							HashMap<String, Object> hashMapPathClaim = new HashMap<>();
-							if ((!name.toLowerCase().contains("form_rawat_inap.pdf"))
-									&& (!name.toLowerCase().substring(0, 1).equals("."))
-									&& (!name.toLowerCase().contains("formrawatinapgenerate.pdf"))) {
-								hashMapPathClaim.put("name", name.replace("MPOLIS_", "").replace("_", " "));
-								hashMapPathClaim.put("path_file", path_claim + "\\" + name);
-
-								arrayTemp.add(hashMapPathClaim);
-							}
-						}
-
-						data.put("data_claim", arrayTemp);
-
-						error = false;
-						message = "Successfully get view claim submission";
-					} else {
-						// Kode trans tidak ditemukan
-						error = true;
-						message = "Transaction code not found";
-						resultErr = "Kode transaksi tidak ditemukan (" + mpc_id + ")";
-						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
-								+ resultErr);
-					}
+				if (dataSPAJ != null) {
+					String reg_spaj = dataSPAJ.getReg_spaj();
+					String msen_alasan = "CUTI PREMI";
+					
+					// Get MSEN_ENDORSE_NO
+					String msen_endors_no = services.selectGetNoEndors();
+					
+					//INSERT ENDORSE
+					services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
+					
+					//INSERT DET ENDORSE
+					services.insertDetailEndorse(msen_endors_no, tanggal_awal, tanggal_akhir);
+					
+					error = false;
+					message = "Successfully submit premium holiday";
 				} else {
 					// SPAJ tidak ditemukan
 					error = true;
@@ -6860,11 +6780,9 @@ public class FinancialTransactionController {
 		map.put("message", message);
 		map.put("data", data);
 		res = gson.toJson(map);
-		// Update activity user table LST_USER_SIMULTANEOUS
-		customResourceLoader.updateActivity(username);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
-	}*/
+	}
 }

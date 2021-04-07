@@ -3,6 +3,7 @@ package com.app.services;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -131,6 +132,15 @@ public class VegaServices {
 		dao.insertSwitching(hashMap);
 //			return (Integer) hashMap.get("MPT_ID");
 	}
+	
+	public void insertEndorse(String msen_endors_no, String reg_spaj, String msen_alasan) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("msen_endors_no", msen_endors_no);
+		hashMap.put("reg_spaj", reg_spaj);
+		hashMap.put("msen_alasan", msen_alasan);
+		dao.insertEndorse(hashMap);
+	}
 
 	public void insertRedirection(String mpt_id_redirection, String date_created_java1, String reg_spaj, Integer lt_id,
 			String lku_id, String date_created_java2, String payor_name, String mpt_id_switching) {
@@ -163,6 +173,15 @@ public class VegaServices {
 		hashMap.put("jumlah", jumlah_ke);
 		hashMap.put("unit_ke", unit_ke);
 		dao.insertDetailSwitching(hashMap);
+	}
+	
+	public void insertDetailEndorse(String msen_endors_no, String tanggal_awal, String tanggal_akhir) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("msen_endors_no", msen_endors_no);
+		hashMap.put("tanggal_awal", tanggal_awal);
+		hashMap.put("tanggal_akhir", tanggal_akhir);
+		dao.insertDetailEndorse(hashMap);
 	}
 
 	public void insertDetailRedirection(String mpt_id, String lji_id, Float mpt_persen, String mpt_dk) {
@@ -587,6 +606,11 @@ public class VegaServices {
 	public BigInteger selectGetMptId() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetMptId();
+	}
+	
+	public String selectGetNoEndors() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectGetNoEndors();
 	}
 
 	public BigInteger selectGetMpcId() {
@@ -1207,5 +1231,4 @@ public class VegaServices {
 		hashMap.put("menu_id", menu_id);
 		return dao.selectCheckOTP(hashMap);
 	}
-
 }

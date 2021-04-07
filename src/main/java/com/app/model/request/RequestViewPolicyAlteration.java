@@ -11,6 +11,24 @@ public class RequestViewPolicyAlteration implements Serializable {
 	private String username;
 	private String key;
 	private String no_polis;
+	private String tanggal_awal;
+	private String tanggal_akhir;
+
+	public String getTanggal_awal() {
+		return tanggal_awal;
+	}
+
+	public void setTanggal_awal(String tanggal_awal) {
+		this.tanggal_awal = tanggal_awal;
+	}
+
+	public String getTanggal_akhir() {
+		return tanggal_akhir;
+	}
+
+	public void setTanggal_akhir(String tanggal_akhir) {
+		this.tanggal_akhir = tanggal_akhir;
+	}
 
 	public String getUsername() {
 		return username;

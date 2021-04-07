@@ -1530,6 +1530,10 @@
 	<select id="selectGetMpccId" resultType="String">
 		select EKA.MPCCID_SEQ.nextval from dual
 	</select>
+	
+	<select id="selectGetNoEndors" resultType="String">
+		select eka.pac_counter.Get_no_endors_seq from dual
+	</select>
 
 	<select id="selectUserIndividual" resultType="User" parameterType="String">
 		SELECT A.*,

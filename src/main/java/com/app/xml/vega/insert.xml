@@ -321,4 +321,41 @@
     		0
 		)
 	</insert>
+	
+	<insert id="insertEndorse" parameterType="HashMap">
+		INSERT INTO EKA.MST_ENDORS (
+			msen_endors_no, reg_spaj, msen_internal, msen_alasan, msen_input_date, msen_active_date, lspd_id, lus_id, msen_auto_rider, flag_ps, msen_flag_uw,
+		    msen_flag_ttp, msen_aksep_uw, msen_issue_spaj, msen_reproses
+		) VALUES (
+    		#{msen_endors_no, jdbcType=VARCHAR}, 
+    		#{reg_spaj, jdbcType=VARCHAR},
+    		1,
+    		#{msen_alasan, jdbcType=VARCHAR}, 
+    		SYSDATE,
+    		SYSDATE,
+    		72,
+    		0,
+    		0,
+    		0,
+    		0,
+    		0,
+    		0,
+    		0,
+    		0
+		)
+	</insert>
+	
+	<insert id="insertDetailEndorse" parameterType="HashMap">
+		INSERT INTO EKA.MST_DET_ENDORS (
+			msen_endors_no, msenf_number, lsje_id, mste_insured_no, msde_new1, msde_new2
+		) VALUES (
+		 	#{msen_endors_no, jdbcType=VARCHAR},
+		   	1,
+		   	108,
+		   	1,
+		   	#{tanggal_awal, jdbcType=VARCHAR},
+		   	#{tanggal_akhir, jdbcType=VARCHAR}
+		)
+	</insert>
+
 </mapper>

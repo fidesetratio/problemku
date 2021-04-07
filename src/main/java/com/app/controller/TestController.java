@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
 
-import io.swagger.annotations.ApiOperation;
-
 @RestController
 public class TestController {
 

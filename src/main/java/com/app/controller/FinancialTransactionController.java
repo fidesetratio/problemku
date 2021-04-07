@@ -6778,7 +6778,6 @@ public class FinancialTransactionController {
 		}
 		map.put("error", error);
 		map.put("message", message);
-		map.put("data", data);
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);

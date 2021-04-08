@@ -88,6 +88,7 @@ public class User implements Serializable {
 	private String lku_symbol;
 	private String rekening;
 	private String bank;
+	private String enable_cuti_premi;
 
 	private String mspo_policy_no_format;
 	private BigDecimal gprod_id;
@@ -775,5 +776,13 @@ public class User implements Serializable {
 
 	public void setLms_id(BigDecimal lms_id) {
 		this.lms_id = lms_id;
+	}
+
+	public String getEnable_cuti_premi() {
+		return enable_cuti_premi;
+	}
+
+	public void setEnable_cuti_premi(String enable_cuti_premi) {
+		this.enable_cuti_premi = enable_cuti_premi;
 	}
 }

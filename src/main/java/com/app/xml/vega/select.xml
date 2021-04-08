@@ -160,65 +160,74 @@
 
 	<select id="selectDetailedPolis" parameterType="String" resultType="com.app.model.User">
 		SELECT /*+ first_rows */
-        mspo_policy_no_format,
-         b.lsbs_id,
-         b.lsdbs_number,
-         j.lms_id,
-         (CASE NVL (a.mspo_flag_new, 0)
-             WHEN 1
-             THEN
-                DECODE (NVL (a.mspo_syahriah, 0),
-                        1, d.lsdbs_view_syariah,
-                        d.lsdbs_view)
-             ELSE
-                DECODE (NVL (a.mspo_syahriah, 0),
-                        1, d.lsdbs_view_syariah0,
-                        d.lsdbs_view0)
-          END)
-            nm_prod,
-         f.mcl_first nm_pp,
-         g.mcl_first nm_tt,
-         j.lms_status_id status,
-         CASE
-            WHEN c.lsgp_id IN (0, 1, 2, 3, 4)
-            THEN
-               c.lsgp_id
-            ELSE
-               0
-         END
-            AS gprod_id,
-         NVL (e.lsgp_ket, 'N/A') group_prod,
-         eka.pac_mpolis.check_group_prod (a.reg_spaj, 5) ishealth
-    	FROM eka.mst_policy a,
-         eka.mst_insured i,
-         eka.mst_product_insured b,
-         eka.lst_det_bisnis d,
-         eka.lst_bisnis c,
-         eka.lst_group_product e,
-         eka.mst_client f,
-         eka.mst_client g,
-         eka.lst_policy_status h,
-         eka.lst_master_status j
-   		WHERE     a.reg_spaj = i.reg_spaj
-         AND i.reg_spaj = b.reg_spaj
-         AND i.mste_insured_no = b.mste_insured_no
-         AND b.lsbs_id = d.lsbs_id
-         AND b.lsdbs_number = d.lsdbs_number
-         AND d.lsbs_id = c.lsbs_id
-         AND c.lsgp_id = e.lsgp_id(+)
-         AND a.mspo_policy_holder = f.mcl_id
-         AND i.mste_insured = g.mcl_id
-         AND a.lssp_id = h.lssp_id
-         AND h.lms_id = j.lms_id
-         AND c.lsbs_id <![CDATA[<]]> 300
-         AND j.lms_id NOT IN (5, 6)
-         AND EXISTS
-                (SELECT 1
-                   FROM eka.mst_simultaneous g, eka.lst_user_simultaneous h
-                  WHERE     g.id_simultan = h.id_simultan
-                        AND a.reg_spaj = g.reg_spaj
-                        AND g.mssm_pemegang = 1
-                        AND  h.username = #{username, jdbcType=VARCHAR})
+		mspo_policy_no_format,
+		 b.lsbs_id,
+		 b.lsdbs_number,
+		 j.lms_id,
+		 (CASE NVL (a.mspo_flag_new, 0)
+		     WHEN 1
+		     THEN
+		        DECODE (NVL (a.mspo_syahriah, 0),
+		                1, d.lsdbs_view_syariah,
+		                d.lsdbs_view)
+		     ELSE
+		        DECODE (NVL (a.mspo_syahriah, 0),
+		                1, d.lsdbs_view_syariah0,
+		                d.lsdbs_view0)
+		  END)
+		    nm_prod,
+		 f.mcl_first nm_pp,
+		 g.mcl_first nm_tt,
+		 j.lms_status_id status,
+		 CASE
+		    WHEN c.lsgp_id IN (0, 1, 2, 3, 4)
+		    THEN
+		       c.lsgp_id
+		    ELSE
+		       0
+		 END
+		    AS gprod_id,
+		 NVL (e.lsgp_ket, 'N/A') group_prod,
+		 eka.pac_mpolis.check_group_prod (a.reg_spaj, 5) ishealth,
+		 CASE
+		    WHEN k.premium_holiday_flag = 1
+		        THEN 'true'
+		    ELSE 'false'
+		 END
+		    AS ENABLE_CUTI_PREMI
+		FROM eka.mst_policy a,
+		 eka.mst_insured i,
+		 eka.mst_product_insured b,
+		 eka.lst_det_bisnis d,
+		 eka.lst_bisnis c,
+		 eka.lst_group_product e,
+		 eka.mst_client f,
+		 eka.mst_client g,
+		 eka.lst_policy_status h,
+		 eka.lst_master_status j,
+		 eka.lst_product_setup k
+		WHERE     a.reg_spaj = i.reg_spaj
+		 AND i.reg_spaj = b.reg_spaj
+		 AND i.mste_insured_no = b.mste_insured_no
+		 AND b.lsbs_id = d.lsbs_id
+		 AND b.lsbs_id = k.product_code(+)
+		 AND b.lsdbs_number = d.lsdbs_number
+		 AND d.lsdbs_number = k.plan(+)
+		 AND d.lsbs_id = c.lsbs_id
+		 AND c.lsgp_id = e.lsgp_id(+)
+		 AND a.mspo_policy_holder = f.mcl_id
+		 AND i.mste_insured = g.mcl_id
+		 AND a.lssp_id = h.lssp_id
+		 AND h.lms_id = j.lms_id
+		 AND c.lsbs_id <![CDATA[<]]> 300
+		 AND j.lms_id NOT IN (5, 6)
+		 AND EXISTS
+		        (SELECT 1
+		           FROM eka.mst_simultaneous g, eka.lst_user_simultaneous h
+		          WHERE     g.id_simultan = h.id_simultan
+		                AND a.reg_spaj = g.reg_spaj
+		                AND g.mssm_pemegang = 1
+		                AND  h.username = #{username, jdbcType=VARCHAR})
 		ORDER BY j.lms_id, a.mspo_policy_no_format
 	</select>
 

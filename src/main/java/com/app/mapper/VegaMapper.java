@@ -186,6 +186,8 @@ public interface VegaMapper {
 
 	public BigInteger selectGetMptId();
 	
+	public Integer selectGetLspdId(String reg_spaj);
+	
 	public String selectGetNoEndors();
 
 	public BigInteger selectGetMpcId();

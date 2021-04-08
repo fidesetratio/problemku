@@ -3720,5 +3720,7 @@
  			AND A.LSTB_ID = 1
 	</select>
 	
-	
+	<select id="selectGetLspdId" resultType="Integer">
+		select lspd_id from eka.mst_policy where reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+	</select>	
 </mapper>

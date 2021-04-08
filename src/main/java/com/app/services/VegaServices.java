@@ -608,6 +608,11 @@ public class VegaServices {
 		return dao.selectGetMptId();
 	}
 	
+	public Integer selectGetLspdId(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectGetLspdId(reg_spaj);
+	}
+	
 	public String selectGetNoEndors() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetNoEndors();

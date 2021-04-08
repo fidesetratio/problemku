@@ -3725,8 +3725,8 @@
 	</select>	
 	
 	<select id="selectGetPremiumHolidayDate" parameterType="String" resultType="com.app.model.Endorse">
-		SELECT  B.MSDE_NEW1,
-		        B.MSDE_NEW2
+		SELECT  B.MSDE_NEW1 AS tgl_awal,
+		        B.MSDE_NEW2 AS tgl_akhir
 		FROM    EKA.MST_ENDORS A,
 		        EKA.MST_DET_ENDORS B
 		WHERE   A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}

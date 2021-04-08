@@ -6820,7 +6820,7 @@ public class FinancialTransactionController {
 						is_tgl_awal_submitted = true;
 						Endorse endorse = new Endorse();
 						endorse.setReg_spaj(reg_spaj);
-						endorse = services.selectGetPremiumHolidayDate(endorse.getReg_spaj());
+						endorse = services.selectGetPremiumHolidayDate(reg_spaj);
 						
 						String tgl_awal = endorse.getTgl_awal();
 						String tgl_akhir = endorse.getTgl_akhir();

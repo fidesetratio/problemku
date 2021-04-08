@@ -38,6 +38,9 @@ public class Endorse implements Serializable {
     private Integer msen_reproses;
     private Date msen_tgl_filing;
     
+    private String tgl_awal;
+    private String tgl_akhir;
+       
 	public String getMsen_endors_no() {
 		return msen_endors_no;
 	}
@@ -206,6 +209,16 @@ public class Endorse implements Serializable {
 	public void setMsen_tgl_filing(Date msen_tgl_filing) {
 		this.msen_tgl_filing = msen_tgl_filing;
 	}
-    
-    
+	public String getTgl_akhir() {
+		return tgl_akhir;
+	}
+	public void setTgl_akhir(String tgl_akhir) {
+		this.tgl_akhir = tgl_akhir;
+	}
+	public String getTgl_awal() {
+		return tgl_awal;
+	}
+	public void setTgl_awal(String tgl_awal) {
+		this.tgl_awal = tgl_awal;
+	}
 }

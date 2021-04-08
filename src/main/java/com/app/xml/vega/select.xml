@@ -303,7 +303,7 @@
 		 WHERE     a.reg_spaj = b.reg_spaj
 		       AND a.mspo_policy_holder = c.mcl_id
 		       AND c.mcl_id = d.mcl_id
-		       AND c.lsag_id = n.lsag_id
+		       AND c.lsag_id = n.lsag_id(+)
 		       AND a.lsre_id = k.lsre_id(+)
 		       AND a.reg_spaj = l.reg_spaj(+)
 		       AND l.lsbp_id = k.lsbp_id(+)
@@ -3723,4 +3723,16 @@
 	<select id="selectGetLspdId" resultType="Integer">
 		select lspd_id from eka.mst_policy where reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
 	</select>	
+	
+	<select id="selectGetPremiumHolidayDate" parameterType="String" resultType="com.app.model.Endorse">
+		SELECT  B.MSDE_NEW1,
+		        B.MSDE_NEW2
+		FROM    EKA.MST_ENDORS A,
+		        EKA.MST_DET_ENDORS B
+		WHERE   A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    AND A.MSEN_ENDORS_NO = B.MSEN_ENDORS_NO
+		    AND A.LSPD_ID = 72
+		    AND ROWNUM = 1
+		ORDER BY A.MSEN_INPUT_DATE DESC
+	</select>
 </mapper>

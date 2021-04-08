@@ -16,6 +16,7 @@ import com.app.model.CostFinancialTransaction;
 import com.app.model.DataUsulan;
 import com.app.model.DetailClaimCorporate;
 import com.app.model.DetailWithdraw;
+import com.app.model.Endorse;
 import com.app.model.Fund;
 import com.app.model.KlaimKesehatan;
 import com.app.model.LstHistActivityWS;
@@ -303,6 +304,8 @@ public interface VegaMapper {
 	public Rekening selectCheckRekeningNasabahIndividu(String mspo_policy_no);
 	
 	public ArrayList<PenerimaManfaat> selectPenerimaManfaat(String no_polis);
+	
+	public Endorse selectGetPremiumHolidayDate(String reg_spaj);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

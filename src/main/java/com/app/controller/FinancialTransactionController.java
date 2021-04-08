@@ -51,6 +51,7 @@ import com.app.model.DetailDestSwitching;
 import com.app.model.DetailRedirection;
 import com.app.model.DetailSwitching;
 import com.app.model.DetailWithdraw;
+import com.app.model.Endorse;
 import com.app.model.Fund;
 import com.app.model.Pemegang;
 import com.app.model.ProductUtama;
@@ -6817,6 +6818,15 @@ public class FinancialTransactionController {
 					
 					if(lspd_id==72) {
 						is_tgl_awal_submitted = true;
+						Endorse endorse = new Endorse();
+						endorse.setReg_spaj(reg_spaj);
+						endorse = services.selectGetPremiumHolidayDate(endorse.getReg_spaj());
+						
+						String tgl_awal = endorse.getTgl_awal();
+						String tgl_akhir = endorse.getTgl_akhir();
+						
+						data.put("tgl_awal", tgl_awal);
+						data.put("tgl_akhir", tgl_akhir != null ? df1.format(tgl_akhir) : null);
 					} else {
 						is_tgl_awal_submitted = false;
 					}

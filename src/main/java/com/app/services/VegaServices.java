@@ -23,6 +23,7 @@ import com.app.model.CostFinancialTransaction;
 import com.app.model.DataUsulan;
 import com.app.model.DetailClaimCorporate;
 import com.app.model.DetailWithdraw;
+import com.app.model.Endorse;
 import com.app.model.Fund;
 import com.app.model.KlaimKesehatan;
 import com.app.model.LstHistActivityWS;
@@ -1235,5 +1236,10 @@ public class VegaServices {
 		hashMap.put("jenis_id", jenis_id);
 		hashMap.put("menu_id", menu_id);
 		return dao.selectCheckOTP(hashMap);
+	}
+	
+	public Endorse selectGetPremiumHolidayDate(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectGetPremiumHolidayDate(reg_spaj);
 	}
 }

@@ -214,7 +214,12 @@ public class PolicyIndividualCorporateController {
 									mapper.put("policy_status_id",
 											dataTemp.getLms_id() != null ? dataTemp.getLms_id() : null);
 									mapper.put("policy_type", gproudId.intValue());
-									mapper.put("enable_cuti_premi", enable_cuti_premi);
+									if(enable_cuti_premi.equalsIgnoreCase("true")) {
+										mapper.put("enable_cuti_premi", true);
+									} else {
+										mapper.put("enable_cuti_premi", false);
+									}
+									
 									mapper.put("account_type", "individual");
 								}
 

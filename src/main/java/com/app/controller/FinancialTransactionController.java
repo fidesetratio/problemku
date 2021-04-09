@@ -6826,7 +6826,7 @@ public class FinancialTransactionController {
 						String tgl_akhir = endorse.getTgl_akhir();
 						
 						data.put("tgl_awal", tgl_awal);
-						data.put("tgl_akhir", tgl_akhir != null ? df1.format(tgl_akhir) : null);
+						data.put("tgl_akhir", tgl_akhir != null ? tgl_akhir : null);
 					} else {
 						is_tgl_awal_submitted = false;
 					}

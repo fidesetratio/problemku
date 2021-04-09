@@ -1166,6 +1166,11 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateUserKeyName(user);
 	}
+	
+	public void updateLspdId(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.updateLspdId(reg_spaj);
+	}
 
 	public void updatePassword(User user) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);

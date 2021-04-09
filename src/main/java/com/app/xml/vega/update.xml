@@ -28,6 +28,12 @@
         set password = eka.encrypt(#{password, jdbcType=VARCHAR}) 
         where username = #{username, jdbcType=VARCHAR}
 	</update>
+	
+	<update id="updateLspdId" parameterType="String">
+        UPDATE eka.mst_policy 
+        set lspd_id = 72
+        where reg_spaj = #{regspaj, jdbcType=VARCHAR}
+	</update>
     
     <update id="updateDataMstAddressNew" parameterType="Pemegang">
     	update eka.mst_address_new 

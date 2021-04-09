@@ -352,6 +352,8 @@ public interface VegaMapper {
 
 	// Update
 	public void updateUserKeyName(LstUserSimultaneous user);
+	
+	public void updateLspdId(String reg_spaj);
 
 	public void updatePassword(User user);
 

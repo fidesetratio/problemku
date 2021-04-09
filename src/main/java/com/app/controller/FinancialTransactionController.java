@@ -6753,6 +6753,9 @@ public class FinancialTransactionController {
 					//INSERT DET ENDORSE
 					services.insertDetailEndorse(msen_endors_no, tanggal_awal, tanggal_akhir);
 					
+					//UPDATE LSPD_ID IN MSPO_POLICY
+					services.updateLspdId(reg_spaj);
+					
 					error = false;
 					message = "Successfully submit premium holiday";
 				} else {

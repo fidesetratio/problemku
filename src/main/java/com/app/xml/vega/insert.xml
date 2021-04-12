@@ -333,7 +333,7 @@
     		#{msen_alasan, jdbcType=VARCHAR}, 
     		SYSDATE,
     		SYSDATE,
-    		72,
+    		13,
     		0,
     		0,
     		0,

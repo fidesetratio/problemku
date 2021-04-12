@@ -31,7 +31,7 @@
 	
 	<update id="updateLspdId" parameterType="String">
         UPDATE eka.mst_policy 
-        set lspd_id = 72
+        set lspd_id = 13
         where reg_spaj = #{regspaj, jdbcType=VARCHAR}
 	</update>
     

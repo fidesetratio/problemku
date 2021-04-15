@@ -77,7 +77,7 @@ path:
  storage:
   mpolicy: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\
   mpolicydb: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\
-  claim: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\
+  claim: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\
   withdraw: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\
   withdrawdb: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\
  manfaatpdf:

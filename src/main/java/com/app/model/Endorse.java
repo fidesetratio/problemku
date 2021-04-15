@@ -40,6 +40,7 @@ public class Endorse implements Serializable {
     
     private String tgl_awal;
     private String tgl_akhir;
+    private String input_date;
        
 	public String getMsen_endors_no() {
 		return msen_endors_no;
@@ -220,5 +221,11 @@ public class Endorse implements Serializable {
 	}
 	public void setTgl_awal(String tgl_awal) {
 		this.tgl_awal = tgl_awal;
+	}
+	public String getInput_date() {
+		return input_date;
+	}
+	public void setInput_date(String input_date) {
+		this.input_date = input_date;
 	}
 }

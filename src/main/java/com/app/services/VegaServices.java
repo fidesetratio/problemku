@@ -1247,4 +1247,9 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetPremiumHolidayDate(reg_spaj);
 	}
+
+	public ArrayList<Endorse> selectListPremiumHoliday(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListPremiumHoliday(reg_spaj);
+	}
 }

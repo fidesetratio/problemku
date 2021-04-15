@@ -6819,7 +6819,7 @@ public class FinancialTransactionController {
 					Integer lspd_id = services.selectGetLspdId(reg_spaj);
 					Boolean is_tgl_awal_submitted;
 					
-					if(lspd_id==72) {
+					if(lspd_id==13) {
 						is_tgl_awal_submitted = true;
 						Endorse endorse = new Endorse();
 						endorse.setReg_spaj(reg_spaj);
@@ -6839,6 +6839,90 @@ public class FinancialTransactionController {
 					
 					error = false;
 					message = "Successfully get premium holiday";
+				} else {
+					// SPAJ tidak ditemukan
+					error = true;
+					message = "Failed get data";
+					resultErr = "REG SPAJ tidak ditemukan, No polis: " + no_polis;
+					logger.error(
+							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/listpremiumholiday", produces = "application/json", method = RequestMethod.POST)
+	public String listPremiumHoliday(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestViewPolicyAlteration);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<HashMap<String, Object>> data = new ArrayList<>();
+
+		String username = requestViewPolicyAlteration.getUsername();
+		String key = requestViewPolicyAlteration.getKey();
+		String no_polis = requestViewPolicyAlteration.getNo_polis();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				// Get SPAJ
+				Pemegang paramSelectSPAJ = new Pemegang();
+				paramSelectSPAJ.setMspo_policy_no(no_polis);
+				Pemegang dataSPAJ = services.selectGetSPAJ(paramSelectSPAJ);
+
+				if (dataSPAJ != null) {
+					String reg_spaj = dataSPAJ.getReg_spaj();
+					ArrayList<Endorse> listPremiumHoliday = services.selectListPremiumHoliday(reg_spaj);
+					
+					if (listPremiumHoliday.isEmpty()) {
+						// Data List Kosong
+						error = false;
+						message = "Data list premium holiday empty";
+					} else {
+						error = false;
+						message = "Successfully get data";
+						
+						for (int x = 0; x < listPremiumHoliday.size(); x++) {
+							String tgl_awal = listPremiumHoliday.get(x).getTgl_awal();
+							String tgl_akhir = listPremiumHoliday.get(x).getTgl_akhir();
+							String msen_endors_no = listPremiumHoliday.get(x).getMsen_endors_no();
+							String input_date = listPremiumHoliday.get(x).getInput_date();
+
+							HashMap<String, Object> hashMap = new HashMap<>();
+							hashMap.put("tgl_awal", tgl_awal != null ? tgl_awal : null);
+							hashMap.put("tgl_akhir", tgl_akhir != null ? tgl_akhir : null);
+							hashMap.put("msen_endors_no", msen_endors_no);
+							hashMap.put("input_date", input_date);
+
+							data.add(hashMap);
+						}
+					}
 				} else {
 					// SPAJ tidak ditemukan
 					error = true;

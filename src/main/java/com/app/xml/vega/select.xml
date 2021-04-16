@@ -3747,15 +3747,21 @@
 	</select>
 	
 	<select id="selectListPremiumHoliday" parameterType="String" resultType="com.app.model.Endorse">
-		SELECT  A.MSEN_ENDORS_NO,
-		        B.MSDE_NEW1 AS TGL_AWAL,
-		        B.MSDE_NEW2 AS TGL_AKHIR,
-		        TO_CHAR(A.MSEN_INPUT_DATE, 'DD/MM/YYYY') AS INPUT_DATE
-		FROM    EKA.MST_ENDORS A,
-		        EKA.MST_DET_ENDORS B
-		WHERE   A.MSEN_ENDORS_NO = B.MSEN_ENDORS_NO
-		    AND B.LSJE_ID = 108
-		    AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
-		ORDER BY A.MSEN_INPUT_DATE
+		SELECT  *
+		FROM
+		    (SELECT A.MSEN_ENDORS_NO,
+		            B.MSDE_NEW1 AS TGL_AWAL,
+		            B.MSDE_NEW2 AS TGL_AKHIR,
+		            TO_CHAR(A.MSEN_INPUT_DATE, 'DD/MM/YYYY') AS INPUT_DATE,
+		            C.LSPD_ID
+		    FROM    EKA.MST_ENDORS A,
+		            EKA.MST_DET_ENDORS B,
+		            EKA.MST_POLICY C
+		    WHERE   A.MSEN_ENDORS_NO = B.MSEN_ENDORS_NO
+		        AND B.LSJE_ID = 108
+		        AND A.REG_SPAJ = C.REG_SPAJ
+		        AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    ORDER BY A.MSEN_INPUT_DATE)
+		WHERE   ROWNUM = 1
 	</select>
 </mapper>

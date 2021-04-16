@@ -307,7 +307,7 @@ public interface VegaMapper {
 	
 	public Endorse selectGetPremiumHolidayDate(String reg_spaj);
 	
-	public ArrayList<Endorse> selectListPremiumHoliday(String reg_spaj);
+	public Endorse selectListPremiumHoliday(String reg_spaj);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

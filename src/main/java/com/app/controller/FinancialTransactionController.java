@@ -6884,7 +6884,7 @@ public class FinancialTransactionController {
 		String resultErr = null;
 		Boolean error = false;
 		HashMap<String, Object> map = new HashMap<>();
-		ArrayList<HashMap<String, Object>> data = new ArrayList<>();
+		HashMap<String, Object> data = new HashMap<>();
 
 		String username = requestViewPolicyAlteration.getUsername();
 		String key = requestViewPolicyAlteration.getKey();
@@ -6898,30 +6898,43 @@ public class FinancialTransactionController {
 
 				if (dataSPAJ != null) {
 					String reg_spaj = dataSPAJ.getReg_spaj();
-					ArrayList<Endorse> listPremiumHoliday = services.selectListPremiumHoliday(reg_spaj);
+					Endorse premiumHoliday = services.selectListPremiumHoliday(reg_spaj);
+					Boolean enable_submit_button = true;
+					String status = null;
 					
-					if (listPremiumHoliday.isEmpty()) {
+					if (premiumHoliday==null) {
 						// Data List Kosong
+						status = "Not Submitted";
+						data.put("status", status);
+						data.put("enable_submit_button", enable_submit_button);
 						error = false;
 						message = "Data list premium holiday empty";
 					} else {
 						error = false;
 						message = "Successfully get data";
 						
-						for (int x = 0; x < listPremiumHoliday.size(); x++) {
-							String tgl_awal = listPremiumHoliday.get(x).getTgl_awal();
-							String tgl_akhir = listPremiumHoliday.get(x).getTgl_akhir();
-							String msen_endors_no = listPremiumHoliday.get(x).getMsen_endors_no();
-							String input_date = listPremiumHoliday.get(x).getInput_date();
-
-							HashMap<String, Object> hashMap = new HashMap<>();
-							hashMap.put("tgl_awal", tgl_awal != null ? tgl_awal : null);
-							hashMap.put("tgl_akhir", tgl_akhir != null ? tgl_akhir : null);
-							hashMap.put("msen_endors_no", msen_endors_no);
-							hashMap.put("input_date", input_date);
-
-							data.add(hashMap);
+						
+						
+						String tgl_awal = premiumHoliday.getTgl_awal();
+						String tgl_akhir = premiumHoliday.getTgl_akhir();
+						String msen_endors_no = premiumHoliday.getMsen_endors_no();
+						String input_date = premiumHoliday.getInput_date();
+						Integer lspd_id = premiumHoliday.getLspd_id();
+						
+						if(lspd_id==13) {
+							status = "In Progress";
+							enable_submit_button = false;
+						} else if (lspd_id==99) {
+							status = "Accepted";
+							enable_submit_button = true;
 						}
+						
+						data.put("tgl_awal", tgl_awal != null ? tgl_awal : null);
+						data.put("tgl_akhir", tgl_akhir != null ? tgl_akhir : null);
+						data.put("msen_endors_no", msen_endors_no);
+						data.put("input_date", input_date);
+						data.put("enable_submit_button", enable_submit_button);
+						data.put("status", status);
 					}
 				} else {
 					// SPAJ tidak ditemukan

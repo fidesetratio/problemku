@@ -5454,7 +5454,7 @@ public class FinancialTransactionController {
 
 						System.out.println("Upload Start: " + new Date());
 						Boolean uploadFile = customResourceLoader.uploadFileToStorage(path_claim, file_base64,
-								name_file, username, request.getServletPath());
+								name_file, username, request.getServletPath(), mpc_id);
 						System.out.println("Upload Done: " + new Date());
 
 						if (uploadFile.equals(true)) {
@@ -6259,8 +6259,8 @@ public class FinancialTransactionController {
 								+ mpcc_id;
 
 						System.out.println("Upload Start: " + new Date());
-						Boolean uploadFile = customResourceLoader.uploadFileToStorage(path_claim, file_base64,
-								name_file, username, request.getServletPath());
+						Boolean uploadFile = true;/*customResourceLoader.uploadFileToStorage(path_claim, file_base64,
+								name_file, username, request.getServletPath());*/
 						System.out.println("Upload Done: " + new Date());
 
 						if (uploadFile.equals(true)) {

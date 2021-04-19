@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
@@ -55,11 +56,14 @@ import com.app.model.LstUserSimultaneous;
 import com.app.model.Provinsi;
 import com.app.model.User;
 import com.app.services.VegaServices;
+import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.parser.PdfTextExtractor;
 
 @Component
@@ -1590,27 +1594,55 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 	}
 
 	public Boolean uploadFileToStorage(String pathFolder, String fileBase64, String fileName, String username,
-			String urlPath) throws FileNotFoundException, IOException {
+			String urlPath, BigInteger mpc_id) throws FileNotFoundException, IOException {
 		Boolean result = false;
 
 		File folder = new File(pathFolder);
 		if (!folder.exists()) {
 			folder.mkdirs();
 		}
+		
+		String file_type = fileName.substring(fileName.lastIndexOf(".")+1);
+		
+		if (file_type.equals("jpg")) {
+			try {
+				Document document = new Document();
+				
+				fileBase64 = fileBase64.replace("\n", "");
+				
+				
+				byte[] imageByte = Base64.getDecoder().decode(fileBase64);
+				new FileOutputStream(pathFolder).write(imageByte);
+				
+				PdfWriter.getInstance(document, new FileOutputStream(pathFolder));
+				document.open();
+				byte[] decoded = Base64.getDecoder().decode(fileBase64.getBytes());
+				Image image1 = Image.getInstance(decoded);
 
-		try {
-			byte[] fileByte = Base64.getDecoder().decode(fileBase64);
-			String directory = folder + File.separator + fileName + ".pdf";
+				int indentation = 0;
+				float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
+						- document.rightMargin() - indentation) / image1.getWidth()) * 100;
 
-			FileOutputStream fos = new FileOutputStream(directory);
-			fos.write(fileByte);
-			fos.close();
-			fos.flush();
+				image1.scalePercent(scaler);
+				document.add(image1);
+				document.close();
+			} catch (Exception e) {
+				logger.error("Path: " + urlPath + " Username: " + username + " Error: " + e);
+			}
+		} else {
+			try {									
+				String base64 = fileBase64;
+				base64 = base64.replace("\n", "");
+				
+				byte[] fileByte = Base64.getDecoder().decode(base64);
 
-			result = true;
-		} catch (Exception e) {
-			logger.error("Path: " + urlPath + " Username: " + username + " Error: " + e);
-			result = false;
+				FileOutputStream fos = new FileOutputStream(pathFolder);
+				fos.write(fileByte);
+				fos.close();
+				fos.flush();
+			} catch (Exception e) {
+				logger.error("Path: " + urlPath + " Username: " + username + " Error: " + e);
+			}
 		}
 
 		return result;

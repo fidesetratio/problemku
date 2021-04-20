@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.app.mapper.VegaMapper;
 import com.app.model.Article;
+import com.app.model.Beneficiary;
 import com.app.model.BenefitCorporate;
 import com.app.model.Billing;
 import com.app.model.ClaimCorporate;
@@ -32,6 +33,7 @@ import com.app.model.MpolisConfiguration;
 import com.app.model.Nav;
 import com.app.model.Pemegang;
 import com.app.model.PenerimaManfaat;
+import com.app.model.PolicyAlteration;
 import com.app.model.PowerSave;
 import com.app.model.ProductRider;
 import com.app.model.ProductUtama;
@@ -1251,5 +1253,15 @@ public class VegaServices {
 	public Endorse selectListPremiumHoliday(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListPremiumHoliday(reg_spaj);
+	}
+
+	public ArrayList<Beneficiary> selectListBeneficiary(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListBeneficiary(no_polis);
+	}
+
+	public PolicyAlteration selectPayor(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectPayor(no_polis);
 	}
 }

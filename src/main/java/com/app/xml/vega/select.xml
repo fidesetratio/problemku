@@ -3764,4 +3764,83 @@
 		    ORDER BY A.MSEN_INPUT_DATE)
 		WHERE   ROWNUM = 1
 	</select>
+	
+	<select id="selectListBeneficiary" parameterType="String" resultType="com.app.model.Beneficiary">
+		SELECT  B.REG_SPAJ,
+		        B.MSAW_NUMBER,
+		        B.MSAW_FIRST,
+		        TO_CHAR(B.MSAW_BIRTH, 'DD/MM/YYYY') AS MSAW_BIRTH,
+		        C.LSRE_RELATION,
+		        B.MSAW_PERSEN
+		FROM    EKA.MST_POLICY A,
+		        EKA.MST_BENEFECIARY B,
+		        EKA.LST_RELATION C
+		WHERE   A.REG_SPAJ = B.REG_SPAJ
+		    AND B.LSRE_ID = C.LSRE_ID
+		    AND A.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+	</select>
+	
+	<select id="selectPayor" parameterType="String" resultType="com.app.model.PolicyAlteration">
+		SELECT  CASE
+		            WHEN    GGG.mste_flag_cc = 0
+		                THEN    'Transfer'
+		            WHEN    GGG.mste_flag_cc = 1
+		                THEN    'Debet Rekening Credit Card'
+		            WHEN    GGG.mste_flag_cc = 2
+		                THEN    'Debet Rekening Tabungan'
+		            WHEN    GGG.mste_flag_cc = 3
+		                THEN    'Payroll'
+		            ELSE
+		                        'Transfer'
+		        END CARA_BAYAR,
+		        JJJ.LSBP_NAMA AS NAMA_BANK_PAYOR,
+		        III.LBN_NAMA AS CABANG_BANK_PAYOR,
+		        III.LBN_KOTA AS KOTA_BANK_PAYOR,
+		        HHH.MAR_ACC_NO AS NO_REKENING_PAYOR,
+		        HHH.MAR_HOLDER AS PEMILIK_REKENING_PAYOR,
+		        TO_CHAR(HHH.MAR_EXPIRED, 'DD/MM/YYYY') AS MASA_BERLAKU,
+		        EEE.LSRE_RELATION AS HUBUNGAN_PAYOR,
+		        BBB.MCL_FIRST AS NAMA_PAYOR,
+		        BBB.MCL_COMPANY_NAME AS NAMA_PERUSAHAAN,
+		        BBB.MKL_KERJA AS JABATAN,
+		        CCC.ALAMAT_RUMAH,
+		        KKK.LSNE_NOTE AS NEGARA,
+		        LLL.PROPINSI,
+		        LLL.KABUPATEN,
+		        LLL.KECAMATAN,
+		        LLL.KELURAHAN,
+		        LLL.KODEPOS,
+		        CCC.AREA_CODE_RUMAH,
+		        CCC.TELPON_RUMAH,
+		        CCC.NO_HP,
+		        BBB.MKL_TUJUAN AS TUJUAN,
+		        BBB.MKL_PENDANAAN AS SUMBER_DANA,
+		        BBB.MKL_KERJA,
+		        BBB.MKL_PENGHASILAN,
+		        BBB.MKL_SMBR_PENGHASILAN
+		FROM    EKA.MST_POLICY AAA,
+		        EKA.MST_CLIENT_NEW BBB,
+		        EKA.MST_ADDRESS_NEW CCC,
+		        EKA.MST_ADDRESS_BILLING DDD,
+		        EKA.LST_RELATION EEE,
+		        EKA.MST_ACCOUNT_RECUR FFF,
+		        EKA.MST_INSURED GGG,
+		        EKA.MST_ACCOUNT_RECUR HHH,
+		        EKA.LST_BANK III,
+		        EKA.LST_BANK_PUSAT JJJ,
+		        EKA.LST_NEGARA KKK,
+		        EKA.V_PROPINSI LLL
+		WHERE   AAA.MSPO_PAYER = BBB.MCL_ID (+)
+		    AND AAA.REG_SPAJ = FFF.REG_SPAJ (+)
+		    AND AAA.REG_SPAJ = GGG.REG_SPAJ
+		    AND AAA.REG_SPAJ = DDD.REG_SPAJ
+		    AND AAA.REG_SPAJ = HHH.REG_SPAJ (+)
+		    AND BBB.LSNE_ID = KKK.LSNE_ID
+		    AND CCC.KD_POS_RUMAH = LLL.KODEPOS(+)
+		    AND HHH.LBN_ID = III.LBN_ID (+)
+		    AND III.LSBP_ID = JJJ.LSBP_ID (+)
+		    AND AAA.MSPO_PAYER = CCC.MCL_ID (+)
+		    AND AAA.LSRE_ID_PAYER = EEE.LSRE_ID (+)
+		    AND AAA.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+	</select>
 </mapper>

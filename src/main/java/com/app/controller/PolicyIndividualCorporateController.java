@@ -37,8 +37,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
 import com.app.model.Article;
+import com.app.model.Beneficiary;
+import com.app.model.Endorse;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.Nav;
+import com.app.model.Pemegang;
+import com.app.model.PolicyAlteration;
 import com.app.model.Provider;
 import com.app.model.User;
 import com.app.model.UserCorporate;
@@ -54,6 +58,7 @@ import com.app.model.request.RequestNabchart;
 import com.app.model.request.RequestReadAllInbox;
 import com.app.model.request.RequestUpdateInboxStatus;
 import com.app.model.request.RequestVersionCode;
+import com.app.model.request.RequestViewPolicyAlteration;
 import com.app.model.request.RequestViewProvider;
 import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
@@ -1421,6 +1426,131 @@ public class PolicyIndividualCorporateController {
 		customResourceLoader.updateActivity(username);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 30, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/viewpolicyalteration", produces = "application/json", method = RequestMethod.POST)
+	public String viewPolicyAleration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestViewPolicyAlteration);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<Object> listsBeneficiary = new ArrayList<>();
+		HashMap<String, Object> data = new HashMap<>();
+		HashMap<String, Object> data_payor = new HashMap<>();
+
+		String username = requestViewPolicyAlteration.getUsername();
+		String key = requestViewPolicyAlteration.getKey();
+		String no_polis = requestViewPolicyAlteration.getNo_polis();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				
+				PolicyAlteration payor = services.selectPayor(no_polis);
+				String cara_bayarString = payor.getCara_bayar();
+				String nama_bank_payor = payor.getNama_bank_payor();
+				String cabang_bank_payor = payor.getCabang_bank_payor();
+				String kota_bank_payor = payor.getKota_bank_payor();
+				String no_rekening_payor = payor.getNo_rekening_payor();
+				String pemilik_rekening_payor = payor.getPemilik_rekening_payor();
+				String masa_berlaku = payor.getMasa_berlaku();
+				String hubungan_payor = payor.getHubungan_payor();
+				String nama_payor = payor.getNama_payor();
+				String nama_perusahaan = payor.getNama_perusahaan();
+				String jabatan = payor.getJabatan();
+				String alamat_rumah = payor.getAlamat_rumah();
+				String negara = payor.getNegara();
+				String propinsi = payor.getPropinsi();
+				String kabupaten = payor.getKabupaten();
+				String kecamatan = payor.getKecamatan();
+				String kelurahan = payor.getKelurahan();
+				String kodepos = payor.getKodepos();
+				String area_code_rumah = payor.getArea_code_rumah();
+				String telpon_rumah = payor.getTelpon_rumah();
+				String no_hp = payor.getNo_hp();
+				String tujuan = payor.getTujuan();
+				String sumber_dana = payor.getSumber_dana();
+				String mkl_kerja = payor.getMkl_kerja();
+				String mkl_penghasilan = payor.getMkl_penghasilan();
+				String mkl_smbr_penghasilan = payor.getMkl_smbr_penghasilan();
+				
+				data_payor.put("cara_bayarString", cara_bayarString);
+				data_payor.put("nama_bank_payor", nama_bank_payor);
+				data_payor.put("cabang_bank_payor", cabang_bank_payor);
+				data_payor.put("kota_bank_payor", kota_bank_payor);
+				data_payor.put("no_rekening_payor", no_rekening_payor);
+				data_payor.put("pemilik_rekening_payor", pemilik_rekening_payor);
+				data_payor.put("masa_berlaku", masa_berlaku);
+				data_payor.put("hubungan_payor", hubungan_payor);
+				data_payor.put("nama_payor", nama_payor);
+				data_payor.put("nama_perusahaan", nama_perusahaan);
+				data_payor.put("jabatan", jabatan);
+				data_payor.put("alamat_rumah", alamat_rumah);
+				data_payor.put("negara", negara);
+				data_payor.put("propinsi", propinsi);
+				data_payor.put("kabupaten", kabupaten);
+				data_payor.put("kecamatan", kecamatan);
+				data_payor.put("kelurahan", kelurahan);
+				data_payor.put("kodepos", kodepos);
+				data_payor.put("telpon_rumah", telpon_rumah);
+				data_payor.put("no_hp", no_hp);
+				data_payor.put("tujuan", tujuan);
+				data_payor.put("sumber_dana", sumber_dana);
+				data_payor.put("mkl_kerja", mkl_kerja);
+				data_payor.put("mkl_penghasilan", mkl_penghasilan);
+				data_payor.put("mkl_smbr_penghasilan", mkl_smbr_penghasilan);
+				
+				ArrayList<Beneficiary> beneficiary = services.selectListBeneficiary(no_polis);
+				for (int y = 0; y < beneficiary.size(); y++) {
+					HashMap<String, Object> listBeneficiary = new HashMap<>();
+					String reg_spaj = beneficiary.get(y).getReg_spaj();
+					Integer msaw_number = beneficiary.get(y).getMsaw_number();
+				    String msaw_first = beneficiary.get(y).getMsaw_first();
+				    String msaw_birth = beneficiary.get(y).getMsaw_birth();
+				    String lsre_relation = beneficiary.get(y).getLsre_relation();
+				    Integer msaw_persen = beneficiary.get(y).getMsaw_persen();
+
+				    listBeneficiary.put("reg_spaj", reg_spaj);
+				    listBeneficiary.put("msaw_number", msaw_number);
+				    listBeneficiary.put("msaw_first", msaw_first);
+				    listBeneficiary.put("msaw_birth", msaw_birth);
+				    listBeneficiary.put("lsre_relation", lsre_relation);
+				    listBeneficiary.put("msaw_persen", msaw_persen);
+				    listsBeneficiary.add(listBeneficiary);
+				}
+				
+				data.put("payor", data_payor);
+				data.put("beneficiary",listsBeneficiary);
+				
+				error = false;
+				message = "Successfully get policy alteration";
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
 	}

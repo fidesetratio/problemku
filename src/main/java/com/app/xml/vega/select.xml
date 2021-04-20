@@ -3843,4 +3843,26 @@
 		    AND AAA.LSRE_ID_PAYER = EEE.LSRE_ID (+)
 		    AND AAA.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
 	</select>
+	
+	<select id="selectInsured" parameterType="String" resultType="com.app.model.PolicyAlteration">
+		SELECT  EE.LSST_NAME AS STATUS_TT,
+		        FF.LSAG_NAME AS AGAMA_TT,
+		        GG.LSNE_NOTE AS KEWARGANEGARAAN_TT,
+		        BB.MCL_COMPANY_NAME AS NAMA_PERUSAHAAN_TT,
+		        BB.MKL_KERJA AS JABATAN_TT
+		FROM    EKA.MST_POLICY AA,
+		        EKA.MST_CLIENT_NEW BB,
+		        EKA.MST_INSURED CC,
+		        EKA.LST_STATUS EE,
+		        EKA.LST_AGAMA FF,
+		        EKA.LST_NEGARA GG,
+		        EKA.MST_ADDRESS_NEW HH
+		WHERE   AA.REG_SPAJ = CC.REG_SPAJ
+		    AND CC.MSTE_INSURED = BB.MCL_ID
+		    AND BB.MSPE_STS_MRT = EE.LSST_ID
+		    AND BB.LSAG_ID = FF.LSAG_ID
+		    AND BB.LSNE_ID = GG.LSNE_ID
+		    AND CC.MSTE_INSURED = HH.MCL_ID
+		    AND AA.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+	</select>
 </mapper>

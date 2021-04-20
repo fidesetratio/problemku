@@ -6926,7 +6926,7 @@ public class FinancialTransactionController {
 							enable_submit_button = false;
 						} else if (lspd_id==99) {
 							status = "Accepted";
-							enable_submit_button = true;
+							enable_submit_button = false;
 						}
 						
 						data.put("tgl_awal", tgl_awal != null ? tgl_awal : null);

@@ -314,6 +314,8 @@ public interface VegaMapper {
 	public ArrayList<Beneficiary> selectListBeneficiary(String no_polis);
 	
 	public PolicyAlteration selectPayor(String no_polis);
+	
+	public PolicyAlteration selectInsured(String no_polis);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

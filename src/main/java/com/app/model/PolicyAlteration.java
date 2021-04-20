@@ -35,6 +35,42 @@ public class PolicyAlteration implements Serializable {
 	private String mkl_penghasilan;
 	private String mkl_smbr_penghasilan;
 	
+	private String status_tt;
+	private String agama_tt;
+	private String kewarganegaraan_tt;
+	private String nama_perusahaan_tt;
+	private String jabatan_tt;
+	
+	public String getStatus_tt() {
+		return status_tt;
+	}
+	public void setStatus_tt(String status_tt) {
+		this.status_tt = status_tt;
+	}
+	public String getAgama_tt() {
+		return agama_tt;
+	}
+	public void setAgama_tt(String agama_tt) {
+		this.agama_tt = agama_tt;
+	}
+	public String getKewarganegaraan_tt() {
+		return kewarganegaraan_tt;
+	}
+	public void setKewarganegaraan_tt(String kewarganegaraan_tt) {
+		this.kewarganegaraan_tt = kewarganegaraan_tt;
+	}
+	public String getNama_perusahaan_tt() {
+		return nama_perusahaan_tt;
+	}
+	public void setNama_perusahaan_tt(String nama_perusahaan_tt) {
+		this.nama_perusahaan_tt = nama_perusahaan_tt;
+	}
+	public String getJabatan_tt() {
+		return jabatan_tt;
+	}
+	public void setJabatan_tt(String jabatan_tt) {
+		this.jabatan_tt = jabatan_tt;
+	}
 	public String getCara_bayar() {
 		return cara_bayar;
 	}

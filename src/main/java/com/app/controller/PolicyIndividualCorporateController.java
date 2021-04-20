@@ -1447,12 +1447,27 @@ public class PolicyIndividualCorporateController {
 		ArrayList<Object> listsBeneficiary = new ArrayList<>();
 		HashMap<String, Object> data = new HashMap<>();
 		HashMap<String, Object> data_payor = new HashMap<>();
+		HashMap<String, Object> data_insured = new HashMap<>();
 
 		String username = requestViewPolicyAlteration.getUsername();
 		String key = requestViewPolicyAlteration.getKey();
 		String no_polis = requestViewPolicyAlteration.getNo_polis();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
+				
+				PolicyAlteration insured = services.selectInsured(no_polis);
+				String status_tt = insured.getStatus_tt();
+				String agama_tt = insured.getAgama_tt();
+				String kewarganegaraan_tt = insured.getKewarganegaraan_tt();
+				String nama_perusahaan_tt = insured.getNama_perusahaan_tt();
+				String jabatan_tt = insured.getJabatan_tt();
+				
+				data_insured.put("status_tt", status_tt);
+				data_insured.put("agama_tt", agama_tt);
+				data_insured.put("kewarganegaraan_tt", kewarganegaraan_tt);
+				data_insured.put("nama_perusahaan_tt", nama_perusahaan_tt);
+				data_insured.put("jabatan_tt", jabatan_tt);
+				
 				
 				PolicyAlteration payor = services.selectPayor(no_polis);
 				String cara_bayarString = payor.getCara_bayar();
@@ -1500,6 +1515,7 @@ public class PolicyIndividualCorporateController {
 				data_payor.put("kecamatan", kecamatan);
 				data_payor.put("kelurahan", kelurahan);
 				data_payor.put("kodepos", kodepos);
+				data_payor.put("area_code_rumah", area_code_rumah);
 				data_payor.put("telpon_rumah", telpon_rumah);
 				data_payor.put("no_hp", no_hp);
 				data_payor.put("tujuan", tujuan);
@@ -1527,6 +1543,7 @@ public class PolicyIndividualCorporateController {
 				    listsBeneficiary.add(listBeneficiary);
 				}
 				
+				data.put("insured", data_insured);
 				data.put("payor", data_payor);
 				data.put("beneficiary",listsBeneficiary);
 				

@@ -6818,6 +6818,9 @@ public class FinancialTransactionController {
 					String reg_spaj = dataSPAJ.getReg_spaj();
 					Integer lspd_id = services.selectGetLspdId(reg_spaj);
 					Boolean is_tgl_awal_submitted;
+
+					String tgl_awal;
+					String tgl_akhir;
 					
 					if(lspd_id==13) {
 						is_tgl_awal_submitted = true;
@@ -6825,12 +6828,21 @@ public class FinancialTransactionController {
 						endorse.setReg_spaj(reg_spaj);
 						endorse = services.selectGetPremiumHolidayDate(reg_spaj);
 						
-						String tgl_awal = endorse.getTgl_awal();
-						String tgl_akhir = endorse.getTgl_akhir();
+						tgl_awal = endorse.getTgl_awal();
+						tgl_akhir = endorse.getTgl_akhir();
 						
 						data.put("tgl_awal", tgl_awal);
 						data.put("tgl_akhir", tgl_akhir != null ? tgl_akhir : null);
 					} else if (lspd_id==99){
+						Endorse endorse = new Endorse();
+						endorse.setReg_spaj(reg_spaj);
+						endorse = services.selectGetPremiumHolidayDate(reg_spaj);
+						
+						tgl_awal = endorse.getTgl_awal();
+						tgl_akhir = endorse.getTgl_akhir();
+						
+						data.put("tgl_awal", tgl_awal);
+						data.put("tgl_akhir", tgl_akhir != null ? tgl_akhir : null);
 						is_tgl_awal_submitted = true;
 					}
 					else {

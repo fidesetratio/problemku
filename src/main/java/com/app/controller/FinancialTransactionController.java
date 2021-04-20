@@ -6830,7 +6830,10 @@ public class FinancialTransactionController {
 						
 						data.put("tgl_awal", tgl_awal);
 						data.put("tgl_akhir", tgl_akhir != null ? tgl_akhir : null);
-					} else {
+					} else if (lspd_id==99){
+						is_tgl_awal_submitted = true;
+					}
+					else {
 						is_tgl_awal_submitted = false;
 					}
 					

@@ -347,14 +347,25 @@
 	
 	<insert id="insertDetailEndorse" parameterType="HashMap">
 		INSERT INTO EKA.MST_DET_ENDORS (
-			msen_endors_no, msenf_number, lsje_id, mste_insured_no, msde_new1, msde_new2
+			msen_endors_no, msenf_number, lsje_id, mste_insured_no, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+			msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6
 		) VALUES (
 		 	#{msen_endors_no, jdbcType=VARCHAR},
 		   	1,
-		   	108,
+		   	#{lsje_id, jdbcType=VARCHAR},
 		   	1,
-		   	#{tanggal_awal, jdbcType=VARCHAR},
-		   	#{tanggal_akhir, jdbcType=VARCHAR}
+		   	#{msde_old1, jdbcType=VARCHAR},
+		   	#{msde_old2, jdbcType=VARCHAR},
+		   	#{msde_old3, jdbcType=VARCHAR},
+		   	#{msde_old4, jdbcType=VARCHAR},
+		   	#{msde_old5, jdbcType=VARCHAR},
+		   	#{msde_old6, jdbcType=VARCHAR},
+		   	#{msde_new1, jdbcType=VARCHAR},
+		   	#{msde_new2, jdbcType=VARCHAR},
+		   	#{msde_new3, jdbcType=VARCHAR},
+		   	#{msde_new4, jdbcType=VARCHAR},
+		   	#{msde_new5, jdbcType=VARCHAR},
+		   	#{msde_new6, jdbcType=VARCHAR}
 		)
 	</insert>
 

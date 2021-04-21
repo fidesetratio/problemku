@@ -178,12 +178,23 @@ public class VegaServices {
 		dao.insertDetailSwitching(hashMap);
 	}
 	
-	public void insertDetailEndorse(String msen_endors_no, String tanggal_awal, String tanggal_akhir) {
+	public void insertDetailEndorse(String msen_endors_no, Integer lsje_id, String msde_old1, String msde_old2, String msde_old3, String msde_old4, String msde_old5, String msde_old6, String msde_new1, String msde_new2, String msde_new3, String msde_new4, String msde_new5, String msde_new6) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
 		hashMap.put("msen_endors_no", msen_endors_no);
-		hashMap.put("tanggal_awal", tanggal_awal);
-		hashMap.put("tanggal_akhir", tanggal_akhir);
+		hashMap.put("lsje_id", lsje_id);
+		hashMap.put("msde_old1", msde_old1);
+		hashMap.put("msde_old2", msde_old2);
+		hashMap.put("msde_old3", msde_old3);
+		hashMap.put("msde_old4", msde_old4);
+		hashMap.put("msde_old5", msde_old5);
+		hashMap.put("msde_old6", msde_old6);
+		hashMap.put("msde_new1", msde_new1);
+		hashMap.put("msde_new2", msde_new2);
+		hashMap.put("msde_new3", msde_new3);
+		hashMap.put("msde_new4", msde_new4);
+		hashMap.put("msde_new5", msde_new5);
+		hashMap.put("msde_new6", msde_new6);
 		dao.insertDetailEndorse(hashMap);
 	}
 
@@ -1273,5 +1284,15 @@ public class VegaServices {
 	public PolicyAlteration selectPolicyHolder(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectPolicyHolder(no_polis);
+	}
+
+	public void updateMstPolicy(String nama_perusahaan, String jenis_usaha) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public PolicyAlteration selectKorespondensi(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectKorespondensi(no_polis);
 	}
 }

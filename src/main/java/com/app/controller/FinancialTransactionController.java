@@ -5459,21 +5459,21 @@ public class FinancialTransactionController {
 
 						if (uploadFile.equals(true)) {
 							String filePath = path_claim + File.separator + name_file + ".pdf";
-							Boolean validateFilePdf = customResourceLoader.validateFilePdf(filePath, username,
-									mpc_id.toString());
-							if (validateFilePdf.equals(true)) {
+							//Boolean validateFilePdf = customResourceLoader.validateFilePdf(filePath, username,
+							//		mpc_id.toString());
+							//if (validateFilePdf.equals(true)) {
 								error = false;
 								message = "Successfully upload file";
 								data.put("name_file", name_file + ".pdf");
-							} else {
-								data = null;
-								error = true;
-								message = "Failed upload file";
-								resultErr = "File PDF Corrupt, MPC_ID: " + mpc_id.toString() + ", Name File: "
-										+ name_file;
-								logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
-										+ resultErr);
-							}
+							//} else {
+							//	data = null;
+							//	error = true;
+							//	message = "Failed upload file";
+							//	resultErr = "File PDF Corrupt, MPC_ID: " + mpc_id.toString() + ", Name File: "
+							//			+ name_file;
+							//	logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+							//			+ resultErr);
+							//}
 						} else {
 							data = null;
 							error = true;
@@ -6751,7 +6751,7 @@ public class FinancialTransactionController {
 					services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
 					
 					//INSERT DET ENDORSE
-					services.insertDetailEndorse(msen_endors_no, tanggal_awal, tanggal_akhir);
+					services.insertDetailEndorse(msen_endors_no, 108, null, null, null, null, null, null, tanggal_awal, tanggal_akhir, null, null, null, null);
 					
 					//UPDATE LSPD_ID IN MSPO_POLICY
 					services.updateLspdId(reg_spaj);

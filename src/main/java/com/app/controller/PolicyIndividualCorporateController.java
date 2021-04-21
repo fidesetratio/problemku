@@ -51,6 +51,7 @@ import com.app.model.request.RequestBanner;
 import com.app.model.request.RequestCountInboxUnread;
 import com.app.model.request.RequestDeleteAllInbox;
 import com.app.model.request.RequestDownloadArticle;
+import com.app.model.request.RequestFurtherClaimSubmission;
 import com.app.model.request.RequestListArticle;
 import com.app.model.request.RequestListNAB;
 import com.app.model.request.RequestListPolis;
@@ -1449,6 +1450,7 @@ public class PolicyIndividualCorporateController {
 		HashMap<String, Object> data_payor = new HashMap<>();
 		HashMap<String, Object> data_insured = new HashMap<>();
 		HashMap<String, Object> data_policyholder = new HashMap<>();
+		HashMap<String, Object> data_korespondensi = new HashMap<>();
 
 		String username = requestViewPolicyAlteration.getUsername();
 		String key = requestViewPolicyAlteration.getKey();
@@ -1456,6 +1458,7 @@ public class PolicyIndividualCorporateController {
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				
+				//GET POLICY HOLDER
 				PolicyAlteration policyHolder = services.selectPolicyHolder(no_polis);
 				String nama_pp = policyHolder.getNama_pp();
 				String jenis_produk = policyHolder.getJenis_produk();
@@ -1487,6 +1490,8 @@ public class PolicyIndividualCorporateController {
 				String kota_bank_pp = policyHolder.getKota_bank_pp();
 				String no_rekening_pp = policyHolder.getNo_rekening_pp();
 				String pemilik_rekening_pp = policyHolder.getPemilik_rekening_pp();
+				String email = policyHolder.getEmail();
+				String tipe_usaha_pp = policyHolder.getTipe_usaha_pp();
 				
 				data_policyholder.put("nama_pp", nama_pp);
 				data_policyholder.put("jenis_produk", jenis_produk);
@@ -1518,22 +1523,52 @@ public class PolicyIndividualCorporateController {
 				data_policyholder.put("kota_bank_pp", kota_bank_pp);
 				data_policyholder.put("no_rekening_pp", no_rekening_pp);
 				data_policyholder.put("pemilik_rekening_pp", pemilik_rekening_pp);
+				data_policyholder.put("email", email);
+				data_policyholder.put("tipe_usaha_pp", tipe_usaha_pp);
 				
+				if(korespondensi_flag==1) {
+					PolicyAlteration korespondensi = services.selectKorespondensi(no_polis);
+					
+					String propinsi_tinggal = korespondensi.getPropinsi_tinggal();
+					String kabupaten_tinggal = korespondensi.getKabupaten_tinggal();
+					String kecamatan_tinggal = korespondensi.getKecamatan_tinggal();
+					String kelurahan_tinggal = korespondensi.getKelurahan_tinggal();
+					String kodepos_tinggal = korespondensi.getKodepos_tinggal();
+					String negara_tinggal = korespondensi.getNegara_tinggal();
+					
+					data_korespondensi.put("propinsi_tinggal", propinsi_tinggal);
+					data_korespondensi.put("kabupaten_tinggal", kabupaten_tinggal);
+					data_korespondensi.put("kecamatan_tinggal", kecamatan_tinggal);
+					data_korespondensi.put("kelurahan_tinggal", kelurahan_tinggal);
+					data_korespondensi.put("kodepos_tinggal", kodepos_tinggal);
+					data_korespondensi.put("negara_tinggal", negara_tinggal);
+				} else {
+					data_korespondensi.put("propinsi_tinggal", null);
+					data_korespondensi.put("kabupaten_tinggal", null);
+					data_korespondensi.put("kecamatan_tinggal", null);
+					data_korespondensi.put("kelurahan_tinggal", null);
+					data_korespondensi.put("kodepos_tinggal", null);
+					data_korespondensi.put("negara_tinggal", null);
+				}
+				data_policyholder.put("korespondensi", data_korespondensi);
 				
+				//GET INSURED
 				PolicyAlteration insured = services.selectInsured(no_polis);
 				String status_tt = insured.getStatus_tt();
 				String agama_tt = insured.getAgama_tt();
 				String kewarganegaraan_tt = insured.getKewarganegaraan_tt();
 				String nama_perusahaan_tt = insured.getNama_perusahaan_tt();
 				String jabatan_tt = insured.getJabatan_tt();
+				String tipe_usaha_tt = insured.getTipe_usaha_tt();
 				
 				data_insured.put("status_tt", status_tt);
 				data_insured.put("agama_tt", agama_tt);
 				data_insured.put("kewarganegaraan_tt", kewarganegaraan_tt);
 				data_insured.put("nama_perusahaan_tt", nama_perusahaan_tt);
 				data_insured.put("jabatan_tt", jabatan_tt);
+				data_insured.put("tipe_usaha_tt", tipe_usaha_tt);
 				
-				
+				//GET PAYOR
 				PolicyAlteration payor = services.selectPayor(no_polis);
 				String cara_bayarString = payor.getCara_bayar();
 				String nama_bank_payor = payor.getNama_bank_payor();
@@ -1589,6 +1624,7 @@ public class PolicyIndividualCorporateController {
 				data_payor.put("mkl_penghasilan", mkl_penghasilan);
 				data_payor.put("mkl_smbr_penghasilan", mkl_smbr_penghasilan);
 				
+				//GET BENEFICIARY
 				ArrayList<Beneficiary> beneficiary = services.selectListBeneficiary(no_polis);
 				for (int y = 0; y < beneficiary.size(); y++) {
 					HashMap<String, Object> listBeneficiary = new HashMap<>();
@@ -1598,6 +1634,7 @@ public class PolicyIndividualCorporateController {
 				    String msaw_birth = beneficiary.get(y).getMsaw_birth();
 				    String lsre_relation = beneficiary.get(y).getLsre_relation();
 				    Integer msaw_persen = beneficiary.get(y).getMsaw_persen();
+				    String msaw_sex = beneficiary.get(y).getMsaw_sex();
 
 				    listBeneficiary.put("reg_spaj", reg_spaj);
 				    listBeneficiary.put("msaw_number", msaw_number);
@@ -1605,6 +1642,7 @@ public class PolicyIndividualCorporateController {
 				    listBeneficiary.put("msaw_birth", msaw_birth);
 				    listBeneficiary.put("lsre_relation", lsre_relation);
 				    listBeneficiary.put("msaw_persen", msaw_persen);
+				    listBeneficiary.put("msaw_sex", msaw_sex);
 				    listsBeneficiary.add(listBeneficiary);
 				}
 				
@@ -1634,6 +1672,105 @@ public class PolicyIndividualCorporateController {
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/submitpolicyalteration", produces = "application/json", method = RequestMethod.POST)
+	public String submitPolicyAlteration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestViewPolicyAlteration);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+
+		String username = requestViewPolicyAlteration.getUsername();
+		String key = requestViewPolicyAlteration.getKey();
+		String no_polis = requestViewPolicyAlteration.getNo_polis();
+		Integer flag_direct = requestViewPolicyAlteration.getFlag_direct();
+		Integer id_endors = requestViewPolicyAlteration.getId_endors();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				// Get SPAJ
+				Pemegang paramSelectSPAJ = new Pemegang();
+				paramSelectSPAJ.setMspo_policy_no(no_polis);
+				Pemegang dataSPAJ = services.selectGetSPAJ(paramSelectSPAJ);
+				String reg_spaj = dataSPAJ.getReg_spaj();
+				
+				String msen_alasan = "CUTI PREMI";
+				Integer lsje_id = null;
+				String msde_old1 = null, msde_old2 = null, msde_old3 = null, msde_old4 = null, msde_old5 = null, msde_old6 = null,
+				msde_new1 = null, msde_new2 = null, msde_new3 = null, msde_new4 = null, msde_new5 = null, msde_new6 = null;
+				
+				PolicyAlteration policyAlteration = new PolicyAlteration();
+				
+				if(id_endors==89) {
+					String nama_perusahaan = policyAlteration.getNama_perusahaan_pp();
+					String jenis_usaha = policyAlteration.getMkl_kerja();
+					
+					services.updateMstPolicy(nama_perusahaan, jenis_usaha);
+				} else {
+					error = true;
+					message = "ID Endors not found";
+				}
+				
+				if(flag_direct==1) {					
+					// Get MSEN_ENDORSE_NO
+					String msen_endors_no = services.selectGetNoEndors();
+					
+					//INSERT ENDORSE
+					services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
+					
+					//INSERT DET ENDORSE
+					services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+							msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+					
+					//INSERT LST ULANGAN
+					//services.insertLstUlangan();
+				} else {
+					// Get MSEN_ENDORSE_NO
+					String msen_endors_no = services.selectGetNoEndors();
+					
+					//INSERT ENDORSE
+					services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
+					
+					//INSERT DET ENDORSE
+					services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+							msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+					
+					//UPDATE LSPD_ID IN MSPO_POLICY
+					services.updateLspdId(reg_spaj);
+				}
+				
+				error = false;
+				message = "Successfully submit policy alteration";
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed submit policy alteration";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 83, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
 	}

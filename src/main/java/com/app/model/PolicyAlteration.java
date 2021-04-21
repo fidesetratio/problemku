@@ -40,6 +40,7 @@ public class PolicyAlteration implements Serializable {
 	private String kewarganegaraan_tt;
 	private String nama_perusahaan_tt;
 	private String jabatan_tt;
+	private String tipe_usaha_tt;
 	
 	private String no_polis;
 	private String nama_pp;
@@ -72,7 +73,70 @@ public class PolicyAlteration implements Serializable {
 	private String kota_bank_pp;
 	private String no_rekening_pp;
 	private String pemilik_rekening_pp;
+	private String email;
+	private String tipe_usaha_pp;
 	
+	private String negara_tinggal;
+	private String propinsi_tinggal;
+	private String kabupaten_tinggal;
+	private String kecamatan_tinggal;
+	private String kelurahan_tinggal;
+	private String kodepos_tinggal;
+	
+	public String getTipe_usaha_tt() {
+		return tipe_usaha_tt;
+	}
+	public void setTipe_usaha_tt(String tipe_usaha_tt) {
+		this.tipe_usaha_tt = tipe_usaha_tt;
+	}
+	public String getTipe_usaha_pp() {
+		return tipe_usaha_pp;
+	}
+	public void setTipe_usaha_pp(String tipe_usaha_pp) {
+		this.tipe_usaha_pp = tipe_usaha_pp;
+	}
+	public String getNegara_tinggal() {
+		return negara_tinggal;
+	}
+	public void setNegara_tinggal(String negara_tinggal) {
+		this.negara_tinggal = negara_tinggal;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getPropinsi_tinggal() {
+		return propinsi_tinggal;
+	}
+	public void setPropinsi_tinggal(String propinsi_tinggal) {
+		this.propinsi_tinggal = propinsi_tinggal;
+	}
+	public String getKabupaten_tinggal() {
+		return kabupaten_tinggal;
+	}
+	public void setKabupaten_tinggal(String kabupaten_tinggal) {
+		this.kabupaten_tinggal = kabupaten_tinggal;
+	}
+	public String getKecamatan_tinggal() {
+		return kecamatan_tinggal;
+	}
+	public void setKecamatan_tinggal(String kecamatan_tinggal) {
+		this.kecamatan_tinggal = kecamatan_tinggal;
+	}
+	public String getKelurahan_tinggal() {
+		return kelurahan_tinggal;
+	}
+	public void setKelurahan_tinggal(String kelurahan_tinggal) {
+		this.kelurahan_tinggal = kelurahan_tinggal;
+	}
+	public String getKodepos_tinggal() {
+		return kodepos_tinggal;
+	}
+	public void setKodepos_tinggal(String kodepos_tinggal) {
+		this.kodepos_tinggal = kodepos_tinggal;
+	}
 	public String getNo_polis() {
 		return no_polis;
 	}

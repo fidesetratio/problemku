@@ -3741,7 +3741,7 @@
 			        EKA.MST_DET_ENDORS B
 			WHERE   A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
 			    AND A.MSEN_ENDORS_NO = B.MSEN_ENDORS_NO
-			    AND A.LSPD_ID = 72
+			    AND B.LSJE_ID = 108
 			ORDER BY A.MSEN_INPUT_DATE DESC
 	    ) WHERE ROWNUM = 1
 	</select>
@@ -3761,7 +3761,7 @@
 		        AND B.LSJE_ID = 108
 		        AND A.REG_SPAJ = C.REG_SPAJ
 		        AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
-		    ORDER BY A.MSEN_INPUT_DATE)
+		    ORDER BY A.MSEN_INPUT_DATE DESC)
 		WHERE   ROWNUM = 1
 	</select>
 	
@@ -3850,7 +3850,8 @@
 		        FF.LSAG_NAME AS AGAMA_TT,
 		        GG.LSNE_NOTE AS KEWARGANEGARAAN_TT,
 		        BB.MCL_COMPANY_NAME AS NAMA_PERUSAHAAN_TT,
-		        BB.MKL_KERJA AS JABATAN_TT
+		        BB.MKL_KERJA AS JABATAN_TT,
+		        BB.MKL_INDUSTRI AS TIPE_USAHA_TT
 		FROM    EKA.MST_POLICY AA,
 		        EKA.MST_CLIENT_NEW BB,
 		        EKA.MST_INSURED CC,
@@ -3890,7 +3891,9 @@
 		        J.LBN_NAMA AS CABANG_BANK_PP,
 		        J.LBN_KOTA AS KOTA_BANK_PP,
 		        I.MAR_ACC_NO AS NO_REKENING_PP,
-		        I.MAR_HOLDER AS PEMILIK_REKENING_PP
+		        I.MAR_HOLDER AS PEMILIK_REKENING_PP,
+		        H.EMAIL,
+		        B.MKL_INDUSTRI AS TIPE_USAHA_PP
 		FROM    EKA.MST_POLICY A,
 		        EKA.MST_CLIENT_NEW B,
 		        EKA.MST_PRODUCT_INSURED C,
@@ -3942,4 +3945,20 @@
 		    AND C.LSBS_ID <![CDATA[<]]> 300
 		    AND A.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
 	</select>
+
+	<select id="SelectKorespondensi" parameterType="String" resultType="com.app.model.PolicyAlteration">
+		SELECT  'INDONESIA' AS NEGARA_TINGGAL,
+		        V.PROPINSI AS PROPINSI_TINGGAL,
+		        V.KABUPATEN AS KABUPATEN_TINGGAL,
+		        V.KECAMATAN AS KECAMATAN_TINGGAL,
+		        V.KELURAHAN AS KELURAHAN_TINGGAL,
+		        V.KODEPOS AS KODEPOS_TINGGAL
+		FROM    EKA.V_PROPINSI V,
+		        EKA.MST_POLICY M,
+		        EKA.MST_ADDRESS_NEW AN
+		WHERE   M.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+		    AND M.MSPO_POLICY_HOLDER = AN.MCL_ID
+		    AND V.KODEPOS = AN.KD_POS_TPT_TINGGAL (+)
+		    AND V.LSKL_ID = AN.LSKL_ID_OTHER (+)
+    </select>
 </mapper>

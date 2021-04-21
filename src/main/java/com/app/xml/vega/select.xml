@@ -3741,7 +3741,7 @@
 			        EKA.MST_DET_ENDORS B
 			WHERE   A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
 			    AND A.MSEN_ENDORS_NO = B.MSEN_ENDORS_NO
-			    AND A.LSPD_ID = 72
+			    AND B.LSJE_ID = 108
 			ORDER BY A.MSEN_INPUT_DATE DESC
 	    ) WHERE ROWNUM = 1
 	</select>

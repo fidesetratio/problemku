@@ -3761,7 +3761,7 @@
 		        AND B.LSJE_ID = 108
 		        AND A.REG_SPAJ = C.REG_SPAJ
 		        AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
-		    ORDER BY A.MSEN_INPUT_DATE)
+		    ORDER BY A.MSEN_INPUT_DATE DESC)
 		WHERE   ROWNUM = 1
 	</select>
 	

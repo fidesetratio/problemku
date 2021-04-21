@@ -3836,6 +3836,7 @@
 		    AND AAA.REG_SPAJ = DDD.REG_SPAJ
 		    AND AAA.REG_SPAJ = HHH.REG_SPAJ (+)
 		    AND BBB.LSNE_ID = KKK.LSNE_ID
+		    AND CCC.LSKL_ID = LLL.LSKL_ID (+)
 		    AND CCC.KD_POS_RUMAH = LLL.KODEPOS(+)
 		    AND HHH.LBN_ID = III.LBN_ID (+)
 		    AND III.LSBP_ID = JJJ.LSBP_ID (+)
@@ -3864,5 +3865,81 @@
 		    AND BB.LSNE_ID = GG.LSNE_ID
 		    AND CC.MSTE_INSURED = HH.MCL_ID
 		    AND AA.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+	</select>
+	
+	<select id="selectPolicyHolder" parameterType="String" resultType="com.app.model.PolicyAlteration">
+		SELECT  A.MSPO_POLICY_NO AS NO_POLIS,
+		        B.MCL_FIRST AS NAMA_PP,
+		        D.LSDBS_VIEW AS JENIS_PRODUK,
+		        E.LSST_NAME AS STATUS,
+		        F.LSAG_NAME AS AGAMA,
+		        G.LSNE_NOTE AS KEWARGANEGARAAN,
+		        B.MCL_NPWP AS NPWP,
+		        B.MCL_COMPANY_NAME AS NAMA_PERUSAHAAN_PP,
+		        B.MKL_KERJA AS JABATAN_PP,
+		        B.MKL_KERJA_KET AS URAIAN_PEKERJAAN,
+		        H.ALAMAT_KANTOR,
+		        KANTOR.*,
+		        H.AREA_CODE_RUMAH AS AREA_CODE_RUMAH_PP,
+		        H.TELPON_RUMAH AS TELPON_RUMAH_PP,
+		        H.ALAMAT_RUMAH AS ALAMAT_RUMAH_PP,
+		        RUMAH.*,
+		        H.ALAMAT_TPT_TINGGAL,
+		        A.MSPO_KORESPONDENSI AS KORESPONDENSI_FLAG,
+		        K.LSBP_NAMA AS NAMA_BANK_PP,
+		        J.LBN_NAMA AS CABANG_BANK_PP,
+		        J.LBN_KOTA AS KOTA_BANK_PP,
+		        I.MAR_ACC_NO AS NO_REKENING_PP,
+		        I.MAR_HOLDER AS PEMILIK_REKENING_PP
+		FROM    EKA.MST_POLICY A,
+		        EKA.MST_CLIENT_NEW B,
+		        EKA.MST_PRODUCT_INSURED C,
+		        EKA.LST_DET_BISNIS D,
+		        EKA.LST_STATUS E,
+		        EKA.LST_AGAMA F,
+		        EKA.LST_NEGARA G,
+		        EKA.MST_ADDRESS_NEW H,
+		        EKA.MST_ACCOUNT_RECUR I,
+		        EKA.LST_BANK J,
+		        EKA.LST_BANK_PUSAT K,
+		        (
+		            SELECT  V.PROPINSI AS PROPINSI_KANTOR,
+		                    V.KABUPATEN AS KABUPATEN_KANTOR,
+		                    V.KECAMATAN AS KECAMATAN_KANTOR,
+		                    V.KELURAHAN AS KELURAHAN_KANTOR,
+		                    V.KODEPOS AS KODEPOS_KANTOR
+		            FROM    EKA.V_PROPINSI V,
+		                    EKA.MST_POLICY M,
+		                    EKA.MST_ADDRESS_NEW AN
+		            WHERE   M.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+		                AND M.MSPO_POLICY_HOLDER = AN.MCL_ID
+		                AND V.KODEPOS = AN.KD_POS_KANTOR
+		                AND V.LSKL_ID = AN.LSKL_ID_KANTOR) KANTOR,
+		        (
+		            SELECT  V.PROPINSI AS PROPINSI_RUMAH,
+		                    V.KABUPATEN AS KABUPATEN_RUMAH,
+		                    V.KECAMATAN AS KECAMATAN_RUMAH,
+		                    V.KELURAHAN AS KELURAHAN_RUMAH,
+		                    V.KODEPOS AS KODEPOS_RUMAH
+		            FROM    EKA.V_PROPINSI V,
+		                    EKA.MST_POLICY M,
+		                    EKA.MST_ADDRESS_NEW AN
+		            WHERE   M.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+		                AND M.MSPO_POLICY_HOLDER = AN.MCL_ID
+		                AND V.KODEPOS = AN.KD_POS_RUMAH
+		                AND V.LSKL_ID = AN.LSKL_ID) RUMAH
+		WHERE   A.MSPO_POLICY_HOLDER = B.MCL_ID
+		    AND A.REG_SPAJ = C.REG_SPAJ
+		    AND C.LSBS_ID = D.LSBS_ID
+		    AND C.LSDBS_NUMBER = D.LSDBS_NUMBER
+		    AND B.MSPE_STS_MRT = E.LSST_ID
+		    AND B.LSAG_ID = F.LSAG_ID
+		    AND B.LSNE_ID = G.LSNE_ID
+		    AND A.MSPO_POLICY_HOLDER = H.MCL_ID
+		    AND A.REG_SPAJ = I.REG_SPAJ (+)
+		    AND I.LBN_ID = J.LBN_ID (+)
+		    AND J.LSBP_ID = K.LSBP_ID (+)
+		    AND C.LSBS_ID <![CDATA[<]]> 300
+		    AND A.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
 	</select>
 </mapper>

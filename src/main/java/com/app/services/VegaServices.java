@@ -1269,4 +1269,9 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectInsured(no_polis);
 	}
+
+	public PolicyAlteration selectPolicyHolder(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectPolicyHolder(no_polis);
+	}
 }

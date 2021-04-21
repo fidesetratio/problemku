@@ -41,6 +41,224 @@ public class PolicyAlteration implements Serializable {
 	private String nama_perusahaan_tt;
 	private String jabatan_tt;
 	
+	private String no_polis;
+	private String nama_pp;
+	private String jenis_produk;
+	private String status;
+	private String agama;
+	private String kewarganegaraan;
+	private String npwp;
+	private String nama_perusahaan_pp;
+	private String jabatan_pp;
+	private String uraian_pekerjaan;
+	private String alamat_kantor;
+	private String propinsi_kantor;
+	private String kabupaten_kantor;
+	private String kecamatan_kantor;
+	private String kelurahan_kantor;
+	private String kodepos_kantor;
+	private String area_code_rumah_pp;
+	private String telpon_rumah_pp;
+	private String alamat_rumah_pp;
+	private String propinsi_rumah;
+	private String kabupaten_rumah;
+	private String kecamatan_rumah;
+	private String kelurahan_rumah;
+	private String kodepos_rumah;
+	private String alamat_tpt_tinggal;
+	private Integer korespondensi_flag;
+	private String nama_bank_pp;
+	private String cabang_bank_pp;
+	private String kota_bank_pp;
+	private String no_rekening_pp;
+	private String pemilik_rekening_pp;
+	
+	public String getNo_polis() {
+		return no_polis;
+	}
+	public void setNo_polis(String no_polis) {
+		this.no_polis = no_polis;
+	}
+	public String getNama_pp() {
+		return nama_pp;
+	}
+	public void setNama_pp(String nama_pp) {
+		this.nama_pp = nama_pp;
+	}
+	public String getJenis_produk() {
+		return jenis_produk;
+	}
+	public void setJenis_produk(String jenis_produk) {
+		this.jenis_produk = jenis_produk;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getAgama() {
+		return agama;
+	}
+	public void setAgama(String agama) {
+		this.agama = agama;
+	}
+	public String getKewarganegaraan() {
+		return kewarganegaraan;
+	}
+	public void setKewarganegaraan(String kewarganegaraan) {
+		this.kewarganegaraan = kewarganegaraan;
+	}
+	public String getNpwp() {
+		return npwp;
+	}
+	public void setNpwp(String npwp) {
+		this.npwp = npwp;
+	}
+	public String getNama_perusahaan_pp() {
+		return nama_perusahaan_pp;
+	}
+	public void setNama_perusahaan_pp(String nama_perusahaan_pp) {
+		this.nama_perusahaan_pp = nama_perusahaan_pp;
+	}
+	public String getJabatan_pp() {
+		return jabatan_pp;
+	}
+	public void setJabatan_pp(String jabatan_pp) {
+		this.jabatan_pp = jabatan_pp;
+	}
+	public String getUraian_pekerjaan() {
+		return uraian_pekerjaan;
+	}
+	public void setUraian_pekerjaan(String uraian_pekerjaan) {
+		this.uraian_pekerjaan = uraian_pekerjaan;
+	}
+	public String getAlamat_kantor() {
+		return alamat_kantor;
+	}
+	public void setAlamat_kantor(String alamat_kantor) {
+		this.alamat_kantor = alamat_kantor;
+	}
+	public String getPropinsi_kantor() {
+		return propinsi_kantor;
+	}
+	public void setPropinsi_kantor(String propinsi_kantor) {
+		this.propinsi_kantor = propinsi_kantor;
+	}
+	public String getKabupaten_kantor() {
+		return kabupaten_kantor;
+	}
+	public void setKabupaten_kantor(String kabupaten_kantor) {
+		this.kabupaten_kantor = kabupaten_kantor;
+	}
+	public String getKecamatan_kantor() {
+		return kecamatan_kantor;
+	}
+	public void setKecamatan_kantor(String kecamatan_kantor) {
+		this.kecamatan_kantor = kecamatan_kantor;
+	}
+	public String getKelurahan_kantor() {
+		return kelurahan_kantor;
+	}
+	public void setKelurahan_kantor(String kelurahan_kantor) {
+		this.kelurahan_kantor = kelurahan_kantor;
+	}
+	public String getKodepos_kantor() {
+		return kodepos_kantor;
+	}
+	public void setKodepos_kantor(String kodepos_kantor) {
+		this.kodepos_kantor = kodepos_kantor;
+	}
+	public String getArea_code_rumah_pp() {
+		return area_code_rumah_pp;
+	}
+	public void setArea_code_rumah_pp(String area_code_rumah_pp) {
+		this.area_code_rumah_pp = area_code_rumah_pp;
+	}
+	public String getTelpon_rumah_pp() {
+		return telpon_rumah_pp;
+	}
+	public void setTelpon_rumah_pp(String telpon_rumah_pp) {
+		this.telpon_rumah_pp = telpon_rumah_pp;
+	}
+	public String getAlamat_rumah_pp() {
+		return alamat_rumah_pp;
+	}
+	public void setAlamat_rumah_pp(String alamat_rumah_pp) {
+		this.alamat_rumah_pp = alamat_rumah_pp;
+	}
+	public String getPropinsi_rumah() {
+		return propinsi_rumah;
+	}
+	public void setPropinsi_rumah(String propinsi_rumah) {
+		this.propinsi_rumah = propinsi_rumah;
+	}
+	public String getKabupaten_rumah() {
+		return kabupaten_rumah;
+	}
+	public void setKabupaten_rumah(String kabupaten_rumah) {
+		this.kabupaten_rumah = kabupaten_rumah;
+	}
+	public String getKecamatan_rumah() {
+		return kecamatan_rumah;
+	}
+	public void setKecamatan_rumah(String kecamatan_rumah) {
+		this.kecamatan_rumah = kecamatan_rumah;
+	}
+	public String getKelurahan_rumah() {
+		return kelurahan_rumah;
+	}
+	public void setKelurahan_rumah(String kelurahan_rumah) {
+		this.kelurahan_rumah = kelurahan_rumah;
+	}
+	public String getKodepos_rumah() {
+		return kodepos_rumah;
+	}
+	public void setKodepos_rumah(String kodepos_rumah) {
+		this.kodepos_rumah = kodepos_rumah;
+	}
+	public String getAlamat_tpt_tinggal() {
+		return alamat_tpt_tinggal;
+	}
+	public void setAlamat_tpt_tinggal(String alamat_tpt_tinggal) {
+		this.alamat_tpt_tinggal = alamat_tpt_tinggal;
+	}
+	public Integer getKorespondensi_flag() {
+		return korespondensi_flag;
+	}
+	public void setKorespondensi_flag(Integer korespondensi_flag) {
+		this.korespondensi_flag = korespondensi_flag;
+	}
+	public String getNama_bank_pp() {
+		return nama_bank_pp;
+	}
+	public void setNama_bank_pp(String nama_bank_pp) {
+		this.nama_bank_pp = nama_bank_pp;
+	}
+	public String getCabang_bank_pp() {
+		return cabang_bank_pp;
+	}
+	public void setCabang_bank_pp(String cabang_bank_pp) {
+		this.cabang_bank_pp = cabang_bank_pp;
+	}
+	public String getKota_bank_pp() {
+		return kota_bank_pp;
+	}
+	public void setKota_bank_pp(String kota_bank_pp) {
+		this.kota_bank_pp = kota_bank_pp;
+	}
+	public String getNo_rekening_pp() {
+		return no_rekening_pp;
+	}
+	public void setNo_rekening_pp(String no_rekening_pp) {
+		this.no_rekening_pp = no_rekening_pp;
+	}
+	public String getPemilik_rekening_pp() {
+		return pemilik_rekening_pp;
+	}
+	public void setPemilik_rekening_pp(String pemilik_rekening_pp) {
+		this.pemilik_rekening_pp = pemilik_rekening_pp;
+	}
 	public String getStatus_tt() {
 		return status_tt;
 	}

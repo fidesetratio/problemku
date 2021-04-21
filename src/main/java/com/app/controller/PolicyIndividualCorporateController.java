@@ -1448,12 +1448,77 @@ public class PolicyIndividualCorporateController {
 		HashMap<String, Object> data = new HashMap<>();
 		HashMap<String, Object> data_payor = new HashMap<>();
 		HashMap<String, Object> data_insured = new HashMap<>();
+		HashMap<String, Object> data_policyholder = new HashMap<>();
 
 		String username = requestViewPolicyAlteration.getUsername();
 		String key = requestViewPolicyAlteration.getKey();
 		String no_polis = requestViewPolicyAlteration.getNo_polis();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
+				
+				PolicyAlteration policyHolder = services.selectPolicyHolder(no_polis);
+				String nama_pp = policyHolder.getNama_pp();
+				String jenis_produk = policyHolder.getJenis_produk();
+				String status = policyHolder.getStatus();
+				String agama = policyHolder.getAgama();
+				String kewarganegaraan = policyHolder.getKewarganegaraan();
+				String npwp = policyHolder.getNpwp();
+				String nama_perusahaan_pp = policyHolder.getNama_perusahaan_pp();
+				String jabatan_pp = policyHolder.getJabatan_pp();
+				String uraian_pekerjaan = policyHolder.getUraian_pekerjaan();
+				String alamat_kantor = policyHolder.getAlamat_kantor();
+				String propinsi_kantor = policyHolder.getPropinsi_kantor();
+				String kabupaten_kantor = policyHolder.getKabupaten_kantor();
+				String kecamatan_kantor = policyHolder.getKecamatan_kantor();
+				String kelurahan_kantor = policyHolder.getKelurahan_kantor();
+				String kodepos_kantor = policyHolder.getKodepos_kantor();
+				String area_code_rumah_pp = policyHolder.getArea_code_rumah_pp();
+				String telpon_rumah_pp = policyHolder.getTelpon_rumah_pp();
+				String alamat_rumah_pp = policyHolder.getAlamat_rumah_pp();
+				String propinsi_rumah = policyHolder.getPropinsi_rumah();
+				String kabupaten_rumah = policyHolder.getKabupaten_rumah();
+				String kecamatan_rumah = policyHolder.getKecamatan_rumah();
+				String kelurahan_rumah = policyHolder.getKelurahan_rumah();
+				String kodepos_rumah = policyHolder.getKodepos_rumah();
+				String alamat_tpt_tinggal = policyHolder.getAlamat_tpt_tinggal();
+				Integer korespondensi_flag = policyHolder.getKorespondensi_flag();
+				String nama_bank_pp = policyHolder.getNama_bank_pp();
+				String cabang_bank_pp = policyHolder.getCabang_bank_pp();
+				String kota_bank_pp = policyHolder.getKota_bank_pp();
+				String no_rekening_pp = policyHolder.getNo_rekening_pp();
+				String pemilik_rekening_pp = policyHolder.getPemilik_rekening_pp();
+				
+				data_policyholder.put("nama_pp", nama_pp);
+				data_policyholder.put("jenis_produk", jenis_produk);
+				data_policyholder.put("status", status);
+				data_policyholder.put("agama", agama);
+				data_policyholder.put("kewarganegaraan", kewarganegaraan);
+				data_policyholder.put("npwp", npwp);
+				data_policyholder.put("nama_perusahaan_pp", nama_perusahaan_pp);
+				data_policyholder.put("jabatan_pp", jabatan_pp);
+				data_policyholder.put("uraian_pekerjaan", uraian_pekerjaan);
+				data_policyholder.put("alamat_kantor", alamat_kantor);
+				data_policyholder.put("propinsi_kantor", propinsi_kantor);
+				data_policyholder.put("kabupaten_kantor", kabupaten_kantor);
+				data_policyholder.put("kecamatan_kantor", kecamatan_kantor);
+				data_policyholder.put("nama_kelurahan_kantor", kelurahan_kantor);
+				data_policyholder.put("kodepos_kantor", kodepos_kantor);
+				data_policyholder.put("area_code_rumah_pp", area_code_rumah_pp);
+				data_policyholder.put("telpon_rumah_pp", telpon_rumah_pp);
+				data_policyholder.put("alamat_rumah_pp", alamat_rumah_pp);
+				data_policyholder.put("propinsi_rumah", propinsi_rumah);
+				data_policyholder.put("kabupaten_rumah", kabupaten_rumah);
+				data_policyholder.put("kecamatan_rumah", kecamatan_rumah);
+				data_policyholder.put("kelurahan_rumah", kelurahan_rumah);
+				data_policyholder.put("kodepos_rumah", kodepos_rumah);
+				data_policyholder.put("alamat_tpt_tinggal", alamat_tpt_tinggal);
+				data_policyholder.put("korespondensi_flag", korespondensi_flag);
+				data_policyholder.put("nama_bank_pp", nama_bank_pp);
+				data_policyholder.put("cabang_bank_pp", cabang_bank_pp);
+				data_policyholder.put("kota_bank_pp", kota_bank_pp);
+				data_policyholder.put("no_rekening_pp", no_rekening_pp);
+				data_policyholder.put("pemilik_rekening_pp", pemilik_rekening_pp);
+				
 				
 				PolicyAlteration insured = services.selectInsured(no_polis);
 				String status_tt = insured.getStatus_tt();
@@ -1543,6 +1608,7 @@ public class PolicyIndividualCorporateController {
 				    listsBeneficiary.add(listBeneficiary);
 				}
 				
+				data.put("policyholder", data_policyholder);
 				data.put("insured", data_insured);
 				data.put("payor", data_payor);
 				data.put("beneficiary",listsBeneficiary);

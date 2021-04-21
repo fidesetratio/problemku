@@ -41,7 +41,36 @@ public class Endorse implements Serializable {
     private String tgl_awal;
     private String tgl_akhir;
     private String input_date;
-       
+    
+    private Integer lsje_id;
+    private String lsje_jenis;
+    private String lsje_status;
+    private String status;
+    
+	public String getLsje_status() {
+		return lsje_status;
+	}
+	public void setLsje_status(String lsje_status) {
+		this.lsje_status = lsje_status;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public Integer getLsje_id() {
+		return lsje_id;
+	}
+	public void setLsje_id(Integer lsje_id) {
+		this.lsje_id = lsje_id;
+	}
+	public String getLsje_jenis() {
+		return lsje_jenis;
+	}
+	public void setLsje_jenis(String lsje_jenis) {
+		this.lsje_jenis = lsje_jenis;
+	}
 	public String getMsen_endors_no() {
 		return msen_endors_no;
 	}

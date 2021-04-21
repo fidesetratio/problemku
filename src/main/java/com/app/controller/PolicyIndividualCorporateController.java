@@ -44,6 +44,7 @@ import com.app.model.Nav;
 import com.app.model.Pemegang;
 import com.app.model.PolicyAlteration;
 import com.app.model.Provider;
+import com.app.model.SwitchingRedirection;
 import com.app.model.User;
 import com.app.model.UserCorporate;
 import com.app.model.VersionCode;
@@ -1506,7 +1507,7 @@ public class PolicyIndividualCorporateController {
 				data_policyholder.put("propinsi_kantor", propinsi_kantor);
 				data_policyholder.put("kabupaten_kantor", kabupaten_kantor);
 				data_policyholder.put("kecamatan_kantor", kecamatan_kantor);
-				data_policyholder.put("nama_kelurahan_kantor", kelurahan_kantor);
+				data_policyholder.put("kelurahan_kantor", kelurahan_kantor);
 				data_policyholder.put("kodepos_kantor", kodepos_kantor);
 				data_policyholder.put("area_code_rumah_pp", area_code_rumah_pp);
 				data_policyholder.put("telpon_rumah_pp", telpon_rumah_pp);
@@ -1711,7 +1712,7 @@ public class PolicyIndividualCorporateController {
 				
 				PolicyAlteration policyAlteration = new PolicyAlteration();
 				
-				if(id_endors==89) {
+				if(id_endors==3) {
 					String nama_perusahaan = policyAlteration.getNama_perusahaan_pp();
 					String jenis_usaha = policyAlteration.getMkl_kerja();
 					
@@ -1771,6 +1772,94 @@ public class PolicyIndividualCorporateController {
 		customResourceLoader.updateActivity(username);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 83, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/listpolicyalteration", produces = "application/json", method = RequestMethod.POST)
+	public String listPolicyAlteration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestViewPolicyAlteration);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+		ArrayList<HashMap<String, Object>> listPolAlt = new ArrayList<>();
+
+		String username = requestViewPolicyAlteration.getUsername();
+		String key = requestViewPolicyAlteration.getKey();
+		String no_polis = requestViewPolicyAlteration.getNo_polis();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				// Get SPAJ
+				Pemegang paramSelectSPAJ = new Pemegang();
+				paramSelectSPAJ.setMspo_policy_no(no_polis);
+				Pemegang dataSPAJ = services.selectGetSPAJ(paramSelectSPAJ);
+
+				if (dataSPAJ != null) {
+					String reg_spaj = dataSPAJ.getReg_spaj();
+					ArrayList<Endorse> listPolicyAlteration = services.selectListPolicyAlteration(reg_spaj);
+					
+					if (listPolicyAlteration==null) {
+						// Data List Kosong
+						error = false;
+						message = "Data list premium holiday empty";
+					} else {
+						for(int i = 0; i<listPolicyAlteration.size();i++) {
+							HashMap<String, Object> dataTemp = new HashMap<>();
+							
+							String msen_endors_no = listPolicyAlteration.get(i).getMsen_endors_no();
+							Integer lsje_id = listPolicyAlteration.get(i).getLsje_id();
+							String input_date = listPolicyAlteration.get(i).getInput_date();
+							String status = listPolicyAlteration.get(i).getStatus();
+							String lsje_status = listPolicyAlteration.get(i).getLsje_status();
+							
+							dataTemp.put("msen_endors_no", msen_endors_no);
+							dataTemp.put("lsje_id", lsje_id);
+							dataTemp.put("input_date", input_date);
+							dataTemp.put("status", status);
+							dataTemp.put("lsje_status", lsje_status);
+							
+							listPolAlt.add(dataTemp);
+						}
+						data.put("list_policy_alteration", listPolAlt);
+						error = false;
+						message = "Successfully get data";
+					}
+				} else {
+					// SPAJ tidak ditemukan
+					error = true;
+					message = "Failed get data";
+					resultErr = "REG SPAJ tidak ditemukan, No polis: " + no_polis;
+					logger.error(
+							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
 	}

@@ -320,6 +320,8 @@ public interface VegaMapper {
 	public PolicyAlteration selectPolicyHolder(String no_polis);
 	
 	public PolicyAlteration selectKorespondensi(String no_polis);
+	
+	public ArrayList<Endorse> selectListPolicyAlteration(String reg_spaj);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

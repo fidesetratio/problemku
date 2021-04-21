@@ -1295,4 +1295,9 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectKorespondensi(no_polis);
 	}
+
+	public ArrayList<Endorse> selectListPolicyAlteration(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListPolicyAlteration(reg_spaj);
+	}
 }

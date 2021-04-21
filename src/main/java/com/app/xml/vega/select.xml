@@ -3961,4 +3961,28 @@
 		    AND V.KODEPOS = AN.KD_POS_TPT_TINGGAL (+)
 		    AND V.LSKL_ID = AN.LSKL_ID_OTHER (+)
     </select>
+    
+    <select id="selectListPolicyAlteration" parameterType="String" resultType="com.app.model.Endorse">
+		SELECT  A.MSEN_ENDORS_NO,
+		        B.LSJE_ID,
+		        TO_CHAR(A.MSEN_INPUT_DATE, 'DD/MM/YYYY') AS INPUT_DATE,
+		        CASE
+		            WHEN (C.LSPD_ID = 13)
+		                THEN 'IN PROGRESS'
+		            WHEN C.LSPD_ID = 99
+		                THEN 'ACCEPTED'
+		            ELSE 'DECLINED'
+		        END AS STATUS,
+		        D.LSJE_JENIS
+		FROM    EKA.MST_ENDORS A,
+		        EKA.MST_DET_ENDORS B,
+		        EKA.MST_POLICY C,
+		        EKA.LST_JN_ENDORS D
+		WHERE   A.MSEN_ENDORS_NO = B.MSEN_ENDORS_NO
+		    AND B.LSJE_ID = D.LSJE_ID
+		    AND A.REG_SPAJ = C.REG_SPAJ
+		    AND D.LSJE_ACTIVE = 1
+		    AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		ORDER BY A.MSEN_INPUT_DATE DESC
+	</select>
 </mapper>

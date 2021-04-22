@@ -1287,11 +1287,6 @@ public class VegaServices {
 		return dao.selectPolicyHolder(no_polis);
 	}
 
-	public void updateMstPolicy(String nama_perusahaan, String jenis_usaha) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public PolicyAlteration selectKorespondensi(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectKorespondensi(no_polis);
@@ -1335,5 +1330,28 @@ public class VegaServices {
 	public ArrayList<DropdownPolicyAlteration> selectListRelation() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListRelation();
+	}
+
+	public Endorse selectListJenisEndors(Integer lsje_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListJenisEndors(lsje_id);
+	}
+
+	public void updateAgama(PolicyAlteration policyAlteration) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.updateAgama(policyAlteration);
+	}
+	
+	public void insertLstUlangan(String reg_spaj, String msen_alasan) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("reg_spaj", reg_spaj);
+		hashMap.put("msen_alasan", msen_alasan);
+		dao.insertLstUlangan(hashMap);
+	}
+
+	public String selectMclId_PP(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectMclId_PP(reg_spaj);
 	}
 }

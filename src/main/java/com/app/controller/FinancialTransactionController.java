@@ -5448,18 +5448,19 @@ public class FinancialTransactionController {
 		BigInteger mpc_id = requestUploadDeleteFileClaimSub.getMpc_id();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
+				String nameFileNew = null;
+				
+				int lastIndexOf = name_file.lastIndexOf(".");
+		        if (lastIndexOf > -1) {
+		            nameFileNew = name_file.substring(0, lastIndexOf);
+		            System.out.println(name_file);
+		        }
+				
 				if (type.equals(1)) {
 					if ((name_file != null) && (file_base64 != null) && (reg_spaj != null) && (mpc_id != null)
 							&& (name_file != "") && (file_base64 != "") && (reg_spaj != "")) {
 						String path_claim = storageClaimMpolicy + File.separator + kodeCabang + File.separator + reg_spaj + File.separator
 								+ "DocumentClaimSubmission" + File.separator + mpc_id;
-						String nameFileNew = null;
-						
-						int lastIndexOf = name_file.lastIndexOf(".");
-				        if (lastIndexOf > -1) {
-				            nameFileNew = name_file.substring(0, lastIndexOf);
-				            System.out.println(name_file);
-				        }
 
 						System.out.println("Upload Start: " + new Date());
 						Boolean uploadFile = customResourceLoader.uploadFileToStorage(path_claim, file_base64,
@@ -5503,12 +5504,12 @@ public class FinancialTransactionController {
 					if ((name_file != null) && (reg_spaj != null) && (mpc_id != null) && (name_file != "")
 							&& (reg_spaj != "")) {
 						String path_claim = storageClaimMpolicy + File.separator + kodeCabang + File.separator + reg_spaj + File.separator
-								+ "DocumentClaimSubmission" + File.separator + mpc_id + File.separator + name_file + ".pdf";
+								+ "DocumentClaimSubmission" + File.separator + mpc_id + File.separator + nameFileNew + ".pdf";
 
 						String pathLogClaimRequest = pathLogSubmitClaimSubmission + File.separator + mpc_id + File.separator + "request-"
-								+ name_file + ".txt";
+								+ nameFileNew + ".txt";
 						String pathLogClaimResponse = pathLogSubmitClaimSubmission + File.separator + mpc_id + File.separator + "response-"
-								+ name_file + ".txt";
+								+ nameFileNew + ".txt";
 
 						try {
 							File file = new File(path_claim);

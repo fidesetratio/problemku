@@ -90,6 +90,8 @@ public interface VegaMapper {
 	public void insertEndorse(HashMap<String, Object> hashMap);
 	
 	public void insertDetailEndorse(HashMap<String, Object> hashMap);
+	
+	public void insertLstUlangan(HashMap<String, Object> hashMap);
 
 	// Select
 	public ArrayList<MpolisConfiguration> selectMpolisConfiguration();
@@ -337,6 +339,10 @@ public interface VegaMapper {
 	public ArrayList<DropdownPolicyAlteration> selectListBank();
 	
 	public ArrayList<DropdownPolicyAlteration> selectListRelation();
+	
+	public Endorse selectListJenisEndors(Integer lsje_id);
+	
+	public String selectMclId_PP(String reg_spaj);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);
@@ -407,4 +413,6 @@ public interface VegaMapper {
 	public void updateFurtherClaimIndividu(String mpc_id);
 	
 	public void updateFurtherClaimCorporate(String mpcc_id);
+
+	public void updateAgama(PolicyAlteration policyAlteration);
 }

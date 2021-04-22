@@ -91,4 +91,8 @@
     <update id="updateFurtherClaimCorporate" parameterType="String">
     	update eka.mst_mpol_claim_corporate_trans set flag_susulan = 1 where mpcc_id = #{mpcc_id, jdbcType=VARCHAR}
     </update>
+    
+    <update id="updateAgama" parameterType="com.app.model.PolicyAlteration">
+    	update eka.mst_client_new set lsag_id = #{lsag_id, jdbcType=INTEGER} where mcl_id = #{mcl_id, jdbcType=VARCHAR}
+    </update>
 </mapper>

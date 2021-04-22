@@ -83,6 +83,28 @@ public class PolicyAlteration implements Serializable {
 	private String kelurahan_tinggal;
 	private String kodepos_tinggal;
 	
+	private String reg_spaj;
+	private String mcl_id;
+	private Integer lsag_id;
+	
+	public Integer getLsag_id() {
+		return lsag_id;
+	}
+	public void setLsag_id(Integer lsag_id) {
+		this.lsag_id = lsag_id;
+	}
+	public String getReg_spaj() {
+		return reg_spaj;
+	}
+	public void setReg_spaj(String reg_spaj) {
+		this.reg_spaj = reg_spaj;
+	}
+	public String getMcl_id() {
+		return mcl_id;
+	}
+	public void setMcl_id(String mcl_id) {
+		this.mcl_id = mcl_id;
+	}
 	public String getTipe_usaha_tt() {
 		return tipe_usaha_tt;
 	}

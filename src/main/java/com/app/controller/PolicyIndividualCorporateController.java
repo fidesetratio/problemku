@@ -44,6 +44,7 @@ import com.app.model.Nav;
 import com.app.model.Pemegang;
 import com.app.model.PolicyAlteration;
 import com.app.model.Provider;
+import com.app.model.SubmitPolicyAlteration;
 import com.app.model.SwitchingRedirection;
 import com.app.model.User;
 import com.app.model.UserCorporate;
@@ -1695,8 +1696,11 @@ public class PolicyIndividualCorporateController {
 		String username = requestViewPolicyAlteration.getUsername();
 		String key = requestViewPolicyAlteration.getKey();
 		String no_polis = requestViewPolicyAlteration.getNo_polis();
-		Integer flag_direct = requestViewPolicyAlteration.getFlag_direct();
-		Integer id_endors = requestViewPolicyAlteration.getId_endors();
+		ArrayList<SubmitPolicyAlteration> listPolicyAlteration = new ArrayList<>();
+		PolicyAlteration policyAlterationNew = new PolicyAlteration();
+		PolicyAlteration policyAlterationOld = new PolicyAlteration();
+		
+		Integer id_endors, flag_direct, lsje_id;
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				// Get SPAJ
@@ -1705,50 +1709,95 @@ public class PolicyIndividualCorporateController {
 				Pemegang dataSPAJ = services.selectGetSPAJ(paramSelectSPAJ);
 				String reg_spaj = dataSPAJ.getReg_spaj();
 				
-				String msen_alasan = "CUTI PREMI";
-				Integer lsje_id = null;
-				String msde_old1 = null, msde_old2 = null, msde_old3 = null, msde_old4 = null, msde_old5 = null, msde_old6 = null,
-				msde_new1 = null, msde_new2 = null, msde_new3 = null, msde_new4 = null, msde_new5 = null, msde_new6 = null;
+				listPolicyAlteration = requestViewPolicyAlteration.getPolicy_alteration();
 				
-				PolicyAlteration policyAlteration = new PolicyAlteration();
+				//Endorse endors = new Endorse();
 				
-				if(id_endors==3) {
-					String nama_perusahaan = policyAlteration.getNama_perusahaan_pp();
-					String jenis_usaha = policyAlteration.getMkl_kerja();
+				for(int i=0;i<listPolicyAlteration.size();i++) {
+					id_endors = listPolicyAlteration.get(i).getId_endors();
+					flag_direct = listPolicyAlteration.get(i).getFlag_direct();
+					policyAlterationNew = listPolicyAlteration.get(i).getPolicyholder_new();
+					policyAlterationOld = listPolicyAlteration.get(i).getPolicyholder_old();
+					lsje_id = id_endors;
 					
-					services.updateMstPolicy(nama_perusahaan, jenis_usaha);
-				} else {
-					error = true;
-					message = "ID Endors not found";
+					Endorse endors = services.selectListJenisEndors(lsje_id);
+					String msen_alasan = endors.getLsje_jenis();
+					String msde_old1 = null, msde_old2 = null, msde_old3 = null, msde_old4 = null, msde_old5 = null, msde_old6 = null,
+					msde_new1 = null, msde_new2 = null, msde_new3 = null, msde_new4 = null, msde_new5 = null, msde_new6 = null;
+					
+					if(id_endors==61) {
+						String mcl_id_pp = services.selectMclId_PP(reg_spaj);
+						PolicyAlteration policyAlteration = new PolicyAlteration();
+						String agama = policyAlterationOld.getAgama();
+						String agama_new = policyAlterationNew.getAgama();
+						Integer lsag_id = null;
+						
+						msde_old1 = agama;
+						msde_new1 = agama_new;
+						
+						if(agama_new.equals("ISLAM")) {
+							lsag_id = 1;
+						} else if(agama_new.equals("KRISTEN PROTESTAN")) {
+							lsag_id = 2;
+						} else if(agama_new.equals("KRISTEN KATOLIK")) {
+							lsag_id = 3;
+						} else if(agama_new.equals("BUDHA")) {
+							lsag_id = 4;
+						} else if(agama_new.equals("HINDU")) {
+							lsag_id = 5;
+						} else if(agama_new.equals("[NON]")) {
+							lsag_id = 0;
+						} else if(agama_new.equals("LAIN - LAIN")) {
+							lsag_id = 6;
+						} 
+						
+						policyAlteration.setLsag_id(lsag_id);
+						policyAlteration.setMcl_id(mcl_id_pp);
+						
+						//UPDATE AGAMA
+						services.updateAgama(policyAlteration);
+					} else {
+						error = false;
+						message = "Successfully submit policy alteration";
+						
+						//error = true;
+						//message = "ID Endors not found/Unlisted";
+					}
+					
+					if(flag_direct==1) {					
+						// Get MSEN_ENDORSE_NO
+						String msen_endors_no = services.selectGetNoEndors();
+						
+						//INSERT ENDORSE
+						services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
+						
+						//INSERT DET ENDORSE
+						services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+								msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+						
+						//INSERT LST ULANGAN
+						services.insertLstUlangan(reg_spaj, msen_alasan);
+					} else {
+						// Get MSEN_ENDORSE_NO
+						String msen_endors_no = services.selectGetNoEndors();
+						
+						//INSERT ENDORSE
+						services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
+						
+						//INSERT DET ENDORSE
+						services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+								msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+						
+						//UPDATE LSPD_ID IN MSPO_POLICY
+						services.updateLspdId(reg_spaj);
+					}
 				}
 				
-				if(flag_direct==1) {					
-					// Get MSEN_ENDORSE_NO
-					String msen_endors_no = services.selectGetNoEndors();
-					
-					//INSERT ENDORSE
-					services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
-					
-					//INSERT DET ENDORSE
-					services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-							msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
-					
-					//INSERT LST ULANGAN
-					//services.insertLstUlangan();
-				} else {
-					// Get MSEN_ENDORSE_NO
-					String msen_endors_no = services.selectGetNoEndors();
-					
-					//INSERT ENDORSE
-					services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
-					
-					//INSERT DET ENDORSE
-					services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-							msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
-					
-					//UPDATE LSPD_ID IN MSPO_POLICY
-					services.updateLspdId(reg_spaj);
-				}
+				/*
+								
+				
+				
+				*/
 				
 				error = false;
 				message = "Successfully submit policy alteration";

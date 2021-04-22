@@ -1,6 +1,9 @@
 package com.app.model.request;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+
+import com.app.model.SubmitPolicyAlteration;
 
 public class RequestViewPolicyAlteration implements Serializable {
 
@@ -15,6 +18,7 @@ public class RequestViewPolicyAlteration implements Serializable {
 	private String tanggal_akhir;
 	private Integer id_endors;
 	private Integer flag_direct;
+	ArrayList<SubmitPolicyAlteration> policy_alteration;
 
 	private String cara_bayar;
 	private String nama_bank_payor;
@@ -81,6 +85,14 @@ public class RequestViewPolicyAlteration implements Serializable {
 	private String pemilik_rekening_pp;
 
 	
+	public ArrayList<SubmitPolicyAlteration> getPolicy_alteration() {
+		return policy_alteration;
+	}
+
+	public void setPolicy_alteration(ArrayList<SubmitPolicyAlteration> policy_alteration) {
+		this.policy_alteration = policy_alteration;
+	}
+
 	public Integer getFlag_direct() {
 		return flag_direct;
 	}

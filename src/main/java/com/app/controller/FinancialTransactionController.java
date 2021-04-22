@@ -5453,6 +5453,10 @@ public class FinancialTransactionController {
 							&& (name_file != "") && (file_base64 != "") && (reg_spaj != "")) {
 						String path_claim = storageClaimMpolicy + File.separator + kodeCabang + File.separator + reg_spaj + File.separator
 								+ "DocumentClaimSubmission" + File.separator + mpc_id;
+						
+						//String nmfile_noext = name_file
+						String file_type = name_file.substring(name_file.lastIndexOf(".")+1);
+						System.out.println(file_type);
 
 						System.out.println("Upload Start: " + new Date());
 						Boolean uploadFile = customResourceLoader.uploadFileToStorage(path_claim, file_base64,

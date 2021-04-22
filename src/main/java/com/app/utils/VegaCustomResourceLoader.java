@@ -1609,12 +1609,12 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 				Document document = new Document();
 				
 				fileBase64 = fileBase64.replace("\n", "");
-				
+				String fileUpload = pathFolder + File.separator + fileName + ".pdf";
 				
 				byte[] imageByte = Base64.getDecoder().decode(fileBase64);
-				new FileOutputStream(pathFolder).write(imageByte);
+				new FileOutputStream(fileUpload).write(imageByte);
 				
-				PdfWriter.getInstance(document, new FileOutputStream(pathFolder));
+				PdfWriter.getInstance(document, new FileOutputStream(fileUpload));
 				document.open();
 				byte[] decoded = Base64.getDecoder().decode(fileBase64.getBytes());
 				Image image1 = Image.getInstance(decoded);
@@ -1630,18 +1630,19 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 				logger.error("Path: " + urlPath + " Username: " + username + " Error: " + e);
 			}
 		} else {
-			try {									
-				String base64 = fileBase64;
-				base64 = base64.replace("\n", "");
-				
-				byte[] fileByte = Base64.getDecoder().decode(base64);
+			try {
+				byte[] fileByte = Base64.getDecoder().decode(fileBase64);
+				String directory = folder + File.separator + fileName + ".pdf";
 
-				FileOutputStream fos = new FileOutputStream(pathFolder);
+				FileOutputStream fos = new FileOutputStream(directory);
 				fos.write(fileByte);
 				fos.close();
 				fos.flush();
+
+				result = true;
 			} catch (Exception e) {
 				logger.error("Path: " + urlPath + " Username: " + username + " Error: " + e);
+				result = false;
 			}
 		}
 

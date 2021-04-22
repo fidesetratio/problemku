@@ -1820,12 +1820,14 @@ public class PolicyIndividualCorporateController {
 							String input_date = listPolicyAlteration.get(i).getInput_date();
 							String status = listPolicyAlteration.get(i).getStatus();
 							String lsje_status = listPolicyAlteration.get(i).getLsje_status();
+							String grouping = listPolicyAlteration.get(i).getGrouping();
 							
 							dataTemp.put("msen_endors_no", msen_endors_no);
 							dataTemp.put("lsje_id", lsje_id);
 							dataTemp.put("input_date", input_date);
 							dataTemp.put("status", status);
 							dataTemp.put("lsje_status", lsje_status);
+							dataTemp.put("grouping", grouping);
 							
 							listPolAlt.add(dataTemp);
 						}

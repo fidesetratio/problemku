@@ -46,7 +46,14 @@ public class Endorse implements Serializable {
     private String lsje_jenis;
     private String lsje_status;
     private String status;
+    private String grouping;
     
+	public String getGrouping() {
+		return grouping;
+	}
+	public void setGrouping(String grouping) {
+		this.grouping = grouping;
+	}
 	public String getLsje_status() {
 		return lsje_status;
 	}

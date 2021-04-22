@@ -3973,7 +3973,18 @@
 		                THEN 'ACCEPTED'
 		            ELSE 'DECLINED'
 		        END AS STATUS,
-		        D.LSJE_JENIS
+		        D.LSJE_JENIS,
+		        CASE
+		            WHEN B.LSJE_ID IN (3, 34, 39, 61, 67, 89, 93)
+		                THEN 'DATA PEMEGANG POLIS'
+		            WHEN B.LSJE_ID IN (40, 62, 68, 90)
+		                THEN 'DATA TERTANGGUNG UTAMA'
+		            WHEN B.LSJE_ID IN (8, 96)
+		                THEN 'DATA PEMBAYAR PREMI'
+		            WHEN B.LSJE_ID IN (93)
+		                THEN 'DATA PENERIMA MANFAAT'
+		            ELSE 'UNLISTED'
+		        END AS GROUPING
 		FROM    EKA.MST_ENDORS A,
 		        EKA.MST_DET_ENDORS B,
 		        EKA.MST_POLICY C,

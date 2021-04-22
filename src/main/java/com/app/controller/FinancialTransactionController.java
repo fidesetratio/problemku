@@ -5453,10 +5453,13 @@ public class FinancialTransactionController {
 							&& (name_file != "") && (file_base64 != "") && (reg_spaj != "")) {
 						String path_claim = storageClaimMpolicy + File.separator + kodeCabang + File.separator + reg_spaj + File.separator
 								+ "DocumentClaimSubmission" + File.separator + mpc_id;
+						String nameFileNew = null;
 						
-						//String nmfile_noext = name_file
-						String file_type = name_file.substring(name_file.lastIndexOf(".")+1);
-						System.out.println(file_type);
+						int lastIndexOf = name_file.lastIndexOf(".");
+				        if (lastIndexOf > -1) {
+				            nameFileNew = name_file.substring(0, lastIndexOf);
+				            System.out.println(name_file);
+				        }
 
 						System.out.println("Upload Start: " + new Date());
 						Boolean uploadFile = customResourceLoader.uploadFileToStorage(path_claim, file_base64,
@@ -5464,22 +5467,22 @@ public class FinancialTransactionController {
 						System.out.println("Upload Done: " + new Date());
 
 						if (uploadFile.equals(true)) {
-							String filePath = path_claim + File.separator + name_file + ".pdf";
-							//Boolean validateFilePdf = customResourceLoader.validateFilePdf(filePath, username,
-							//		mpc_id.toString());
-							//if (validateFilePdf.equals(true)) {
+							String filePath = path_claim + File.separator + nameFileNew + ".pdf";
+							Boolean validateFilePdf = customResourceLoader.validateFilePdf(filePath, username,
+									mpc_id.toString());
+							if (validateFilePdf.equals(true)) {
 								error = false;
 								message = "Successfully upload file";
-								data.put("name_file", name_file + ".pdf");
-							//} else {
-							//	data = null;
-							//	error = true;
-							//	message = "Failed upload file";
-							//	resultErr = "File PDF Corrupt, MPC_ID: " + mpc_id.toString() + ", Name File: "
-							//			+ name_file;
-							//	logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
-							//			+ resultErr);
-							//}
+								data.put("name_file", nameFileNew + ".pdf");
+							} else {
+								data = null;
+								error = true;
+								message = "Failed upload file";
+								resultErr = "File PDF Corrupt, MPC_ID: " + mpc_id.toString() + ", Name File: "
+										+ name_file;
+								logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+										+ resultErr);
+							}
 						} else {
 							data = null;
 							error = true;

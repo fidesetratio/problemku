@@ -1596,12 +1596,18 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 	public Boolean uploadFileToStorage(String pathFolder, String fileBase64, String fileName, String username,
 			String urlPath, BigInteger mpc_id) throws FileNotFoundException, IOException {
 		Boolean result = false;
+		String nameFileNew = null;
 
 		File folder = new File(pathFolder);
 		if (!folder.exists()) {
 			folder.mkdirs();
 		}
 		
+		int lastIndexOf = fileName.lastIndexOf(".");
+        if (lastIndexOf > -1) {
+            nameFileNew = fileName.substring(0, lastIndexOf);
+            System.out.println(fileName);
+        }
 		String file_type = fileName.substring(fileName.lastIndexOf(".")+1);
 		
 		if (file_type.equals("jpg")) {
@@ -1609,7 +1615,7 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 				Document document = new Document();
 				
 				fileBase64 = fileBase64.replace("\n", "");
-				String fileUpload = pathFolder + File.separator + fileName + ".pdf";
+				String fileUpload = pathFolder + File.separator + nameFileNew + ".pdf";
 				
 				byte[] imageByte = Base64.getDecoder().decode(fileBase64);
 				new FileOutputStream(fileUpload).write(imageByte);
@@ -1626,13 +1632,15 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 				image1.scalePercent(scaler);
 				document.add(image1);
 				document.close();
+				result = true;
 			} catch (Exception e) {
 				logger.error("Path: " + urlPath + " Username: " + username + " Error: " + e);
+				result = false;
 			}
 		} else {
 			try {
 				byte[] fileByte = Base64.getDecoder().decode(fileBase64);
-				String directory = folder + File.separator + fileName + ".pdf";
+				String directory = folder + File.separator + nameFileNew + ".pdf";
 
 				FileOutputStream fos = new FileOutputStream(directory);
 				fos.write(fileByte);

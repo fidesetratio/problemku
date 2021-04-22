@@ -24,6 +24,7 @@ import com.app.model.CostFinancialTransaction;
 import com.app.model.DataUsulan;
 import com.app.model.DetailClaimCorporate;
 import com.app.model.DetailWithdraw;
+import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Fund;
 import com.app.model.KlaimKesehatan;
@@ -1299,5 +1300,40 @@ public class VegaServices {
 	public ArrayList<Endorse> selectListPolicyAlteration(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListPolicyAlteration(reg_spaj);
+	}
+
+	public ArrayList<DropdownPolicyAlteration> selectListPernikahan() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListPernikahan();
+	}
+	
+	public ArrayList<DropdownPolicyAlteration> selectListAgama() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListAgama();
+	}
+	
+	public ArrayList<DropdownPolicyAlteration> selectListNegara() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListNegara();
+	}
+	
+	public ArrayList<DropdownPolicyAlteration> selectListJenisUsaha() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListJenisUsaha();
+	}
+	
+	public ArrayList<DropdownPolicyAlteration> selectListPekerjaan() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListPekerjaan();
+	}
+	
+	public ArrayList<DropdownPolicyAlteration> selectListBank() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListBank();
+	}
+	
+	public ArrayList<DropdownPolicyAlteration> selectListRelation() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListRelation();
 	}
 }

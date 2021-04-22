@@ -51,6 +51,7 @@ import com.app.model.DetailDestSwitching;
 import com.app.model.DetailRedirection;
 import com.app.model.DetailSwitching;
 import com.app.model.DetailWithdraw;
+import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Fund;
 import com.app.model.Pemegang;
@@ -73,6 +74,7 @@ import com.app.model.request.RequestDocumentClaimSubmissionCorporate;
 import com.app.model.request.RequestDownloadFileClaimSubmission;
 import com.app.model.request.RequestDownloadProofTransaction;
 import com.app.model.request.RequestDropdownClaimsubmission;
+import com.app.model.request.RequestDropdownPolicyAlteration;
 import com.app.model.request.RequestFurtherClaimSubmission;
 import com.app.model.request.RequestGetInfoTopup;
 import com.app.model.request.RequestGetTopupList;
@@ -6981,4 +6983,190 @@ public class FinancialTransactionController {
 
 		return res;
 	}
+	
+	@RequestMapping(value = "/dropdownpolicyalteration", produces = "application/json", method = RequestMethod.POST)
+	public String dropdownPolicyAlteration(@RequestBody RequestDropdownPolicyAlteration requestDropdownPolicyAlteration,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestDropdownPolicyAlteration);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+
+		String username = requestDropdownPolicyAlteration.getUsername();
+		String key = requestDropdownPolicyAlteration.getKey();
+		Integer type = requestDropdownPolicyAlteration.getType();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+
+				ArrayList<HashMap<String, Object>> listPernikahan = new ArrayList<>();
+				ArrayList<HashMap<String, Object>> listAgama = new ArrayList<>();
+				ArrayList<HashMap<String, Object>> listNegara = new ArrayList<>();
+				ArrayList<HashMap<String, Object>> listJenisUsaha = new ArrayList<>();
+				ArrayList<HashMap<String, Object>> listPekerjaan = new ArrayList<>();
+				ArrayList<HashMap<String, Object>> listBank = new ArrayList<>();
+				ArrayList<HashMap<String, Object>> listRelation = new ArrayList<>();
+
+				if (type.equals(1)) {
+					ArrayList<DropdownPolicyAlteration> getListPernikahan = services.selectListPernikahan();
+					
+					for (int x = 0; x < getListPernikahan.size(); x++) {
+						HashMap<String, Object> hashMapTemp = new HashMap<>();
+						
+						Integer lsst_id = getListPernikahan.get(x).getLsst_id();
+						String lsst_name = getListPernikahan.get(x).getLsst_name();
+						
+						hashMapTemp.put("lsst_id", lsst_id);
+						hashMapTemp.put("lsst_name", lsst_name);
+
+						listPernikahan.add(hashMapTemp);
+					}
+						error = false;
+						message = "Successfully get list pernikahan";
+						data.put("listPernikahan", listPernikahan);
+				} else if (type.equals(2)) {
+					ArrayList<DropdownPolicyAlteration> getListAgama = services.selectListAgama();
+					
+					for (int x = 0; x < getListAgama.size(); x++) {
+						HashMap<String, Object> hashMapTemp = new HashMap<>();
+						
+						Integer lsag_id = getListAgama.get(x).getLsag_id();
+						String lsag_name = getListAgama.get(x).getLsag_name();
+						
+						hashMapTemp.put("lsag_id", lsag_id);
+						hashMapTemp.put("lsag_name", lsag_name);
+
+						listAgama.add(hashMapTemp);
+					}
+						error = false;
+						message = "Successfully get list agama";
+						data.put("listAgama", listAgama);
+				} else if (type.equals(3)) {
+					ArrayList<DropdownPolicyAlteration> getListNegara = services.selectListNegara();
+					
+					for (int x = 0; x < getListNegara.size(); x++) {
+						HashMap<String, Object> hashMapTemp = new HashMap<>();
+						
+						Integer lsne_id = getListNegara.get(x).getLsne_id();
+						String lsne_name = getListNegara.get(x).getLsne_note();
+						
+						hashMapTemp.put("lsne_id", lsne_id);
+						hashMapTemp.put("lsne_name", lsne_name);
+
+						listNegara.add(hashMapTemp);
+					}
+						error = false;
+						message = "Successfully get list negara";
+						data.put("listNegara", listNegara);
+				} else if (type.equals(4)) {
+					ArrayList<DropdownPolicyAlteration> getListJenisUsaha = services.selectListJenisUsaha();
+					
+					for (int x = 0; x < getListJenisUsaha.size(); x++) {
+						HashMap<String, Object> hashMapTemp = new HashMap<>();
+						
+						Integer lju_id = getListJenisUsaha.get(x).getLju_id();
+						String lju_usaha = getListJenisUsaha.get(x).getLju_usaha();
+						
+						hashMapTemp.put("lju_id", lju_id);
+						hashMapTemp.put("lju_usaha", lju_usaha);
+
+						listJenisUsaha.add(hashMapTemp);
+					}
+						error = false;
+						message = "Successfully get list jenis usaha";
+						data.put("listJenisUsaha", listJenisUsaha);
+				} else if (type.equals(5)) {
+					ArrayList<DropdownPolicyAlteration> getListPekerjaan = services.selectListPekerjaan();
+					
+					for (int x = 0; x < getListPekerjaan.size(); x++) {
+						HashMap<String, Object> hashMapTemp = new HashMap<>();
+						
+						Integer lsp_id = getListPekerjaan.get(x).getLsp_id();
+						String lsp_name = getListPekerjaan.get(x).getLsp_name();
+						
+						hashMapTemp.put("lsp_id", lsp_id);
+						hashMapTemp.put("lsp_name", lsp_name);
+
+						listPekerjaan.add(hashMapTemp);
+					}
+						error = false;
+						message = "Successfully get list agama";
+						data.put("listPekerjaan", listPekerjaan);
+				} else if (type.equals(6)) {
+					ArrayList<DropdownPolicyAlteration> getListBank = services.selectListBank();
+					
+					for (int x = 0; x < getListBank.size(); x++) {
+						HashMap<String, Object> hashMapTemp = new HashMap<>();
+						
+						Integer lbn_id = getListBank.get(x).getLsp_id();
+						Integer lsbp_id = getListBank.get(x).getLsbp_id();
+				        String nama_bank = getListBank.get(x).getNama_bank();
+				        String cabang = getListBank.get(x).getCabang();
+						
+						hashMapTemp.put("lbn_id", lbn_id);
+						hashMapTemp.put("lsbp_id", lsbp_id);
+						hashMapTemp.put("nama_bank", nama_bank);
+						hashMapTemp.put("cabang", cabang);
+
+						listBank.add(hashMapTemp);
+					}
+						error = false;
+						message = "Successfully get list bank";
+						data.put("listBank", listBank);
+				} else if (type.equals(7)) {
+					ArrayList<DropdownPolicyAlteration> getListRelation = services.selectListRelation();
+					
+					for (int x = 0; x < getListRelation.size(); x++) {
+						HashMap<String, Object> hashMapTemp = new HashMap<>();
+						
+						Integer lsre_id = getListRelation.get(x).getLsre_id();
+				        String lsre_relation = getListRelation.get(x).getLsre_relation();
+				        
+						hashMapTemp.put("lsre_id", lsre_id);
+						hashMapTemp.put("lsre_relation", lsre_relation);
+
+						listRelation.add(hashMapTemp);
+					}
+						error = false;
+						message = "Successfully get list bank";
+						data.put("listRelation", listRelation);
+				} else {
+					// Handle type not found
+					error = true;
+					message = "Failed get data";
+					resultErr = "Type yang dimasukkan tidk ditemukan, username: " + username + ", Type: " + type;
+					logger.error(
+							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 64, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}	
 }

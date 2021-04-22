@@ -17,6 +17,7 @@ import com.app.model.CostFinancialTransaction;
 import com.app.model.DataUsulan;
 import com.app.model.DetailClaimCorporate;
 import com.app.model.DetailWithdraw;
+import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Fund;
 import com.app.model.KlaimKesehatan;
@@ -322,6 +323,20 @@ public interface VegaMapper {
 	public PolicyAlteration selectKorespondensi(String no_polis);
 	
 	public ArrayList<Endorse> selectListPolicyAlteration(String reg_spaj);
+	
+	public ArrayList<DropdownPolicyAlteration> selectListPernikahan();
+
+	public ArrayList<DropdownPolicyAlteration> selectListAgama();
+	
+	public ArrayList<DropdownPolicyAlteration> selectListNegara();
+	
+	public ArrayList<DropdownPolicyAlteration> selectListJenisUsaha();
+	
+	public ArrayList<DropdownPolicyAlteration> selectListPekerjaan();
+	
+	public ArrayList<DropdownPolicyAlteration> selectListBank();
+	
+	public ArrayList<DropdownPolicyAlteration> selectListRelation();
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

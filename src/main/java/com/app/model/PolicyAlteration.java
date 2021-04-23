@@ -86,7 +86,21 @@ public class PolicyAlteration implements Serializable {
 	private String reg_spaj;
 	private String mcl_id;
 	private Integer lsag_id;
+	private Integer lsne_id;
+	private Integer mspe_sts_mrt;
 	
+	public Integer getMspe_sts_mrt() {
+		return mspe_sts_mrt;
+	}
+	public void setMspe_sts_mrt(Integer mspe_sts_mrt) {
+		this.mspe_sts_mrt = mspe_sts_mrt;
+	}
+	public Integer getLsne_id() {
+		return lsne_id;
+	}
+	public void setLsne_id(Integer lsne_id) {
+		this.lsne_id = lsne_id;
+	}
 	public Integer getLsag_id() {
 		return lsag_id;
 	}

@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.services.VegaServices;
 import com.app.model.Article;
 import com.app.model.Beneficiary;
+import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.Nav;
@@ -1728,6 +1729,7 @@ public class PolicyIndividualCorporateController {
 					if(id_endors==61) {
 						String mcl_id_pp = services.selectMclId_PP(reg_spaj);
 						PolicyAlteration policyAlteration = new PolicyAlteration();
+						
 						String agama = policyAlterationOld.getAgama();
 						String agama_new = policyAlterationNew.getAgama();
 						Integer lsag_id = null;
@@ -1756,20 +1758,115 @@ public class PolicyIndividualCorporateController {
 						
 						//UPDATE AGAMA
 						services.updateAgama(policyAlteration);
-					} else {
-						error = false;
-						message = "Successfully submit policy alteration";
+					} else if(id_endors==34) {
+						String mcl_id_pp = services.selectMclId_PP(reg_spaj);
+						PolicyAlteration policyAlteration = new PolicyAlteration();
 						
-						//error = true;
-						//message = "ID Endors not found/Unlisted";
-					}
+						String alamat_kantor = policyAlterationOld.getAlamat_kantor();
+						String alamat_kantor_new = policyAlterationNew.getAlamat_kantor();
+						
+						msde_old1 = alamat_kantor;
+						msde_new1 = alamat_kantor_new;
+						
+						policyAlteration.setMcl_id(mcl_id_pp);
+						policyAlteration.setAlamat_kantor(alamat_kantor_new);
+						
+						//UPDATE ALAMAT KANTOR
+						services.updateAlamatKantor(policyAlteration);
+					} else if(id_endors==39) {
+						String mcl_id_pp = services.selectMclId_PP(reg_spaj);
+						PolicyAlteration policyAlteration = new PolicyAlteration();
+						
+						String kewarganegaraan = policyAlterationOld.getKewarganegaraan();
+						String kewarganegaraan_new = policyAlterationNew.getKewarganegaraan();
+						Integer lsne_id_new = null;
+						
+						msde_old1 = kewarganegaraan;
+						msde_new1 = kewarganegaraan_new;
+						
+						ArrayList<DropdownPolicyAlteration> getListNegara = services.selectListNegara();
+						
+						for (int x = 0; x < getListNegara.size(); x++) {
+							
+							Integer lsne_id = getListNegara.get(x).getLsne_id();
+							String lsne_name = getListNegara.get(x).getLsne_note();
+							
+							if(lsne_name.equalsIgnoreCase(kewarganegaraan_new)) {
+								lsne_id_new = lsne_id;
+							}
+						}
+						
+						policyAlteration.setMcl_id(mcl_id_pp);
+						policyAlteration.setLsne_id(lsne_id_new);
+						
+						//UPDATE KEWARGANEGARAAN
+						services.updateKewarganegaraan(policyAlteration);
+					} else if(id_endors==67) {
+						String mcl_id_pp = services.selectMclId_PP(reg_spaj);
+						PolicyAlteration policyAlteration = new PolicyAlteration();
+						
+						String status = policyAlterationOld.getStatus();
+						String status_new = policyAlterationNew.getStatus();
+						Integer mspe_sts_mrt_new = null;
+						
+						msde_old1 = status;
+						msde_new1 = status_new;
+						
+						ArrayList<DropdownPolicyAlteration> getListPernikahan = services.selectListPernikahan();
+						
+						for (int x = 0; x < getListPernikahan.size(); x++) {
+							
+							Integer lsst_id = getListPernikahan.get(x).getLsst_id();
+							String lsst_name = getListPernikahan.get(x).getLsst_name();
+							
+							if(lsst_name.equalsIgnoreCase(status_new)) {
+								mspe_sts_mrt_new = lsst_id;
+							}
+						}
+						
+						policyAlteration.setMcl_id(mcl_id_pp);
+						policyAlteration.setMspe_sts_mrt(mspe_sts_mrt_new);
+						
+						//UPDATE STATUS
+						services.updateStatus(policyAlteration);
+					} else if(id_endors==89) {
+						String mcl_id_pp = services.selectMclId_PP(reg_spaj);
+						PolicyAlteration policyAlteration = new PolicyAlteration();
+						
+						String status = policyAlterationOld.getStatus();
+						String status_new = policyAlterationNew.getStatus();
+						Integer mspe_sts_mrt_new = null;
+						
+						msde_old1 = status;
+						msde_new1 = status_new;
+						
+						ArrayList<DropdownPolicyAlteration> getListPernikahan = services.selectListPernikahan();
+						
+						for (int x = 0; x < getListPernikahan.size(); x++) {
+							
+							Integer lsst_id = getListPernikahan.get(x).getLsst_id();
+							String lsst_name = getListPernikahan.get(x).getLsst_name();
+							
+							if(lsst_name.equalsIgnoreCase(status_new)) {
+								mspe_sts_mrt_new = lsst_id;
+							}
+						}
+						
+						policyAlteration.setMcl_id(mcl_id_pp);
+						policyAlteration.setMspe_sts_mrt(mspe_sts_mrt_new);
+						
+						//UPDATE STATUS
+						services.updateStatus(policyAlteration);
+					} 
 					
-					if(flag_direct==1) {					
+					if(flag_direct==1) {	
+						Integer lspd_id = 99;
+						
 						// Get MSEN_ENDORSE_NO
 						String msen_endors_no = services.selectGetNoEndors();
 						
 						//INSERT ENDORSE
-						services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
+						services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan, lspd_id);
 						
 						//INSERT DET ENDORSE
 						services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
@@ -1778,11 +1875,13 @@ public class PolicyIndividualCorporateController {
 						//INSERT LST ULANGAN
 						services.insertLstUlangan(reg_spaj, msen_alasan);
 					} else {
+						Integer lspd_id = 13;
+						
 						// Get MSEN_ENDORSE_NO
 						String msen_endors_no = services.selectGetNoEndors();
 						
 						//INSERT ENDORSE
-						services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
+						services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan, lspd_id);
 						
 						//INSERT DET ENDORSE
 						services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,

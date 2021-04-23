@@ -6754,11 +6754,13 @@ public class FinancialTransactionController {
 					String reg_spaj = dataSPAJ.getReg_spaj();
 					String msen_alasan = "CUTI PREMI";
 					
+					Integer lspd_id = 13;
+					
 					// Get MSEN_ENDORSE_NO
 					String msen_endors_no = services.selectGetNoEndors();
 					
 					//INSERT ENDORSE
-					services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan);
+					services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan, lspd_id);
 					
 					//INSERT DET ENDORSE
 					services.insertDetailEndorse(msen_endors_no, 108, null, null, null, null, null, null, tanggal_awal, tanggal_akhir, null, null, null, null);

@@ -333,7 +333,7 @@
     		#{msen_alasan, jdbcType=VARCHAR}, 
     		SYSDATE,
     		SYSDATE,
-    		13,
+    		#{lspd_id, jdbcType=INTEGER},
     		0,
     		0,
     		0,

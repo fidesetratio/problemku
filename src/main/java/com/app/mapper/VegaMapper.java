@@ -415,4 +415,10 @@ public interface VegaMapper {
 	public void updateFurtherClaimCorporate(String mpcc_id);
 
 	public void updateAgama(PolicyAlteration policyAlteration);
+
+	public void updateAlamatKantor(PolicyAlteration policyAlteration);
+
+	public void updateKewarganegaraan(PolicyAlteration policyAlteration);
+
+	public void updateStatus(PolicyAlteration policyAlteration);
 }

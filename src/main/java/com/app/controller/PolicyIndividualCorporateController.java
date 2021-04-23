@@ -1833,30 +1833,35 @@ public class PolicyIndividualCorporateController {
 						String mcl_id_pp = services.selectMclId_PP(reg_spaj);
 						PolicyAlteration policyAlteration = new PolicyAlteration();
 						
-						String status = policyAlterationOld.getStatus();
-						String status_new = policyAlterationNew.getStatus();
-						Integer mspe_sts_mrt_new = null;
+						String nama_perusahaan_pp = null;
+						String nama_perusahaan_pp_new = null;
+						String tipe_usaha_pp = null;
+						String tipe_usaha_pp_new = null;
 						
-						msde_old1 = status;
-						msde_new1 = status_new;
+						nama_perusahaan_pp = policyAlterationOld.getNama_perusahaan_pp();
+						nama_perusahaan_pp_new = policyAlterationNew.getNama_perusahaan_pp();
+						tipe_usaha_pp = policyAlterationOld.getTipe_usaha_pp();
+						tipe_usaha_pp_new = policyAlterationNew.getTipe_usaha_pp();
 						
-						ArrayList<DropdownPolicyAlteration> getListPernikahan = services.selectListPernikahan();
-						
-						for (int x = 0; x < getListPernikahan.size(); x++) {
-							
-							Integer lsst_id = getListPernikahan.get(x).getLsst_id();
-							String lsst_name = getListPernikahan.get(x).getLsst_name();
-							
-							if(lsst_name.equalsIgnoreCase(status_new)) {
-								mspe_sts_mrt_new = lsst_id;
-							}
+						if((nama_perusahaan_pp!=null) && (tipe_usaha_pp==null)) {
+							msde_old1 = nama_perusahaan_pp;
+							msde_new1 = nama_perusahaan_pp_new;
+						} else if((nama_perusahaan_pp!=null) && (tipe_usaha_pp!=null)) {
+							msde_old1 = nama_perusahaan_pp;
+							msde_old2 = tipe_usaha_pp;
+							msde_new1 = nama_perusahaan_pp_new;
+							msde_new2 = tipe_usaha_pp_new;
+						} else if((nama_perusahaan_pp!=null) && (tipe_usaha_pp==null)) {
+							msde_old1 = tipe_usaha_pp;
+							msde_new1 = tipe_usaha_pp_new;
 						}
 						
 						policyAlteration.setMcl_id(mcl_id_pp);
-						policyAlteration.setMspe_sts_mrt(mspe_sts_mrt_new);
+						policyAlteration.setNama_perusahaan_pp(nama_perusahaan_pp_new);
+						policyAlteration.setTipe_usaha_pp(tipe_usaha_pp_new);
 						
 						//UPDATE STATUS
-						services.updateStatus(policyAlteration);
+						services.updateJenisPekerjaan(policyAlteration);
 					} 
 					
 					if(flag_direct==1) {	

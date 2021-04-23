@@ -1370,4 +1370,9 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateStatus(policyAlteration);
 	}
+
+	public void updateJenisPekerjaan(PolicyAlteration policyAlteration) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.updateJenisPekerjaan(policyAlteration);
+	}
 }

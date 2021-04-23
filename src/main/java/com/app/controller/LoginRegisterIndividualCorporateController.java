@@ -1271,7 +1271,7 @@ public class LoginRegisterIndividualCorporateController {
 		Integer otp_no = reqValidateOTP.getOtp_no();
 		Integer menu_id = reqValidateOTP.getMenu_id();
 		try {
-			Boolean errorPost = true;
+			Boolean errorPost = false;
 			Integer attemptPost = 0;
 			HashMap<String, Object> dataJson = null;
 			String messagePost = null;

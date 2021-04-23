@@ -107,4 +107,9 @@
     <update id="updateStatus" parameterType="com.app.model.PolicyAlteration">
     	update eka.mst_client_new set mspe_sts_mrt = #{mspe_sts_mrt, jdbcType=INTEGER} where mcl_id = #{mcl_id, jdbcType=VARCHAR}
     </update>
+    
+    <update id="updateJenisPekerjaan" parameterType="com.app.model.PolicyAlteration">
+    	update eka.mst_client_new set mcl_company_name = #{nama_perusahaan_pp, jdbcType=VARCHAR}, mkl_industri = #{tipe_usaha_pp, jdbcType=VARCHAR}
+    	where mcl_id = #{mcl_id, jdbcType=VARCHAR}
+    </update>
 </mapper>

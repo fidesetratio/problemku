@@ -421,4 +421,6 @@ public interface VegaMapper {
 	public void updateKewarganegaraan(PolicyAlteration policyAlteration);
 
 	public void updateStatus(PolicyAlteration policyAlteration);
+
+	public void updateJenisPekerjaan(PolicyAlteration policyAlteration);
 }

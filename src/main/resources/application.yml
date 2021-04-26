@@ -181,7 +181,7 @@ path:
  manfaatpdf:
   mpolicy: \\\\ebserver\\pdfind\\Polis\\
  logoBank:
-  mpolicy: /mnt/storage/m-Policytest/LogoBank
+  mpolicy: /mnt/storage/m-Policytest/ajsmsig/LogoBank
  news:
   mpolicy: /mnt/storage/ajsmsig/mpolicytest/News
  pdf:

@@ -14,13 +14,12 @@ public class Beneficiary implements Serializable {
     private String msaw_birth;
     private String lsre_relation;
     private Integer msaw_persen;
-    private String msaw_sex;
+    private Integer msaw_sex;
     
-	
-	public String getMsaw_sex() {
+	public Integer getMsaw_sex() {
 		return msaw_sex;
 	}
-	public void setMsaw_sex(String msaw_sex) {
+	public void setMsaw_sex(Integer msaw_sex) {
 		this.msaw_sex = msaw_sex;
 	}
 	public String getReg_spaj() {

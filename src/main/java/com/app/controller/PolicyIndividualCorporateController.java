@@ -1452,8 +1452,10 @@ public class PolicyIndividualCorporateController {
 		HashMap<String, Object> data = new HashMap<>();
 		HashMap<String, Object> data_payor = new HashMap<>();
 		HashMap<String, Object> data_insured = new HashMap<>();
-		HashMap<String, Object> data_policyholder = new HashMap<>();
+		HashMap<Object, Object> data_policyholder = new HashMap<>();
 		HashMap<String, Object> data_korespondensi = new HashMap<>();
+		
+		ArrayList<Object> array_policyholder = new ArrayList<>();
 
 		String username = requestViewPolicyAlteration.getUsername();
 		String key = requestViewPolicyAlteration.getKey();
@@ -1461,105 +1463,122 @@ public class PolicyIndividualCorporateController {
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				
+				HashMap<String, Object> temp_data_payor = new HashMap<>();
+				HashMap<String, Object> temp_data_insured = new HashMap<>();
+				HashMap<String, Object> temp_data_korespondensi = new HashMap<>();
+
+				
 				//GET POLICY HOLDER
 				PolicyAlteration policyHolder = services.selectPolicyHolder(no_polis);
 				String nama_pp = policyHolder.getNama_pp();
 				String jenis_produk = policyHolder.getJenis_produk();
-				String status = policyHolder.getStatus();
-				String agama = policyHolder.getAgama();
-				String kewarganegaraan = policyHolder.getKewarganegaraan();
+				Integer status = policyHolder.getStatus();
+				Integer agama = policyHolder.getAgama();
+				Integer kewarganegaraan_pp = policyHolder.getKewarganegaraan_pp();
 				String npwp = policyHolder.getNpwp();
 				String nama_perusahaan_pp = policyHolder.getNama_perusahaan_pp();
 				String jabatan_pp = policyHolder.getJabatan_pp();
 				String uraian_pekerjaan = policyHolder.getUraian_pekerjaan();
 				String alamat_kantor = policyHolder.getAlamat_kantor();
-				String propinsi_kantor = policyHolder.getPropinsi_kantor();
-				String kabupaten_kantor = policyHolder.getKabupaten_kantor();
-				String kecamatan_kantor = policyHolder.getKecamatan_kantor();
-				String kelurahan_kantor = policyHolder.getKelurahan_kantor();
-				String kodepos_kantor = policyHolder.getKodepos_kantor();
+				Integer propinsi_kantor = policyHolder.getPropinsi_kantor();
+				Integer kabupaten_kantor = policyHolder.getKabupaten_kantor();
+				Integer kecamatan_kantor = policyHolder.getKecamatan_kantor();
+				Integer kelurahan_kantor = policyHolder.getKelurahan_kantor();
+				Integer kodepos_kantor = policyHolder.getKodepos_kantor();
 				String area_code_rumah_pp = policyHolder.getArea_code_rumah_pp();
 				String telpon_rumah_pp = policyHolder.getTelpon_rumah_pp();
 				String alamat_rumah_pp = policyHolder.getAlamat_rumah_pp();
-				String propinsi_rumah = policyHolder.getPropinsi_rumah();
-				String kabupaten_rumah = policyHolder.getKabupaten_rumah();
-				String kecamatan_rumah = policyHolder.getKecamatan_rumah();
-				String kelurahan_rumah = policyHolder.getKelurahan_rumah();
-				String kodepos_rumah = policyHolder.getKodepos_rumah();
+				Integer propinsi_rumah = policyHolder.getPropinsi_rumah();
+				Integer kabupaten_rumah = policyHolder.getKabupaten_rumah();
+				Integer kecamatan_rumah = policyHolder.getKecamatan_rumah();
+				Integer kelurahan_rumah = policyHolder.getKelurahan_rumah();
+				Integer kodepos_rumah = policyHolder.getKodepos_rumah();
 				String alamat_tpt_tinggal = policyHolder.getAlamat_tpt_tinggal();
 				Integer korespondensi_flag = policyHolder.getKorespondensi_flag();
-				String nama_bank_pp = policyHolder.getNama_bank_pp();
-				String cabang_bank_pp = policyHolder.getCabang_bank_pp();
+				Integer nama_bank_pp = policyHolder.getNama_bank_pp();
+				Integer cabang_bank_pp = policyHolder.getCabang_bank_pp();
 				String kota_bank_pp = policyHolder.getKota_bank_pp();
 				String no_rekening_pp = policyHolder.getNo_rekening_pp();
 				String pemilik_rekening_pp = policyHolder.getPemilik_rekening_pp();
 				String email = policyHolder.getEmail();
 				String tipe_usaha_pp = policyHolder.getTipe_usaha_pp();
 				
-				data_policyholder.put("nama_pp", nama_pp);
-				data_policyholder.put("jenis_produk", jenis_produk);
-				data_policyholder.put("status", status);
-				data_policyholder.put("agama", agama);
-				data_policyholder.put("kewarganegaraan", kewarganegaraan);
-				data_policyholder.put("npwp", npwp);
-				data_policyholder.put("nama_perusahaan_pp", nama_perusahaan_pp);
-				data_policyholder.put("jabatan_pp", jabatan_pp);
-				data_policyholder.put("uraian_pekerjaan", uraian_pekerjaan);
-				data_policyholder.put("alamat_kantor", alamat_kantor);
-				data_policyholder.put("propinsi_kantor", propinsi_kantor);
-				data_policyholder.put("kabupaten_kantor", kabupaten_kantor);
-				data_policyholder.put("kecamatan_kantor", kecamatan_kantor);
-				data_policyholder.put("kelurahan_kantor", kelurahan_kantor);
-				data_policyholder.put("kodepos_kantor", kodepos_kantor);
-				data_policyholder.put("area_code_rumah_pp", area_code_rumah_pp);
-				data_policyholder.put("telpon_rumah_pp", telpon_rumah_pp);
-				data_policyholder.put("alamat_rumah_pp", alamat_rumah_pp);
-				data_policyholder.put("propinsi_rumah", propinsi_rumah);
-				data_policyholder.put("kabupaten_rumah", kabupaten_rumah);
-				data_policyholder.put("kecamatan_rumah", kecamatan_rumah);
-				data_policyholder.put("kelurahan_rumah", kelurahan_rumah);
-				data_policyholder.put("kodepos_rumah", kodepos_rumah);
-				data_policyholder.put("alamat_tpt_tinggal", alamat_tpt_tinggal);
-				data_policyholder.put("korespondensi_flag", korespondensi_flag);
-				data_policyholder.put("nama_bank_pp", nama_bank_pp);
-				data_policyholder.put("cabang_bank_pp", cabang_bank_pp);
-				data_policyholder.put("kota_bank_pp", kota_bank_pp);
-				data_policyholder.put("no_rekening_pp", no_rekening_pp);
-				data_policyholder.put("pemilik_rekening_pp", pemilik_rekening_pp);
-				data_policyholder.put("email", email);
-				data_policyholder.put("tipe_usaha_pp", tipe_usaha_pp);
+				HashMap<String, Object> id_3 = new HashMap<>();
+				id_3.put("id_endors", 3);
+				id_3.put ("flag_direct", 0);
+				id_3.put("alamat_tpt_tinggal", alamat_tpt_tinggal);
 				
-				if(korespondensi_flag==1) {
-					PolicyAlteration korespondensi = services.selectKorespondensi(no_polis);
-					
-					String propinsi_tinggal = korespondensi.getPropinsi_tinggal();
-					String kabupaten_tinggal = korespondensi.getKabupaten_tinggal();
-					String kecamatan_tinggal = korespondensi.getKecamatan_tinggal();
-					String kelurahan_tinggal = korespondensi.getKelurahan_tinggal();
-					String kodepos_tinggal = korespondensi.getKodepos_tinggal();
-					String negara_tinggal = korespondensi.getNegara_tinggal();
-					
-					data_korespondensi.put("propinsi_tinggal", propinsi_tinggal);
-					data_korespondensi.put("kabupaten_tinggal", kabupaten_tinggal);
-					data_korespondensi.put("kecamatan_tinggal", kecamatan_tinggal);
-					data_korespondensi.put("kelurahan_tinggal", kelurahan_tinggal);
-					data_korespondensi.put("kodepos_tinggal", kodepos_tinggal);
-					data_korespondensi.put("negara_tinggal", negara_tinggal);
-				} else {
-					data_korespondensi.put("propinsi_tinggal", null);
-					data_korespondensi.put("kabupaten_tinggal", null);
-					data_korespondensi.put("kecamatan_tinggal", null);
-					data_korespondensi.put("kelurahan_tinggal", null);
-					data_korespondensi.put("kodepos_tinggal", null);
-					data_korespondensi.put("negara_tinggal", null);
-				}
-				data_policyholder.put("korespondensi", data_korespondensi);
+				HashMap<String, Object> _alamat_rumah_pp = new HashMap<>();
+				HashMap<String, Object> temp_alamat_rumah_pp = new HashMap<>();
+				_alamat_rumah_pp.put("value", alamat_rumah_pp);
+				_alamat_rumah_pp.put("id_endors", 3);
+				_alamat_rumah_pp.put ("flag_direct", 0);
+				temp_alamat_rumah_pp.put("alamat_rumah_pp", _alamat_rumah_pp);
+				array_policyholder.add(temp_alamat_rumah_pp);
+				
+				HashMap<String, Object> _propinsi_rumah = new HashMap<>();
+				HashMap<String, Object> temp_propinsi_rumah = new HashMap<>();
+				_propinsi_rumah.put("value", propinsi_rumah);
+				_propinsi_rumah.put("id_endors", 3);
+				_propinsi_rumah.put ("flag_direct", 0);
+				temp_propinsi_rumah.put("propinsi_rumah", _propinsi_rumah);
+				array_policyholder.add(temp_propinsi_rumah);
+
+				HashMap<String, Object> _kabupaten_rumah = new HashMap<>();
+				HashMap<String, Object> temp_kabupaten_rumah = new HashMap<>();
+				_kabupaten_rumah.put("value", kabupaten_rumah);
+				_kabupaten_rumah.put("id_endors", 3);
+				_kabupaten_rumah.put ("flag_direct", 0);
+				temp_kabupaten_rumah.put("kabupaten_rumah", _kabupaten_rumah);
+				array_policyholder.add(temp_kabupaten_rumah);
+
+				HashMap<String, Object> _kecamatan_rumah = new HashMap<>();
+				HashMap<String, Object> temp_kecamatan_rumah = new HashMap<>();
+				_kecamatan_rumah.put("value", kecamatan_rumah);
+				_kecamatan_rumah.put("id_endors", 3);
+				_kecamatan_rumah.put ("flag_direct", 0);
+				temp_kecamatan_rumah.put("kecamatan_rumah", _kecamatan_rumah);
+				array_policyholder.add(temp_kecamatan_rumah);
+
+				HashMap<String, Object> _kelurahan_rumah = new HashMap<>();
+				HashMap<String, Object> temp_kelurahan_rumah = new HashMap<>();
+				_kelurahan_rumah.put("value", kelurahan_rumah);
+				_kelurahan_rumah.put("id_endors", 3);
+				_kelurahan_rumah.put ("flag_direct", 0);
+				temp_kelurahan_rumah.put("kelurahan_rumah", _kelurahan_rumah);
+				array_policyholder.add(temp_kelurahan_rumah);
+				
+				HashMap<String, Object> _kodepos_rumah = new HashMap<>();
+				HashMap<String, Object> temp_kodepos_rumah = new HashMap<>();
+				_kodepos_rumah.put("value", kodepos_rumah);
+				_kodepos_rumah.put("id_endors", 3);
+				_kodepos_rumah.put ("flag_direct", 0);
+				temp_kodepos_rumah.put("kodepos_rumah", _kodepos_rumah);
+				array_policyholder.add(temp_kodepos_rumah);
+				
+				HashMap<String, Object> _alamat_tpt_tinggal = new HashMap<>();
+				HashMap<String, Object> temp_alamat_tpt_tinggal = new HashMap<>();
+				_alamat_tpt_tinggal.put("value", alamat_tpt_tinggal);
+				_alamat_tpt_tinggal.put("id_endors", 3);
+				_alamat_tpt_tinggal.put ("flag_direct", 0);
+				temp_alamat_tpt_tinggal.put("alamat_tpt_tinggal", _alamat_tpt_tinggal);
+				array_policyholder.add(temp_alamat_tpt_tinggal);
+				
+				HashMap<String, Object> _ = new HashMap<>();
+				HashMap<String, Object> temp_ = new HashMap<>();
+				_alamat_tpt_tinggal.put("value", alamat_tpt_tinggal);
+				_alamat_tpt_tinggal.put("id_endors", 3);
+				_alamat_tpt_tinggal.put ("flag_direct", 0);
+				temp_alamat_tpt_tinggal.put("alamat_tpt_tinggal", _alamat_tpt_tinggal);
+				array_policyholder.add(temp_alamat_tpt_tinggal);
+				
+				
 				
 				//GET INSURED
 				PolicyAlteration insured = services.selectInsured(no_polis);
 				String status_tt = insured.getStatus_tt();
-				String agama_tt = insured.getAgama_tt();
-				String kewarganegaraan_tt = insured.getKewarganegaraan_tt();
+				Integer agama_tt = insured.getAgama_tt();
+				Integer kewarganegaraan_tt = insured.getKewarganegaraan_tt();
 				String nama_perusahaan_tt = insured.getNama_perusahaan_tt();
 				String jabatan_tt = insured.getJabatan_tt();
 				String tipe_usaha_tt = insured.getTipe_usaha_tt();
@@ -1637,7 +1656,7 @@ public class PolicyIndividualCorporateController {
 				    String msaw_birth = beneficiary.get(y).getMsaw_birth();
 				    String lsre_relation = beneficiary.get(y).getLsre_relation();
 				    Integer msaw_persen = beneficiary.get(y).getMsaw_persen();
-				    String msaw_sex = beneficiary.get(y).getMsaw_sex();
+				    Integer msaw_sex = beneficiary.get(y).getMsaw_sex();
 
 				    listBeneficiary.put("reg_spaj", reg_spaj);
 				    listBeneficiary.put("msaw_number", msaw_number);
@@ -1649,7 +1668,8 @@ public class PolicyIndividualCorporateController {
 				    listsBeneficiary.add(listBeneficiary);
 				}
 				
-				data.put("policyholder", data_policyholder);
+				//data.put("policyholder", data_policyholder);
+				data.put("policyholder", array_policyholder);
 				data.put("insured", data_insured);
 				data.put("payor", data_payor);
 				data.put("beneficiary",listsBeneficiary);
@@ -1730,12 +1750,12 @@ public class PolicyIndividualCorporateController {
 						String mcl_id_pp = services.selectMclId_PP(reg_spaj);
 						PolicyAlteration policyAlteration = new PolicyAlteration();
 						
-						String agama = policyAlterationOld.getAgama();
-						String agama_new = policyAlterationNew.getAgama();
+						Integer agama = policyAlterationOld.getAgama();
+						Integer agama_new = policyAlterationNew.getAgama();
 						Integer lsag_id = null;
 						
-						msde_old1 = agama;
-						msde_new1 = agama_new;
+						msde_old1 = "asd";
+						msde_new1 = "asd";
 						
 						if(agama_new.equals("ISLAM")) {
 							lsag_id = 1;
@@ -1777,12 +1797,12 @@ public class PolicyIndividualCorporateController {
 						String mcl_id_pp = services.selectMclId_PP(reg_spaj);
 						PolicyAlteration policyAlteration = new PolicyAlteration();
 						
-						String kewarganegaraan = policyAlterationOld.getKewarganegaraan();
-						String kewarganegaraan_new = policyAlterationNew.getKewarganegaraan();
+						Integer kewarganegaraan = policyAlterationOld.getKewarganegaraan_pp();
+						Integer kewarganegaraan_new = policyAlterationNew.getKewarganegaraan_pp();
 						Integer lsne_id_new = null;
 						
-						msde_old1 = kewarganegaraan;
-						msde_new1 = kewarganegaraan_new;
+						msde_old1 = "asd";
+						msde_new1 = "asd";
 						
 						ArrayList<DropdownPolicyAlteration> getListNegara = services.selectListNegara();
 						
@@ -1791,7 +1811,7 @@ public class PolicyIndividualCorporateController {
 							Integer lsne_id = getListNegara.get(x).getLsne_id();
 							String lsne_name = getListNegara.get(x).getLsne_note();
 							
-							if(lsne_name.equalsIgnoreCase(kewarganegaraan_new)) {
+							if(lsne_name.equalsIgnoreCase("asd")) {
 								lsne_id_new = lsne_id;
 							}
 						}
@@ -1805,12 +1825,12 @@ public class PolicyIndividualCorporateController {
 						String mcl_id_pp = services.selectMclId_PP(reg_spaj);
 						PolicyAlteration policyAlteration = new PolicyAlteration();
 						
-						String status = policyAlterationOld.getStatus();
-						String status_new = policyAlterationNew.getStatus();
+						Integer status = policyAlterationOld.getStatus();
+						Integer status_new = policyAlterationNew.getStatus();
 						Integer mspe_sts_mrt_new = null;
 						
-						msde_old1 = status;
-						msde_new1 = status_new;
+						msde_old1 = "asd";
+						msde_new1 = "asd";
 						
 						ArrayList<DropdownPolicyAlteration> getListPernikahan = services.selectListPernikahan();
 						
@@ -1819,7 +1839,7 @@ public class PolicyIndividualCorporateController {
 							Integer lsst_id = getListPernikahan.get(x).getLsst_id();
 							String lsst_name = getListPernikahan.get(x).getLsst_name();
 							
-							if(lsst_name.equalsIgnoreCase(status_new)) {
+							if(lsst_name.equalsIgnoreCase("asd")) {
 								mspe_sts_mrt_new = lsst_id;
 							}
 						}

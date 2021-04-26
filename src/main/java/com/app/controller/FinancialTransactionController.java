@@ -317,7 +317,7 @@ public class FinancialTransactionController {
 						for (File f : files) {
 							if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas")) {
 								if (f.getName().equalsIgnoreCase("sinarmas.png")) {
-									String dir3 = folder + "\\" + f.getName();
+									String dir3 = folder + File.separator + f.getName();
 									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
 									String strImg = Base64.getEncoder().encodeToString(fileContent);
 									data.put("image", strImg);
@@ -326,7 +326,7 @@ public class FinancialTransactionController {
 								}
 							} else if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas syariah")) {
 								if (f.getName().equalsIgnoreCase("sinarmassyariah.png")) {
-									String dir3 = folder + "\\" + f.getName();
+									String dir3 = folder + File.separator + f.getName();
 									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
 									String strImg = Base64.getEncoder().encodeToString(fileContent);
 									data.put("image", strImg);
@@ -335,7 +335,7 @@ public class FinancialTransactionController {
 								}
 							} else if (dataRekening.getBank().equalsIgnoreCase("bank bukopin")) {
 								if (f.getName().equalsIgnoreCase("bukopin.png")) {
-									String dir3 = folder + "\\" + f.getName();
+									String dir3 = folder + File.separator + f.getName();
 									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
 									String strImg = Base64.getEncoder().encodeToString(fileContent);
 									data.put("image", strImg);
@@ -344,7 +344,7 @@ public class FinancialTransactionController {
 								}
 							} else if (dataRekening.getBank().equalsIgnoreCase("bank bukopin syariah")) {
 								if (f.getName().equalsIgnoreCase("bukopinsyariah.png")) {
-									String dir3 = folder + "\\" + f.getName();
+									String dir3 = folder + File.separator + f.getName();
 									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
 									String strImg = Base64.getEncoder().encodeToString(fileContent);
 									data.put("image", strImg);
@@ -353,7 +353,7 @@ public class FinancialTransactionController {
 								}
 							} else if (dataRekening.getBank().equalsIgnoreCase("bank jatim")) {
 								if (f.getName().equalsIgnoreCase("jatim.png")) {
-									String dir3 = folder + "\\" + f.getName();
+									String dir3 = folder + File.separator + f.getName();
 									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
 									String strImg = Base64.getEncoder().encodeToString(fileContent);
 									data.put("image", strImg);
@@ -362,7 +362,7 @@ public class FinancialTransactionController {
 								}
 							} else if (dataRekening.getBank().equalsIgnoreCase("bank btn syariah")) {
 								if (f.getName().equalsIgnoreCase("jatimsyariah.png")) {
-									String dir3 = folder + "\\" + f.getName();
+									String dir3 = folder + File.separator + f.getName();
 									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
 									String strImg = Base64.getEncoder().encodeToString(fileContent);
 									data.put("image", strImg);
@@ -371,7 +371,7 @@ public class FinancialTransactionController {
 								}
 							} else if (dataRekening.getBank().equalsIgnoreCase("bank bjb")) {
 								if (f.getName().equalsIgnoreCase("bjb.png")) {
-									String dir3 = folder + "\\" + f.getName();
+									String dir3 = folder + File.separator + f.getName();
 									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
 									String strImg = Base64.getEncoder().encodeToString(fileContent);
 									data.put("image", strImg);
@@ -380,7 +380,7 @@ public class FinancialTransactionController {
 								}
 							} else if (dataRekening.getBank().equalsIgnoreCase("bank jatim syariah")) {
 								if (f.getName().equalsIgnoreCase("jatimsyariah.png")) {
-									String dir3 = folder + "\\" + f.getName();
+									String dir3 = folder + File.separator + f.getName();
 									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
 									String strImg = Base64.getEncoder().encodeToString(fileContent);
 									data.put("image", strImg);
@@ -5453,7 +5453,7 @@ public class FinancialTransactionController {
 				int lastIndexOf = name_file.lastIndexOf(".");
 		        if (lastIndexOf > -1) {
 		            nameFileNew = name_file.substring(0, lastIndexOf);
-		            System.out.println(name_file);
+		            System.out.println(nameFileNew);
 		        }
 				
 				if (type.equals(1)) {

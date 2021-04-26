@@ -36,8 +36,8 @@ public class PolicyAlteration implements Serializable {
 	private String mkl_smbr_penghasilan;
 	
 	private String status_tt;
-	private String agama_tt;
-	private String kewarganegaraan_tt;
+	private Integer agama_tt;
+	private Integer kewarganegaraan_tt;
 	private String nama_perusahaan_tt;
 	private String jabatan_tt;
 	private String tipe_usaha_tt;
@@ -45,43 +45,43 @@ public class PolicyAlteration implements Serializable {
 	private String no_polis;
 	private String nama_pp;
 	private String jenis_produk;
-	private String status;
-	private String agama;
-	private String kewarganegaraan;
+	private Integer status;
+	private Integer agama;
+	private Integer kewarganegaraan_pp;
 	private String npwp;
 	private String nama_perusahaan_pp;
 	private String jabatan_pp;
 	private String uraian_pekerjaan;
 	private String alamat_kantor;
-	private String propinsi_kantor;
-	private String kabupaten_kantor;
-	private String kecamatan_kantor;
-	private String kelurahan_kantor;
-	private String kodepos_kantor;
+	private Integer propinsi_kantor;
+	private Integer kabupaten_kantor;
+	private Integer kecamatan_kantor;
+	private Integer kelurahan_kantor;
+	private Integer kodepos_kantor;
 	private String area_code_rumah_pp;
 	private String telpon_rumah_pp;
 	private String alamat_rumah_pp;
-	private String propinsi_rumah;
-	private String kabupaten_rumah;
-	private String kecamatan_rumah;
-	private String kelurahan_rumah;
-	private String kodepos_rumah;
+	private Integer propinsi_rumah;
+	private Integer kabupaten_rumah;
+	private Integer kecamatan_rumah;
+	private Integer kelurahan_rumah;
+	private Integer kodepos_rumah;
 	private String alamat_tpt_tinggal;
 	private Integer korespondensi_flag;
-	private String nama_bank_pp;
-	private String cabang_bank_pp;
+	private Integer nama_bank_pp;
+	private Integer cabang_bank_pp;
 	private String kota_bank_pp;
 	private String no_rekening_pp;
 	private String pemilik_rekening_pp;
 	private String email;
 	private String tipe_usaha_pp;
 	
-	private String negara_tinggal;
-	private String propinsi_tinggal;
-	private String kabupaten_tinggal;
-	private String kecamatan_tinggal;
-	private String kelurahan_tinggal;
-	private String kodepos_tinggal;
+	private Integer negara_tinggal;
+	private Integer propinsi_tinggal;
+	private Integer kabupaten_tinggal;
+	private Integer kecamatan_tinggal;
+	private Integer kelurahan_tinggal;
+	private Integer kodepos_tinggal;
 	
 	private String reg_spaj;
 	private String mcl_id;
@@ -89,6 +89,144 @@ public class PolicyAlteration implements Serializable {
 	private Integer lsne_id;
 	private Integer mspe_sts_mrt;
 	
+	public Integer getStatus() {
+		return status;
+	}
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	public Integer getAgama() {
+		return agama;
+	}
+	public void setAgama(Integer agama) {
+		this.agama = agama;
+	}
+	public Integer getKewarganegaraan_pp() {
+		return kewarganegaraan_pp;
+	}
+	public void setKewarganegaraan_pp(Integer kewarganegaraan_pp) {
+		this.kewarganegaraan_pp = kewarganegaraan_pp;
+	}
+	public Integer getPropinsi_kantor() {
+		return propinsi_kantor;
+	}
+	public void setPropinsi_kantor(Integer propinsi_kantor) {
+		this.propinsi_kantor = propinsi_kantor;
+	}
+	public Integer getKabupaten_kantor() {
+		return kabupaten_kantor;
+	}
+	public void setKabupaten_kantor(Integer kabupaten_kantor) {
+		this.kabupaten_kantor = kabupaten_kantor;
+	}
+	public Integer getKecamatan_kantor() {
+		return kecamatan_kantor;
+	}
+	public void setKecamatan_kantor(Integer kecamatan_kantor) {
+		this.kecamatan_kantor = kecamatan_kantor;
+	}
+	public Integer getKelurahan_kantor() {
+		return kelurahan_kantor;
+	}
+	public void setKelurahan_kantor(Integer kelurahan_kantor) {
+		this.kelurahan_kantor = kelurahan_kantor;
+	}
+	public Integer getKodepos_kantor() {
+		return kodepos_kantor;
+	}
+	public void setKodepos_kantor(Integer kodepos_kantor) {
+		this.kodepos_kantor = kodepos_kantor;
+	}
+	public Integer getPropinsi_rumah() {
+		return propinsi_rumah;
+	}
+	public void setPropinsi_rumah(Integer propinsi_rumah) {
+		this.propinsi_rumah = propinsi_rumah;
+	}
+	public Integer getKabupaten_rumah() {
+		return kabupaten_rumah;
+	}
+	public void setKabupaten_rumah(Integer kabupaten_rumah) {
+		this.kabupaten_rumah = kabupaten_rumah;
+	}
+	public Integer getKecamatan_rumah() {
+		return kecamatan_rumah;
+	}
+	public void setKecamatan_rumah(Integer kecamatan_rumah) {
+		this.kecamatan_rumah = kecamatan_rumah;
+	}
+	public Integer getKelurahan_rumah() {
+		return kelurahan_rumah;
+	}
+	public void setKelurahan_rumah(Integer kelurahan_rumah) {
+		this.kelurahan_rumah = kelurahan_rumah;
+	}
+	public Integer getKodepos_rumah() {
+		return kodepos_rumah;
+	}
+	public void setKodepos_rumah(Integer kodepos_rumah) {
+		this.kodepos_rumah = kodepos_rumah;
+	}
+	public Integer getNama_bank_pp() {
+		return nama_bank_pp;
+	}
+	public void setNama_bank_pp(Integer nama_bank_pp) {
+		this.nama_bank_pp = nama_bank_pp;
+	}
+	public Integer getCabang_bank_pp() {
+		return cabang_bank_pp;
+	}
+	public void setCabang_bank_pp(Integer cabang_bank_pp) {
+		this.cabang_bank_pp = cabang_bank_pp;
+	}
+	public Integer getNegara_tinggal() {
+		return negara_tinggal;
+	}
+	public void setNegara_tinggal(Integer negara_tinggal) {
+		this.negara_tinggal = negara_tinggal;
+	}
+	public Integer getKodepos_tinggal() {
+		return kodepos_tinggal;
+	}
+	public void setKodepos_tinggal(Integer kodepos_tinggal) {
+		this.kodepos_tinggal = kodepos_tinggal;
+	}
+	public Integer getAgama_tt() {
+		return agama_tt;
+	}
+	public void setAgama_tt(Integer agama_tt) {
+		this.agama_tt = agama_tt;
+	}
+	public Integer getKewarganegaraan_tt() {
+		return kewarganegaraan_tt;
+	}
+	public void setKewarganegaraan_tt(Integer kewarganegaraan_tt) {
+		this.kewarganegaraan_tt = kewarganegaraan_tt;
+	}
+	public Integer getPropinsi_tinggal() {
+		return propinsi_tinggal;
+	}
+	public void setPropinsi_tinggal(Integer propinsi_tinggal) {
+		this.propinsi_tinggal = propinsi_tinggal;
+	}
+	public Integer getKabupaten_tinggal() {
+		return kabupaten_tinggal;
+	}
+	public void setKabupaten_tinggal(Integer kabupaten_tinggal) {
+		this.kabupaten_tinggal = kabupaten_tinggal;
+	}
+	public Integer getKecamatan_tinggal() {
+		return kecamatan_tinggal;
+	}
+	public void setKecamatan_tinggal(Integer kecamatan_tinggal) {
+		this.kecamatan_tinggal = kecamatan_tinggal;
+	}
+	public Integer getKelurahan_tinggal() {
+		return kelurahan_tinggal;
+	}
+	public void setKelurahan_tinggal(Integer kelurahan_tinggal) {
+		this.kelurahan_tinggal = kelurahan_tinggal;
+	}
 	public Integer getMspe_sts_mrt() {
 		return mspe_sts_mrt;
 	}
@@ -131,47 +269,11 @@ public class PolicyAlteration implements Serializable {
 	public void setTipe_usaha_pp(String tipe_usaha_pp) {
 		this.tipe_usaha_pp = tipe_usaha_pp;
 	}
-	public String getNegara_tinggal() {
-		return negara_tinggal;
-	}
-	public void setNegara_tinggal(String negara_tinggal) {
-		this.negara_tinggal = negara_tinggal;
-	}
 	public String getEmail() {
 		return email;
 	}
 	public void setEmail(String email) {
 		this.email = email;
-	}
-	public String getPropinsi_tinggal() {
-		return propinsi_tinggal;
-	}
-	public void setPropinsi_tinggal(String propinsi_tinggal) {
-		this.propinsi_tinggal = propinsi_tinggal;
-	}
-	public String getKabupaten_tinggal() {
-		return kabupaten_tinggal;
-	}
-	public void setKabupaten_tinggal(String kabupaten_tinggal) {
-		this.kabupaten_tinggal = kabupaten_tinggal;
-	}
-	public String getKecamatan_tinggal() {
-		return kecamatan_tinggal;
-	}
-	public void setKecamatan_tinggal(String kecamatan_tinggal) {
-		this.kecamatan_tinggal = kecamatan_tinggal;
-	}
-	public String getKelurahan_tinggal() {
-		return kelurahan_tinggal;
-	}
-	public void setKelurahan_tinggal(String kelurahan_tinggal) {
-		this.kelurahan_tinggal = kelurahan_tinggal;
-	}
-	public String getKodepos_tinggal() {
-		return kodepos_tinggal;
-	}
-	public void setKodepos_tinggal(String kodepos_tinggal) {
-		this.kodepos_tinggal = kodepos_tinggal;
 	}
 	public String getNo_polis() {
 		return no_polis;
@@ -190,24 +292,6 @@ public class PolicyAlteration implements Serializable {
 	}
 	public void setJenis_produk(String jenis_produk) {
 		this.jenis_produk = jenis_produk;
-	}
-	public String getStatus() {
-		return status;
-	}
-	public void setStatus(String status) {
-		this.status = status;
-	}
-	public String getAgama() {
-		return agama;
-	}
-	public void setAgama(String agama) {
-		this.agama = agama;
-	}
-	public String getKewarganegaraan() {
-		return kewarganegaraan;
-	}
-	public void setKewarganegaraan(String kewarganegaraan) {
-		this.kewarganegaraan = kewarganegaraan;
 	}
 	public String getNpwp() {
 		return npwp;
@@ -239,36 +323,6 @@ public class PolicyAlteration implements Serializable {
 	public void setAlamat_kantor(String alamat_kantor) {
 		this.alamat_kantor = alamat_kantor;
 	}
-	public String getPropinsi_kantor() {
-		return propinsi_kantor;
-	}
-	public void setPropinsi_kantor(String propinsi_kantor) {
-		this.propinsi_kantor = propinsi_kantor;
-	}
-	public String getKabupaten_kantor() {
-		return kabupaten_kantor;
-	}
-	public void setKabupaten_kantor(String kabupaten_kantor) {
-		this.kabupaten_kantor = kabupaten_kantor;
-	}
-	public String getKecamatan_kantor() {
-		return kecamatan_kantor;
-	}
-	public void setKecamatan_kantor(String kecamatan_kantor) {
-		this.kecamatan_kantor = kecamatan_kantor;
-	}
-	public String getKelurahan_kantor() {
-		return kelurahan_kantor;
-	}
-	public void setKelurahan_kantor(String kelurahan_kantor) {
-		this.kelurahan_kantor = kelurahan_kantor;
-	}
-	public String getKodepos_kantor() {
-		return kodepos_kantor;
-	}
-	public void setKodepos_kantor(String kodepos_kantor) {
-		this.kodepos_kantor = kodepos_kantor;
-	}
 	public String getArea_code_rumah_pp() {
 		return area_code_rumah_pp;
 	}
@@ -287,36 +341,6 @@ public class PolicyAlteration implements Serializable {
 	public void setAlamat_rumah_pp(String alamat_rumah_pp) {
 		this.alamat_rumah_pp = alamat_rumah_pp;
 	}
-	public String getPropinsi_rumah() {
-		return propinsi_rumah;
-	}
-	public void setPropinsi_rumah(String propinsi_rumah) {
-		this.propinsi_rumah = propinsi_rumah;
-	}
-	public String getKabupaten_rumah() {
-		return kabupaten_rumah;
-	}
-	public void setKabupaten_rumah(String kabupaten_rumah) {
-		this.kabupaten_rumah = kabupaten_rumah;
-	}
-	public String getKecamatan_rumah() {
-		return kecamatan_rumah;
-	}
-	public void setKecamatan_rumah(String kecamatan_rumah) {
-		this.kecamatan_rumah = kecamatan_rumah;
-	}
-	public String getKelurahan_rumah() {
-		return kelurahan_rumah;
-	}
-	public void setKelurahan_rumah(String kelurahan_rumah) {
-		this.kelurahan_rumah = kelurahan_rumah;
-	}
-	public String getKodepos_rumah() {
-		return kodepos_rumah;
-	}
-	public void setKodepos_rumah(String kodepos_rumah) {
-		this.kodepos_rumah = kodepos_rumah;
-	}
 	public String getAlamat_tpt_tinggal() {
 		return alamat_tpt_tinggal;
 	}
@@ -328,18 +352,6 @@ public class PolicyAlteration implements Serializable {
 	}
 	public void setKorespondensi_flag(Integer korespondensi_flag) {
 		this.korespondensi_flag = korespondensi_flag;
-	}
-	public String getNama_bank_pp() {
-		return nama_bank_pp;
-	}
-	public void setNama_bank_pp(String nama_bank_pp) {
-		this.nama_bank_pp = nama_bank_pp;
-	}
-	public String getCabang_bank_pp() {
-		return cabang_bank_pp;
-	}
-	public void setCabang_bank_pp(String cabang_bank_pp) {
-		this.cabang_bank_pp = cabang_bank_pp;
 	}
 	public String getKota_bank_pp() {
 		return kota_bank_pp;
@@ -365,18 +377,7 @@ public class PolicyAlteration implements Serializable {
 	public void setStatus_tt(String status_tt) {
 		this.status_tt = status_tt;
 	}
-	public String getAgama_tt() {
-		return agama_tt;
-	}
-	public void setAgama_tt(String agama_tt) {
-		this.agama_tt = agama_tt;
-	}
-	public String getKewarganegaraan_tt() {
-		return kewarganegaraan_tt;
-	}
-	public void setKewarganegaraan_tt(String kewarganegaraan_tt) {
-		this.kewarganegaraan_tt = kewarganegaraan_tt;
-	}
+
 	public String getNama_perusahaan_tt() {
 		return nama_perusahaan_tt;
 	}

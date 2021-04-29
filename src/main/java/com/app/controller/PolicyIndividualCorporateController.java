@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,6 +37,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
+import com.app.feignclient.ServiceNotification;
+import com.app.feignclient.ServiceOTP;
 import com.app.model.Article;
 import com.app.model.Beneficiary;
 import com.app.model.DropdownPolicyAlteration;
@@ -55,15 +58,19 @@ import com.app.model.request.RequestCountInboxUnread;
 import com.app.model.request.RequestDeleteAllInbox;
 import com.app.model.request.RequestDownloadArticle;
 import com.app.model.request.RequestFurtherClaimSubmission;
+import com.app.model.request.RequestInbox;
 import com.app.model.request.RequestListArticle;
 import com.app.model.request.RequestListNAB;
 import com.app.model.request.RequestListPolis;
 import com.app.model.request.RequestNabchart;
 import com.app.model.request.RequestReadAllInbox;
+import com.app.model.request.RequestSMSOTP;
+import com.app.model.request.RequestSendOTP;
 import com.app.model.request.RequestUpdateInboxStatus;
 import com.app.model.request.RequestVersionCode;
 import com.app.model.request.RequestViewPolicyAlteration;
 import com.app.model.request.RequestViewProvider;
+import com.app.model.ResponseData;
 import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
@@ -85,6 +92,9 @@ public class PolicyIndividualCorporateController {
 
 	@Autowired
 	private VegaServices services;
+	
+	@Autowired
+	ServiceNotification serviceNotification;
 
 	@Autowired
 	private VegaCustomResourceLoader customResourceLoader;
@@ -1430,6 +1440,79 @@ public class PolicyIndividualCorporateController {
 		customResourceLoader.updateActivity(username);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 30, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/inbox", produces = "application/json", method = RequestMethod.POST)
+	public String sendOTP(@RequestBody RequestInbox requestInbox, HttpServletRequest request) throws Exception {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestInbox);
+		String res = null;
+		String resultErr = null;
+		String message = null;
+		boolean error = true;
+		HashMap<String, Object> data = new HashMap<>();
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<Object> dataInbox = new ArrayList<>();
+
+		String userid = requestInbox.getUserid();
+		Integer jenis_id = requestInbox.getJenis_id();
+		try {
+			Boolean errorPost = false;
+			HashMap<String, Object> dataJson = null;
+			JSONObject myResponseData = null;
+			String messagePost = null;
+
+			//result = customResourceLoader.sendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
+			
+			requestInbox.setUserid(userid);
+			requestInbox.setJenis_id(jenis_id);
+			ResponseData responseInbox = serviceNotification.inbox(requestInbox);
+			
+			errorPost = (Boolean) responseInbox.getError();
+			messagePost = (String) responseInbox.getMessage();
+			dataJson = responseInbox.getData();
+			myResponseData = new JSONObject(dataJson);
+
+
+			if (errorPost == false) {
+				error = false;
+				message = messagePost;
+				data.put("data", dataInbox);
+			} else {
+				if (messagePost.equalsIgnoreCase("mohon maaf system sedang error")) {
+					error = true;
+					message = "Error Hit API Notification";
+					data.put("data", dataInbox);
+				} else {
+					error = true;
+					message = messagePost;
+					data.put("data", dataInbox);
+				}
+				error = true;
+				message = messagePost;
+				data.put("data", dataInbox);
+				resultErr = messagePost + " (user id: " + userid + " Jenis ID: " + jenis_id + ")";
+				logger.error("Path: " + request.getServletPath() + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " (user id: " + userid + " Jenis ID: " + jenis_id + ")"
+					+ ", Error: " + e);
+		}
+		map.put("data", data);
+		map.put("error", error);
+		map.put("message", message);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 47, new Date(), req, res, 1, resultErr, start, userid);
 
 		return res;
 	}

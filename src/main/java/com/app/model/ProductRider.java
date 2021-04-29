@@ -16,6 +16,15 @@ public class ProductRider implements Serializable {
 	private String newname;
 	private String lku_symbol;
 	private Integer lsbs_id;
+	private String tertanggung;
+	
+	public String getTertanggung() {
+		return tertanggung;
+	}
+
+	public void setTertanggung(String tertanggung) {
+		this.tertanggung = tertanggung;
+	}
 
 	public String getLsdbs_name() {
 		return lsdbs_name;

@@ -84,6 +84,42 @@ public class DataUsulan implements Serializable {
 	private Date next_premi;
 	private String lca_id;
 	private String status;
+	private String tertanggung;
+	private String cabang_bank;
+	private String nama_bank;
+	private String no_rekening;
+	
+	public String getTertanggung() {
+		return tertanggung;
+	}
+
+	public void setTertanggung(String tertanggung) {
+		this.tertanggung = tertanggung;
+	}
+
+	public String getCabang_bank() {
+		return cabang_bank;
+	}
+
+	public void setCabang_bank(String cabang_bank) {
+		this.cabang_bank = cabang_bank;
+	}
+
+	public String getNama_bank() {
+		return nama_bank;
+	}
+
+	public void setNama_bank(String nama_bank) {
+		this.nama_bank = nama_bank;
+	}
+
+	public String getNo_rekening() {
+		return no_rekening;
+	}
+
+	public void setNo_rekening(String no_rekening) {
+		this.no_rekening = no_rekening;
+	}
 
 	public Date getMste_tgl_recur() {
 		return mste_tgl_recur;

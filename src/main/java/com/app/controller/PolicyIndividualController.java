@@ -258,7 +258,7 @@ public class PolicyIndividualController {
 					data.put("masa_berlaku_akhir",
 							dataUsulan.getMste_end_date() == null ? null : df3.format(dataUsulan.getMste_end_date()));
 					data.put("mata_uang_premi", dataUsulan.getLku_symbol());
-					data.put("premi", dataUsulan.getMspr_premium());
+					data.put("premi_dasar", dataUsulan.getMspr_premium());
 					data.put("premi_berkala", dataUsulan.getMu_jlh_tu() == null ? null : dataUsulan.getMu_jlh_tu());
 					data.put("total_premi", dataUsulan.getMspr_premium()
 							+ (dataUsulan.getMu_jlh_tu() == null ? 0 : dataUsulan.getMu_jlh_tu()));
@@ -278,6 +278,10 @@ public class PolicyIndividualController {
 					data.put("next_premi",
 							dataUsulan.getNext_premi() == null ? null : df3.format(dataUsulan.getNext_premi()));
 					data.put("status_polis", dataUsulan.getStatus());
+					data.put("tertanggung", dataUsulan.getTertanggung());
+					data.put("nama_bank", dataUsulan.getNama_bank());
+					data.put("cabang_bank", dataUsulan.getCabang_bank());
+					data.put("no_rekening", dataUsulan.getNo_rekening());
 					data.put("product_rider", product_rider);
 					data.put("alokasi_dana", fund);
 					data.put("data_sales", sales);
@@ -306,11 +310,13 @@ public class PolicyIndividualController {
 							BigDecimal uang_pertanggungan = m.getMspr_tsi() != null ? m.getMspr_tsi() : null;
 							String mata_uang = m.getLku_symbol() != null ? m.getLku_symbol() : null;
 							Integer lsbs_id = m.getLsbs_id() != null ? m.getLsbs_id() : null;
+							String tertanggung = m.getTertanggung() != null ? m.getTertanggung() : null;
 							
 							if(lsbs_id == 804) {
 								nama_rider = nama_rider.replaceAll("\\s+","");
 							}
 
+							dataResult.put("tertanggung", tertanggung);
 							dataResult.put("nama_rider", nama_rider);
 							dataResult.put("masa_berlaku_awal", masa_berlaku_awal);
 							dataResult.put("masa_berlaku_akhir", masa_berlaku_akhir);

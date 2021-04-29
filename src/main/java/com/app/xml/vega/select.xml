@@ -322,18 +322,21 @@
 
 	<select id="selectProductRider" parameterType="String" resultType="com.app.model.ProductRider">
 		SELECT EKA.F_LSDBS_VIEW (a.reg_spaj, a.lsbs_id, a.lsdbs_number) AS newname,
-         	b.lsdbs_name,
-         	TO_CHAR (a.mspr_beg_date, 'yyyy-mm-dd') mspr_beg_date,
-         	TO_CHAR (a.mspr_end_date, 'yyyy-mm-dd') mspr_end_date,
-         	a.mspr_tsi,
-         	c.lku_symbol,
-         	a.lsbs_id
-    	FROM eka.mst_product_insured a
-         	INNER JOIN eka.lst_det_bisnis b ON a.lsbs_id = b.lsbs_id AND a.lsdbs_number = b.lsdbs_number
-         	INNER JOIN EKA.LST_KURS c ON a.lku_id = c.lku_id
-   		WHERE a.reg_spaj = #{spaj, jdbcType=VARCHAR}
-         	AND b.lsbs_id <![CDATA[>=]]> 800
-         	AND a.mspr_active = 1
+		    b.lsdbs_name,
+		    TO_CHAR (a.mspr_beg_date, 'yyyy-mm-dd') mspr_beg_date,
+		    TO_CHAR (a.mspr_end_date, 'yyyy-mm-dd') mspr_end_date,
+		    a.mspr_tsi,
+		    c.lku_symbol,
+		    a.lsbs_id,
+		    e.mcl_first as tertanggung
+		FROM eka.mst_product_insured a
+		    INNER JOIN eka.lst_det_bisnis b ON a.lsbs_id = b.lsbs_id AND a.lsdbs_number = b.lsdbs_number
+		    INNER JOIN EKA.LST_KURS c ON a.lku_id = c.lku_id
+		    INNER JOIN EKA.MST_INSURED d ON a.reg_spaj = d.reg_spaj
+		    INNER JOIN EKA.MST_CLIENT_NEW e ON d.mste_insured = e.mcl_id
+		WHERE a.reg_spaj = #{spaj, jdbcType=VARCHAR}
+		    AND b.lsbs_id <![CDATA[>=]]> 800
+		    AND a.mspr_active = 1
 		ORDER BY a.lsbs_id, a.lsdbs_number
 	</select>
 
@@ -401,6 +404,7 @@
 
 	<select id="selectDataUsulan" resultType="DataUsulan" parameterType="DataUsulan">
 		SELECT  EKA.F_LSDBS_VIEW (a.reg_spaj, a.lsbs_id, a.lsdbs_number) "newname",
+		        o.mcl_first tertanggung,
 		        a.reg_spaj,
 		        c.lca_id,
 		        a.mspr_premium,
@@ -443,7 +447,10 @@
 		            WHEN    c.lscb_id = 6
 		                THEN    ADD_MONTHS(j.tgl_debet, 1)
 		        END next_premi,
-		        n.lms_status_id status
+		        n.lms_status_id status,
+		        k.lbn_nama as cabang_bank,
+		        l.lsbp_nama as nama_bank,
+		        j.mar_acc_no as no_rekening
 		FROM    eka.mst_product_insured a,
 		        eka.lst_det_bisnis b,
 		        eka.mst_policy c,
@@ -461,11 +468,13 @@
 		        eka.lst_bank k,
 		        eka.lst_bank_pusat l,
 		        eka.lst_policy_status m,
-		        eka.lst_master_status n
+		        eka.lst_master_status n,
+		        eka.mst_client_new o
 		WHERE   a.reg_spaj = rpad(replace(#{reg_spaj, jdbcType=VARCHAR},'.'),11,' ')
 		    AND a.lsbs_id <![CDATA[<]]> 300
 		    AND c.lssp_id = m.lssp_id
 		    AND m.lms_id = n.lms_id
+		    AND o.mcl_id = D.MSTE_INSURED
 		    AND a.lsbs_id = b.lsbs_id(+)
 		    AND a.lsdbs_number = b.lsdbs_number(+)
 		    AND a.reg_spaj = c.reg_spaj

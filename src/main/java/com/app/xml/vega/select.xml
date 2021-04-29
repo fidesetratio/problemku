@@ -4050,4 +4050,29 @@
 		FROM    EKA.MST_POLICY
 		WHERE   REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
 	</select>
+	
+	<select id="selectPembayarPremi" parameterType="String" resultType="com.app.model.PembayarPremi">
+		SELECT  C.LSRE_RELATION AS HUBUNGAN,
+		        B.MCL_FIRST AS NAMA,
+		        CASE
+		            WHEN B.MSPE_SEX = 1
+		                THEN 'PRIA'
+		            ELSE 'WANITA'
+		        END AS JENIS_KELAMIN,
+		        TO_CHAR(B.MSPE_DATE_BIRTH, 'YYYY-MM-DD') AS DOB,
+		        CASE
+		            WHEN D.ALAMAT_TPT_TINGGAL IS NULL
+		                THEN D.ALAMAT_RUMAH
+		            ELSE D.ALAMAT_TPT_TINGGAL
+		        END AS ALAMAT,
+		        D.NO_HP
+		FROM    EKA.MST_POLICY A,
+		        EKA.MST_CLIENT_NEW B,
+		        EKA.LST_RELATION C,
+		        EKA.MST_ADDRESS_NEW D
+		WHERE   A.MSPO_POLICY_NO = REPLACE (#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+		    AND A.MSPO_PAYER = B.MCL_ID
+		    AND B.LSRE_ID_PREMI = C.LSRE_ID
+		    AND B.MCL_ID = D.MCL_ID
+	</select>
 </mapper>

@@ -25,6 +25,7 @@ import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
 import com.app.model.Nav;
+import com.app.model.PembayarPremi;
 import com.app.model.Pemegang;
 import com.app.model.PenerimaManfaat;
 import com.app.model.PolicyAlteration;
@@ -343,6 +344,8 @@ public interface VegaMapper {
 	public Endorse selectListJenisEndors(Integer lsje_id);
 	
 	public String selectMclId_PP(String reg_spaj);
+	
+	public PembayarPremi selectPembayarPremi(String no_polis);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

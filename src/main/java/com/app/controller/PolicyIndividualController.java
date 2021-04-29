@@ -40,6 +40,7 @@ import com.app.services.VegaServices;
 import com.app.model.Billing;
 import com.app.model.DataUsulan;
 import com.app.model.KlaimKesehatan;
+import com.app.model.PembayarPremi;
 import com.app.model.Pemegang;
 import com.app.model.PenerimaManfaat;
 import com.app.model.PowerSave;
@@ -62,6 +63,7 @@ import com.app.model.request.RequestDetailInvestasiTransaksi;
 import com.app.model.request.RequestDetailStableLink;
 import com.app.model.request.RequestDownloadPolisAll;
 import com.app.model.request.RequestEmailCSMergeSimultan;
+import com.app.model.request.RequestPembayarPremi;
 import com.app.model.request.RequestPemegangPolis;
 import com.app.model.request.RequestPenerimaManfaat;
 import com.app.model.request.RequestProvinsi;
@@ -557,6 +559,83 @@ public class PolicyIndividualController {
 		customResourceLoader.updateActivity(username);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 8, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/pembayarpremi", produces = "application/json", method = RequestMethod.POST)
+	public String pembayarPremi(@RequestBody RequestPembayarPremi requestPembayarPremi, HttpServletRequest request)
+			throws Exception {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String message = null;
+		boolean error = true;
+		String resultErr = null;
+		String req = gson.toJson(requestPembayarPremi);
+		String res = null;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+		HashMap<String, Object> pembayar_premi = new HashMap<>();
+
+		String username = requestPembayarPremi.getUsername();
+		String key = requestPembayarPremi.getKey();
+		String no_polis = requestPembayarPremi.getNo_polis();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				PembayarPremi pembayarPremi = services.selectPembayarPremi(no_polis);
+				
+				if (pembayarPremi!=null) {
+					try {
+						String nama = pembayarPremi.getNama() != null ? pembayarPremi.getNama() : null;
+						String hubungan = pembayarPremi.getHubungan() != null ? pembayarPremi.getHubungan() : null;
+						String dob = pembayarPremi.getDob() != null ? pembayarPremi.getDob() : null;
+						String jenis_kelamin = pembayarPremi.getJenis_kelamin() != null ? pembayarPremi.getJenis_kelamin() : null;
+						String alamat = pembayarPremi.getAlamat() != null ? pembayarPremi.getAlamat() : null;
+						String no_hp = pembayarPremi.getNo_hp() != null ? pembayarPremi.getNo_hp() : null;
+
+						pembayar_premi.put("nama", nama);
+						pembayar_premi.put("hubungan", hubungan);
+						pembayar_premi.put("tahun_lahir", dob);
+						pembayar_premi.put("jenis_kelamin", jenis_kelamin);
+						pembayar_premi.put("alamat", alamat);
+						pembayar_premi.put("no_hp", no_hp);
+					} catch (Exception e) {
+						logger.error(
+								"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+					}
+					data.put("pembayar_premi", pembayar_premi);
+					error = false;
+					message = "Successfully get pembayar premi details";
+				} else {
+					error = false;
+					message = "Premium Payer data is empty";
+					resultErr = "Data pembayar premi kosong";
+					logger.error(
+							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				error = true;
+				message = "Policy is not active";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 6, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
 	}

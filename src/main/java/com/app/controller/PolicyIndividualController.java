@@ -283,7 +283,7 @@ public class PolicyIndividualController {
 					data.put("tertanggung", dataUsulan.getTertanggung());
 					data.put("nama_bank", dataUsulan.getNama_bank());
 					data.put("cabang_bank", dataUsulan.getCabang_bank());
-					data.put("no_rekening", dataUsulan.getNo_rekening());
+					data.put("pemilik_rekening", dataUsulan.getPemilik_rekening());
 					data.put("product_rider", product_rider);
 					data.put("alokasi_dana", fund);
 					data.put("data_sales", sales);

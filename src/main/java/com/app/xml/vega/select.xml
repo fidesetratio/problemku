@@ -450,7 +450,7 @@
 		        n.lms_status_id status,
 		        k.lbn_nama as cabang_bank,
 		        l.lsbp_nama as nama_bank,
-		        j.mar_acc_no as no_rekening
+		        j.mar_holder as pemilik_rekening
 		FROM    eka.mst_product_insured a,
 		        eka.lst_det_bisnis b,
 		        eka.mst_policy c,

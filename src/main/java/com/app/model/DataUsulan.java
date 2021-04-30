@@ -87,8 +87,16 @@ public class DataUsulan implements Serializable {
 	private String tertanggung;
 	private String cabang_bank;
 	private String nama_bank;
-	private String no_rekening;
+	private String pemilik_rekening;
 	
+	public String getPemilik_rekening() {
+		return pemilik_rekening;
+	}
+
+	public void setPemilik_rekening(String pemilik_rekening) {
+		this.pemilik_rekening = pemilik_rekening;
+	}
+
 	public String getTertanggung() {
 		return tertanggung;
 	}
@@ -111,14 +119,6 @@ public class DataUsulan implements Serializable {
 
 	public void setNama_bank(String nama_bank) {
 		this.nama_bank = nama_bank;
-	}
-
-	public String getNo_rekening() {
-		return no_rekening;
-	}
-
-	public void setNo_rekening(String no_rekening) {
-		this.no_rekening = no_rekening;
 	}
 
 	public Date getMste_tgl_recur() {

@@ -1532,7 +1532,6 @@ public class PolicyIndividualCorporateController {
 		boolean error = true;
 		HashMap<String, Object> data = new HashMap<>();
 		HashMap<String, Object> map = new HashMap<>();
-		ArrayList<Object> dataInbox = new ArrayList<>();
 
 		String userid = requestSaveToken.getUserid();
 		Integer jenis_id = requestSaveToken.getJenis_id();
@@ -1559,20 +1558,16 @@ public class PolicyIndividualCorporateController {
 			if (errorPost == false) {
 				error = false;
 				message = messagePost;
-				data.put("data", dataInbox);
 			} else {
 				if (messagePost.equalsIgnoreCase("mohon maaf system sedang error")) {
 					error = true;
 					message = "Error Hit API Notification";
-					data.put("data", dataInbox);
 				} else {
 					error = true;
 					message = messagePost;
-					data.put("data", dataInbox);
 				}
 				error = true;
 				message = messagePost;
-				data.put("data", dataInbox);
 				resultErr = messagePost + " (user id: " + userid + " Jenis ID: " + jenis_id + ")";
 				logger.error("Path: " + request.getServletPath() + " Error: " + resultErr);
 			}

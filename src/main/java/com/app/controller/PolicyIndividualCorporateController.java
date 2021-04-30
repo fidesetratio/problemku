@@ -65,6 +65,7 @@ import com.app.model.request.RequestListPolis;
 import com.app.model.request.RequestNabchart;
 import com.app.model.request.RequestReadAllInbox;
 import com.app.model.request.RequestSMSOTP;
+import com.app.model.request.RequestSaveToken;
 import com.app.model.request.RequestSendOTP;
 import com.app.model.request.RequestUpdateInboxStatus;
 import com.app.model.request.RequestVersionCode;
@@ -1477,6 +1478,81 @@ public class PolicyIndividualCorporateController {
 			errorPost = (Boolean) responseInbox.getError();
 			messagePost = (String) responseInbox.getMessage();
 			dataJson = responseInbox.getData();
+			myResponseData = new JSONObject(dataJson);
+
+
+			if (errorPost == false) {
+				error = false;
+				message = messagePost;
+				data.put("data", dataInbox);
+			} else {
+				if (messagePost.equalsIgnoreCase("mohon maaf system sedang error")) {
+					error = true;
+					message = "Error Hit API Notification";
+					data.put("data", dataInbox);
+				} else {
+					error = true;
+					message = messagePost;
+					data.put("data", dataInbox);
+				}
+				error = true;
+				message = messagePost;
+				data.put("data", dataInbox);
+				resultErr = messagePost + " (user id: " + userid + " Jenis ID: " + jenis_id + ")";
+				logger.error("Path: " + request.getServletPath() + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " (user id: " + userid + " Jenis ID: " + jenis_id + ")"
+					+ ", Error: " + e);
+		}
+		map.put("data", data);
+		map.put("error", error);
+		map.put("message", message);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 47, new Date(), req, res, 1, resultErr, start, userid);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/savetoken", produces = "application/json", method = RequestMethod.POST)
+	public String sendOTP(@RequestBody RequestSaveToken requestSaveToken, HttpServletRequest request) throws Exception {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestSaveToken);
+		String res = null;
+		String resultErr = null;
+		String message = null;
+		boolean error = true;
+		HashMap<String, Object> data = new HashMap<>();
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<Object> dataInbox = new ArrayList<>();
+
+		String userid = requestSaveToken.getUserid();
+		Integer jenis_id = requestSaveToken.getJenis_id();
+		String token = requestSaveToken.getToken();
+		try {
+			Boolean errorPost = false;
+			HashMap<String, Object> dataJson = null;
+			JSONObject myResponseData = null;
+			String messagePost = null;
+
+			//result = customResourceLoader.sendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
+			
+			requestSaveToken.setUserid(userid);
+			requestSaveToken.setJenis_id(jenis_id);
+			requestSaveToken.setToken(token);
+			ResponseData responseSaveToken = serviceNotification.saveToken(requestSaveToken);
+			
+			errorPost = (Boolean) responseSaveToken.getError();
+			messagePost = (String) responseSaveToken.getMessage();
+			dataJson = responseSaveToken.getData();
 			myResponseData = new JSONObject(dataJson);
 
 

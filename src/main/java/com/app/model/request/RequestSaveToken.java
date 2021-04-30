@@ -10,7 +10,14 @@ public class RequestSaveToken implements Serializable {
 	private static final long serialVersionUID = -4083123624084050313L;
 	public String userid;
 	public Integer jenis_id;
+	public String token;
 	
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}
 	public String getUserid() {
 		return userid;
 	}

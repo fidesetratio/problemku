@@ -611,7 +611,7 @@ public class PolicyIndividualController {
 					message = "Successfully get pembayar premi details";
 				} else {
 					error = false;
-					data.putAll(null);
+					data.put("pembayar_premi", null);
 					message = "Premium Payer data is empty";
 					resultErr = "Data pembayar premi kosong";
 					logger.error(

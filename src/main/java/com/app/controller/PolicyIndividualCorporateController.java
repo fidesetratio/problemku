@@ -1538,8 +1538,6 @@ public class PolicyIndividualCorporateController {
 		String token = requestSaveToken.getToken();
 		try {
 			Boolean errorPost = false;
-			HashMap<String, Object> dataJson = null;
-			JSONObject myResponseData = null;
 			String messagePost = null;
 
 			//result = customResourceLoader.sendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
@@ -1551,9 +1549,6 @@ public class PolicyIndividualCorporateController {
 			
 			errorPost = (Boolean) responseSaveToken.getError();
 			messagePost = (String) responseSaveToken.getMessage();
-			dataJson = responseSaveToken.getData();
-			myResponseData = new JSONObject(dataJson);
-
 
 			if (errorPost == false) {
 				error = false;
@@ -1578,7 +1573,6 @@ public class PolicyIndividualCorporateController {
 			logger.error("Path: " + request.getServletPath() + " (user id: " + userid + " Jenis ID: " + jenis_id + ")"
 					+ ", Error: " + e);
 		}
-		map.put("data", data);
 		map.put("error", error);
 		map.put("message", message);
 		res = gson.toJson(map);

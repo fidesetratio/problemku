@@ -1445,6 +1445,7 @@ public class PolicyIndividualCorporateController {
 		return res;
 	}
 	
+	/*
 	@RequestMapping(value = "/inbox", produces = "application/json", method = RequestMethod.POST)
 	public String sendOTP(@RequestBody RequestInbox requestInbox, HttpServletRequest request) throws Exception {
 		Date start = new Date();
@@ -1454,69 +1455,46 @@ public class PolicyIndividualCorporateController {
 		gson = builder.create();
 		String req = gson.toJson(requestInbox);
 		String res = null;
-		String resultErr = null;
 		String message = null;
-		boolean error = true;
-		HashMap<String, Object> data = new HashMap<>();
+		String resultErr = null;
+		Boolean error = false;
 		HashMap<String, Object> map = new HashMap<>();
-		ArrayList<Object> dataInbox = new ArrayList<>();
 
 		String userid = requestInbox.getUserid();
+		String token = requestInbox.getToken();
 		Integer jenis_id = requestInbox.getJenis_id();
 		try {
-			Boolean errorPost = false;
-			HashMap<String, Object> dataJson = null;
-			JSONObject myResponseData = null;
-			String messagePost = null;
+			if (customResourceLoader.validateCredential(username, key)) {
+				User dataUser = new User();
+				dataUser.setUsername(username);
+				dataUser.setNew_status(new_status);
+				dataUser.setInbox_id(null);
+				services.updateInboxStatus(dataUser);
 
-			//result = customResourceLoader.sendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
-			
-			requestInbox.setUserid(userid);
-			requestInbox.setJenis_id(jenis_id);
-			ResponseData responseInbox = serviceNotification.inbox(requestInbox);
-			
-			errorPost = (Boolean) responseInbox.getError();
-			messagePost = (String) responseInbox.getMessage();
-			dataJson = responseInbox.getData();
-			myResponseData = new JSONObject(dataJson);
-
-
-			if (errorPost == false) {
 				error = false;
-				message = messagePost;
-				data.put("data", dataInbox);
+				message = "Successfully update all inbox";
 			} else {
-				if (messagePost.equalsIgnoreCase("mohon maaf system sedang error")) {
-					error = true;
-					message = "Error Hit API Notification";
-					data.put("data", dataInbox);
-				} else {
-					error = true;
-					message = messagePost;
-					data.put("data", dataInbox);
-				}
 				error = true;
-				message = messagePost;
-				data.put("data", dataInbox);
-				resultErr = messagePost + " (user id: " + userid + " Jenis ID: " + jenis_id + ")";
-				logger.error("Path: " + request.getServletPath() + " Error: " + resultErr);
+				message = "Failed update all inbox";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
 			}
 		} catch (Exception e) {
 			error = true;
 			message = ResponseMessage.ERROR_SYSTEM;
 			resultErr = "bad exception " + e;
-			logger.error("Path: " + request.getServletPath() + " (user id: " + userid + " Jenis ID: " + jenis_id + ")"
-					+ ", Error: " + e);
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
 		}
-		map.put("data", data);
 		map.put("error", error);
 		map.put("message", message);
 		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
 		// Insert Log LST_HIST_ACTIVITY_WS
-		customResourceLoader.insertHistActivityWS(12, 47, new Date(), req, res, 1, resultErr, start, userid);
+		customResourceLoader.insertHistActivityWS(12, 30, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
-	}
+	}*/
 	
 	@RequestMapping(value = "/savetoken", produces = "application/json", method = RequestMethod.POST)
 	public String sendOTP(@RequestBody RequestSaveToken requestSaveToken, HttpServletRequest request) throws Exception {
@@ -1530,15 +1508,16 @@ public class PolicyIndividualCorporateController {
 		String resultErr = null;
 		String messagePut = null;
 		boolean errorPut = true;
-		HashMap<String, Object> data = new HashMap<>();
 		HashMap<String, Object> map = new HashMap<>();
 
 		String userid = requestSaveToken.getUserid();
 		Integer jenis_id = requestSaveToken.getJenis_id();
 		String token = requestSaveToken.getToken();
 		try {
-			Boolean error = false;
+			String error = null;
 			String message = null;
+			String result;
+			
 
 			//result = customResourceLoader.sendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
 			
@@ -1547,26 +1526,28 @@ public class PolicyIndividualCorporateController {
 			requestSaveToken.setToken(token);
 			ResponseData responseSaveToken = serviceNotification.saveToken(requestSaveToken);
 			
+			result = (String) responseSaveToken.getResult();
+			JSONObject jsonObject = new JSONObject(result);
 			
-			error = (Boolean) responseSaveToken.getError();
-			message = (String) responseSaveToken.getMessage();
+			error = jsonObject.valueToString(error);
+			message = jsonObject.valueToString(message);
 
-			/*if (errorPost == false) {
+			if (error.equalsIgnoreCase("false")) {
 				errorPut = false;
-				messagePut = messagePost;
+				messagePut = message;
 			} else {
-				if (messagePost.equalsIgnoreCase("mohon maaf system sedang error")) {
+				if (message.equalsIgnoreCase("mohon maaf system sedang error")) {
 					errorPut = true;
 					messagePut = "Error Hit API Notification";
 				} else {
 					errorPut = true;
-					messagePut = messagePost;
+					messagePut = message;
 				}
 				errorPut = true;
-				messagePut = messagePost;
-				resultErr = messagePost + " (user id: " + userid + " Jenis ID: " + jenis_id + ")";
+				messagePut = message;
+				resultErr = message + " (user id: " + userid + " Jenis ID: " + jenis_id + ")";
 				logger.error("Path: " + request.getServletPath() + " Error: " + resultErr);
-			}*/
+			}
 		} catch (Exception e) {
 			errorPut = true;
 			messagePut = ResponseMessage.ERROR_SYSTEM;

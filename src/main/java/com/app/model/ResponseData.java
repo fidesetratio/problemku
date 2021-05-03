@@ -10,9 +10,18 @@ public class ResponseData implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -2919415623170868879L;
+	private String result;
 	private Boolean error;
 	private String message;
 	private HashMap<String, Object> data;
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
+	}
 
 	public Boolean getError() {
 		return error;

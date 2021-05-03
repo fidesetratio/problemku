@@ -1451,39 +1451,41 @@ public class PolicyIndividualCorporateController {
 	@RequestMapping(value = "/inbox", produces = "application/json", method = RequestMethod.POST)
 	public String sendOTP(@RequestBody RequestInbox requestInbox, HttpServletRequest request) throws Exception {
 		Gson gson = new Gson();
+		String req = gson.toJson(requestInbox);
+		String res = null;
+		Date start = new Date();
 		GsonBuilder builder = new GsonBuilder();
 		builder.serializeNulls();
 		gson = builder.create();
+		String userid = null;
 		String message = null;
-		boolean error = true;
+		String resultErr = null;
+		boolean error = false;
 		Map<String, Object> hasil = new HashMap<>();
 		ArrayList<Object> list = new ArrayList<>();
+		String username = requestInbox.getUserid();
+		Integer jenis_id = requestInbox.getJenis_id();
+		userid = username;
 		try {
-			String username = requestInbox.getUserid();
 			ArrayList<Inbox> listInbox = services.selectInbox(username);
 			if (!listInbox.isEmpty()) {
 				for (int i = 0; i < listInbox.size(); i++) {
-					try {
-						Map<String, Object> map = new HashMap<>();
-						
-						Integer inbox_id = listInbox.get(i).getId();
-						String title = listInbox.get(i).getTitle();
-						String text = listInbox.get(i).getMessage();
-						String parameter = listInbox.get(i).getParameter();
-						String create_date = listInbox.get(i).getCreate_date();
-						String flag_status = listInbox.get(i).getStatus();
-						
-						map.put("inbox_id", inbox_id);
-						map.put("title", title);
-						map.put("message", text);
-						map.put("parameter", parameter != null ? new JSONObject(parameter) : null);
-						map.put("created_date", create_date);
-						map.put("flag_status", flag_status);
-						list.add(map);
-					} catch (Exception e) {
-						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
-								+ e);
-					}
+					Map<String, Object> map = new HashMap<>();
+					
+					Integer inbox_id = listInbox.get(i).getId();
+					String title = listInbox.get(i).getTitle();
+					String text = listInbox.get(i).getMessage();
+					String parameter = listInbox.get(i).getParameter();
+					String create_date = listInbox.get(i).getCreate_date();
+					String flag_status = listInbox.get(i).getStatus();
+					
+					map.put("inbox_id", inbox_id);
+					map.put("title", title);
+					map.put("message", text);
+					map.put("parameter", parameter != null ? new JSONObject(parameter) : null);
+					map.put("created_date", create_date);
+					map.put("flag_status", flag_status);
+					list.add(map);
 				}
 				error = false;
 				message = "Successfully get inbox, message found";
@@ -1493,18 +1495,20 @@ public class PolicyIndividualCorporateController {
 			}
 		} catch (Exception e) {
 			error = true;
+			resultErr = message + " (user id: " + userid + " Jenis ID: " + jenis_id + ")";
 			message = "Unable to get inbox. " + (e);
 		}
 		hasil.put("error", error);
 		hasil.put("message", message);
 		hasil.put("data", list);
+		res = gson.toJson(hasil);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 47, new Date(), req, res, 1, resultErr, start, userid);
 		
-		String result = gson.toJson(hasil);
-
-		return result;
+		return res;
 	}
 	
-	@RequestMapping(value = "/savetoken", produces = "application/json", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/savetoken", produces = "application/json", method = RequestMethod.POST)
 	public String sendOTP(@RequestBody RequestSaveToken requestSaveToken, HttpServletRequest request) throws Exception {
 		Date start = new Date();
 		GsonBuilder builder = new GsonBuilder();
@@ -1522,55 +1526,37 @@ public class PolicyIndividualCorporateController {
 		Integer jenis_id = requestSaveToken.getJenis_id();
 		String token = requestSaveToken.getToken();
 		try {
-			String error = null;
-			String message = null;
-			String result;
-			
-
-			//result = customResourceLoader.sendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
-			
-			requestSaveToken.setUserid(userid);
-			requestSaveToken.setJenis_id(jenis_id);
-			requestSaveToken.setToken(token);
-			ResponseData responseSaveToken = serviceNotification.saveToken(requestSaveToken);
-			
-			result = (String) responseSaveToken.getResult();
-			JSONObject jsonObject = new JSONObject(result);
-			
-			error = jsonObject.valueToString(error);
-			message = jsonObject.valueToString(message);
-
-			if (error.equalsIgnoreCase("false")) {
-				errorPut = false;
-				messagePut = message;
-			} else {
-				if (message.equalsIgnoreCase("mohon maaf system sedang error")) {
-					errorPut = true;
-					messagePut = "Error Hit API Notification";
-				} else {
-					errorPut = true;
-					messagePut = message;
+			if (userid != null) {
+				if (!user.getToken().equal(req.get("token"))) {
+					user.setToken(req.getString("token"));
 				}
-				errorPut = true;
-				messagePut = message;
-				resultErr = message + " (user id: " + userid + " Jenis ID: " + jenis_id + ")";
-				logger.error("Path: " + request.getServletPath() + " Error: " + resultErr);
+				Date update = new Date();
+				user.setUpdate_date(update);
+				services.updateNotifToken(user);
+				error = false;
+				message = "Succesfully update data";
+			} else {
+				Member user1 = new Member();
+				user1.setUsername(req.getString("userid"));
+				user1.setToken(req.getString("token"));
+				user1.setJenis_id(req.getInt("jenis_id"));
+				user1.setFlag_active(1);
+				user1.setCreate_date(start);
+				services.insertNotifToken(user1);
+				error = false;
+				message = "Succesfully insert data";
 			}
 		} catch (Exception e) {
-			errorPut = true;
-			messagePut = ResponseMessage.ERROR_SYSTEM;
-			resultErr = "bad exception " + e;
-			logger.error("Path: " + request.getServletPath() + " (user id: " + userid + " Jenis ID: " + jenis_id + ")"
-					+ ", Error: " + e);
+			error = true;
+			message = "error bad exception : " + e;
 		}
-		map.put("error", errorPut);
-		map.put("message", messagePut);
-		res = gson.toJson(map);
+		result.put("error", error);
+		result.put("message", message);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 47, new Date(), req, res, 1, resultErr, start, userid);
 
 		return res;
-	}
+	}*/
 	
 	@RequestMapping(value = "/viewpolicyalteration", produces = "application/json", method = RequestMethod.POST)
 	public String viewPolicyAleration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,

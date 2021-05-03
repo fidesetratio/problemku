@@ -47,6 +47,7 @@ import com.app.model.Endorse;
 import com.app.model.Inbox;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.Nav;
+import com.app.model.NotifToken;
 import com.app.model.Pemegang;
 import com.app.model.PolicyAlteration;
 import com.app.model.Provider;
@@ -1508,7 +1509,7 @@ public class PolicyIndividualCorporateController {
 		return res;
 	}
 	
-	/*@RequestMapping(value = "/savetoken", produces = "application/json", method = RequestMethod.POST)
+	@RequestMapping(value = "/savetoken", produces = "application/json", method = RequestMethod.POST)
 	public String sendOTP(@RequestBody RequestSaveToken requestSaveToken, HttpServletRequest request) throws Exception {
 		Date start = new Date();
 		GsonBuilder builder = new GsonBuilder();
@@ -1517,32 +1518,36 @@ public class PolicyIndividualCorporateController {
 		gson = builder.create();
 		String req = gson.toJson(requestSaveToken);
 		String res = null;
+		Map<String, Object> result = new HashMap<>();
 		String resultErr = null;
-		String messagePut = null;
-		boolean errorPut = true;
-		HashMap<String, Object> map = new HashMap<>();
-
-		String userid = requestSaveToken.getUserid();
+		String message = null;
+		boolean error = false;
+		
+ 		String userid = requestSaveToken.getUserid();
 		Integer jenis_id = requestSaveToken.getJenis_id();
 		String token = requestSaveToken.getToken();
+		
+		NotifToken notifToken = new NotifToken();
+		notifToken = services.selectNotifToken(userid);
 		try {
-			if (userid != null) {
-				if (!user.getToken().equal(req.get("token"))) {
-					user.setToken(req.getString("token"));
+			if (notifToken != null) {
+				if (!notifToken.getToken().equals(token)){
+					notifToken.setToken(token);
 				}
-				Date update = new Date();
-				user.setUpdate_date(update);
-				services.updateNotifToken(user);
+				
+				Date update_date = new Date();
+				notifToken.setUpdate_date(update_date);
+				services.updateNotifToken(notifToken);
 				error = false;
 				message = "Succesfully update data";
 			} else {
-				Member user1 = new Member();
-				user1.setUsername(req.getString("userid"));
-				user1.setToken(req.getString("token"));
-				user1.setJenis_id(req.getInt("jenis_id"));
-				user1.setFlag_active(1);
-				user1.setCreate_date(start);
-				services.insertNotifToken(user1);
+				NotifToken notifToken_new = new NotifToken();
+				notifToken_new.setUserid(userid);
+				notifToken_new.setToken(token);
+				notifToken_new.setJenis_id(jenis_id);
+				notifToken_new.setFlag_active(1);
+				notifToken_new.setCreate_date(start);
+				services.insertNotifToken(notifToken_new);
 				error = false;
 				message = "Succesfully insert data";
 			}
@@ -1552,11 +1557,12 @@ public class PolicyIndividualCorporateController {
 		}
 		result.put("error", error);
 		result.put("message", message);
+		res = gson.toJson(result);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 47, new Date(), req, res, 1, resultErr, start, userid);
 
 		return res;
-	}*/
+	}
 	
 	@RequestMapping(value = "/viewpolicyalteration", produces = "application/json", method = RequestMethod.POST)
 	public String viewPolicyAleration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,

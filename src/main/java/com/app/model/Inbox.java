@@ -15,6 +15,7 @@ public class Inbox implements Serializable {
 	private String parameter;
 	private String create_date;
 	private String status;
+	
 	public Integer getId() {
 		return id;
 	}

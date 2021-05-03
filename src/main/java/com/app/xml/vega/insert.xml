@@ -377,4 +377,11 @@
 		   (#{reg_spaj, jdbcType=VARCHAR}, SYSDATE, #{msen_alasan, jdbcType=VARCHAR}, 99, 0, 
 		    #{msen_alasan, jdbcType=VARCHAR}, NULL)
 	</insert>
+	
+	<insert id="insertNotifToken" parameterType="com.app.model.NotifToken">
+	    INSERT INTO EKA.MST_NOTIFICATION_TOKEN
+	    (jenis_id, username, token, flag_active, create_date, update_date)
+	    VALUES
+	    (#{jenis_id, jdbcType=INTEGER}, #{userid, jdbcType=VARCHAR}, #{token, jdbcType=VARCHAR}, #{flag_active, jdbcType=INTEGER}, #{create_date, jdbcType=DATE}, #{update_date, jdbcType=DATE})
+	</insert>
 </mapper>

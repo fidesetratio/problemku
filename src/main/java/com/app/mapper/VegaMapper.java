@@ -26,6 +26,7 @@ import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
 import com.app.model.Nav;
+import com.app.model.NotifToken;
 import com.app.model.PembayarPremi;
 import com.app.model.Pemegang;
 import com.app.model.PenerimaManfaat;
@@ -94,6 +95,8 @@ public interface VegaMapper {
 	public void insertDetailEndorse(HashMap<String, Object> hashMap);
 	
 	public void insertLstUlangan(HashMap<String, Object> hashMap);
+	
+	public void insertNotifToken(NotifToken notifToken_new);
 
 	// Select
 	public ArrayList<MpolisConfiguration> selectMpolisConfiguration();
@@ -349,6 +352,8 @@ public interface VegaMapper {
 	public PembayarPremi selectPembayarPremi(String no_polis);
 	
 	public ArrayList<Inbox> selectInbox(String username);
+	
+	public NotifToken selectNotifToken(String userid);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);
@@ -429,4 +434,6 @@ public interface VegaMapper {
 	public void updateStatus(PolicyAlteration policyAlteration);
 
 	public void updateJenisPekerjaan(PolicyAlteration policyAlteration);
+
+	public void updateNotifToken(NotifToken notifToken);
 }

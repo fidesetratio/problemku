@@ -33,6 +33,7 @@ import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
 import com.app.model.Nav;
+import com.app.model.NotifToken;
 import com.app.model.PembayarPremi;
 import com.app.model.Pemegang;
 import com.app.model.PenerimaManfaat;
@@ -1386,5 +1387,20 @@ public class VegaServices {
 	public ArrayList<Inbox> selectInbox(String username) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectInbox(username);
+	}
+
+	public NotifToken selectNotifToken(String userid) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectNotifToken(userid);
+	}
+
+	public void updateNotifToken(NotifToken notifToken) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.updateNotifToken(notifToken);
+	}
+
+	public void insertNotifToken(NotifToken notifToken_new) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.insertNotifToken(notifToken_new);
 	}
 }

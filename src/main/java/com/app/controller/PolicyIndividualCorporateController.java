@@ -1528,8 +1528,8 @@ public class PolicyIndividualCorporateController {
 		String req = gson.toJson(requestSaveToken);
 		String res = null;
 		String resultErr = null;
-		String message = null;
-		boolean error = true;
+		String messagePut = null;
+		boolean errorPut = true;
 		HashMap<String, Object> data = new HashMap<>();
 		HashMap<String, Object> map = new HashMap<>();
 
@@ -1537,8 +1537,8 @@ public class PolicyIndividualCorporateController {
 		Integer jenis_id = requestSaveToken.getJenis_id();
 		String token = requestSaveToken.getToken();
 		try {
-			Boolean errorPost = false;
-			String messagePost = null;
+			Boolean error = false;
+			String message = null;
 
 			//result = customResourceLoader.sendOTP(91, menu_id, no_hp, reg_spaj, no_polis);
 			
@@ -1548,34 +1548,34 @@ public class PolicyIndividualCorporateController {
 			ResponseData responseSaveToken = serviceNotification.saveToken(requestSaveToken);
 			
 			
-			errorPost = (Boolean) responseSaveToken.getError();
-			messagePost = (String) responseSaveToken.getMessage();
+			error = (Boolean) responseSaveToken.getError();
+			message = (String) responseSaveToken.getMessage();
 
 			/*if (errorPost == false) {
-				error = false;
-				message = messagePost;
+				errorPut = false;
+				messagePut = messagePost;
 			} else {
 				if (messagePost.equalsIgnoreCase("mohon maaf system sedang error")) {
-					error = true;
-					message = "Error Hit API Notification";
+					errorPut = true;
+					messagePut = "Error Hit API Notification";
 				} else {
-					error = true;
-					message = messagePost;
+					errorPut = true;
+					messagePut = messagePost;
 				}
-				error = true;
-				message = messagePost;
+				errorPut = true;
+				messagePut = messagePost;
 				resultErr = messagePost + " (user id: " + userid + " Jenis ID: " + jenis_id + ")";
 				logger.error("Path: " + request.getServletPath() + " Error: " + resultErr);
 			}*/
 		} catch (Exception e) {
-			error = true;
-			message = ResponseMessage.ERROR_SYSTEM;
+			errorPut = true;
+			messagePut = ResponseMessage.ERROR_SYSTEM;
 			resultErr = "bad exception " + e;
 			logger.error("Path: " + request.getServletPath() + " (user id: " + userid + " Jenis ID: " + jenis_id + ")"
 					+ ", Error: " + e);
 		}
-		map.put("error", error);
-		map.put("message", message);
+		map.put("error", errorPut);
+		map.put("message", messagePut);
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 47, new Date(), req, res, 1, resultErr, start, userid);

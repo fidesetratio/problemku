@@ -27,6 +27,7 @@ import com.app.model.DetailWithdraw;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Fund;
+import com.app.model.Inbox;
 import com.app.model.KlaimKesehatan;
 import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
@@ -1380,5 +1381,10 @@ public class VegaServices {
 	public PembayarPremi selectPembayarPremi(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectPembayarPremi(no_polis);
+	}
+
+	public ArrayList<Inbox> selectInbox(String username) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectInbox(username);
 	}
 }

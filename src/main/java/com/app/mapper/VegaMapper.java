@@ -20,6 +20,7 @@ import com.app.model.DetailWithdraw;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Fund;
+import com.app.model.Inbox;
 import com.app.model.KlaimKesehatan;
 import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
@@ -346,6 +347,8 @@ public interface VegaMapper {
 	public String selectMclId_PP(String reg_spaj);
 	
 	public PembayarPremi selectPembayarPremi(String no_polis);
+	
+	public ArrayList<Inbox> selectInbox(String username);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

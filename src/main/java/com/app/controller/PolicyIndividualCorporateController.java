@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,7 @@ import com.app.model.Article;
 import com.app.model.Beneficiary;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
+import com.app.model.Inbox;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.Nav;
 import com.app.model.Pemegang;
@@ -1445,56 +1447,62 @@ public class PolicyIndividualCorporateController {
 		return res;
 	}
 	
-	/*
+	
 	@RequestMapping(value = "/inbox", produces = "application/json", method = RequestMethod.POST)
 	public String sendOTP(@RequestBody RequestInbox requestInbox, HttpServletRequest request) throws Exception {
-		Date start = new Date();
+		Gson gson = new Gson();
 		GsonBuilder builder = new GsonBuilder();
 		builder.serializeNulls();
-		Gson gson = new Gson();
 		gson = builder.create();
-		String req = gson.toJson(requestInbox);
-		String res = null;
 		String message = null;
-		String resultErr = null;
-		Boolean error = false;
-		HashMap<String, Object> map = new HashMap<>();
-
-		String userid = requestInbox.getUserid();
-		String token = requestInbox.getToken();
-		Integer jenis_id = requestInbox.getJenis_id();
+		boolean error = true;
+		Map<String, Object> hasil = new HashMap<>();
+		ArrayList<Object> list = new ArrayList<>();
 		try {
-			if (customResourceLoader.validateCredential(username, key)) {
-				User dataUser = new User();
-				dataUser.setUsername(username);
-				dataUser.setNew_status(new_status);
-				dataUser.setInbox_id(null);
-				services.updateInboxStatus(dataUser);
-
+			String username = requestInbox.getUserid();
+			ArrayList<Inbox> listInbox = services.selectInbox(username);
+			if (!listInbox.isEmpty()) {
+				for (int i = 0; i < listInbox.size(); i++) {
+					try {
+						Map<String, Object> map = new HashMap<>();
+						
+						Integer inbox_id = listInbox.get(i).getId();
+						String title = listInbox.get(i).getTitle();
+						String text = listInbox.get(i).getMessage();
+						String parameter = listInbox.get(i).getParameter();
+						String create_date = listInbox.get(i).getCreate_date();
+						String flag_status = listInbox.get(i).getStatus();
+						
+						map.put("inbox_id", inbox_id);
+						map.put("title", title);
+						map.put("message", text);
+						map.put("parameter", parameter != null ? new JSONObject(parameter) : null);
+						map.put("created_date", create_date);
+						map.put("flag_status", flag_status);
+						list.add(map);
+					} catch (Exception e) {
+						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+								+ e);
+					}
+				}
 				error = false;
-				message = "Successfully update all inbox";
+				message = "Successfully get inbox, message found";
 			} else {
-				error = true;
-				message = "Failed update all inbox";
-				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
-				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				error = false;
+				message = "Successfully get inbox, not message found";
 			}
 		} catch (Exception e) {
 			error = true;
-			message = ResponseMessage.ERROR_SYSTEM;
-			resultErr = "bad exception " + e;
-			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+			message = "Unable to get inbox. " + (e);
 		}
-		map.put("error", error);
-		map.put("message", message);
-		res = gson.toJson(map);
-		// Update activity user table LST_USER_SIMULTANEOUS
-		customResourceLoader.updateActivity(username);
-		// Insert Log LST_HIST_ACTIVITY_WS
-		customResourceLoader.insertHistActivityWS(12, 30, new Date(), req, res, 1, resultErr, start, username);
+		hasil.put("error", error);
+		hasil.put("message", message);
+		hasil.put("data", list);
+		
+		String result = gson.toJson(hasil);
 
-		return res;
-	}*/
+		return result;
+	}
 	
 	@RequestMapping(value = "/savetoken", produces = "application/json", method = RequestMethod.POST)
 	public String sendOTP(@RequestBody RequestSaveToken requestSaveToken, HttpServletRequest request) throws Exception {

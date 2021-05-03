@@ -1547,10 +1547,11 @@ public class PolicyIndividualCorporateController {
 			requestSaveToken.setToken(token);
 			ResponseData responseSaveToken = serviceNotification.saveToken(requestSaveToken);
 			
+			
 			errorPost = (Boolean) responseSaveToken.getError();
 			messagePost = (String) responseSaveToken.getMessage();
 
-			if (errorPost == false) {
+			/*if (errorPost == false) {
 				error = false;
 				message = messagePost;
 			} else {
@@ -1565,7 +1566,7 @@ public class PolicyIndividualCorporateController {
 				message = messagePost;
 				resultErr = messagePost + " (user id: " + userid + " Jenis ID: " + jenis_id + ")";
 				logger.error("Path: " + request.getServletPath() + " Error: " + resultErr);
-			}
+			}*/
 		} catch (Exception e) {
 			error = true;
 			message = ResponseMessage.ERROR_SYSTEM;

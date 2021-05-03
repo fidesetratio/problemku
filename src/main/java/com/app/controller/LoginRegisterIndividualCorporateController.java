@@ -1628,8 +1628,8 @@ public class LoginRegisterIndividualCorporateController {
 						requestSendOTP.setJenis_id(91);
 						requestSendOTP.setMenu_id(2);
 						requestSendOTP.setUsername(no_hp);
-						requestSendOTP.setNo_polis(dataForgotUsername.getReg_spaj());
-						requestSendOTP.setReg_spaj(dataForgotUsername.getMspo_policy_no());
+						requestSendOTP.setNo_polis(dataForgotUsername.getMspo_policy_no());
+						requestSendOTP.setReg_spaj(dataForgotUsername.getReg_spaj());
 						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 						
 						Boolean errorPost = (Boolean) responseSendOTP.getError();					
@@ -1678,8 +1678,8 @@ public class LoginRegisterIndividualCorporateController {
 						requestSendOTP.setJenis_id(91);
 						requestSendOTP.setMenu_id(2);
 						requestSendOTP.setUsername(no_hp);
-						requestSendOTP.setNo_polis(dataForgotUsername.getReg_spaj());
-						requestSendOTP.setReg_spaj(dataForgotUsername.getNo_polis());
+						requestSendOTP.setNo_polis(dataForgotUsername.getNo_polis());
+						requestSendOTP.setReg_spaj(dataForgotUsername.getReg_spaj());
 						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 
 						Boolean errorPost = (Boolean) responseSendOTP.getError();

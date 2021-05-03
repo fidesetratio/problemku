@@ -1510,7 +1510,7 @@ public class PolicyIndividualCorporateController {
 	}
 	
 	@RequestMapping(value = "/savetoken", produces = "application/json", method = RequestMethod.POST)
-	public String sendOTP(@RequestBody RequestSaveToken requestSaveToken, HttpServletRequest request) throws Exception {
+	public String saveToken(@RequestBody RequestSaveToken requestSaveToken, HttpServletRequest request) throws Exception {
 		Date start = new Date();
 		GsonBuilder builder = new GsonBuilder();
 		builder.serializeNulls();
@@ -1563,6 +1563,61 @@ public class PolicyIndividualCorporateController {
 
 		return res;
 	}
+	
+	/*@RequestMapping(value = "/pushnotif", produces = "application/json", method = RequestMethod.POST)
+	public String pushNotif(@RequestBody RequestPushNotif requestPushNotif, HttpServletRequest request) throws Exception {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestPushNotif);
+		String res = null;
+		Map<String, Object> result = new HashMap<>();
+		String resultErr = null;
+		String message = null;
+		boolean error = false;
+		
+ 		String userid = requestPushNotif.getUserid();
+		Integer jenis_id = requestPushNotif.getJenis_id();
+		String token = requestPushNotif.getToken();
+		
+		NotifToken notifToken = new NotifToken();
+		notifToken = services.selectNotifToken(userid);
+		try {
+			if (notifToken != null) {
+				if (!notifToken.getToken().equals(token)){
+					notifToken.setToken(token);
+				}
+				
+				Date update_date = new Date();
+				notifToken.setUpdate_date(update_date);
+				services.updateNotifToken(notifToken);
+				error = false;
+				message = "Succesfully update data";
+			} else {
+				NotifToken notifToken_new = new NotifToken();
+				notifToken_new.setUserid(userid);
+				notifToken_new.setToken(token);
+				notifToken_new.setJenis_id(jenis_id);
+				notifToken_new.setFlag_active(1);
+				notifToken_new.setCreate_date(start);
+				services.insertNotifToken(notifToken_new);
+				error = false;
+				message = "Succesfully insert data";
+			}
+		} catch (Exception e) {
+			error = true;
+			message = "error bad exception : " + e;
+		}
+		result.put("error", error);
+		result.put("message", message);
+		res = gson.toJson(result);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 47, new Date(), req, res, 1, resultErr, start, userid);
+
+		return res;
+	}*/
 	
 	@RequestMapping(value = "/viewpolicyalteration", produces = "application/json", method = RequestMethod.POST)
 	public String viewPolicyAleration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,

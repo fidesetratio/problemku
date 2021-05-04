@@ -336,9 +336,9 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 				HttpPostReq httpPostReq = new HttpPostReq();
 				HttpPost httpPost = httpPostReq.createConnectivity(restUrl);
 				paramNotif.put("type", 1);
-				paramNotif.put("jenis_id", "91");
+				paramNotif.put("jenis_id", "93");
 				paramNotif.put("userid", username);
-				paramNotif.put("title", "M-Polis");
+				paramNotif.put("title", "Vega");
 				paramNotif.put("message", message);
 				HashMap<String, Object> dataNotif = new HashMap<>();
 				dataNotif.put("next_action_menu_id", next_action);

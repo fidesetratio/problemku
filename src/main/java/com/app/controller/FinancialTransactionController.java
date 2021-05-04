@@ -1242,10 +1242,10 @@ public class FinancialTransactionController {
 				paramGetSPAJ.setMspo_policy_no(no_polis);
 				Pemegang dataSPAJ = services.selectGetSPAJ(paramGetSPAJ);
 				File folder = new File(
-						pathFolder + "\\" + kodeCabang + "\\" + dataSPAJ.getReg_spaj() + "\\Bukti_Transaksi\\");
+						pathFolder + File.separator + kodeCabang + File.separator + dataSPAJ.getReg_spaj() + File.separator + "Bukti_Transaksi");
 
 				// Path file
-				String pathWS = folder.toString() + '\\' + requestDownloadProofTransaction.getMpt_id() + ".pdf";
+				String pathWS = folder.toString() + File.separator + requestDownloadProofTransaction.getMpt_id() + ".pdf";
 
 				// Path file yang mau di download
 				File file = new File(pathWS);

@@ -97,7 +97,7 @@ path:
   submitclaimsubmission: E:\\API\\LogSubmitClaimSubmission\\
   submitclaimsubmissioncorporate: E:\\API\\LogSubmitClaimSubmission\\Corporate\\
  download:
-  banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=
+  banner: http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/api-vega/downloadbanner?value=
   article: /mnt/storage/E-Sehat/upload/artikel
   polisall: \\storage\pdfind\Polis_Testing\
  document:
@@ -195,7 +195,7 @@ path:
   submitclaimsubmission: /mnt/storage/Polis_Testing/m-Policytest/LogSubmitClaimSubmission
   submitclaimsubmissioncorporate: E:\\API\\LogSubmitClaimSubmission\\Corporate\\
  download:
-  banner: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/downloadbanner?value=
+  banner: http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/api-vega/downloadbanner?value=
   article: /mnt/storage/E-Sehat/upload/artikel
   polisall: /mnt/storage/Polis_Testing
  document:

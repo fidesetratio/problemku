@@ -66,6 +66,7 @@ import com.app.model.request.RequestListArticle;
 import com.app.model.request.RequestListNAB;
 import com.app.model.request.RequestListPolis;
 import com.app.model.request.RequestNabchart;
+import com.app.model.request.RequestPushNotif;
 import com.app.model.request.RequestReadAllInbox;
 import com.app.model.request.RequestSMSOTP;
 import com.app.model.request.RequestSaveToken;
@@ -1575,12 +1576,19 @@ public class PolicyIndividualCorporateController {
 		String res = null;
 		Map<String, Object> result = new HashMap<>();
 		String resultErr = null;
-		String message = null;
+		String messageRes = null;
 		boolean error = false;
 		
- 		String userid = requestPushNotif.getUserid();
-		Integer jenis_id = requestPushNotif.getJenis_id();
-		String token = requestPushNotif.getToken();
+		Integer type = requestPushNotif.getType();
+		String jenis_id = requestPushNotif.getJenis_id();
+		String userid = requestPushNotif.getUserid();
+		String title = requestPushNotif.getTitle();
+		String message = requestPushNotif.getMessage();
+		Integer next_action_menu_id = requestPushNotif.getNext_action_menu_id();
+		String policy_number = requestPushNotif.getPolicy_number();
+		Integer priority = requestPushNotif.getPriority();
+		String reg_spaj = requestPushNotif.getReg_spaj();
+		String flag_inbox = requestPushNotif.getFlag_inbox();
 		
 		NotifToken notifToken = new NotifToken();
 		notifToken = services.selectNotifToken(userid);
@@ -1611,7 +1619,7 @@ public class PolicyIndividualCorporateController {
 			message = "error bad exception : " + e;
 		}
 		result.put("error", error);
-		result.put("message", message);
+		result.put("message", messageRes);
 		res = gson.toJson(result);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 47, new Date(), req, res, 1, resultErr, start, userid);

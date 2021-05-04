@@ -36,6 +36,7 @@ import com.app.model.ProductRider;
 import com.app.model.ProductUtama;
 import com.app.model.Provider;
 import com.app.model.Provinsi;
+import com.app.model.PushNotif;
 import com.app.model.Rekening;
 import com.app.model.Sales;
 import com.app.model.SmsServerOut;
@@ -97,6 +98,8 @@ public interface VegaMapper {
 	public void insertLstUlangan(HashMap<String, Object> hashMap);
 	
 	public void insertNotifToken(NotifToken notifToken_new);
+	
+	public void insertNotification(PushNotif pushNotif);
 
 	// Select
 	public ArrayList<MpolisConfiguration> selectMpolisConfiguration();

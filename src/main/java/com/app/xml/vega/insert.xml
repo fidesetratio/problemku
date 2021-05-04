@@ -384,4 +384,13 @@
 	    VALUES
 	    (#{jenis_id, jdbcType=INTEGER}, #{userid, jdbcType=VARCHAR}, #{token, jdbcType=VARCHAR}, #{flag_active, jdbcType=INTEGER}, #{create_date, jdbcType=DATE}, #{update_date, jdbcType=DATE})
 	</insert>
+	
+	<insert id="insertNotification" parameterType="com.app.model.PushNotif">
+	    INSERT INTO EKA.MST_NOTIFICATION_MESSAGE
+	    (jenis_id, username, token, title, message, parameter, priority, lus_id, reg_spaj, status, flag_inbox, create_date, host_name, host_date)
+	    VALUES
+	    (#{jenis_id, jdbcType=INTEGER}, #{username, jdbcType=VARCHAR}, #{token, jdbcType=VARCHAR}, #{title, jdbcType=VARCHAR}, #{message, jdbcType=VARCHAR}, #{parameter, jdbcType=VARCHAR},  
+	    #{priority, jdbcType=INTEGER}, #{lus_id, jdbcType=INTEGER}, #{reg_spaj, jdbcType=VARCHAR}, #{status, jdbcType=VARCHAR}, #{flag_inbox, jdbcType=VARCHAR},
+	    #{create_date, jdbcType=DATE}, #{host_name, jdbcType=VARCHAR}, #{host_date, jdbcType=DATE})
+	</insert>
 </mapper>

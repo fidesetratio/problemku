@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
+import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -42,6 +43,7 @@ import com.app.feignclient.ServiceNotification;
 import com.app.feignclient.ServiceOTP;
 import com.app.model.Article;
 import com.app.model.Beneficiary;
+import com.app.model.Data;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Inbox;
@@ -51,6 +53,7 @@ import com.app.model.NotifToken;
 import com.app.model.Pemegang;
 import com.app.model.PolicyAlteration;
 import com.app.model.Provider;
+import com.app.model.PushNotif;
 import com.app.model.SubmitPolicyAlteration;
 import com.app.model.SwitchingRedirection;
 import com.app.model.User;
@@ -80,6 +83,7 @@ import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 
 @RestController
 public class PolicyIndividualCorporateController {
@@ -1565,7 +1569,7 @@ public class PolicyIndividualCorporateController {
 		return res;
 	}
 	
-	/*@RequestMapping(value = "/pushnotif", produces = "application/json", method = RequestMethod.POST)
+	@RequestMapping(value = "/pushnotif", produces = "application/json", method = RequestMethod.POST)
 	public String pushNotif(@RequestBody RequestPushNotif requestPushNotif, HttpServletRequest request) throws Exception {
 		Date start = new Date();
 		GsonBuilder builder = new GsonBuilder();
@@ -1584,39 +1588,46 @@ public class PolicyIndividualCorporateController {
 		String userid = requestPushNotif.getUserid();
 		String title = requestPushNotif.getTitle();
 		String message = requestPushNotif.getMessage();
-		Integer next_action_menu_id = requestPushNotif.getNext_action_menu_id();
-		String policy_number = requestPushNotif.getPolicy_number();
 		Integer priority = requestPushNotif.getPriority();
 		String reg_spaj = requestPushNotif.getReg_spaj();
 		String flag_inbox = requestPushNotif.getFlag_inbox();
+		Data data = requestPushNotif.getData();
+		String dataTemp = new Gson().toJson(data);
 		
 		NotifToken notifToken = new NotifToken();
 		notifToken = services.selectNotifToken(userid);
 		try {
 			if (notifToken != null) {
-				if (!notifToken.getToken().equals(token)){
-					notifToken.setToken(token);
+				if (type == 1) {
+					InetAddress inetAddress = InetAddress.getLocalHost();
+					PushNotif pushNotif = new PushNotif();
+					pushNotif.setJenis_id(jenis_id);
+					pushNotif.setUsername(notifToken.getUserid());
+					pushNotif.setToken(notifToken.getToken());
+					pushNotif.setTitle(title);
+					pushNotif.setMessage(message);
+					pushNotif.setParameter(dataTemp);
+					pushNotif.setPriority(priority);
+					pushNotif.setReg_spaj(reg_spaj);
+					pushNotif.setStatus("U");
+					pushNotif.setFlag_inbox(flag_inbox);
+					pushNotif.setCreate_date(start);
+					pushNotif.setHost_name(inetAddress.getHostName());
+					pushNotif.setHost_date(start);
+					services.insertNotification(pushNotif);
+					error = false;
+					messageRes = "Succesfully sending notification";
+				} else {
+					error = true;
+					messageRes = "This type still undefined";
 				}
-				
-				Date update_date = new Date();
-				notifToken.setUpdate_date(update_date);
-				services.updateNotifToken(notifToken);
-				error = false;
-				message = "Succesfully update data";
 			} else {
-				NotifToken notifToken_new = new NotifToken();
-				notifToken_new.setUserid(userid);
-				notifToken_new.setToken(token);
-				notifToken_new.setJenis_id(jenis_id);
-				notifToken_new.setFlag_active(1);
-				notifToken_new.setCreate_date(start);
-				services.insertNotifToken(notifToken_new);
-				error = false;
-				message = "Succesfully insert data";
+				error = true;
+				messageRes = "Account not found in database";
 			}
 		} catch (Exception e) {
 			error = true;
-			message = "error bad exception : " + e;
+			messageRes = "error bad exception : " + e;
 		}
 		result.put("error", error);
 		result.put("message", messageRes);
@@ -1625,7 +1636,7 @@ public class PolicyIndividualCorporateController {
 		customResourceLoader.insertHistActivityWS(12, 47, new Date(), req, res, 1, resultErr, start, userid);
 
 		return res;
-	}*/
+	}
 	
 	@RequestMapping(value = "/viewpolicyalteration", produces = "application/json", method = RequestMethod.POST)
 	public String viewPolicyAleration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,

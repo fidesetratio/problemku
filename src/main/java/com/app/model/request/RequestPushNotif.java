@@ -2,23 +2,32 @@ package com.app.model.request;
 
 import java.io.Serializable;
 
+import org.json.JSONObject;
+
+import com.app.model.Data;
+
 public class RequestPushNotif implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4083123624084050313L;
-	public Integer type;
-	public String jenis_id;
-	public String userid;
-	public String title;
-	public String message;
-	public Integer next_action_menu_id;
-	public String policy_number;
-	public Integer priority;
-	public String reg_spaj;
-	public String flag_inbox;
+	private Integer type;
+	private String jenis_id;
+	private String userid;
+	private String title;
+	private String message;
+	private Integer priority;
+	private String reg_spaj;
+	private String flag_inbox;
+	private Data data;
 	
+	public Data getData() {
+		return data;
+	}
+	public void setData(Data data) {
+		this.data = data;
+	}
 	public Integer getType() {
 		return type;
 	}
@@ -48,18 +57,6 @@ public class RequestPushNotif implements Serializable {
 	}
 	public void setMessage(String message) {
 		this.message = message;
-	}
-	public Integer getNext_action_menu_id() {
-		return next_action_menu_id;
-	}
-	public void setNext_action_menu_id(Integer next_action_menu_id) {
-		this.next_action_menu_id = next_action_menu_id;
-	}
-	public String getPolicy_number() {
-		return policy_number;
-	}
-	public void setPolicy_number(String policy_number) {
-		this.policy_number = policy_number;
 	}
 	public Integer getPriority() {
 		return priority;

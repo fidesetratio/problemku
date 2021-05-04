@@ -1101,7 +1101,7 @@ public class FinancialTransactionController {
 					paramInsert1.setPayor_occupation(requestTopup.getPayor_occupation());
 					paramInsert1.setPayor_income(requestTopup.getPayor_income());
 					paramInsert1.setPayor_source_income(requestTopup.getPayor_source_income());
-					paramInsert1.setPath_bsb(storageMpolicy + kodeCabang + File.separator + dataSPAJ.getReg_spaj() + File.separator
+					paramInsert1.setPath_bsb(storageMpolicy + File.separator + kodeCabang + File.separator + dataSPAJ.getReg_spaj() + File.separator
 							+ "Bukti_Transaksi" + File.separator + mptId + ".pdf");
 					paramInsert1.setUnique_code(requestTopup.getUnique_code());
 					services.insertMstMpolTrans(paramInsert1);
@@ -1133,7 +1133,7 @@ public class FinancialTransactionController {
 					// Upload Proof Transaction
 					String basePath = storageMpolicy;
 					File folder = new File(
-							basePath + kodeCabang + File.separator + dataSPAJ.getReg_spaj() + File.separator + "Bukti_Transaksi");
+							basePath + File.separator + kodeCabang + File.separator + dataSPAJ.getReg_spaj() + File.separator + "Bukti_Transaksi");
 					if (!folder.exists()) {
 						folder.mkdirs();
 					}

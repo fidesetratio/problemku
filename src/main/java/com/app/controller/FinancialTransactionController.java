@@ -719,7 +719,8 @@ public class FinancialTransactionController {
 						} else {
 							payment_method.put("payment_method", "-");
 						}
-
+						
+						payment_method.put("unique_code", dataTopup.getUnique_code());
 						payment_method.put("total_topup", nfZeroTwo.format(dataTopup.getMpt_jumlah()));
 						payment_method.put("total_topup_process", nfZeroTwo.format(dataTopup.getMpt_jumlah_process()));
 						data.put("payment_method", payment_method);

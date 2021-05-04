@@ -1110,7 +1110,8 @@
           AS description,
        reason_fu,
        		NVL (mpt_jumlah_process, 0) AS mpt_jumlah_process,
-       		EKA.F_LSDBS_VIEW (g.reg_spaj, g.lsbs_id, g.lsdbs_number) AS newname
+       		EKA.F_LSDBS_VIEW (g.reg_spaj, g.lsbs_id, g.lsdbs_number) AS newname,
+       a.unique_code
   		FROM eka.mst_mpol_trans a
        		INNER JOIN eka.lst_kurs c ON a.lku_id = c.lku_id
        		INNER JOIN eka.mst_policy d ON a.reg_spaj = d.reg_spaj

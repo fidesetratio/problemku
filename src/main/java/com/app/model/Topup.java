@@ -52,6 +52,15 @@ public class Topup implements Serializable {
 	private String newname;
 	private BigDecimal mtu_jumlah;
 	private Float mdu_persen;
+	private String topup_payor;
+
+	public String getTopup_payor() {
+		return topup_payor;
+	}
+
+	public void setTopup_payor(String topup_payor) {
+		this.topup_payor = topup_payor;
+	}
 
 	public String getMpt_id() {
 		return mpt_id;

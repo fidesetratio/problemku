@@ -1253,7 +1253,13 @@
        		END mata_uang,
        		a.lsbs_id,
        		a.lku_id,
-       		d.reg_spaj
+       		d.reg_spaj,
+		    CASE
+		        WHEN d.lsre_id_payer is null THEN 'Pemegang Polis'
+		        WHEN d.lsre_id_payer = 1 THEN 'Pemegang Polis'
+		        WHEN d.lsre_id_payer = 3 THEN 'Pihak Ketiga'
+		        ELSE 'Tertanggung'
+		    END topup_payor
   		FROM eka.mst_product_insured a
        		INNER JOIN EKA.MST_INSURED b ON a.reg_spaj = b.reg_spaj AND a.mste_insured_no = b.mste_insured_no
        		INNER JOIN eka.lst_det_bisnis c ON a.lsbs_id = c.lsbs_id AND a.lsdbs_number = c.lsdbs_number

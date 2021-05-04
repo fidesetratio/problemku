@@ -868,6 +868,7 @@ public class FinancialTransactionController {
 					data.put("currency", dataProduct.getMata_uang());
 					data.put("currency_symbol", dataProduct.getLku_symbol());
 					data.put("lku_id", dataProduct.getLku_id());
+					data.put("topup_payor", dataProduct.getTopup_payor());
 
 					if (dataProduct.getMata_uang().equalsIgnoreCase("rupiah")) {
 						data.put("minimum_topup", 1000000);

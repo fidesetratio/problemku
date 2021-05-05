@@ -1654,25 +1654,19 @@ public class PolicyIndividualCorporateController {
 		HashMap<String, Object> map = new HashMap<>();
 		ArrayList<Object> listsBeneficiary = new ArrayList<>();
 		HashMap<String, Object> data = new HashMap<>();
-		HashMap<String, Object> data_payor = new HashMap<>();
-		HashMap<String, Object> data_insured = new HashMap<>();
-		HashMap<Object, Object> data_policyholder = new HashMap<>();
-		HashMap<String, Object> data_korespondensi = new HashMap<>();
 		
 		ArrayList<Object> array_policyholder = new ArrayList<>();
-
+		ArrayList<Object> array_insured = new ArrayList<>();
+		ArrayList<Object> array_payor = new ArrayList<>();
+		ArrayList<Object> array_beneficiary = new ArrayList<>();
+		
 		String username = requestViewPolicyAlteration.getUsername();
 		String key = requestViewPolicyAlteration.getKey();
 		String no_polis = requestViewPolicyAlteration.getNo_polis();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				
-				HashMap<String, Object> temp_data_payor = new HashMap<>();
-				HashMap<String, Object> temp_data_insured = new HashMap<>();
-				HashMap<String, Object> temp_data_korespondensi = new HashMap<>();
-
-				
-				//GET POLICY HOLDER
+			//GET POLICY HOLDER
 				PolicyAlteration policyHolder = services.selectPolicyHolder(no_polis);
 				String nama_pp = policyHolder.getNama_pp();
 				String jenis_produk = policyHolder.getJenis_produk();
@@ -1707,10 +1701,21 @@ public class PolicyIndividualCorporateController {
 				String email = policyHolder.getEmail();
 				String tipe_usaha_pp = policyHolder.getTipe_usaha_pp();
 				
-				HashMap<String, Object> id_3 = new HashMap<>();
-				id_3.put("id_endors", 3);
-				id_3.put ("flag_direct", 0);
-				id_3.put("alamat_tpt_tinggal", alamat_tpt_tinggal);
+				HashMap<String, Object> _nama_pp = new HashMap<>();
+				HashMap<String, Object> temp_nama_pp = new HashMap<>();
+				_nama_pp.put("value", nama_pp);
+				_nama_pp.put("id_endors", null);
+				_nama_pp.put ("flag_direct", 3);
+				temp_nama_pp.put("nama_pp", _nama_pp);
+				array_policyholder.add(temp_nama_pp);
+				
+				HashMap<String, Object> _jenis_produk = new HashMap<>();
+				HashMap<String, Object> temp_jenis_produk = new HashMap<>();
+				_jenis_produk.put("value", jenis_produk);
+				_jenis_produk.put("id_endors", null);
+				_jenis_produk.put ("flag_direct", 3);
+				temp_jenis_produk.put("jenis_produk", _jenis_produk);
+				array_policyholder.add(temp_jenis_produk);
 				
 				HashMap<String, Object> _alamat_rumah_pp = new HashMap<>();
 				HashMap<String, Object> temp_alamat_rumah_pp = new HashMap<>();
@@ -1768,17 +1773,299 @@ public class PolicyIndividualCorporateController {
 				temp_alamat_tpt_tinggal.put("alamat_tpt_tinggal", _alamat_tpt_tinggal);
 				array_policyholder.add(temp_alamat_tpt_tinggal);
 				
-				HashMap<String, Object> _ = new HashMap<>();
-				HashMap<String, Object> temp_ = new HashMap<>();
-				_alamat_tpt_tinggal.put("value", alamat_tpt_tinggal);
-				_alamat_tpt_tinggal.put("id_endors", 3);
-				_alamat_tpt_tinggal.put ("flag_direct", 0);
-				temp_alamat_tpt_tinggal.put("alamat_tpt_tinggal", _alamat_tpt_tinggal);
+				HashMap<String, Object> _korespondensi_flag = new HashMap<>();
+				HashMap<String, Object> temp_korespondensi_flag = new HashMap<>();
+				_korespondensi_flag.put("value", alamat_tpt_tinggal);
+				_korespondensi_flag.put("id_endors", null);
+				_korespondensi_flag.put ("flag_direct", 0);
+				temp_korespondensi_flag.put("korespondensi_flag", _korespondensi_flag);
 				array_policyholder.add(temp_alamat_tpt_tinggal);
 				
+				if(korespondensi_flag==1) {
+					PolicyAlteration korespondensi = services.selectKorespondensi(no_polis);
+					
+					Integer propinsi_tinggal = korespondensi.getPropinsi_tinggal();
+					Integer kabupaten_tinggal = korespondensi.getKabupaten_tinggal();
+					Integer kecamatan_tinggal = korespondensi.getKecamatan_tinggal();
+					Integer kelurahan_tinggal = korespondensi.getKelurahan_tinggal();
+					Integer kodepos_tinggal = korespondensi.getKodepos_tinggal();
+					Integer negara_tinggal = korespondensi.getNegara_tinggal();
+					
+					HashMap<String, Object> _propinsi_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_propinsi_tinggal = new HashMap<>();
+					_propinsi_tinggal.put("value", propinsi_tinggal);
+					_propinsi_tinggal.put("id_endors", 3);
+					_propinsi_tinggal.put ("flag_direct", 0);
+					temp_propinsi_tinggal.put("propinsi_tinggal", _propinsi_tinggal);
+					array_policyholder.add(temp_propinsi_tinggal);
+					
+					HashMap<String, Object> _kabupaten_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_kabupaten_tinggal = new HashMap<>();
+					_kabupaten_tinggal.put("value", kabupaten_tinggal);
+					_kabupaten_tinggal.put("id_endors", 3);
+					_kabupaten_tinggal.put ("flag_direct", 0);
+					temp_kabupaten_tinggal.put("kabupaten_tinggal", _kabupaten_tinggal);
+					array_policyholder.add(temp_kabupaten_tinggal);
+					
+					HashMap<String, Object> _kecamatan_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_kecamatan_tinggal = new HashMap<>();
+					_kecamatan_tinggal.put("value", kecamatan_tinggal);
+					_kecamatan_tinggal.put("id_endors", 3);
+					_kecamatan_tinggal.put ("flag_direct", 0);
+					temp_kecamatan_tinggal.put("kecamatan_tinggal", _kecamatan_tinggal);
+					array_policyholder.add(temp_kecamatan_tinggal);
+					
+					HashMap<String, Object> _kelurahan_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_kelurahan_tinggal = new HashMap<>();
+					_kelurahan_tinggal.put("value", kelurahan_tinggal);
+					_kelurahan_tinggal.put("id_endors", 3);
+					_kelurahan_tinggal.put ("flag_direct", 0);
+					temp_kelurahan_tinggal.put("kelurahan_tinggal", _kelurahan_tinggal);
+					array_policyholder.add(temp_kelurahan_tinggal);
+					
+					HashMap<String, Object> _kodepos_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_kodepos_tinggal = new HashMap<>();
+					_kodepos_tinggal.put("value", kodepos_tinggal);
+					_kodepos_tinggal.put("id_endors", 3);
+					_kodepos_tinggal.put ("flag_direct", 0);
+					temp_kodepos_tinggal.put("kodepos_tinggal", _kodepos_tinggal);
+					array_policyholder.add(temp_kodepos_tinggal);
+					
+					HashMap<String, Object> _negara_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_negara_tinggal = new HashMap<>();
+					_negara_tinggal.put("value", negara_tinggal);
+					_negara_tinggal.put("id_endors", 3);
+					_negara_tinggal.put ("flag_direct", 0);
+					temp_negara_tinggal.put("negara_tinggal", _negara_tinggal);
+					array_policyholder.add(temp_negara_tinggal);
+					
+				} else {
+					HashMap<String, Object> _propinsi_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_propinsi_tinggal = new HashMap<>();
+					_propinsi_tinggal.put("value", null);
+					_propinsi_tinggal.put("id_endors", 3);
+					_propinsi_tinggal.put ("flag_direct", 0);
+					temp_propinsi_tinggal.put("propinsi_tinggal", _propinsi_tinggal);
+					array_policyholder.add(temp_propinsi_tinggal);
+					
+					HashMap<String, Object> _kabupaten_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_kabupaten_tinggal = new HashMap<>();
+					_kabupaten_tinggal.put("value", null);
+					_kabupaten_tinggal.put("id_endors", 3);
+					_kabupaten_tinggal.put ("flag_direct", 0);
+					temp_kabupaten_tinggal.put("kabupaten_tinggal", _kabupaten_tinggal);
+					array_policyholder.add(temp_kabupaten_tinggal);
+					
+					HashMap<String, Object> _kecamatan_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_kecamatan_tinggal = new HashMap<>();
+					_kecamatan_tinggal.put("value", null);
+					_kecamatan_tinggal.put("id_endors", 3);
+					_kecamatan_tinggal.put ("flag_direct", 0);
+					temp_kecamatan_tinggal.put("kecamatan_tinggal", _kecamatan_tinggal);
+					array_policyholder.add(temp_kecamatan_tinggal);
+					
+					HashMap<String, Object> _kelurahan_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_kelurahan_tinggal = new HashMap<>();
+					_kelurahan_tinggal.put("value", null);
+					_kelurahan_tinggal.put("id_endors", 3);
+					_kelurahan_tinggal.put ("flag_direct", 0);
+					temp_kelurahan_tinggal.put("kelurahan_tinggal", _kelurahan_tinggal);
+					array_policyholder.add(temp_kelurahan_tinggal);
+					
+					HashMap<String, Object> _kodepos_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_kodepos_tinggal = new HashMap<>();
+					_kodepos_tinggal.put("value", null);
+					_kodepos_tinggal.put("id_endors", 3);
+					_kodepos_tinggal.put ("flag_direct", 0);
+					temp_kodepos_tinggal.put("kodepos_tinggal", _kodepos_tinggal);
+					array_policyholder.add(temp_kodepos_tinggal);
+					
+					HashMap<String, Object> _negara_tinggal = new HashMap<>();
+					HashMap<String, Object> temp_negara_tinggal = new HashMap<>();
+					_negara_tinggal.put("value", null);
+					_negara_tinggal.put("id_endors", 3);
+					_negara_tinggal.put ("flag_direct", 0);
+					temp_negara_tinggal.put("negara_tinggal", _negara_tinggal);
+					array_policyholder.add(temp_negara_tinggal);
+				}
+
+				HashMap<String, Object> _status = new HashMap<>();
+				HashMap<String, Object> temp_status = new HashMap<>();
+				_status.put("value", status);
+				_status.put("id_endors", 67);
+				_status.put ("flag_direct", 1);
+				temp_status.put("status", _status);
+				array_policyholder.add(temp_status);
 				
+				HashMap<String, Object> _agama = new HashMap<>();
+				HashMap<String, Object> temp_agama = new HashMap<>();
+				_agama.put("value", agama);
+				_agama.put("id_endors", 61);
+				_agama.put ("flag_direct", 1);
+				temp_agama.put("agama", _agama);
+				array_policyholder.add(temp_agama);
 				
-				//GET INSURED
+				HashMap<String, Object> _kewarganegaraan_pp = new HashMap<>();
+				HashMap<String, Object> temp_kewarganegaraan_pp = new HashMap<>();
+				_kewarganegaraan_pp.put("value", kewarganegaraan_pp);
+				_kewarganegaraan_pp.put("id_endors", 39);
+				_kewarganegaraan_pp.put ("flag_direct", 1);
+				temp_kewarganegaraan_pp.put("kewarganegaraan_pp", _kewarganegaraan_pp);
+				array_policyholder.add(temp_kewarganegaraan_pp);
+				
+				HashMap<String, Object> _nama_perusahaan_pp = new HashMap<>();
+				HashMap<String, Object> temp_nama_perusahaan_pp = new HashMap<>();
+				_nama_perusahaan_pp.put("value", nama_perusahaan_pp);
+				_nama_perusahaan_pp.put("id_endors", 89);
+				_nama_perusahaan_pp.put ("flag_direct", 1);
+				temp_nama_perusahaan_pp.put("nama_perusahaan_pp", _nama_perusahaan_pp);
+				array_policyholder.add(temp_nama_perusahaan_pp);
+				
+				HashMap<String, Object> _tipe_usaha_pp = new HashMap<>();
+				HashMap<String, Object> temp_tipe_usaha_pp = new HashMap<>();
+				_tipe_usaha_pp.put("value", tipe_usaha_pp);
+				_tipe_usaha_pp.put("id_endors", 89);
+				_tipe_usaha_pp.put ("flag_direct", 1);
+				temp_tipe_usaha_pp.put("tipe_usaha_pp", _tipe_usaha_pp);
+				array_policyholder.add(temp_tipe_usaha_pp);
+				
+				HashMap<String, Object> _jabatan_pp = new HashMap<>();
+				HashMap<String, Object> temp_jabatan_pp = new HashMap<>();
+				_jabatan_pp.put("value", jabatan_pp);
+				_jabatan_pp.put("id_endors", 89);
+				_jabatan_pp.put ("flag_direct", 0);
+				temp_jabatan_pp.put("jabatan_pp", _jabatan_pp);
+				array_policyholder.add(temp_jabatan_pp);
+				
+				HashMap<String, Object> _uraian_pekerjaan = new HashMap<>();
+				HashMap<String, Object> temp_uraian_pekerjaan = new HashMap<>();
+				_uraian_pekerjaan.put("value", uraian_pekerjaan);
+				_uraian_pekerjaan.put("id_endors", 89);
+				_uraian_pekerjaan.put ("flag_direct", 0);
+				temp_uraian_pekerjaan.put("uraian_pekerjaan", _uraian_pekerjaan);
+				array_policyholder.add(temp_uraian_pekerjaan);
+				
+				HashMap<String, Object> _alamat_kantor = new HashMap<>();
+				HashMap<String, Object> temp_alamat_kantor = new HashMap<>();
+				_alamat_kantor.put("value", alamat_kantor);
+				_alamat_kantor.put("id_endors", 34);
+				_alamat_kantor.put ("flag_direct", 1);
+				temp_alamat_kantor.put("alamat_kantor", _alamat_kantor);
+				array_policyholder.add(temp_alamat_kantor);
+								
+				HashMap<String, Object> _propinsi_kantor = new HashMap<>();
+				HashMap<String, Object> temp_propinsi_kantor = new HashMap<>();
+				_propinsi_kantor.put("value", propinsi_kantor);
+				_propinsi_kantor.put("id_endors", 34);
+				_propinsi_kantor.put ("flag_direct", 0);
+				temp_propinsi_kantor.put("propinsi_kantor", _propinsi_kantor);
+				array_policyholder.add(temp_propinsi_kantor);
+				
+				HashMap<String, Object> _kabupaten_kantor = new HashMap<>();
+				HashMap<String, Object> temp_kabupaten_kantor = new HashMap<>();
+				_kabupaten_kantor.put("value", kabupaten_kantor);
+				_kabupaten_kantor.put("id_endors", 34);
+				_kabupaten_kantor.put ("flag_direct", 0);
+				temp_kabupaten_kantor.put("kabupaten_kantor", _kabupaten_kantor);
+				array_policyholder.add(temp_kabupaten_kantor);
+				
+				HashMap<String, Object> _kecamatan_kantor = new HashMap<>();
+				HashMap<String, Object> temp_kecamatan_kantor = new HashMap<>();
+				_kecamatan_kantor.put("value", kecamatan_kantor);
+				_kecamatan_kantor.put("id_endors", 34);
+				_kecamatan_kantor.put ("flag_direct", 0);
+				temp_kecamatan_kantor.put("kecamatan_kantor", _kecamatan_kantor);
+				array_policyholder.add(temp_kecamatan_kantor);
+				
+				HashMap<String, Object> _kelurahan_kantor = new HashMap<>();
+				HashMap<String, Object> temp_kelurahan_kantor = new HashMap<>();
+				_kelurahan_kantor.put("value", kelurahan_kantor);
+				_kelurahan_kantor.put("id_endors", 34);
+				_kelurahan_kantor.put ("flag_direct", 0);
+				temp_kelurahan_kantor.put("kelurahan_kantor", _kelurahan_kantor);
+				array_policyholder.add(temp_kelurahan_kantor);
+				
+				HashMap<String, Object> _kodepos_kantor = new HashMap<>();
+				HashMap<String, Object> temp_kodepos_kantor = new HashMap<>();
+				_kodepos_kantor.put("value", kodepos_kantor);
+				_kodepos_kantor.put("id_endors", 34);
+				_kodepos_kantor.put ("flag_direct", 0);
+				temp_kodepos_kantor.put("kodepos_kantor", _kodepos_kantor);
+				array_policyholder.add(temp_kodepos_kantor);
+				
+				HashMap<String, Object> _email = new HashMap<>();
+				HashMap<String, Object> temp_email = new HashMap<>();
+				_email.put("value", email);
+				_email.put("id_endors", null);
+				_email.put ("flag_direct", 0);
+				temp_email.put("email", _email);
+				array_policyholder.add(temp_email);
+				
+				HashMap<String, Object> _area_code_rumah_pp = new HashMap<>();
+				HashMap<String, Object> temp_area_code_rumah_pp = new HashMap<>();
+				_area_code_rumah_pp.put("value", area_code_rumah_pp);
+				_area_code_rumah_pp.put("id_endors", null);
+				_area_code_rumah_pp.put ("flag_direct", 0);
+				temp_area_code_rumah_pp.put("area_code_rumah_pp", _area_code_rumah_pp);
+				array_policyholder.add(temp_area_code_rumah_pp);
+				
+				HashMap<String, Object> _telpon_rumah_pp = new HashMap<>();
+				HashMap<String, Object> temp_telpon_rumah_pp = new HashMap<>();
+				_telpon_rumah_pp.put("value", telpon_rumah_pp);
+				_telpon_rumah_pp.put("id_endors", null);
+				_telpon_rumah_pp.put ("flag_direct", 0);
+				temp_telpon_rumah_pp.put("telpon_rumah_pp", _telpon_rumah_pp);
+				array_policyholder.add(temp_telpon_rumah_pp);
+				
+				HashMap<String, Object> _npwp = new HashMap<>();
+				HashMap<String, Object> temp_npwp = new HashMap<>();
+				_npwp.put("value", npwp);
+				_npwp.put("id_endors", null);
+				_npwp.put ("flag_direct", 0);
+				temp_npwp.put("npwp", _npwp);
+				array_policyholder.add(temp_npwp);
+
+				HashMap<String, Object> _nama_bank_pp = new HashMap<>();
+				HashMap<String, Object> temp_nama_bank_pp = new HashMap<>();
+				_nama_bank_pp.put("value", nama_bank_pp);
+				_nama_bank_pp.put("id_endors", 93);
+				_nama_bank_pp.put ("flag_direct", 0);
+				temp_nama_bank_pp.put("nama_bank_pp", _nama_bank_pp);
+				array_policyholder.add(temp_nama_bank_pp);
+				
+				HashMap<String, Object> _cabang_bank_pp = new HashMap<>();
+				HashMap<String, Object> temp_cabang_bank_pp = new HashMap<>();
+				_cabang_bank_pp.put("value", cabang_bank_pp);
+				_cabang_bank_pp.put("id_endors", 93);
+				_cabang_bank_pp.put ("flag_direct", 0);
+				temp_cabang_bank_pp.put("cabang_bank_pp", _cabang_bank_pp);
+				array_policyholder.add(temp_cabang_bank_pp);
+				
+				HashMap<String, Object> _kota_bank_pp = new HashMap<>();
+				HashMap<String, Object> temp_kota_bank_pp = new HashMap<>();
+				_kota_bank_pp.put("value", kota_bank_pp);
+				_kota_bank_pp.put("id_endors", 93);
+				_kota_bank_pp.put ("flag_direct", 0);
+				temp_kota_bank_pp.put("kota_bank_pp", _kota_bank_pp);
+				array_policyholder.add(temp_kota_bank_pp);
+				
+				HashMap<String, Object> _no_rekening_pp = new HashMap<>();
+				HashMap<String, Object> temp_no_rekening_pp = new HashMap<>();
+				_no_rekening_pp.put("value", no_rekening_pp);
+				_no_rekening_pp.put("id_endors", 93);
+				_no_rekening_pp.put ("flag_direct", 0);
+				temp_no_rekening_pp.put("no_rekening_pp", _no_rekening_pp);
+				array_policyholder.add(temp_no_rekening_pp);
+				
+				HashMap<String, Object> _pemilik_rekening_pp = new HashMap<>();
+				HashMap<String, Object> temp_pemilik_rekening_pp = new HashMap<>();
+				_pemilik_rekening_pp.put("value", pemilik_rekening_pp);
+				_pemilik_rekening_pp.put("id_endors", 93);
+				_pemilik_rekening_pp.put ("flag_direct", 0);
+				temp_pemilik_rekening_pp.put("pemilik_rekening_pp", _pemilik_rekening_pp);
+				array_policyholder.add(temp_pemilik_rekening_pp);
+				
+			//GET INSURED
 				PolicyAlteration insured = services.selectInsured(no_polis);
 				String status_tt = insured.getStatus_tt();
 				Integer agama_tt = insured.getAgama_tt();
@@ -1787,12 +2074,53 @@ public class PolicyIndividualCorporateController {
 				String jabatan_tt = insured.getJabatan_tt();
 				String tipe_usaha_tt = insured.getTipe_usaha_tt();
 				
-				data_insured.put("status_tt", status_tt);
-				data_insured.put("agama_tt", agama_tt);
-				data_insured.put("kewarganegaraan_tt", kewarganegaraan_tt);
-				data_insured.put("nama_perusahaan_tt", nama_perusahaan_tt);
-				data_insured.put("jabatan_tt", jabatan_tt);
-				data_insured.put("tipe_usaha_tt", tipe_usaha_tt);
+				HashMap<String, Object> _status_tt = new HashMap<>();
+				HashMap<String, Object> temp_status_tt = new HashMap<>();
+				_status_tt.put("value", status_tt);
+				_status_tt.put("id_endors", 68);
+				_status_tt.put ("flag_direct", 1);
+				temp_status_tt.put("status_tt", _status_tt);
+				array_insured.add(temp_status_tt);
+				
+				HashMap<String, Object> _agama_tt = new HashMap<>();
+				HashMap<String, Object> temp_agama_tt = new HashMap<>();
+				_agama_tt.put("value", agama_tt);
+				_agama_tt.put("id_endors", 62);
+				_agama_tt.put ("flag_direct", 1);
+				temp_agama_tt.put("agama_tt", _agama_tt);
+				array_insured.add(temp_agama_tt);
+				
+				HashMap<String, Object> _kewarganegaraan_tt = new HashMap<>();
+				HashMap<String, Object> temp_kewarganegaraan_tt = new HashMap<>();
+				_kewarganegaraan_tt.put("value", kewarganegaraan_tt);
+				_kewarganegaraan_tt.put("id_endors", 40);
+				_kewarganegaraan_tt.put ("flag_direct", 0);
+				temp_kewarganegaraan_tt.put("kewarganegaraan_tt", _kewarganegaraan_tt);
+				array_insured.add(temp_kewarganegaraan_tt);
+				
+				HashMap<String, Object> _nama_perusahaan_tt = new HashMap<>();
+				HashMap<String, Object> temp_nama_perusahaan_tt = new HashMap<>();
+				_nama_perusahaan_tt.put("value", nama_perusahaan_tt);
+				_nama_perusahaan_tt.put("id_endors", 90);
+				_nama_perusahaan_tt.put ("flag_direct", 1);
+				temp_nama_perusahaan_tt.put("nama_perusahaan_tt", _nama_perusahaan_tt);
+				array_insured.add(temp_nama_perusahaan_tt);
+				
+				HashMap<String, Object> _jabatan_tt = new HashMap<>();
+				HashMap<String, Object> temp_jabatan_tt = new HashMap<>();
+				_jabatan_tt.put("value", jabatan_tt);
+				_jabatan_tt.put("id_endors", 90);
+				_jabatan_tt.put ("flag_direct", 1);
+				temp_jabatan_tt.put("jabatan_tt", _jabatan_tt);
+				array_insured.add(temp_jabatan_tt);
+				
+				HashMap<String, Object> _tipe_usaha_tt = new HashMap<>();
+				HashMap<String, Object> temp_tipe_usaha_tt = new HashMap<>();
+				_tipe_usaha_tt.put("value", tipe_usaha_tt);
+				_tipe_usaha_tt.put("id_endors", 90);
+				_tipe_usaha_tt.put ("flag_direct", 1);
+				temp_tipe_usaha_tt.put("tipe_usaha_tt", _tipe_usaha_tt);
+				array_insured.add(temp_tipe_usaha_tt);
 				
 				//GET PAYOR
 				PolicyAlteration payor = services.selectPayor(no_polis);
@@ -1823,59 +2151,247 @@ public class PolicyIndividualCorporateController {
 				String mkl_penghasilan = payor.getMkl_penghasilan();
 				String mkl_smbr_penghasilan = payor.getMkl_smbr_penghasilan();
 				
-				data_payor.put("cara_bayarString", cara_bayarString);
-				data_payor.put("nama_bank_payor", nama_bank_payor);
-				data_payor.put("cabang_bank_payor", cabang_bank_payor);
-				data_payor.put("kota_bank_payor", kota_bank_payor);
-				data_payor.put("no_rekening_payor", no_rekening_payor);
-				data_payor.put("pemilik_rekening_payor", pemilik_rekening_payor);
-				data_payor.put("masa_berlaku", masa_berlaku);
-				data_payor.put("hubungan_payor", hubungan_payor);
-				data_payor.put("nama_payor", nama_payor);
-				data_payor.put("nama_perusahaan", nama_perusahaan);
-				data_payor.put("jabatan", jabatan);
-				data_payor.put("alamat_rumah", alamat_rumah);
-				data_payor.put("negara", negara);
-				data_payor.put("propinsi", propinsi);
-				data_payor.put("kabupaten", kabupaten);
-				data_payor.put("kecamatan", kecamatan);
-				data_payor.put("kelurahan", kelurahan);
-				data_payor.put("kodepos", kodepos);
-				data_payor.put("area_code_rumah", area_code_rumah);
-				data_payor.put("telpon_rumah", telpon_rumah);
-				data_payor.put("no_hp", no_hp);
-				data_payor.put("tujuan", tujuan);
-				data_payor.put("sumber_dana", sumber_dana);
-				data_payor.put("mkl_kerja", mkl_kerja);
-				data_payor.put("mkl_penghasilan", mkl_penghasilan);
-				data_payor.put("mkl_smbr_penghasilan", mkl_smbr_penghasilan);
+				HashMap<String, Object> _nama_bank_payor = new HashMap<>();
+				HashMap<String, Object> temp_nama_bank_payor = new HashMap<>();
+				_nama_bank_payor.put("value", nama_bank_payor);
+				_nama_bank_payor.put("id_endors", 96);
+				_nama_bank_payor.put ("flag_direct", 0);
+				temp_nama_bank_payor.put("nama_bank_payor", _nama_bank_payor);
+				array_payor.add(temp_nama_bank_payor);
 				
-				//GET BENEFICIARY
+				HashMap<String, Object> _cabang_bank_payor = new HashMap<>();
+				HashMap<String, Object> temp_cabang_bank_payor = new HashMap<>();
+				_cabang_bank_payor.put("value", cabang_bank_payor);
+				_cabang_bank_payor.put("id_endors", 96);
+				_cabang_bank_payor.put ("flag_direct", 0);
+				temp_cabang_bank_payor.put("cabang_bank_payor", _cabang_bank_payor);
+				array_payor.add(temp_cabang_bank_payor);
+				
+				HashMap<String, Object> _kota_bank_payor = new HashMap<>();
+				HashMap<String, Object> temp_kota_bank_payor = new HashMap<>();
+				_kota_bank_payor.put("value", kota_bank_payor);
+				_kota_bank_payor.put("id_endors", 96);
+				_kota_bank_payor.put ("flag_direct", 0);
+				temp_kota_bank_payor.put("kota_bank_payor", _kota_bank_payor);
+				array_payor.add(temp_kota_bank_payor);
+				
+				HashMap<String, Object> _no_rekening_payor = new HashMap<>();
+				HashMap<String, Object> temp_no_rekening_payor = new HashMap<>();
+				_no_rekening_payor.put("value", no_rekening_payor);
+				_no_rekening_payor.put("id_endors", 96);
+				_no_rekening_payor.put ("flag_direct", 0);
+				temp_no_rekening_payor.put("no_rekening_payor", _no_rekening_payor);
+				array_payor.add(temp_no_rekening_payor);
+				
+				HashMap<String, Object> _pemilik_rekening_payor = new HashMap<>();
+				HashMap<String, Object> temp_pemilik_rekening_payor = new HashMap<>();
+				_pemilik_rekening_payor.put("value", pemilik_rekening_payor);
+				_pemilik_rekening_payor.put("id_endors", 96);
+				_pemilik_rekening_payor.put ("flag_direct", 0);
+				temp_pemilik_rekening_payor.put("pemilik_rekening_payor", _pemilik_rekening_payor);
+				array_payor.add(temp_pemilik_rekening_payor);
+				
+				HashMap<String, Object> _masa_berlaku = new HashMap<>();
+				HashMap<String, Object> temp_masa_berlaku = new HashMap<>();
+				_masa_berlaku.put("value", masa_berlaku);
+				_masa_berlaku.put("id_endors", 96);
+				_masa_berlaku.put ("flag_direct", 0);
+				temp_masa_berlaku.put("masa_berlaku", _masa_berlaku);
+				array_payor.add(temp_masa_berlaku);
+				
+				HashMap<String, Object> _hubungan_payor = new HashMap<>();
+				HashMap<String, Object> temp_hubungan_payor = new HashMap<>();
+				_hubungan_payor.put("value", hubungan_payor);
+				_hubungan_payor.put("id_endors", null);
+				_hubungan_payor.put ("flag_direct", 0);
+				temp_hubungan_payor.put("hubungan_payor", _hubungan_payor);
+				array_payor.add(temp_hubungan_payor);
+
+				HashMap<String, Object> _nama_payor = new HashMap<>();
+				HashMap<String, Object> temp_nama_payor = new HashMap<>();
+				_nama_payor.put("value", nama_payor);
+				_nama_payor.put("id_endors", null);
+				_nama_payor.put ("flag_direct", 0);
+				temp_nama_payor.put("nama_payor", _nama_payor);
+				array_payor.add(temp_nama_payor);
+
+				HashMap<String, Object> _alamat_rumah = new HashMap<>();
+				HashMap<String, Object> temp_alamat_rumah = new HashMap<>();
+				_alamat_rumah.put("value", alamat_rumah);
+				_alamat_rumah.put("id_endors", null);
+				_alamat_rumah.put ("flag_direct", 0);
+				temp_alamat_rumah.put("alamat_rumah", _alamat_rumah);
+				array_payor.add(temp_alamat_rumah);
+
+				HashMap<String, Object> _propinsi = new HashMap<>();
+				HashMap<String, Object> temp_propinsi = new HashMap<>();
+				_propinsi.put("value", propinsi);
+				_propinsi.put("id_endors", null);
+				_propinsi.put ("flag_direct", 0);
+				temp_propinsi.put("propinsi", _propinsi);
+				array_payor.add(temp_propinsi);
+
+				HashMap<String, Object> _kabupaten = new HashMap<>();
+				HashMap<String, Object> temp_kabupaten = new HashMap<>();
+				_kabupaten.put("value", kabupaten);
+				_kabupaten.put("id_endors", null);
+				_kabupaten.put ("flag_direct", 0);
+				temp_kabupaten.put("kabupaten", _kabupaten);
+				array_payor.add(temp_kabupaten);
+
+				HashMap<String, Object> _kecamatan = new HashMap<>();
+				HashMap<String, Object> temp_kecamatan = new HashMap<>();
+				_kecamatan.put("value", kecamatan);
+				_kecamatan.put("id_endors", null);
+				_kecamatan.put ("flag_direct", 0);
+				temp_kecamatan.put("kecamatan", _kecamatan);
+				array_payor.add(temp_kecamatan);
+
+				HashMap<String, Object> _kelurahan = new HashMap<>();
+				HashMap<String, Object> temp_kelurahan = new HashMap<>();
+				_kelurahan.put("value", kelurahan);
+				_kelurahan.put("id_endors", null);
+				_kelurahan.put ("flag_direct", 0);
+				temp_kelurahan.put("kelurahan", _kelurahan);
+				array_payor.add(temp_kelurahan);
+
+				HashMap<String, Object> _kodepos = new HashMap<>();
+				HashMap<String, Object> temp_kodepos = new HashMap<>();
+				_kodepos.put("value", kodepos);
+				_kodepos.put("id_endors", null);
+				_kodepos.put ("flag_direct", 0);
+				temp_kodepos.put("kodepos", _kodepos);
+				array_payor.add(temp_kodepos);
+
+				HashMap<String, Object> _area_code_rumah = new HashMap<>();
+				HashMap<String, Object> temp_area_code_rumah = new HashMap<>();
+				_area_code_rumah.put("value", area_code_rumah);
+				_area_code_rumah.put("id_endors", null);
+				_area_code_rumah.put ("flag_direct", 0);
+				temp_area_code_rumah.put("area_code_rumah", _area_code_rumah);
+				array_payor.add(temp_area_code_rumah);
+
+				HashMap<String, Object> _telpon_rumah = new HashMap<>();
+				HashMap<String, Object> temp_telpon_rumah = new HashMap<>();
+				_telpon_rumah.put("value", telpon_rumah);
+				_telpon_rumah.put("id_endors", null);
+				_telpon_rumah.put ("flag_direct", 0);
+				temp_telpon_rumah.put("telpon_rumah", _telpon_rumah);
+				array_payor.add(temp_telpon_rumah);
+
+				HashMap<String, Object> _no_hp = new HashMap<>();
+				HashMap<String, Object> temp_no_hp = new HashMap<>();
+				_no_hp.put("value", no_hp);
+				_no_hp.put("id_endors", null);
+				_no_hp.put ("flag_direct", 0);
+				temp_no_hp.put("no_hp", _no_hp);
+				array_payor.add(temp_no_hp);
+
+				HashMap<String, Object> _tujuan = new HashMap<>();
+				HashMap<String, Object> temp_tujuan = new HashMap<>();
+				_tujuan.put("value", tujuan);
+				_tujuan.put("id_endors", null);
+				_tujuan.put ("flag_direct", 0);
+				temp_tujuan.put("tujuan", _tujuan);
+				array_payor.add(temp_tujuan);
+
+				HashMap<String, Object> _sumber_dana = new HashMap<>();
+				HashMap<String, Object> temp_sumber_dana = new HashMap<>();
+				_sumber_dana.put("value", sumber_dana);
+				_sumber_dana.put("id_endors", null);
+				_sumber_dana.put ("flag_direct", 0);
+				temp_sumber_dana.put("sumber_dana", _sumber_dana);
+				array_payor.add(temp_sumber_dana);
+
+				HashMap<String, Object> _mkl_kerja = new HashMap<>();
+				HashMap<String, Object> temp_mkl_kerja = new HashMap<>();
+				_mkl_kerja.put("value", mkl_kerja);
+				_mkl_kerja.put("id_endors", null);
+				_mkl_kerja.put ("flag_direct", 0);
+				temp_mkl_kerja.put("", _mkl_kerja);
+				array_payor.add(temp_mkl_kerja);
+
+				HashMap<String, Object> _mkl_penghasilan = new HashMap<>();
+				HashMap<String, Object> temp_mkl_penghasilan = new HashMap<>();
+				_mkl_penghasilan.put("value", mkl_penghasilan);
+				_mkl_penghasilan.put("id_endors", null);
+				_mkl_penghasilan.put ("flag_direct", 0);
+				temp_mkl_penghasilan.put("mkl_penghasilan", _mkl_penghasilan);
+				array_payor.add(temp_mkl_penghasilan);
+
+				HashMap<String, Object> _mkl_smbr_penghasilan = new HashMap<>();
+				HashMap<String, Object> temp_mkl_smbr_penghasilan = new HashMap<>();
+				_mkl_smbr_penghasilan.put("value", mkl_smbr_penghasilan);
+				_mkl_smbr_penghasilan.put("id_endors", null);
+				_mkl_smbr_penghasilan.put ("flag_direct", 0);
+				temp_mkl_smbr_penghasilan.put("mkl_smbr_penghasilan", _mkl_smbr_penghasilan);
+				array_payor.add(temp_mkl_smbr_penghasilan);
+				
+			//GET BENEFICIARY
 				ArrayList<Beneficiary> beneficiary = services.selectListBeneficiary(no_polis);
 				for (int y = 0; y < beneficiary.size(); y++) {
 					HashMap<String, Object> listBeneficiary = new HashMap<>();
-					String reg_spaj = beneficiary.get(y).getReg_spaj();
 					Integer msaw_number = beneficiary.get(y).getMsaw_number();
 				    String msaw_first = beneficiary.get(y).getMsaw_first();
 				    String msaw_birth = beneficiary.get(y).getMsaw_birth();
 				    String lsre_relation = beneficiary.get(y).getLsre_relation();
 				    Integer msaw_persen = beneficiary.get(y).getMsaw_persen();
 				    Integer msaw_sex = beneficiary.get(y).getMsaw_sex();
-
-				    listBeneficiary.put("reg_spaj", reg_spaj);
-				    listBeneficiary.put("msaw_number", msaw_number);
-				    listBeneficiary.put("msaw_first", msaw_first);
-				    listBeneficiary.put("msaw_birth", msaw_birth);
-				    listBeneficiary.put("lsre_relation", lsre_relation);
-				    listBeneficiary.put("msaw_persen", msaw_persen);
-				    listBeneficiary.put("msaw_sex", msaw_sex);
-				    listsBeneficiary.add(listBeneficiary);
+				    
+				    HashMap<String, Object> _msaw_number = new HashMap<>();
+					HashMap<String, Object> temp_msaw_number = new HashMap<>();
+					_msaw_number.put("value", msaw_number);
+					_msaw_number.put("id_endors", null);
+					_msaw_number.put ("flag_direct", 0);
+					temp_msaw_number.put("msaw_number", _msaw_number);
+					array_beneficiary.add(temp_msaw_number);
+					
+					HashMap<String, Object> _msaw_first = new HashMap<>();
+					HashMap<String, Object> temp_msaw_first = new HashMap<>();
+					_msaw_first.put("value", msaw_first);
+					_msaw_first.put("id_endors", null);
+					_msaw_first.put ("flag_direct", 0);
+					temp_msaw_first.put("msaw_first", _msaw_first);
+					array_beneficiary.add(temp_msaw_first);
+					
+					HashMap<String, Object> _msaw_birth = new HashMap<>();
+					HashMap<String, Object> temp_msaw_birth = new HashMap<>();
+					_msaw_birth.put("value", msaw_birth);
+					_msaw_birth.put("id_endors", null);
+					_msaw_birth.put ("flag_direct", 0);
+					temp_msaw_birth.put("msaw_birth", _msaw_birth);
+					array_beneficiary.add(temp_msaw_birth);
+					
+					HashMap<String, Object> _lsre_relation = new HashMap<>();
+					HashMap<String, Object> temp_lsre_relation = new HashMap<>();
+					_lsre_relation.put("value", lsre_relation);
+					_lsre_relation.put("id_endors", null);
+					_lsre_relation.put ("flag_direct", 0);
+					temp_lsre_relation.put("lsre_relation", _lsre_relation);
+					array_beneficiary.add(temp_lsre_relation);
+					
+					HashMap<String, Object> _msaw_persen = new HashMap<>();
+					HashMap<String, Object> temp_msaw_persen = new HashMap<>();
+					_msaw_persen.put("value", msaw_persen);
+					_msaw_persen.put("id_endors", null);
+					_msaw_persen.put ("flag_direct", 0);
+					temp_msaw_persen.put("msaw_persen", _msaw_persen);
+					array_beneficiary.add(temp_msaw_persen);
+					
+					HashMap<String, Object> _msaw_sex = new HashMap<>();
+					HashMap<String, Object> temp_msaw_sex = new HashMap<>();
+					_msaw_sex.put("value", msaw_sex);
+					_msaw_sex.put("id_endors", null);
+					_msaw_sex.put ("flag_direct", 0);
+					temp_msaw_sex.put("msaw_sex", _msaw_sex);
+					array_beneficiary.add(temp_msaw_sex);
+					
+				    listsBeneficiary.add(array_beneficiary);
 				}
 				
-				//data.put("policyholder", data_policyholder);
 				data.put("policyholder", array_policyholder);
-				data.put("insured", data_insured);
-				data.put("payor", data_payor);
+				data.put("insured", array_insured);
+				data.put("payor", array_payor);
 				data.put("beneficiary",listsBeneficiary);
 				
 				error = false;

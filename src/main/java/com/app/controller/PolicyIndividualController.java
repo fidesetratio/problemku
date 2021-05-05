@@ -203,6 +203,94 @@ public class PolicyIndividualController {
 
 		return res;
 	}
+	
+	@RequestMapping(value = "/checksoftcopypolis", produces = "application/json", method = RequestMethod.POST)
+	public String checkSoftCopyPolis(@RequestBody RequestDataAsuransi requestDataAsuransi, HttpServletRequest request)
+			throws Exception {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String message = null;
+		boolean error = true;
+		String resultErr = null;
+		String req = gson.toJson(requestDataAsuransi);
+		String res = null;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+
+		String username = requestDataAsuransi.getUsername();
+		String key = requestDataAsuransi.getKey();
+		String no_polis = requestDataAsuransi.getNo_polis();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				Pemegang pemegang = new Pemegang();
+				pemegang.setMspo_policy_no(no_polis);
+				pemegang = services.selectPemegang(pemegang);
+				if (pemegang != null) {
+					DataUsulan dataUsulan = new DataUsulan();
+					dataUsulan.setReg_spaj(pemegang.getReg_spaj());
+					dataUsulan = services.selectDataUsulan(dataUsulan);
+					
+					String lca_id = dataUsulan.getLca_id();
+					String reg_spaj = dataUsulan.getReg_spaj();
+					
+					String title = "polis_all";
+					String file_type = "pdf";
+					String file_name = title + "." + file_type;
+					String file_path_check = pathDownloadPolisAll + File.separator + lca_id + File.separator + reg_spaj + File.separator
+							+ file_name;
+					String file_path = "\\\\storage\\pdfind\\Polis_Testing\\" + lca_id + "\\" + reg_spaj + "\\" + file_name;
+					
+					File checkPolisAll = new File(file_path_check);
+					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) { 
+						data.put("file_path", file_path);
+						data.put("title", title);
+						data.put("file_type", file_type);
+						data.put("is_softcopy_enable", true);
+						
+						error = false;
+						message = "Successfully get soft copy polis info";
+					} else {
+						data.put("file_path", null);
+						data.put("title", null);
+						data.put("file_type", null);
+						data.put("is_softcopy_enable", false);
+						
+						error = false;
+						message = "Successfully get soft copy polis info";
+					}
+				} else {
+					error = true;
+					message = "Policy is not active";
+					resultErr = "Data pemegang kosong";
+					logger.error(
+							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				error = true;
+				message = "Policy is not active";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 6, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
 
 	@RequestMapping(value = "/dataasuransi", produces = "application/json", method = RequestMethod.POST)
 	public String dataAsuransi(@RequestBody RequestDataAsuransi requestDataAsuransi, HttpServletRequest request)

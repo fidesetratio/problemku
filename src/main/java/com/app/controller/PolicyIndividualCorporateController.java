@@ -2124,7 +2124,7 @@ public class PolicyIndividualCorporateController {
 				
 				//GET PAYOR
 				PolicyAlteration payor = services.selectPayor(no_polis);
-				String cara_bayarString = payor.getCara_bayar();
+				String cara_bayar = payor.getCara_bayar();
 				String nama_bank_payor = payor.getNama_bank_payor();
 				String cabang_bank_payor = payor.getCabang_bank_payor();
 				String kota_bank_payor = payor.getKota_bank_payor();
@@ -2150,6 +2150,38 @@ public class PolicyIndividualCorporateController {
 				String mkl_kerja = payor.getMkl_kerja();
 				String mkl_penghasilan = payor.getMkl_penghasilan();
 				String mkl_smbr_penghasilan = payor.getMkl_smbr_penghasilan();
+				
+				HashMap<String, Object> _cara_bayar = new HashMap<>();
+				HashMap<String, Object> temp_cara_bayar = new HashMap<>();
+				_cara_bayar.put("value", cara_bayar);
+				_cara_bayar.put("id_endors", null);
+				_cara_bayar.put ("flag_direct", 3);
+				temp_cara_bayar.put("cara_bayar", _cara_bayar);
+				array_payor.add(temp_cara_bayar);
+				
+				HashMap<String, Object> _nama_perusahaan = new HashMap<>();
+				HashMap<String, Object> temp_nama_perusahaan = new HashMap<>();
+				_nama_perusahaan.put("value", nama_perusahaan);
+				_nama_perusahaan.put("id_endors", null);
+				_nama_perusahaan.put ("flag_direct", 0);
+				temp_nama_perusahaan.put("nama_perusahaan", _nama_perusahaan);
+				array_payor.add(temp_nama_perusahaan);
+				
+				HashMap<String, Object> _jabatan = new HashMap<>();
+				HashMap<String, Object> temp_jabatan = new HashMap<>();
+				_jabatan.put("value", jabatan);
+				_jabatan.put("id_endors", null);
+				_jabatan.put ("flag_direct", 3);
+				temp_jabatan.put("cara_bayar", _jabatan);
+				array_payor.add(temp_jabatan);
+				
+				HashMap<String, Object> _negara = new HashMap<>();
+				HashMap<String, Object> temp_negara = new HashMap<>();
+				_negara.put("value", negara);
+				_negara.put("id_endors", null);
+				_negara.put ("flag_direct", 3);
+				temp_negara.put("cara_bayar", _negara);
+				array_payor.add(temp_negara);
 				
 				HashMap<String, Object> _nama_bank_payor = new HashMap<>();
 				HashMap<String, Object> temp_nama_bank_payor = new HashMap<>();

@@ -4032,7 +4032,7 @@
 
 	<select id="selectListBank" resultType="com.app.model.DropdownPolicyAlteration">
 		SELECT  LSBP_ID,
-		        LSBP_NAMA AS NAMA_BANK,
+		        LSBP_NAMA AS NAMA_BANK
 		FROM    EKA.LST_BANK_PUSAT
 	</select>
 	

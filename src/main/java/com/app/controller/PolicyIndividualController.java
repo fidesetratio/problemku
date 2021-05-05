@@ -1459,6 +1459,18 @@ public class PolicyIndividualController {
 									"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
 						}
 					}
+					
+					Integer total_data = listklaim.size();
+					Integer page_size = 10;
+					Integer total_page;
+					
+					if (total_data % page_size == 0) {
+						total_page = total_data / page_size;
+					} else {
+						total_page = total_data / page_size + 1;
+					}
+					
+					map.put("total_page", total_page);
 				} else {
 					error = false;
 					message = "Data claim kosong";

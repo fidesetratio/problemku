@@ -4093,7 +4093,7 @@
 		from    EKA.MST_NOTIFICATION_INBOX a, EKA.MST_NOTIFICATION_MESSAGE b
 		where   a.notification_id = b.id
 		    and upper (a.username) = upper (#{a.username, jdbcType=VARCHAR})
-		    and a.jenis_id = 91
+		    and a.jenis_id = 93
 		    and a.status in ('U','R')
 		order by a.create_date desc
 	 </select>

@@ -59,7 +59,7 @@
     <update id="deleteAllInbox" parameterType="User">
     	update EKA.MST_NOTIFICATION_INBOX 
     	set status = 'A' 
-    	where jenis_id = 91 and username = #{username, jdbcType=VARCHAR}
+    	where jenis_id = 93 and username = #{username, jdbcType=VARCHAR}
     </update>
     
     <update id="updateInboxStatus" parameterType="User">
@@ -69,7 +69,7 @@
     	<if test="inbox_id !=null">
     		id = #{inbox_id, jdbcType=INTEGER} and
     	</if> 
-    	username = #{username, jdbcType=VARCHAR} and jenis_id = 91 and status != 'A'
+    	username = #{username, jdbcType=VARCHAR} and jenis_id = 93 and status != 'A'
     </update>
     
     <update id="updateActivityStatus" parameterType="User">

@@ -1409,4 +1409,9 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.insertNotification(pushNotif);
 	}
+
+	public ArrayList<DropdownPolicyAlteration> selectCabangBank(Integer lsbp_id_req) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectCabangBank(lsbp_id_req);
+	}
 }

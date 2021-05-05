@@ -7015,6 +7015,7 @@ public class FinancialTransactionController {
 		String username = requestDropdownPolicyAlteration.getUsername();
 		String key = requestDropdownPolicyAlteration.getKey();
 		Integer type = requestDropdownPolicyAlteration.getType();
+		Integer lsbp_id_req = requestDropdownPolicyAlteration.getLsbp_id();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 
@@ -7117,15 +7118,11 @@ public class FinancialTransactionController {
 					for (int x = 0; x < getListBank.size(); x++) {
 						HashMap<String, Object> hashMapTemp = new HashMap<>();
 						
-						Integer lbn_id = getListBank.get(x).getLsp_id();
 						Integer lsbp_id = getListBank.get(x).getLsbp_id();
 				        String nama_bank = getListBank.get(x).getNama_bank();
-				        String cabang = getListBank.get(x).getCabang();
 						
-						hashMapTemp.put("lbn_id", lbn_id);
 						hashMapTemp.put("lsbp_id", lsbp_id);
 						hashMapTemp.put("nama_bank", nama_bank);
-						hashMapTemp.put("cabang", cabang);
 
 						listBank.add(hashMapTemp);
 					}
@@ -7147,7 +7144,24 @@ public class FinancialTransactionController {
 						listRelation.add(hashMapTemp);
 					}
 						error = false;
-						message = "Successfully get list bank";
+						message = "Successfully get list relation";
+						data.put("listRelation", listRelation);
+				} else if (type.equals(8)) {
+					ArrayList<DropdownPolicyAlteration> getListCabangBank = services.selectCabangBank(lsbp_id_req);
+					
+					for (int x = 0; x < getListCabangBank.size(); x++) {
+						HashMap<String, Object> hashMapTemp = new HashMap<>();
+						
+						Integer lbn_id = getListCabangBank.get(x).getLbn_id();
+				        String cabang = getListCabangBank.get(x).getCabang();
+				        
+						hashMapTemp.put("lbn_id", lbn_id);
+						hashMapTemp.put("cabang", cabang);
+
+						listRelation.add(hashMapTemp);
+					}
+						error = false;
+						message = "Successfully get list relation";
 						data.put("listRelation", listRelation);
 				} else {
 					// Handle type not found

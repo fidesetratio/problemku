@@ -346,6 +346,8 @@ public interface VegaMapper {
 	
 	public ArrayList<DropdownPolicyAlteration> selectListBank();
 	
+	public ArrayList<DropdownPolicyAlteration> selectCabangBank(Integer lsbp_id_req);
+	
 	public ArrayList<DropdownPolicyAlteration> selectListRelation();
 	
 	public Endorse selectListJenisEndors(Integer lsje_id);

@@ -12,6 +12,15 @@ public class RequestDropdownPolicyAlteration implements Serializable {
 	private String key;
 	private String no_polis;
 	private Integer type;
+	private Integer lsbp_id;
+
+	public Integer getLsbp_id() {
+		return lsbp_id;
+	}
+
+	public void setLsbp_id(Integer lsbp_id) {
+		this.lsbp_id = lsbp_id;
+	}
 
 	public String getUsername() {
 		return username;

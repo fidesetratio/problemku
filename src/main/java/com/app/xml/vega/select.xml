@@ -4031,13 +4031,16 @@
 	</select>
 
 	<select id="selectListBank" resultType="com.app.model.DropdownPolicyAlteration">
-		SELECT  A.LSBP_ID,
-		        B.LBN_ID,
-		        A.LSBP_NAMA AS NAMA_BANK,
-		        B.LBN_NAMA AS CABANG
-		FROM    EKA.LST_BANK_PUSAT A,
-		        EKA.LST_BANK B
-		WHERE   A.LSBP_ID = B.LSBP_ID
+		SELECT  LSBP_ID,
+		        LSBP_NAMA AS NAMA_BANK,
+		FROM    EKA.LST_BANK_PUSAT
+	</select>
+	
+	<select id="selectCabangBank" parameterType="Integer" resultType="com.app.model.DropdownPolicyAlteration">
+		SELECT  LBN_ID,
+		        LBN_NAMA AS CABANG
+		FROM    EKA.LST_BANK
+		WHERE   LSBP_ID = #{lsbp_id, jdbcType=INTEGER}
 	</select>
 	
 	<select id="selectListRelation" resultType="com.app.model.DropdownPolicyAlteration">

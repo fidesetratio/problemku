@@ -14,6 +14,15 @@ public class Article implements Serializable {
 	public String file_name;
 	public String file_type;
 	public String title;
+	public Integer count;
+
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
+	}
 
 	public Integer getId() {
 		return id;

@@ -846,6 +846,88 @@
 			WHERE r__ <![CDATA[>=]]>
 		(((#{pageNumber, jdbcType=INTEGER}-1) * #{pageSize, jdbcType=INTEGER}) + 1)
 	</select>
+	
+	<select id="selectCountKlaimkesehatan" parameterType="ViewClaim" resultType="com.app.model.KlaimKesehatan">
+		SELECT COUNT(*) count FROM (
+		    SELECT b.st_acp AS id_status_accept,
+		           b.st_expl status_accept,
+		           DECODE (a.st_acp,
+		                   5, c.pay_claim,
+		                   10, c.pay_claim,
+		                   0)
+		              pay_claim,
+		           a.jenisclaim,
+		           nvl(c.amt_claim, 0) amt_claim,
+		           c.max_claim,
+		           a.regclaim,
+		           a.st_acp,
+		           a.mspo_policy_no,
+		           a.regapldate,
+		           a.acceptdate,
+		           a.clm_paid_date,
+		           a.nm_diagnos,
+		           a.date_ri_1,
+		           a.date_ri_2,
+		           d.mspo_ins_period,
+		           f.mspe_sex,
+		           g.lca_nama,
+		           h.mspr_tsi,
+		           i.lku_symbol,
+		           j.mste_age,
+		           j.mste_medical,
+		           h.reg_spaj,
+		           TRIM (e.mcl_first) || ' ' || TRIM (e.mcl_middle) || ' ' || TRIM (e.mcl_last) AS nama_tt,
+		           f.mspe_date_birth,
+		           f.mspe_place_birth,
+		           a.lku_id,
+		           a.lku_bayar,
+		           eka.f_lsdbs (d.reg_spaj, h.lsbs_id, h.lsdbs_number) lsbs_name,
+		           l.mcl_first,
+		           m.EXPLANATION,
+		           h.MSPR_BEG_DATE,
+		           h.MSPR_END_DATE,
+		           EKA.UTILS.CABANG (d.LCA_ID) cabang,
+		           CASE
+		              WHEN a.jenisclaim IN (1) THEN 'RAWAT JALAN'
+		              WHEN a.jenisclaim IN (2) THEN 'RAWAT INAP'
+		              WHEN a.jenisclaim IN (3) THEN 'RAWAT GIGI'
+		              WHEN a.jenisclaim IN (5) THEN 'RAWAT BERSALIN'
+		              WHEN a.jenisclaim IN (9) THEN 'PENUNJANG KESEHATAN'
+		           END
+		              AS JENIS_CLAIM
+		      FROM eka.id_mst_clm a,
+		           eka.id_stat_acp b,
+		           eka.id_trx_clmdtl c,
+		           eka.mst_policy d,
+		           eka.mst_client e,
+		           eka.mst_person f,
+		           eka.lst_cabang g,
+		           eka.mst_product_insured h,
+		           eka.lst_kurs i,
+		           eka.mst_insured j,
+		           eka.lst_det_bisnis k,
+		           eka.mst_client_new l,
+		           EKA.ID_LST_JNS_CLAIMDTL m
+		    WHERE (d.lca_id = g.lca_id(+))
+		        AND (d.mspo_policy_holder = l.mcl_id)
+		        AND (b.st_acp = a.st_acp)
+		        AND (c.regclaim = a.regclaim)
+		        AND (d.reg_spaj = a.regspaj)
+		        AND (a.mste_insured = e.mcl_id)
+		        AND (e.mcl_id = f.mcl_id)
+		        AND (d.reg_spaj = h.reg_spaj)
+		        AND (i.lku_id = d.lku_id)
+		        AND (j.reg_spaj = h.reg_spaj)
+		        AND (h.lsbs_id = k.lsbs_id)
+		        AND (h.lsdbs_number = k.lsdbs_number)
+		        AND (h.lsbs_id <![CDATA[<]]> 300)
+		        AND m.LJJ_JENIS_ID = c.LJJ_JENIS_ID
+		        AND ((h.mste_insured_no = 1)
+		        AND (a.mste_insured_no = 1)
+		        AND (a.regspaj = #{spaj, jdbcType=VARCHAR}))
+		    ORDER BY a.REGAPLDATE desc
+		)
+	</select>
 
 	<select id="selectForgotPassword" parameterType="User" resultType="User">
 		select B.MSPO_POLICY_NO, 
@@ -3535,6 +3617,29 @@
 		)
 		WHERE r__ <![CDATA[>=]]>
 		(((#{pageNumber}-1) * #{pageSize}) + 1)
+	</select>
+	
+	<select id="selectCountListArticle" resultType="com.app.model.Article">
+		SELECT COUNT(*) count FROM
+			(
+		        SELECT  a.*,
+		                rownum r__
+		        FROM
+		        (
+		            SELECT ID,
+		            JUDUL AS TITLE,
+		            CREATE_DATE,
+		            REPLACE(FILE_PATH || '\' || ID || '.' || FILE_TYPE, '\\storage', '\\STORAGE.SINARMASMSIGLIFE.CO.ID') AS PATH_FILE,
+		            FILE_NAME,
+		            FILE_TYPE
+		            FROM EKA.MST_NEWS@EB
+		            WHERE KODE_PROGRAM IN (1, 2) 
+		            AND FLAG_DELETE <![CDATA[<>]]> 1
+		            AND UPPER(FILE_TYPE) = 'PDF'
+		            AND CREATE_DATE <![CDATA[>]]> TO_DATE('16/09/2019', 'DD/MM/YYYY')
+		            ORDER BY CREATE_DATE DESC
+		        ) a
+		    )
 	</select>
 	
 	<select id="selectBegDateEndDateCorporate" parameterType="String" resultType="com.app.model.UserCorporate">

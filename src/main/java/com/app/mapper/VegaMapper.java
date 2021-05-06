@@ -147,6 +147,8 @@ public interface VegaMapper {
 	public ArrayList<Provider> selectProvider();
 
 	public ArrayList<KlaimKesehatan> selectKlaimkesehatan(ViewClaim viewClaim);
+	
+	public KlaimKesehatan selectCountKlaimkesehatan(ViewClaim viewClaim);
 
 	public Integer selectCountIdSimultanByIdSimultan(String id_simultan);
 
@@ -359,6 +361,8 @@ public interface VegaMapper {
 	public ArrayList<Inbox> selectInbox(String username);
 	
 	public NotifToken selectNotifToken(String userid);
+	
+	public Article selectCountListArticle();
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

@@ -451,7 +451,9 @@ public class PolicyIndividualCorporateController {
 					data.add(dataTemp);
 				}
 				
-				Integer total_data = dataListArticle.size();
+				Article countArticle = services.selectCountListArticle();
+				
+				Integer total_data = countArticle.getCount();
 				Integer page_size = 10;
 				Integer total_page;
 				
@@ -1669,7 +1671,6 @@ public class PolicyIndividualCorporateController {
 		ArrayList<Object> array_policyholder = new ArrayList<>();
 		ArrayList<Object> array_insured = new ArrayList<>();
 		ArrayList<Object> array_payor = new ArrayList<>();
-		ArrayList<Object> array_beneficiary = new ArrayList<>();
 		
 		String username = requestViewPolicyAlteration.getUsername();
 		String key = requestViewPolicyAlteration.getKey();
@@ -2133,7 +2134,7 @@ public class PolicyIndividualCorporateController {
 				temp_tipe_usaha_tt.put("tipe_usaha_tt", _tipe_usaha_tt);
 				array_insured.add(temp_tipe_usaha_tt);
 				
-				//GET PAYOR
+			//GET PAYOR
 				PolicyAlteration payor = services.selectPayor(no_polis);
 				String cara_bayar = payor.getCara_bayar();
 				String nama_bank_payor = payor.getNama_bank_payor();
@@ -2387,7 +2388,7 @@ public class PolicyIndividualCorporateController {
 				    HashMap<String, Object> _msaw_number = new HashMap<>();
 					HashMap<String, Object> temp_msaw_number = new HashMap<>();
 					_msaw_number.put("value", msaw_number);
-					_msaw_number.put("id_endors", null);
+					_msaw_number.put("id_endors", 93);
 					_msaw_number.put ("flag_direct", 0);
 					temp_msaw_number.put("msaw_number", _msaw_number);
 					listBeneficiary.putAll(temp_msaw_number);
@@ -2395,7 +2396,7 @@ public class PolicyIndividualCorporateController {
 					HashMap<String, Object> _msaw_first = new HashMap<>();
 					HashMap<String, Object> temp_msaw_first = new HashMap<>();
 					_msaw_first.put("value", msaw_first);
-					_msaw_first.put("id_endors", null);
+					_msaw_first.put("id_endors", 93);
 					_msaw_first.put ("flag_direct", 0);
 					temp_msaw_first.put("msaw_first", _msaw_first);
 					listBeneficiary.putAll(temp_msaw_first);
@@ -2403,7 +2404,7 @@ public class PolicyIndividualCorporateController {
 					HashMap<String, Object> _msaw_birth = new HashMap<>();
 					HashMap<String, Object> temp_msaw_birth = new HashMap<>();
 					_msaw_birth.put("value", msaw_birth);
-					_msaw_birth.put("id_endors", null);
+					_msaw_birth.put("id_endors", 93);
 					_msaw_birth.put ("flag_direct", 0);
 					temp_msaw_birth.put("msaw_birth", _msaw_birth);
 					listBeneficiary.putAll(temp_msaw_birth);
@@ -2411,7 +2412,7 @@ public class PolicyIndividualCorporateController {
 					HashMap<String, Object> _lsre_relation = new HashMap<>();
 					HashMap<String, Object> temp_lsre_relation = new HashMap<>();
 					_lsre_relation.put("value", lsre_relation);
-					_lsre_relation.put("id_endors", null);
+					_lsre_relation.put("id_endors", 93);
 					_lsre_relation.put ("flag_direct", 0);
 					temp_lsre_relation.put("lsre_relation", _lsre_relation);
 					listBeneficiary.putAll(temp_lsre_relation);
@@ -2419,7 +2420,7 @@ public class PolicyIndividualCorporateController {
 					HashMap<String, Object> _msaw_persen = new HashMap<>();
 					HashMap<String, Object> temp_msaw_persen = new HashMap<>();
 					_msaw_persen.put("value", msaw_persen);
-					_msaw_persen.put("id_endors", null);
+					_msaw_persen.put("id_endors", 93);
 					_msaw_persen.put ("flag_direct", 0);
 					temp_msaw_persen.put("msaw_persen", _msaw_persen);
 					listBeneficiary.putAll(temp_msaw_persen);
@@ -2427,7 +2428,7 @@ public class PolicyIndividualCorporateController {
 					HashMap<String, Object> _msaw_sex = new HashMap<>();
 					HashMap<String, Object> temp_msaw_sex = new HashMap<>();
 					_msaw_sex.put("value", msaw_sex);
-					_msaw_sex.put("id_endors", null);
+					_msaw_sex.put("id_endors", 93);
 					_msaw_sex.put ("flag_direct", 0);
 					temp_msaw_sex.put("msaw_sex", _msaw_sex);
 					listBeneficiary.putAll(temp_msaw_sex);

@@ -1414,4 +1414,18 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectCabangBank(lsbp_id_req);
 	}
+
+	public Article selectCountListArticle() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectCountListArticle();
+	}
+	
+	public KlaimKesehatan selectCountKlaimkesehatan(String spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		ViewClaim viewClaim = new ViewClaim();
+		viewClaim.setSpaj(spaj);
+		return dao.selectCountKlaimkesehatan(viewClaim);
+	}
+	
+	
 }

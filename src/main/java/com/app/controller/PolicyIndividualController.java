@@ -1460,7 +1460,9 @@ public class PolicyIndividualController {
 						}
 					}
 					
-					Integer total_data = listklaim.size();
+					KlaimKesehatan countKlaim = services.selectCountKlaimkesehatan(dataSpaj.getReg_spaj());
+							
+					Integer total_data = countKlaim.getCount();
 					Integer page_size = 10;
 					Integer total_page;
 					

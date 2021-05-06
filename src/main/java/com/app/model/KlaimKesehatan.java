@@ -18,6 +18,15 @@ public class KlaimKesehatan implements Serializable {
 	private BigDecimal amt_claim;
 	private BigDecimal pay_claim;
 	private BigDecimal id_status_accept;
+	private Integer count;
+	
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
+	}
 
 	public Date getRegapldate() {
 		return regapldate;

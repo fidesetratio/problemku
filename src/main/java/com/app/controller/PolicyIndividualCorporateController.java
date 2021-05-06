@@ -450,6 +450,18 @@ public class PolicyIndividualCorporateController {
 
 					data.add(dataTemp);
 				}
+				
+				Integer total_data = dataListArticle.size();
+				Integer page_size = 10;
+				Integer total_page;
+				
+				if (total_data % page_size == 0) {
+					total_page = total_data / page_size;
+				} else {
+					total_page = total_data / page_size + 1;
+				}
+				
+				map.put("total_page", total_page);
 
 				error = false;
 				message = "Successfully get list article";
@@ -1652,7 +1664,6 @@ public class PolicyIndividualCorporateController {
 		String resultErr = null;
 		Boolean error = false;
 		HashMap<String, Object> map = new HashMap<>();
-		ArrayList<Object> listsBeneficiary = new ArrayList<>();
 		HashMap<String, Object> data = new HashMap<>();
 		
 		ArrayList<Object> array_policyholder = new ArrayList<>();
@@ -2361,8 +2372,11 @@ public class PolicyIndividualCorporateController {
 				
 			//GET BENEFICIARY
 				ArrayList<Beneficiary> beneficiary = services.selectListBeneficiary(no_polis);
+				
+				HashMap<String, Object> listsBeneficiary = new HashMap<>();
 				for (int y = 0; y < beneficiary.size(); y++) {
 					HashMap<String, Object> listBeneficiary = new HashMap<>();
+					
 					Integer msaw_number = beneficiary.get(y).getMsaw_number();
 				    String msaw_first = beneficiary.get(y).getMsaw_first();
 				    String msaw_birth = beneficiary.get(y).getMsaw_birth();
@@ -2376,7 +2390,7 @@ public class PolicyIndividualCorporateController {
 					_msaw_number.put("id_endors", null);
 					_msaw_number.put ("flag_direct", 0);
 					temp_msaw_number.put("msaw_number", _msaw_number);
-					array_beneficiary.add(temp_msaw_number);
+					listBeneficiary.putAll(temp_msaw_number);
 					
 					HashMap<String, Object> _msaw_first = new HashMap<>();
 					HashMap<String, Object> temp_msaw_first = new HashMap<>();
@@ -2384,7 +2398,7 @@ public class PolicyIndividualCorporateController {
 					_msaw_first.put("id_endors", null);
 					_msaw_first.put ("flag_direct", 0);
 					temp_msaw_first.put("msaw_first", _msaw_first);
-					array_beneficiary.add(temp_msaw_first);
+					listBeneficiary.putAll(temp_msaw_first);
 					
 					HashMap<String, Object> _msaw_birth = new HashMap<>();
 					HashMap<String, Object> temp_msaw_birth = new HashMap<>();
@@ -2392,7 +2406,7 @@ public class PolicyIndividualCorporateController {
 					_msaw_birth.put("id_endors", null);
 					_msaw_birth.put ("flag_direct", 0);
 					temp_msaw_birth.put("msaw_birth", _msaw_birth);
-					array_beneficiary.add(temp_msaw_birth);
+					listBeneficiary.putAll(temp_msaw_birth);
 					
 					HashMap<String, Object> _lsre_relation = new HashMap<>();
 					HashMap<String, Object> temp_lsre_relation = new HashMap<>();
@@ -2400,7 +2414,7 @@ public class PolicyIndividualCorporateController {
 					_lsre_relation.put("id_endors", null);
 					_lsre_relation.put ("flag_direct", 0);
 					temp_lsre_relation.put("lsre_relation", _lsre_relation);
-					array_beneficiary.add(temp_lsre_relation);
+					listBeneficiary.putAll(temp_lsre_relation);
 					
 					HashMap<String, Object> _msaw_persen = new HashMap<>();
 					HashMap<String, Object> temp_msaw_persen = new HashMap<>();
@@ -2408,7 +2422,7 @@ public class PolicyIndividualCorporateController {
 					_msaw_persen.put("id_endors", null);
 					_msaw_persen.put ("flag_direct", 0);
 					temp_msaw_persen.put("msaw_persen", _msaw_persen);
-					array_beneficiary.add(temp_msaw_persen);
+					listBeneficiary.putAll(temp_msaw_persen);
 					
 					HashMap<String, Object> _msaw_sex = new HashMap<>();
 					HashMap<String, Object> temp_msaw_sex = new HashMap<>();
@@ -2416,9 +2430,9 @@ public class PolicyIndividualCorporateController {
 					_msaw_sex.put("id_endors", null);
 					_msaw_sex.put ("flag_direct", 0);
 					temp_msaw_sex.put("msaw_sex", _msaw_sex);
-					array_beneficiary.add(temp_msaw_sex);
+					listBeneficiary.putAll(temp_msaw_sex);
 					
-				    listsBeneficiary.add(array_beneficiary);
+					listsBeneficiary.put(msaw_first, listBeneficiary);
 				}
 				
 				data.put("policyholder", array_policyholder);

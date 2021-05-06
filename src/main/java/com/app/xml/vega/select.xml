@@ -1304,10 +1304,10 @@
 	</select>
 
 	<select id="selectCountMessageInboxUnread" parameterType="String" resultType="Integer">
-		select count(*) as total 
+		select count(*) as total
 		from eka.mst_notification_inbox
 		where username = #{username, jdbcType=VARCHAR}
-			and jenis_id = 91 
+			and jenis_id = 93
 			and status = 'U'
 	</select>
 

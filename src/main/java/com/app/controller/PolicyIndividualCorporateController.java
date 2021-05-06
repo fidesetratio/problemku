@@ -1668,10 +1668,6 @@ public class PolicyIndividualCorporateController {
 		HashMap<String, Object> map = new HashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
 		
-		ArrayList<Object> array_policyholder = new ArrayList<>();
-		ArrayList<Object> array_insured = new ArrayList<>();
-		ArrayList<Object> array_payor = new ArrayList<>();
-		
 		HashMap<String, Object> data_policyholder = new HashMap<>();
 		HashMap<String, Object> data_insured = new HashMap<>();
 		HashMap<String, Object> data_payor = new HashMap<>();
@@ -2446,7 +2442,7 @@ public class PolicyIndividualCorporateController {
 				data.put("insured", data_insured);
 				data.put("payor", data_payor);
 				data.put("beneficiary",array_beneficiary);
-				
+								
 				error = false;
 				message = "Successfully get policy alteration";
 			} else {

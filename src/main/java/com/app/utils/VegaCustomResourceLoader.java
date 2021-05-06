@@ -53,9 +53,12 @@ import org.springframework.stereotype.Component;
 import com.app.model.DetailWithdraw;
 import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
+import com.app.model.NotifToken;
 import com.app.model.Provinsi;
+import com.app.model.PushNotif;
 import com.app.model.User;
 import com.app.services.VegaServices;
+import com.google.gson.JsonObject;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -325,11 +328,13 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 
 	public void pushNotif(String username, String message, String no_polis, String reg_spaj, Integer next_action,
 			Integer priority) {
+		Date start = new Date();
 		try {
-			HashMap<String, Object> dataConfiguration = services.configuration();
-			Integer enable_notification = Integer.parseInt((String) dataConfiguration.get("ENABLE_NOTIFICATION"));
+			//HashMap<String, Object> dataConfiguration = services.configuration();
+			//Integer enable_notification = Integer.parseInt((String) dataConfiguration.get("ENABLE_NOTIFICATION"));
 
-			if (enable_notification.equals(1)) {
+			//if (enable_notification.equals(1)) {
+				/*
 				String jsonData = null;
 				JSONObject paramNotif = new JSONObject();
 				String restUrl = pathDirectNotification;
@@ -350,7 +355,32 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 
 				jsonData = paramNotif.toString();
 				httpPostReq.executeReq(jsonData, httpPost);
-			}
+				*/
+				NotifToken notifToken = new NotifToken();
+				notifToken = services.selectNotifToken(username);
+				
+				JSONObject dataTemp_temp = new JSONObject();
+				dataTemp_temp.put("next_action_menu_id", next_action);
+				dataTemp_temp.put("policy_number", no_polis);
+				String dataTemp = dataTemp_temp.toString();
+				
+				InetAddress inetAddress = InetAddress.getLocalHost();
+				PushNotif pushNotif = new PushNotif();
+				pushNotif.setJenis_id("93");
+				pushNotif.setUsername(username);
+				pushNotif.setToken(notifToken.getToken());
+				pushNotif.setTitle("VEGA");
+				pushNotif.setMessage(message);
+				pushNotif.setParameter(dataTemp);
+				pushNotif.setPriority(priority);
+				pushNotif.setReg_spaj(reg_spaj);
+				pushNotif.setStatus("U");
+				pushNotif.setFlag_inbox("Y");
+				pushNotif.setCreate_date(start);
+				pushNotif.setHost_name(inetAddress.getHostName());
+				pushNotif.setHost_date(start);
+				services.insertNotification(pushNotif);
+			//}
 		} catch (Exception e) {
 			logger.error("Exception hit Post Notif, username: " + username + "message: " + message + "error: " + e);
 		}

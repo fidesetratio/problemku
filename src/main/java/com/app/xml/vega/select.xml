@@ -4212,6 +4212,7 @@
 		        token
 		from    EKA.MST_NOTIFICATION_TOKEN
 		where   flag_active = 1
+			AND jenis_id = 93
 		    AND UPPER (username) = UPPER (#{userid, jdbcType=VARCHAR})
 	 </select>
 </mapper>

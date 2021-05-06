@@ -9,8 +9,8 @@ public class PolicyAlteration implements Serializable {
 	 */
 	private static final long serialVersionUID = 2356621085798776512L;	
 	private String cara_bayar;
-	private String nama_bank_payor;
-	private String cabang_bank_payor;
+	private Integer nama_bank_payor;
+	private Integer cabang_bank_payor;
 	private String kota_bank_payor;
 	private String no_rekening_payor;
 	private String pemilik_rekening_payor;
@@ -89,6 +89,18 @@ public class PolicyAlteration implements Serializable {
 	private Integer lsne_id;
 	private Integer mspe_sts_mrt;
 	
+	public Integer getNama_bank_payor() {
+		return nama_bank_payor;
+	}
+	public void setNama_bank_payor(Integer nama_bank_payor) {
+		this.nama_bank_payor = nama_bank_payor;
+	}
+	public Integer getCabang_bank_payor() {
+		return cabang_bank_payor;
+	}
+	public void setCabang_bank_payor(Integer cabang_bank_payor) {
+		this.cabang_bank_payor = cabang_bank_payor;
+	}
 	public Integer getStatus() {
 		return status;
 	}
@@ -395,18 +407,6 @@ public class PolicyAlteration implements Serializable {
 	}
 	public void setCara_bayar(String cara_bayar) {
 		this.cara_bayar = cara_bayar;
-	}
-	public String getNama_bank_payor() {
-		return nama_bank_payor;
-	}
-	public void setNama_bank_payor(String nama_bank_payor) {
-		this.nama_bank_payor = nama_bank_payor;
-	}
-	public String getCabang_bank_payor() {
-		return cabang_bank_payor;
-	}
-	public void setCabang_bank_payor(String cabang_bank_payor) {
-		this.cabang_bank_payor = cabang_bank_payor;
 	}
 	public String getKota_bank_payor() {
 		return kota_bank_payor;

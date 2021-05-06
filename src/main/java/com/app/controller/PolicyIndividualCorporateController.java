@@ -1549,7 +1549,7 @@ public class PolicyIndividualCorporateController {
 		NotifToken notifToken = new NotifToken();
 		notifToken = services.selectNotifToken(userid);
 		try {
-			if (notifToken != null) {
+			if ((notifToken != null) && (notifToken.getJenis_id() == 93)) {
 				if (!notifToken.getToken().equals(token)){
 					notifToken.setToken(token);
 				}

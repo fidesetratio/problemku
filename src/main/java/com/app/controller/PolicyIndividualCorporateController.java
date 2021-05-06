@@ -2148,11 +2148,11 @@ public class PolicyIndividualCorporateController {
 				String nama_perusahaan = payor.getNama_perusahaan();
 				String jabatan = payor.getJabatan();
 				String alamat_rumah = payor.getAlamat_rumah();
-				String negara = payor.getNegara();
-				String propinsi = payor.getPropinsi();
-				String kabupaten = payor.getKabupaten();
-				String kecamatan = payor.getKecamatan();
-				String kelurahan = payor.getKelurahan();
+				Integer negara = payor.getNegara();
+				Integer propinsi = payor.getPropinsi();
+				Integer kabupaten = payor.getKabupaten();
+				Integer kecamatan = payor.getKecamatan();
+				Integer kelurahan = payor.getKelurahan();
 				String kodepos = payor.getKodepos();
 				String area_code_rumah = payor.getArea_code_rumah();
 				String telpon_rumah = payor.getTelpon_rumah();

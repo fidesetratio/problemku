@@ -3903,7 +3903,8 @@
 	</select>
 	
 	<select id="selectPayor" parameterType="String" resultType="com.app.model.PolicyAlteration">
-		SELECT  CASE
+		SELECT  AAA.MSPO_POLICY_NO,
+		        CASE
 		            WHEN    GGG.mste_flag_cc = 0
 		                THEN    'Transfer'
 		            WHEN    GGG.mste_flag_cc = 1
@@ -3926,12 +3927,12 @@
 		        BBB.MCL_COMPANY_NAME AS NAMA_PERUSAHAAN,
 		        BBB.MKL_KERJA AS JABATAN,
 		        CCC.ALAMAT_RUMAH,
-		        KKK.LSNE_NOTE AS NEGARA,
-		        LLL.PROPINSI,
-		        LLL.KABUPATEN,
-		        LLL.KECAMATAN,
-		        LLL.KELURAHAN,
-		        LLL.KODEPOS,
+		        BBB.LSNE_ID AS NEGARA,
+		        CCC.LSPR_ID PROPINSI,
+		        CCC.LSKA_ID KABUPATEN,
+		        CCC.LSKC_ID KECAMATAN,
+		        CCC.LSKL_ID KELURAHAN,
+		        CCC.KD_POS_RUMAH KODEPOS,
 		        CCC.AREA_CODE_RUMAH,
 		        CCC.TELPON_RUMAH,
 		        CCC.NO_HP,
@@ -3949,17 +3950,12 @@
 		        EKA.MST_INSURED GGG,
 		        EKA.MST_ACCOUNT_RECUR HHH,
 		        EKA.LST_BANK III,
-		        EKA.LST_BANK_PUSAT JJJ,
-		        EKA.LST_NEGARA KKK,
-		        EKA.V_PROPINSI LLL
+		        EKA.LST_BANK_PUSAT JJJ
 		WHERE   AAA.MSPO_PAYER = BBB.MCL_ID (+)
 		    AND AAA.REG_SPAJ = FFF.REG_SPAJ (+)
 		    AND AAA.REG_SPAJ = GGG.REG_SPAJ
 		    AND AAA.REG_SPAJ = DDD.REG_SPAJ
 		    AND AAA.REG_SPAJ = HHH.REG_SPAJ (+)
-		    AND BBB.LSNE_ID = KKK.LSNE_ID
-		    AND CCC.LSKL_ID = LLL.LSKL_ID (+)
-		    AND CCC.KD_POS_RUMAH = LLL.KODEPOS(+)
 		    AND HHH.LBN_ID = III.LBN_ID (+)
 		    AND III.LSBP_ID = JJJ.LSBP_ID (+)
 		    AND AAA.MSPO_PAYER = CCC.MCL_ID (+)

@@ -20,11 +20,11 @@ public class PolicyAlteration implements Serializable {
 	private String nama_perusahaan;
 	private String jabatan;
 	private String alamat_rumah;
-	private String negara;
-	private String propinsi;
-	private String kabupaten;
-	private String kecamatan;
-	private String kelurahan;
+	private Integer negara;
+	private Integer propinsi;
+	private Integer kabupaten;
+	private Integer kecamatan;
+	private Integer kelurahan;
 	private String kodepos;
 	private String area_code_rumah;
 	private String telpon_rumah;
@@ -89,6 +89,36 @@ public class PolicyAlteration implements Serializable {
 	private Integer lsne_id;
 	private Integer mspe_sts_mrt;
 	
+	public Integer getNegara() {
+		return negara;
+	}
+	public void setNegara(Integer negara) {
+		this.negara = negara;
+	}
+	public Integer getPropinsi() {
+		return propinsi;
+	}
+	public void setPropinsi(Integer propinsi) {
+		this.propinsi = propinsi;
+	}
+	public Integer getKabupaten() {
+		return kabupaten;
+	}
+	public void setKabupaten(Integer kabupaten) {
+		this.kabupaten = kabupaten;
+	}
+	public Integer getKecamatan() {
+		return kecamatan;
+	}
+	public void setKecamatan(Integer kecamatan) {
+		this.kecamatan = kecamatan;
+	}
+	public Integer getKelurahan() {
+		return kelurahan;
+	}
+	public void setKelurahan(Integer kelurahan) {
+		this.kelurahan = kelurahan;
+	}
 	public Integer getNama_bank_payor() {
 		return nama_bank_payor;
 	}
@@ -461,36 +491,6 @@ public class PolicyAlteration implements Serializable {
 	}
 	public void setAlamat_rumah(String alamat_rumah) {
 		this.alamat_rumah = alamat_rumah;
-	}
-	public String getNegara() {
-		return negara;
-	}
-	public void setNegara(String negara) {
-		this.negara = negara;
-	}
-	public String getPropinsi() {
-		return propinsi;
-	}
-	public void setPropinsi(String propinsi) {
-		this.propinsi = propinsi;
-	}
-	public String getKabupaten() {
-		return kabupaten;
-	}
-	public void setKabupaten(String kabupaten) {
-		this.kabupaten = kabupaten;
-	}
-	public String getKecamatan() {
-		return kecamatan;
-	}
-	public void setKecamatan(String kecamatan) {
-		this.kecamatan = kecamatan;
-	}
-	public String getKelurahan() {
-		return kelurahan;
-	}
-	public void setKelurahan(String kelurahan) {
-		this.kelurahan = kelurahan;
 	}
 	public String getKodepos() {
 		return kodepos;

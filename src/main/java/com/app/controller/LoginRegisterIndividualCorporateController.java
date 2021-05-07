@@ -1432,8 +1432,8 @@ public class LoginRegisterIndividualCorporateController {
 							requestSendOTP.setJenis_id(91);
 							requestSendOTP.setMenu_id(requestForgotPassword.getMenu_id());
 							requestSendOTP.setUsername(no_hp);
-							requestSendOTP.setNo_polis(dataUserCorporate.getReg_spaj());
-							requestSendOTP.setReg_spaj(dataUserCorporate.getNo_polis());
+							requestSendOTP.setNo_polis(dataUserCorporate.getNo_polis());
+							requestSendOTP.setReg_spaj(dataUserCorporate.getReg_spaj());
 							ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 							
 							Boolean errorPost = (Boolean) responseSendOTP.getError();

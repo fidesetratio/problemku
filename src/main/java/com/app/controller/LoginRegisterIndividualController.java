@@ -214,8 +214,8 @@ public class LoginRegisterIndividualController {
 								requestSendOTP.setJenis_id(91);
 								requestSendOTP.setMenu_id(1);
 								requestSendOTP.setUsername(no_hp_polis);
-								requestSendOTP.setNo_polis(pemegang.getReg_spaj());
-								requestSendOTP.setReg_spaj(pemegang.getMspo_policy_no());
+								requestSendOTP.setNo_polis(pemegang.getMspo_policy_no());
+								requestSendOTP.setReg_spaj(pemegang.getReg_spaj());
 								ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
 								
 								Boolean errorPost = (Boolean) responseSendOTP.getError();

@@ -35,7 +35,7 @@ public class PolicyAlteration implements Serializable {
 	private String mkl_penghasilan;
 	private String mkl_smbr_penghasilan;
 	
-	private String status_tt;
+	private Integer status_tt;
 	private Integer agama_tt;
 	private Integer kewarganegaraan_tt;
 	private String nama_perusahaan_tt;
@@ -413,13 +413,12 @@ public class PolicyAlteration implements Serializable {
 	public void setPemilik_rekening_pp(String pemilik_rekening_pp) {
 		this.pemilik_rekening_pp = pemilik_rekening_pp;
 	}
-	public String getStatus_tt() {
+	public Integer getStatus_tt() {
 		return status_tt;
 	}
-	public void setStatus_tt(String status_tt) {
+	public void setStatus_tt(Integer status_tt) {
 		this.status_tt = status_tt;
 	}
-
 	public String getNama_perusahaan_tt() {
 		return nama_perusahaan_tt;
 	}

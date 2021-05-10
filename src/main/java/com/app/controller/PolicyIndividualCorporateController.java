@@ -2079,7 +2079,7 @@ public class PolicyIndividualCorporateController {
 				
 			//GET INSURED
 				PolicyAlteration insured = services.selectInsured(no_polis);
-				String status_tt = insured.getStatus_tt();
+				Integer status_tt = insured.getStatus_tt();
 				Integer agama_tt = insured.getAgama_tt();
 				Integer kewarganegaraan_tt = insured.getKewarganegaraan_tt();
 				String nama_perusahaan_tt = insured.getNama_perusahaan_tt();

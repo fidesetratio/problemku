@@ -24,6 +24,15 @@ public class LstUserSimultaneous implements Serializable {
 	private String KEY;
 	private String DATE_CREATED_JAVA;
 	private String MCL_ID_EMPLOYEE;
+	private String EB_HR_USERNAME;
+
+	public String getEB_HR_USERNAME() {
+		return EB_HR_USERNAME;
+	}
+
+	public void setEB_HR_USERNAME(String eB_HR_USERNAME) {
+		EB_HR_USERNAME = eB_HR_USERNAME;
+	}
 
 	public LstUserSimultaneous() {
 	}

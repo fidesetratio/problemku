@@ -111,18 +111,22 @@ public class LoginRegisterIndividualCorporateController {
 			if (checkIndividuOrCorporate != null) {
 				String reg_spaj = checkIndividuOrCorporate.getREG_SPAJ();
 				String mcl_id_employee = checkIndividuOrCorporate.getMCL_ID_EMPLOYEE();
+				String eb_hr_username = checkIndividuOrCorporate.getEB_HR_USERNAME();
 
 				Boolean individu = false;
 				Boolean corporate = false;
+				Boolean hr_user = false;
 				Boolean policy_corporate_notinforce = false;
 				Boolean user_corporate_notactive = false;
 
-				if ((reg_spaj != null) && (mcl_id_employee == null)) {
+				if ((reg_spaj != null) && (mcl_id_employee == null) && (eb_hr_username == null)) {
 					individu = true;
 					corporate = false;
-				} else if ((reg_spaj == null) && (mcl_id_employee != null)) {
+					hr_user = false;
+				} else if ((reg_spaj == null) && (mcl_id_employee != null) && (eb_hr_username == null)) {
 					individu = false;
 					corporate = true;
+					hr_user = false;
 
 					ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
 					for (int x = 0; x < 1; x++) {
@@ -142,9 +146,33 @@ public class LoginRegisterIndividualCorporateController {
 							user_corporate_notactive = true;
 						}
 					}
+				} else if ((reg_spaj == null) && (mcl_id_employee == null) && (eb_hr_username != null)) {
+					individu = false;
+					corporate = false;
+					hr_user = true;
+					/*
+					ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
+					for (int x = 0; x < 1; x++) {
+						Date endDate = listPolisCorporate.get(x).getMspo_end_date();
+						BigDecimal flagActiveUserCorporate = listPolisCorporate.get(x).getMste_active();
+						LocalDate now = LocalDate.now();
+						LocalDate endDateParse = LocalDate.parse(df1.format(endDate));
+						// Check no polis corporate active or not
+						if (endDateParse.compareTo(now) < 0) {
+							policy_corporate_notinforce = true;
+						} else {
+							policy_corporate_notinforce = false;
+						}
+
+						// Check user corporate active or not
+						if (flagActiveUserCorporate.intValue() == 0) {
+							user_corporate_notactive = true;
+						}
+					}*/
 				} else {
 					individu = true;
 					corporate = true;
+					hr_user= false;
 
 					ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
 					for (int x = 0; x < 1; x++) {
@@ -166,8 +194,8 @@ public class LoginRegisterIndividualCorporateController {
 					}
 				}
 
-				if ((individu.equals(true) && corporate.equals(false))
-						|| (individu.equals(true) && corporate.equals(true))) { // Login Individual
+				if ((individu.equals(true) && corporate.equals(false) && hr_user.equals(false))
+						|| (individu.equals(true) && corporate.equals(true) && hr_user.equals(false))) { // Login Individual
 					User dataActivityUser = services.selectUserIndividual(username);
 					// Check apakah username terdaftar/ tidak
 					if (dataActivityUser != null) {
@@ -193,6 +221,7 @@ public class LoginRegisterIndividualCorporateController {
 											message = "Login success";
 											data.put("individual", individu);
 											data.put("corporate", corporate);
+											data.put("hr_user", hr_user);
 											data.put("policy_corporate_status", policy_corporate_notinforce);
 											data.put("user_corporate_notactive", user_corporate_notactive);
 											data.put("key", key);
@@ -244,6 +273,7 @@ public class LoginRegisterIndividualCorporateController {
 														message = "Login success";
 														data.put("individual", individu);
 														data.put("corporate", corporate);
+														data.put("hr_user", hr_user);
 														data.put("policy_corporate_status",
 																policy_corporate_notinforce);
 														data.put("user_corporate_notactive", user_corporate_notactive);
@@ -308,6 +338,7 @@ public class LoginRegisterIndividualCorporateController {
 											message = "Login success";
 											data.put("individual", individu);
 											data.put("corporate", corporate);
+											data.put("hr_user", hr_user);
 											data.put("policy_corporate_status", policy_corporate_notinforce);
 											data.put("user_corporate_notactive", user_corporate_notactive);
 											data.put("key", key);
@@ -355,7 +386,24 @@ public class LoginRegisterIndividualCorporateController {
 						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 								+ resultErr);
 					}
-				} else { // Login Corporate
+				} else if ((individu.equals(false) && corporate.equals(false) && hr_user.equals(true))) { // Login HR
+					String today = df.format(new Date());
+					lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+					lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+					services.updateUserKeyName(lstUserSimultaneous);
+					key = user1.getKEY();
+
+					error = false;
+					message = "Login success";
+					data.put("individual", individu);
+					data.put("corporate", corporate);
+					data.put("hr_user", hr_user);
+					data.put("policy_corporate_status", policy_corporate_notinforce);
+					data.put("user_corporate_notactive", user_corporate_notactive);
+					data.put("key", key);
+					data.put("no_hp", null);
+				}
+				else { // Login Corporate
 					UserCorporate dataUserCorporate = services.selectUserCorporate(username);
 					// Check apakah username terdaftar/ tidak
 					if (dataUserCorporate != null) {
@@ -378,6 +426,7 @@ public class LoginRegisterIndividualCorporateController {
 										message = "Login success";
 										data.put("individual", individu);
 										data.put("corporate", corporate);
+										data.put("hr_user", hr_user);
 										data.put("policy_corporate_status", policy_corporate_notinforce);
 										data.put("user_corporate_notactive", user_corporate_notactive);
 										data.put("key", key);
@@ -428,6 +477,7 @@ public class LoginRegisterIndividualCorporateController {
 													message = "Login success";
 													data.put("individual", individu);
 													data.put("corporate", corporate);
+													data.put("hr_user", hr_user);
 													data.put("policy_corporate_status", policy_corporate_notinforce);
 													data.put("user_corporate_notactive", user_corporate_notactive);
 													data.put("key", key);
@@ -488,6 +538,7 @@ public class LoginRegisterIndividualCorporateController {
 										message = "Login success";
 										data.put("individual", individu);
 										data.put("corporate", corporate);
+										data.put("hr_user", hr_user);
 										data.put("policy_corporate_status", policy_corporate_notinforce);
 										data.put("user_corporate_notactive", user_corporate_notactive);
 										data.put("key", key);

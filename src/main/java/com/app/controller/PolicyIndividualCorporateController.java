@@ -2493,6 +2493,8 @@ public class PolicyIndividualCorporateController {
 		Integer id_endors, flag_direct, lsje_id;
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
+				/*
+				
 				// Get SPAJ
 				Pemegang paramSelectSPAJ = new Pemegang();
 				paramSelectSPAJ.setMspo_policy_no(no_polis);
@@ -2684,13 +2686,7 @@ public class PolicyIndividualCorporateController {
 						//UPDATE LSPD_ID IN MSPO_POLICY
 						services.updateLspdId(reg_spaj);
 					}
-				}
-				
-				/*
-								
-				
-				
-				*/
+				}*/
 				
 				error = false;
 				message = "Successfully submit policy alteration";

@@ -4211,7 +4211,6 @@
 		        b.reg_spaj,
 		        b.mspo_policy_no no_polis,
 		        c.mcl_first,
-		        ins.mste_insured,
 		        b.mspo_beg_date
 		FROM    eka.mst_policy@EB b,
 		        eka.mst_insured@EB ins,
@@ -4225,11 +4224,11 @@
 		    AND ins.mste_insured_no = prod.mste_insured_no
 		    AND ins.reg_spaj = prod.reg_spaj
 		    AND b.mspo_policy_no = b.mspo_policy_no
-		    AND ins.mste_insured = c.mcl_id
+		    AND b.mspo_policy_holder = c.mcl_id
 		    AND b.reg_spaj = e.reg_spaj 
 		    AND d.lus_id = e.lus_id
 		    AND prod.mspr_active = 1
 		    AND d.lus_login_name = #{eb_hr_username, jdbcType=VARCHAR}
-		GROUP BY b.reg_spaj, b.mspo_policy_no, c.mcl_first, d.lus_id, d.lus_login_name, d.lus_password, ins.mste_insured, b.mspo_beg_date
+		GROUP BY b.reg_spaj, b.mspo_policy_no, c.mcl_first, d.lus_id, d.lus_login_name, d.lus_password, b.mspo_beg_date
 	 </select>
 </mapper>

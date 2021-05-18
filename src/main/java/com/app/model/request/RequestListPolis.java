@@ -9,6 +9,24 @@ public class RequestListPolis implements Serializable {
 	private static final long serialVersionUID = -5619732625357507168L;
 	private String username;
 	private String key;
+	private String search_policy;
+	private Integer search_type;
+
+	public String getSearch_policy() {
+		return search_policy;
+	}
+
+	public void setSearch_policy(String search_policy) {
+		this.search_policy = search_policy;
+	}
+
+	public Integer getSearch_type() {
+		return search_type;
+	}
+
+	public void setSearch_type(Integer search_type) {
+		this.search_type = search_type;
+	}
 
 	public String getUsername() {
 		return username;

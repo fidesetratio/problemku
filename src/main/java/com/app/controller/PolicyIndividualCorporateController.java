@@ -511,11 +511,9 @@ public class PolicyIndividualCorporateController {
 								HashMap<String, Object> dataDetailsPolis = new HashMap<>();
 								String reg_spaj = listPolisHRUser.get(y).getReg_spaj();
 								String mcl_first = listPolisHRUser.get(y).getMcl_first();
-								String mste_insured = listPolisHRUser.get(y).getMste_insured();
 
 								dataDetailsPolis.put("reg_spaj", reg_spaj);
 								dataDetailsPolis.put("mcl_first", mcl_first);
-								dataDetailsPolis.put("mste_insured", mste_insured);
 								dataDetailsPolis.put("account_type", "hr_user");
 
 								detailsPolis.add(dataDetailsPolis);

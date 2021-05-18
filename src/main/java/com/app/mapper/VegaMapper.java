@@ -50,6 +50,7 @@ import com.app.model.TrackingPolis;
 import com.app.model.UnitLink;
 import com.app.model.User;
 import com.app.model.UserCorporate;
+import com.app.model.UserHR;
 import com.app.model.VersionCode;
 import com.app.model.ViewClaim;
 import com.app.model.Withdraw;
@@ -406,6 +407,8 @@ public interface VegaMapper {
 	public User selectCheckPhoneNumberIndividu(String mspo_policy_no);
 	
 	public UserCorporate selectCheckPhoneNumberCorporate(HashMap<String, Object> hashMap);
+	
+	public ArrayList<UserHR> selectListPolisHRUser(String eb_hr_username);
 
 	// Update
 	public void updateUserKeyName(LstUserSimultaneous user);

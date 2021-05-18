@@ -4205,4 +4205,31 @@
 			AND jenis_id = 93
 		    AND UPPER (username) = UPPER (#{userid, jdbcType=VARCHAR})
 	 </select>
+	 
+	 <select id="selectListPolisHRUser" parameterType="String" resultType="com.app.model.UserHR">
+		SELECT  d.lus_login_name,
+		        b.reg_spaj,
+		        b.mspo_policy_no no_polis,
+		        c.mcl_first,
+		        ins.mste_insured,
+		        b.mspo_beg_date
+		FROM    eka.mst_policy@EB b,
+		        eka.mst_insured@EB ins,
+		        eka.mst_product_insured@EB prod,
+		        eka.mst_client@EB c,
+		        eka.lst_user@EB d,
+		        eka.lst_user_policy@EB e
+		WHERE   b.lssp_id = 1
+		    AND b.lstb_id = 3
+		    AND b.reg_spaj = ins.reg_spaj
+		    AND ins.mste_insured_no = prod.mste_insured_no
+		    AND ins.reg_spaj = prod.reg_spaj
+		    AND b.mspo_policy_no = b.mspo_policy_no
+		    AND ins.mste_insured = c.mcl_id
+		    AND b.reg_spaj = e.reg_spaj 
+		    AND d.lus_id = e.lus_id
+		    AND prod.mspr_active = 1
+		    AND d.lus_login_name = #{eb_hr_username, jdbcType=VARCHAR}
+		GROUP BY b.reg_spaj, b.mspo_policy_no, c.mcl_first, d.lus_id, d.lus_login_name, d.lus_password, ins.mste_insured, b.mspo_beg_date
+	 </select>
 </mapper>

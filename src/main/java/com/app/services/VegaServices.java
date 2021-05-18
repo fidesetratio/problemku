@@ -1432,6 +1432,16 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListPolisHRUser(eb_hr_username);
 	}
+
+	public ArrayList<UserHR> selectListPesertaHR(String eb_hr_username, String search_policy, Integer search_type, String policy_no) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("eb_hr_username", eb_hr_username);
+		hashMap.put("search_policy", search_policy);
+		hashMap.put("search_type", search_type);
+		hashMap.put("policy_no", policy_no);
+		return dao.selectListPesertaHR(hashMap);
+	}
 	
 	
 }

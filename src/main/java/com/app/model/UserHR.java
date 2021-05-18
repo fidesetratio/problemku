@@ -22,12 +22,21 @@ public class UserHR implements Serializable {
 	private Date mspo_end_date;
 	private BigDecimal mste_active;
 	private BigDecimal mspo_type_rek;
+	private String kode_reg;
 
 	private String username;
 	private String last_login_device;
 	private Date update_date;
 	private String eb_hr_username;
 	
+	public String getKode_reg() {
+		return kode_reg;
+	}
+
+	public void setKode_reg(String kode_reg) {
+		this.kode_reg = kode_reg;
+	}
+
 	public String getEb_hr_username() {
 		return eb_hr_username;
 	}

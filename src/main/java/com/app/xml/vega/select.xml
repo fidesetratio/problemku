@@ -4231,4 +4231,79 @@
 		    AND d.lus_login_name = #{eb_hr_username, jdbcType=VARCHAR}
 		GROUP BY b.reg_spaj, b.mspo_policy_no, c.mcl_first, d.lus_id, d.lus_login_name, d.lus_password, b.mspo_beg_date
 	 </select>
+
+	 <select id="selectListPesertaHR" parameterType="HashMap" resultType="com.app.model.UserHR">	 
+		SELECT  b.mspo_policy_no no_polis,
+		        b.reg_spaj,
+		        ins.mste_insured,
+		        c.mcl_first,
+		        ins.mste_no_reg kode_reg,
+		        b.mspo_beg_date
+		FROM    eka.mst_policy@eb b,
+		        eka.mst_insured@eb ins,
+		        eka.mst_product_insured@eb prod,
+		        eka.mst_client@eb c,
+		        eka.lst_user@eb d,
+		        eka.lst_user_policy@eb e
+		WHERE   d.lus_login_name = #{eb_hr_username, jdbcType=VARCHAR}
+		    AND b.lssp_id = 1
+		    AND b.lstb_id = 3
+		    AND b.reg_spaj = ins.reg_spaj
+		    and ins.mste_insured_no = prod.mste_insured_no
+		    and ins.reg_spaj = prod.reg_spaj
+		    AND b.mspo_policy_no = b.mspo_policy_no
+		    AND ins.mste_insured = c.mcl_id
+		    AND b.reg_spaj = e.reg_spaj 
+		    AND d.lus_id = e.lus_id
+		    AND prod.mspr_active = 1
+		    AND b.mspo_policy_no = #{policy_no, jdbcType=VARCHAR}
+		<if test="search_type == 1">
+		    AND c.mcl_first like '%'|| #{search_policy} ||'%'
+		</if>
+		<if test="search_type == 0">
+		    AND ins.mste_no_reg like '%'|| REPLACE(#{search_policy},'.') ||'%'
+		</if>
+		GROUP BY b.reg_spaj, b.mspo_policy_no, c.mcl_first, ins.mste_insured, ins.mste_no_reg, b.mspo_beg_date
+		UNION
+		SELECT  b.mspo_policy_no no_polis,
+		        b.reg_spaj,
+		        gg.mste_insured,
+		        gg.mcl_first,
+		        gg.mste_no_reg kode_reg,
+		        b.mspo_beg_date
+		FROM    eka.mst_policy@eb b,
+		        eka.mst_client@eb c,
+		        (SELECT b.mspo_policy_no,
+		                f.mcl_first,
+		                ins.mste_insured,
+		                ins.mste_no_reg
+		        FROM    eka.mst_policy@eb b,
+		                eka.mst_insured@eb ins,
+		                eka.mst_product_insured@eb prod,
+		                eka.lst_user@eb d,
+		                eka.lst_user_policy@eb e,
+		                eka.mst_client@eb f
+		        WHERE   d.lus_login_name = #{eb_hr_username, jdbcType=VARCHAR}
+		            AND b.lssp_id = 1
+		            AND prod.mspr_active = 1
+		            AND b.lstb_id = 3
+		            AND b.reg_spaj = ins.reg_spaj
+		            and ins.mste_insured_no = prod.mste_insured_no
+		            and ins.mste_insured = f.mcl_id
+		            and ins.reg_spaj = prod.reg_spaj
+		            AND b.reg_spaj = e.reg_spaj
+		            AND d.lus_id = e.lus_id
+		        GROUP BY b.mspo_policy_no, f.mcl_first, ins.mste_insured, ins.mste_no_reg, b.mspo_beg_date) gg
+		WHERE   b.mspo_oldpol_eb = gg.mspo_policy_no
+			AND b.mspo_policy_no = #{policy_no, jdbcType=VARCHAR}
+		<if test="search_type == 1">
+		    AND c.mcl_first like '%'|| #{search_policy} ||'%'
+		</if>
+		<if test="search_type == 0">
+		    AND gg.mste_no_reg like '%'|| REPLACE(#{search_policy},'.') ||'%'
+		</if>
+		    AND b.mspo_policy_holder = c.mcl_id
+		    AND b.mspo_policy_no IS NOT NULL
+	</select>
+
 </mapper>

@@ -409,6 +409,8 @@ public interface VegaMapper {
 	public UserCorporate selectCheckPhoneNumberCorporate(HashMap<String, Object> hashMap);
 	
 	public ArrayList<UserHR> selectListPolisHRUser(String eb_hr_username);
+	
+	public ArrayList<UserHR> selectListPesertaHR(HashMap<String, Object> hashMap);
 
 	// Update
 	public void updateUserKeyName(LstUserSimultaneous user);

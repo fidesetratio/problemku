@@ -11,6 +11,15 @@ public class RequestListPolis implements Serializable {
 	private String key;
 	private String search_policy;
 	private Integer search_type;
+	private String policy_no;
+	
+	public String getPolicy_no() {
+		return policy_no;
+	}
+
+	public void setPolicy_no(String policy_no) {
+		this.policy_no = policy_no;
+	}
 
 	public String getSearch_policy() {
 		return search_policy;

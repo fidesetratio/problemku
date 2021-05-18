@@ -505,22 +505,6 @@ public class PolicyIndividualCorporateController {
 						dataTemp.put("masa_pertanggungan",
 								masa_pertanggungan != null ? df2.format(masa_pertanggungan) : null);
 
-						ArrayList<HashMap<String, Object>> detailsPolis = new ArrayList<>();
-						for (int y = 0; y < listPolisHRUser.size(); y++) {
-							if (listPolisHRUser.get(y).getNo_polis().equals(distinctNoPolis.get(x))) {
-								HashMap<String, Object> dataDetailsPolis = new HashMap<>();
-								String reg_spaj = listPolisHRUser.get(y).getReg_spaj();
-								String mcl_first = listPolisHRUser.get(y).getMcl_first();
-
-								dataDetailsPolis.put("reg_spaj", reg_spaj);
-								dataDetailsPolis.put("mcl_first", mcl_first);
-								dataDetailsPolis.put("account_type", "hr_user");
-
-								detailsPolis.add(dataDetailsPolis);
-							}
-						}
-
-						dataTemp.put("details", detailsPolis);
 						hr_user.add(dataTemp);
 					}
 				} else {

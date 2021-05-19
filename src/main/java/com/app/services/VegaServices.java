@@ -45,6 +45,7 @@ import com.app.model.Provider;
 import com.app.model.Provinsi;
 import com.app.model.PushNotif;
 import com.app.model.Rekening;
+import com.app.model.ReportHr;
 import com.app.model.Sales;
 import com.app.model.SmsServerOut;
 import com.app.model.StableLink;
@@ -1441,6 +1442,15 @@ public class VegaServices {
 		hashMap.put("search_type", search_type);
 		hashMap.put("policy_no", policy_no);
 		return dao.selectListPesertaHR(hashMap);
+	}
+
+	public ArrayList<ReportHr> selectListReportHr(String no_polis, Integer pageNumber, Integer pageSize) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("no_polis", no_polis);
+		hashMap.put("pageNumber", pageNumber);
+		hashMap.put("pageSize", pageSize);
+		return dao.selectListReportHr(hashMap);
 	}
 	
 	

@@ -11,7 +11,25 @@ public class RequestReportHr implements Serializable {
 	private String username;
 	private String key;
 	private String no_polis;
+	private Integer pageNumber;
+	private Integer pageSize;
 	
+	public Integer getPageNumber() {
+		return pageNumber;
+	}
+
+	public void setPageNumber(Integer pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+
+	public Integer getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(Integer pageSize) {
+		this.pageSize = pageSize;
+	}
+
 	public String getNo_polis() {
 		return no_polis;
 	}

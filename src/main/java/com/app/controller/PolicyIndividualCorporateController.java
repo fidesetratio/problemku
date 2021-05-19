@@ -3025,7 +3025,7 @@ public class PolicyIndividualCorporateController {
 		return res;
 	}
 	
-	/*@RequestMapping(value = "/listreporthr", produces = "application/json", method = RequestMethod.POST)
+	@RequestMapping(value = "/listreporthr", produces = "application/json", method = RequestMethod.POST)
 	public String listRerportHr(@RequestBody RequestReportHr requestReportHr,
 			HttpServletRequest request) {
 		Date start = new Date();
@@ -3040,16 +3040,18 @@ public class PolicyIndividualCorporateController {
 		Boolean error = false;
 		HashMap<String, Object> map = new HashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
-		ArrayList<HashMap<String, Object>> listReportHr = new ArrayList<>();
+		ArrayList<HashMap<String, Object>> listsReportHr = new ArrayList<>();
 
 		String username = requestReportHr.getUsername();
 		String key = requestReportHr.getKey();
 		String no_polis = requestReportHr.getNo_polis();
+		Integer pageNumber = requestReportHr.getPageNumber();
+		Integer pageSize = requestReportHr.getPageSize();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
-				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis);
+				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis, pageNumber, pageSize);
 				
-				if (listReportHr==null) {
+				if (listReportHr.size()==0) {
 					// Data List Kosong
 					error = false;
 					message = "Data list report hr empty";
@@ -3093,9 +3095,9 @@ public class PolicyIndividualCorporateController {
 						dataTemp.put("lms_status", lms_status);
 						dataTemp.put("reason_decline", reason_decline);						
 						
-						listPolAlt.add(dataTemp);
+						listsReportHr.add(dataTemp);
 					}
-					data.put("list_policy_alteration", listPolAlt);
+					data.put("list_report_batch", listsReportHr);
 					error = false;
 					message = "Successfully get data";
 				}
@@ -3120,5 +3122,5 @@ public class PolicyIndividualCorporateController {
 		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
-	}*/
+	}
 }

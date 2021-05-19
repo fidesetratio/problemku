@@ -38,6 +38,7 @@ import com.app.model.Provider;
 import com.app.model.Provinsi;
 import com.app.model.PushNotif;
 import com.app.model.Rekening;
+import com.app.model.ReportHr;
 import com.app.model.Sales;
 import com.app.model.SmsServerOut;
 import com.app.model.StableLink;
@@ -411,6 +412,8 @@ public interface VegaMapper {
 	public ArrayList<UserHR> selectListPolisHRUser(String eb_hr_username);
 	
 	public ArrayList<UserHR> selectListPesertaHR(HashMap<String, Object> hashMap);
+	
+	public ArrayList<ReportHr> selectListReportHr(HashMap<String, Object> hashMap);
 
 	// Update
 	public void updateUserKeyName(LstUserSimultaneous user);

@@ -575,7 +575,6 @@ public class PolicyIndividualCorporateController {
 		Boolean error = true;
 		String message = null;
 		HashMap<String, Object> map = new HashMap<>();
-		HashMap<String, Object> data = new HashMap<>();
 
 		String username = requestListPolis.getUsername();
 		String key = requestListPolis.getKey();
@@ -609,7 +608,6 @@ public class PolicyIndividualCorporateController {
 					error = false;
 					message = "Successfully get data list polis";
 				} else {
-					hr_user = null;
 					error = false;
 					map.put("data", hr_user);
 					message = "Can't get data list polis";

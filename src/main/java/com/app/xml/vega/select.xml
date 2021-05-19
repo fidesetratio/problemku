@@ -4261,7 +4261,7 @@
 		    AND c.mcl_first like '%'|| #{search_policy} ||'%'
 		</if>
 		<if test="search_type == 0">
-		    AND ins.mste_no_reg like '%'|| REPLACE(#{search_policy},'.') ||'%'
+		    AND UPPER(ins.mste_no_reg) like UPPER('%'|| #{search_policy} ||'%')
 		</if>
 		GROUP BY b.reg_spaj, b.mspo_policy_no, c.mcl_first, ins.mste_insured, ins.mste_no_reg, b.mspo_beg_date
 		UNION
@@ -4300,7 +4300,7 @@
 		    AND c.mcl_first like '%'|| #{search_policy} ||'%'
 		</if>
 		<if test="search_type == 0">
-		    AND gg.mste_no_reg like '%'|| REPLACE(#{search_policy},'.') ||'%'
+		    AND UPPER(gg.mste_no_reg) like UPPER('%'|| #{search_policy} ||'%')
 		</if>
 		    AND b.mspo_policy_holder = c.mcl_id
 		    AND b.mspo_policy_no IS NOT NULL

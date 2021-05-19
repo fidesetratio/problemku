@@ -54,6 +54,7 @@ import com.app.model.Pemegang;
 import com.app.model.PolicyAlteration;
 import com.app.model.Provider;
 import com.app.model.PushNotif;
+import com.app.model.ReportHr;
 import com.app.model.SubmitPolicyAlteration;
 import com.app.model.SwitchingRedirection;
 import com.app.model.User;
@@ -72,6 +73,7 @@ import com.app.model.request.RequestListPolis;
 import com.app.model.request.RequestNabchart;
 import com.app.model.request.RequestPushNotif;
 import com.app.model.request.RequestReadAllInbox;
+import com.app.model.request.RequestReportHr;
 import com.app.model.request.RequestSMSOTP;
 import com.app.model.request.RequestSaveToken;
 import com.app.model.request.RequestSendOTP;
@@ -583,119 +585,40 @@ public class PolicyIndividualCorporateController {
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				ArrayList<HashMap<String, Object>> hr_user = new ArrayList<>();
-				Boolean policy_hr_user_notinforce = false;
 
 				LstUserSimultaneous selectTypeUser = services.selectDataLstUserSimultaneous(username);
 				String eb_hr_username = selectTypeUser.getEB_HR_USERNAME();
 
 				ArrayList<UserHR> listPesertaHRUser = services.selectListPesertaHR(eb_hr_username, search_policy, search_type, policy_no);
 				if (!listPesertaHRUser.isEmpty()) {
-					// Add no polis dalam satu list
-					List<String> listNoPolis = new ArrayList<String>();
-					for (int i = 0; i < listPesertaHRUser.size(); i++) {
-						String distinctNoPolis = listPesertaHRUser.get(i).getNo_polis();
-						listNoPolis.add(distinctNoPolis);
+					for (int y = 0; y < listPesertaHRUser.size(); y++) {
+						HashMap<String, Object> dataDetailsPolis = new HashMap<>();
+						String reg_spaj = listPesertaHRUser.get(y).getReg_spaj();
+						String mcl_first = listPesertaHRUser.get(y).getMcl_first();
+						String mste_insured = listPesertaHRUser.get(y).getMste_insured();
+						String kode_reg = listPesertaHRUser.get(y).getKode_reg().replaceAll("\\s", "").toUpperCase();
+
+						dataDetailsPolis.put("reg_spaj", reg_spaj);
+						dataDetailsPolis.put("mcl_first", mcl_first);
+						dataDetailsPolis.put("mste_insured", mste_insured);
+						dataDetailsPolis.put("kode_reg", kode_reg);
+
+						hr_user.add(dataDetailsPolis);
 					}
-
-					// Add masa pertanggungan pada satu list
-					List<Date> listBegDate = new ArrayList<Date>();
-					for (int i = 0; i < listPesertaHRUser.size(); i++) {
-						Date distinctBegDate = listPesertaHRUser.get(i).getMspo_beg_date();
-						if (distinctBegDate != null) {
-							listBegDate.add(distinctBegDate);
-						}
-					}
-
-					// Distinct no polis, masa pertanggungan biar gak dobel2
-					List<String> distinctNoPolis = listNoPolis.stream().distinct().collect(Collectors.toList());
-					List<Date> distinctBegDate = listBegDate.stream().distinct().collect(Collectors.toList());
-
-					// Check polis corporate yang keluar ada 1 atau 2 dilihat dari masa berlaku
-					int z = 2;
-					if (distinctBegDate.size() > 1) {
-						LocalDate date = LocalDate.parse(df1.format(distinctBegDate.get(0)));
-						LocalDate datePlus = date.plusMonths(3);
-
-						LocalDate sysdate = LocalDate.now();
-//						LocalDate sysdate = LocalDate.parse("2020-02-01");
-
-						if (datePlus.compareTo(sysdate) < 0) {
-							z = 1;
-						} else {
-							z = 2;
-						}
-					} else {
-						z = 1;
-					}
-
-					// Get data dari polis2 yang sudah di distinct
-					for (int x = 0; x < z; x++) {
-						HashMap<String, Object> dataTemp = new HashMap<>();
-						String no_polis = distinctNoPolis.get(x);
-						Date masa_pertanggungan = distinctBegDate.get(x);
-
-						// Check no polis terakhir masih berlaku atau tidak
-						if (x == 0) {
-							UserCorporate dataEndDate = services
-									.selectBegDateEndDateCorporate(customResourceLoader.clearData(no_polis));
-							Date endDate = dataEndDate.getMspo_end_date();
-							LocalDate now = LocalDate.now();
-							LocalDate endDateParse = LocalDate.parse(df1.format(endDate));
-							if (endDateParse.compareTo(now) < 0) {
-								policy_hr_user_notinforce = true;
-							} else {
-								policy_hr_user_notinforce = false;
-							}
-						}
-
-						dataTemp.put("no_polis", no_polis);
-						dataTemp.put("masa_pertanggungan",
-								masa_pertanggungan != null ? df2.format(masa_pertanggungan) : null);
-						
-						ArrayList<HashMap<String, Object>> detailsPolis = new ArrayList<>();
-						for (int y = 0; y < listPesertaHRUser.size(); y++) {
-							if (listPesertaHRUser.get(y).getNo_polis().equals(distinctNoPolis.get(x))) {
-								HashMap<String, Object> dataDetailsPolis = new HashMap<>();
-								String reg_spaj = listPesertaHRUser.get(y).getReg_spaj();
-								String mcl_first = listPesertaHRUser.get(y).getMcl_first();
-								String mste_insured = listPesertaHRUser.get(y).getMste_insured();
-								String kode_reg = listPesertaHRUser.get(y).getKode_reg().replaceAll("\\s", "").toUpperCase();
-
-								dataDetailsPolis.put("reg_spaj", reg_spaj);
-								dataDetailsPolis.put("mcl_first", mcl_first);
-								dataDetailsPolis.put("mste_insured", mste_insured);
-								dataDetailsPolis.put("kode_reg", kode_reg);
-
-								detailsPolis.add(dataDetailsPolis);
-							}
-						}
-						
-						dataTemp.put("details", detailsPolis);
-						hr_user.add(dataTemp);
-					}
-				} else {
-					hr_user = null;
-				}
-
-				if ((hr_user == null)) {
-					error = true;
-					message = "Can't get data list polis";
-					data.put("hr_user", hr_user);
-					data.put("policy_hr_user_notinforce", false);
-					resultErr = "Data list polis HR kosong";
-					logger.error(
-							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
-				} else {
+					map.put("data", hr_user);
 					error = false;
 					message = "Successfully get data list polis";
-					data.put("hr_user", hr_user);
-					data.put("policy_hr_user_notinforce", policy_hr_user_notinforce);
+				} else {
+					hr_user = null;
+					error = false;
+					map.put("data", hr_user);
+					message = "Can't get data list polis";
 				}
 			} else {
 				error = true;
-				message = "Can't get data list polis";
-				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
-				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				message = "Can't get data list peserta";
+				logger.error(
+						"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
 			}
 		} catch (Exception e) {
 			error = true;
@@ -705,7 +628,6 @@ public class PolicyIndividualCorporateController {
 		}
 		map.put("error", error);
 		map.put("message", message);
-		map.put("data", data);
 		res = gson.toJson(map);
 		// Update activity user table LST_USER_SIMULTANEOUS
 		customResourceLoader.updateActivity(username);
@@ -3104,4 +3026,101 @@ public class PolicyIndividualCorporateController {
 
 		return res;
 	}
+	
+	/*@RequestMapping(value = "/listreporthr", produces = "application/json", method = RequestMethod.POST)
+	public String listRerportHr(@RequestBody RequestReportHr requestReportHr,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestReportHr);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+		ArrayList<HashMap<String, Object>> listReportHr = new ArrayList<>();
+
+		String username = requestReportHr.getUsername();
+		String key = requestReportHr.getKey();
+		String no_polis = requestReportHr.getNo_polis();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis);
+				
+				if (listReportHr==null) {
+					// Data List Kosong
+					error = false;
+					message = "Data list report hr empty";
+				} else {
+					for(int i = 0; i<listReportHr.size();i++) {
+						HashMap<String, Object> dataTemp = new HashMap<>();
+						
+						String reg_spaj = listReportHr.get(i).getReg_spaj();
+						String mpcc_id = listReportHr.get(i).getMpcc_id();
+						Date created_date = listReportHr.get(i).getCreated_date();
+						Date date_update_status = listReportHr.get(i).getDate_update_status();
+						String amount_dibayar = listReportHr.get(i).getAmount_dibayar();
+						String jenis_claim = listReportHr.get(i).getJenis_claim();
+						String status = listReportHr.get(i).getStatus();
+						String mspo_policy_no_format = listReportHr.get(i).getMspo_policy_no_format();
+						String mcl_first = listReportHr.get(i).getMcl_first();
+						Date start_date = listReportHr.get(i).getStart_date();
+						Date end_date = listReportHr.get(i).getEnd_date();
+						Integer double_cover_claim = listReportHr.get(i).getDouble_cover_claim();
+						String bank = listReportHr.get(i).getBank();
+						String no_rekening = listReportHr.get(i).getNo_rekening();
+						String path_storage = listReportHr.get(i).getPath_storage();
+						String lms_status = listReportHr.get(i).getLms_status();
+						String reason_decline = listReportHr.get(i).getReason_decline();
+						
+						dataTemp.put("reg_spaj", reg_spaj);
+						dataTemp.put("mpcc_id", mpcc_id);
+						dataTemp.put("created_date", created_date);
+						dataTemp.put("date_update_status", date_update_status);
+						dataTemp.put("amount_dibayar", amount_dibayar);
+						dataTemp.put("jenis_claim", jenis_claim);
+						dataTemp.put("status", status);
+						dataTemp.put("mspo_policy_no_format", mspo_policy_no_format);
+						dataTemp.put("mcl_first", mcl_first);
+						dataTemp.put("start_date", start_date);
+						dataTemp.put("end_date", end_date);
+						dataTemp.put("double_cover_claim", double_cover_claim);
+						dataTemp.put("bank", bank);
+						dataTemp.put("no_rekening", no_rekening);
+						dataTemp.put("path_storage", path_storage);
+						dataTemp.put("lms_status", lms_status);
+						dataTemp.put("reason_decline", reason_decline);						
+						
+						listPolAlt.add(dataTemp);
+					}
+					data.put("list_policy_alteration", listPolAlt);
+					error = false;
+					message = "Successfully get data";
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}*/
 }

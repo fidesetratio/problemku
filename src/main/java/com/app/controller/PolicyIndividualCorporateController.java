@@ -458,10 +458,18 @@ public class PolicyIndividualCorporateController {
 							listBegDate.add(distinctBegDate);
 						}
 					}
+					
+					// Add no polis dalam satu list
+					List<String> listMclFirst = new ArrayList<String>();
+					for (int i = 0; i < listPolisHRUser.size(); i++) {
+						String distinctMclFirst = listPolisHRUser.get(i).getMcl_first();
+						listMclFirst.add(distinctMclFirst);
+					}
 
 					// Distinct no polis, masa pertanggungan, mspo_type_rek biar gak dobel2
 					List<String> distinctNoPolis = listNoPolis.stream().distinct().collect(Collectors.toList());
 					List<Date> distinctBegDate = listBegDate.stream().distinct().collect(Collectors.toList());
+					List<String> distinctMclFirst = listMclFirst.stream().distinct().collect(Collectors.toList());
 
 					// Check polis corporate yang keluar ada 1 atau 2 dilihat dari masa berlaku
 					int z = 2;
@@ -486,6 +494,7 @@ public class PolicyIndividualCorporateController {
 						HashMap<String, Object> dataTemp = new HashMap<>();
 						String no_polis = distinctNoPolis.get(x);
 						Date masa_pertanggungan = distinctBegDate.get(x);
+						String mclfirst = distinctMclFirst.get(x);
 
 						// Check no polis terakhir masih berlaku atau tidak
 						if (x == 0) {
@@ -504,7 +513,8 @@ public class PolicyIndividualCorporateController {
 						dataTemp.put("no_polis", no_polis);
 						dataTemp.put("masa_pertanggungan",
 								masa_pertanggungan != null ? df2.format(masa_pertanggungan) : null);
-
+						dataTemp.put("mcl_first", mclfirst);
+						
 						hr_user.add(dataTemp);
 					}
 				} else {

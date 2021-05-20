@@ -4307,61 +4307,56 @@
 	</select>
 	
 	<select id="selectListReportHr" parameterType="HashMap" resultType="com.app.model.ReportHr">	 
-		SELECT  *
-		FROM
-		    (
-		    SELECT  o.*,
-		            rownum r__
-		    FROM
-		        (
-		        SELECT *
-		        FROM 
-		            (
-		            SELECT  A.REG_SPAJ,
-		                    A.MPCC_ID,
-		                    A.CREATED_DATE,
-		                    A.DATE_UPDATE_STATUS,
-		                    A.AMOUNT_DIBAYAR,
-		                    CASE
-		                        WHEN JENIS_CLAIM = 'RJ' THEN 'Rawat Jalan'
-		                        WHEN JENIS_CLAIM = 'RI' THEN 'Rawat Inap'
-		                        WHEN JENIS_CLAIM = 'KM' THEN 'Kacamata'
-		                        WHEN JENIS_CLAIM = 'RB' THEN 'Rawat Bersalin'
-		                        WHEN JENIS_CLAIM = 'RG' THEN 'Rawat Gigi'
-		                        WHEN JENIS_CLAIM = 'RK' THEN 'Rawat Khusus'
-		                    END
-		                    AS JENIS_CLAIM,
-		                    CASE
-		                        WHEN STATUS = 1 THEN 'Submitted'
-		                        WHEN STATUS = 2 THEN 'Incomplete Document'
-		                        WHEN STATUS = 3 THEN 'Pending Hardcopy Document'
-		                        WHEN STATUS = 4 THEN 'Accepted'
-		                        WHEN STATUS = 5 THEN 'Decline'
-		                        WHEN STATUS = 6 THEN 'Paid'
-		                    END
-		                    AS STATUS,
-		                    SUBSTR (D.MSPO_POLICY_NO, 1, 2) || '.' || SUBSTR (D.MSPO_POLICY_NO, 3, 3) || '.' || SUBSTR (D.MSPO_POLICY_NO, 6, 4) || '.' || SUBSTR (D.MSPO_POLICY_NO, 10, 14) AS MSPO_POLICY_NO_FORMAT,
-		                    C.MCL_FIRST,
-		                    A.START_DATE,
-		                    A.END_DATE,
-		                    A.DOUBLE_COVER_CLAIM,
-		                    A.BANK,
-		                    A.NO_REKENING,
-		                    A.PATH_STORAGE,
-		                    F.LMS_STATUS,
-		                    A.REASON_DECLINE
-		            FROM    EKA.MST_MPOL_CLAIM_CORPORATE_TRANS A
-		                INNER JOIN EKA.MST_INSURED@EB B ON A.REG_SPAJ = B.REG_SPAJ AND A.MCL_ID = B.MSTE_INSURED
-		                INNER JOIN EKA.MST_CLIENT@EB C ON A.MCL_ID = C.MCL_ID
-		                INNER JOIN EKA.MST_POLICY@EB D ON B.REG_SPAJ = D.REG_SPAJ
-		                INNER JOIN EKA.LST_POLICY_STATUS@EB E ON A.LSSP_ID = E.LSSP_ID
-		                INNER JOIN EKA.LST_MASTER_STATUS@EB F ON E.LMS_ID = F.LMS_ID
-		            WHERE   D.MSPO_POLICY_NO = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
-		            )
-		        ORDER BY 3 DESC
-		        ) o
-		    WHERE rownum <![CDATA[<]]> ((#{pageNumber} * #{pageSize}) + 1 )
-		    )
-		WHERE r__ <![CDATA[>=]]> (((#{pageNumber} - 1) * #{pageSize}) + 1)
+		select
+		    *
+		from
+		    (select
+		        rownum rn,e.*
+		    from
+		        (select
+		            a.reg_spaj,
+		            a.mspo_policy_no,
+		            b.mtra_tgl_terima,
+		            b.mtra_no,
+		            b.mtra_no_terima,
+		            b.mtra_corporate,
+		            substr(b.mtra_no_batch,1,5)
+		            || '.'
+		            || substr(b.mtra_no_batch,6) mtra_no_batch,
+		            b.mtra_jml_klm,
+		            b.mtra_ttl_tagihan,
+		            b.mtra_nama_peserta,
+		            b.mtra_ketrangan,
+		            c.mbc_kwitansi,
+		            (case when count(d.mbc_no) > 0 then 'SUDAH DIPROSES' else 'BELUM DIPROSES' end) mtra_status,
+		            c.mbc_provider
+		        from
+		            eka.mst_policy@eb a,
+		            eka.mst_trekap_reimburse_admdk@eb b,
+		            eka.mst_batch_claim@eb c,
+		            eka.mst_batch_claim@eb d
+		        where
+		            a.reg_spaj = c.mbc_reg_spaj
+		            and b.mtra_no_batch = c.mbc_no
+		            and c.mbc_no = d.mbc_batch_group
+		            and a.mspo_policy_no = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
+		        group by
+		            a.reg_spaj,
+		            a.mspo_policy_no,
+		            b.mtra_tgl_terima,
+		            b.mtra_no,
+		            b.mtra_no_terima,
+		            b.mtra_corporate,
+		            b.mtra_no_batch,
+		            b.mtra_jml_klm,
+		            b.mtra_ttl_tagihan,
+		            b.mtra_nama_peserta,
+		            b.mtra_ketrangan,
+		            c.mbc_kwitansi,
+		            c.mbc_provider
+		        order by
+		            b.mtra_tgl_terima desc) e)
+		where
+		    rn between #{pageNumber} and #{pageSize}
 	</select>
 </mapper>

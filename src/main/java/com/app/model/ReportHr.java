@@ -11,22 +11,19 @@ public class ReportHr implements Serializable {
 	 */
 	private static final long serialVersionUID = 8216231010073285032L;
 	private String reg_spaj;
-	private String mpcc_id;
-	private Date created_date;
-	private Date date_update_status;
-	private String amount_dibayar;
-	private String jenis_claim;
-	private String status;
-	private String mspo_policy_no_format;
-	private String mcl_first;
-	private Date start_date;
-	private Date end_date;
-	private Integer double_cover_claim;
-	private String bank;
-	private String no_rekening;
-	private String path_storage;
-	private String lms_status;
-	private String reason_decline;
+	private String mspo_policy_no;
+	private Date mtra_tgl_terima;
+	private Integer mtra_no;
+	private String mtra_no_terima;
+	private String mtra_corporate;
+	private String mtra_no_batch;
+	private Integer mtra_jml_klm;
+	private String mtra_ttl_tagihan;
+	private String mtra_nama_peserta;
+	private String mtra_ketrangan;
+	private String mbc_kwitansi;
+	private String mtra_status;
+	private Integer mbc_provider;
 	
 	public String getReg_spaj() {
 		return reg_spaj;
@@ -34,100 +31,84 @@ public class ReportHr implements Serializable {
 	public void setReg_spaj(String reg_spaj) {
 		this.reg_spaj = reg_spaj;
 	}
-	public String getMpcc_id() {
-		return mpcc_id;
+	public String getMspo_policy_no() {
+		return mspo_policy_no;
 	}
-	public void setMpcc_id(String mpcc_id) {
-		this.mpcc_id = mpcc_id;
+	public void setMspo_policy_no(String mspo_policy_no) {
+		this.mspo_policy_no = mspo_policy_no;
 	}
-	public Date getCreated_date() {
-		return created_date;
+	public Date getMtra_tgl_terima() {
+		return mtra_tgl_terima;
 	}
-	public void setCreated_date(Date created_date) {
-		this.created_date = created_date;
+	public void setMtra_tgl_terima(Date mtra_tgl_terima) {
+		this.mtra_tgl_terima = mtra_tgl_terima;
 	}
-	public Date getDate_update_status() {
-		return date_update_status;
+	public Integer getMtra_no() {
+		return mtra_no;
 	}
-	public void setDate_update_status(Date date_update_status) {
-		this.date_update_status = date_update_status;
+	public void setMtra_no(Integer mtra_no) {
+		this.mtra_no = mtra_no;
 	}
-	public String getAmount_dibayar() {
-		return amount_dibayar;
+	public String getMtra_no_terima() {
+		return mtra_no_terima;
 	}
-	public void setAmount_dibayar(String amount_dibayar) {
-		this.amount_dibayar = amount_dibayar;
+	public void setMtra_no_terima(String mtra_no_terima) {
+		this.mtra_no_terima = mtra_no_terima;
 	}
-	public String getJenis_claim() {
-		return jenis_claim;
+	public String getMtra_corporate() {
+		return mtra_corporate;
 	}
-	public void setJenis_claim(String jenis_claim) {
-		this.jenis_claim = jenis_claim;
+	public void setMtra_corporate(String mtra_corporate) {
+		this.mtra_corporate = mtra_corporate;
 	}
-	public String getStatus() {
-		return status;
+	public String getMtra_no_batch() {
+		return mtra_no_batch;
 	}
-	public void setStatus(String status) {
-		this.status = status;
+	public void setMtra_no_batch(String mtra_no_batch) {
+		this.mtra_no_batch = mtra_no_batch;
 	}
-	public String getMspo_policy_no_format() {
-		return mspo_policy_no_format;
+	public Integer getMtra_jml_klm() {
+		return mtra_jml_klm;
 	}
-	public void setMspo_policy_no_format(String mspo_policy_no_format) {
-		this.mspo_policy_no_format = mspo_policy_no_format;
+	public void setMtra_jml_klm(Integer mtra_jml_klm) {
+		this.mtra_jml_klm = mtra_jml_klm;
 	}
-	public String getMcl_first() {
-		return mcl_first;
+	public String getMtra_ttl_tagihan() {
+		return mtra_ttl_tagihan;
 	}
-	public void setMcl_first(String mcl_first) {
-		this.mcl_first = mcl_first;
+	public void setMtra_ttl_tagihan(String mtra_ttl_tagihan) {
+		this.mtra_ttl_tagihan = mtra_ttl_tagihan;
 	}
-	public Date getStart_date() {
-		return start_date;
+	public String getMtra_nama_peserta() {
+		return mtra_nama_peserta;
 	}
-	public void setStart_date(Date start_date) {
-		this.start_date = start_date;
+	public void setMtra_nama_peserta(String mtra_nama_peserta) {
+		this.mtra_nama_peserta = mtra_nama_peserta;
 	}
-	public Date getEnd_date() {
-		return end_date;
+	public String getMtra_ketrangan() {
+		return mtra_ketrangan;
 	}
-	public void setEnd_date(Date end_date) {
-		this.end_date = end_date;
+	public void setMtra_ketrangan(String mtra_ketrangan) {
+		this.mtra_ketrangan = mtra_ketrangan;
 	}
-	public Integer getDouble_cover_claim() {
-		return double_cover_claim;
+	public String getMbc_kwitansi() {
+		return mbc_kwitansi;
 	}
-	public void setDouble_cover_claim(Integer double_cover_claim) {
-		this.double_cover_claim = double_cover_claim;
+	public void setMbc_kwitansi(String mbc_kwitansi) {
+		this.mbc_kwitansi = mbc_kwitansi;
 	}
-	public String getBank() {
-		return bank;
+	public String getMtra_status() {
+		return mtra_status;
 	}
-	public void setBank(String bank) {
-		this.bank = bank;
+	public void setMtra_status(String mtra_status) {
+		this.mtra_status = mtra_status;
 	}
-	public String getNo_rekening() {
-		return no_rekening;
+	public Integer getMbc_provider() {
+		return mbc_provider;
 	}
-	public void setNo_rekening(String no_rekening) {
-		this.no_rekening = no_rekening;
+	public void setMbc_provider(Integer mbc_provider) {
+		this.mbc_provider = mbc_provider;
 	}
-	public String getPath_storage() {
-		return path_storage;
-	}
-	public void setPath_storage(String path_storage) {
-		this.path_storage = path_storage;
-	}
-	public String getLms_status() {
-		return lms_status;
-	}
-	public void setLms_status(String lms_status) {
-		this.lms_status = lms_status;
-	}
-	public String getReason_decline() {
-		return reason_decline;
-	}
-	public void setReason_decline(String reason_decline) {
-		this.reason_decline = reason_decline;
-	}
+	
+	
 }

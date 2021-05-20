@@ -636,18 +636,23 @@ public class LoginRegisterIndividualCorporateController {
 			if (checkIndividuOrCorporate != null) {
 				String reg_spaj = checkIndividuOrCorporate.getREG_SPAJ();
 				String mcl_id_employee = checkIndividuOrCorporate.getMCL_ID_EMPLOYEE();
+				String eb_hr_username = checkIndividuOrCorporate.getEB_HR_USERNAME();
 
 				Boolean individu = false;
 				Boolean corporate = false;
+				Boolean hr_user = false;
 				Boolean policy_corporate_notinforce = false;
 				Boolean user_corporate_notactive = false;
 
-				if ((reg_spaj != null) && (mcl_id_employee == null)) {
+				if ((reg_spaj != null) && (mcl_id_employee == null) && (eb_hr_username == null)) {
 					individu = true;
 					corporate = false;
-				} else if ((reg_spaj == null) && (mcl_id_employee != null)) {
+					hr_user = false;
+					
+				} else if ((reg_spaj == null) && (mcl_id_employee != null) && (eb_hr_username == null)) {
 					individu = false;
 					corporate = true;
+					hr_user = false;
 
 					ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
 					for (int x = 0; x < 1; x++) {
@@ -667,6 +672,10 @@ public class LoginRegisterIndividualCorporateController {
 							user_corporate_notactive = true;
 						}
 					}
+				} else if((reg_spaj == null) && (mcl_id_employee == null) && (eb_hr_username != null)) {
+					individu = false;
+					corporate = false;
+					hr_user = true;
 				} else {
 					individu = true;
 					corporate = true;

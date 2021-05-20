@@ -3045,11 +3045,13 @@ public class PolicyIndividualCorporateController {
 		String username = requestReportHr.getUsername();
 		String key = requestReportHr.getKey();
 		String no_polis = requestReportHr.getNo_polis();
+		String no_batch = requestReportHr.getNo_batch();
+		String tgl_terima = requestReportHr.getTgl_terima();
 		Integer pageNumber = requestReportHr.getPageNumber();
 		Integer pageSize = requestReportHr.getPageSize();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
-				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis, pageNumber, pageSize);
+				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis, no_batch, tgl_terima, pageNumber, pageSize);
 				
 				if (listReportHr.size()==0) {
 					// Data List Kosong
@@ -3061,7 +3063,7 @@ public class PolicyIndividualCorporateController {
 						
 						String reg_spaj = listReportHr.get(i).getReg_spaj();
 						String mspo_policy_no = listReportHr.get(i).getMspo_policy_no();
-						Date mtra_tgl_terima = listReportHr.get(i).getMtra_tgl_terima();
+						String mtra_tgl_terima = listReportHr.get(i).getMtra_tgl_terima();
 						Integer mtra_no = listReportHr.get(i).getMtra_no();
 						String mtra_no_terima = listReportHr.get(i).getMtra_no_terima();
 						String mtra_corporate = listReportHr.get(i).getMtra_corporate();

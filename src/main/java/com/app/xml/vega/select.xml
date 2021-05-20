@@ -4316,7 +4316,7 @@
 		        (select
 		            a.reg_spaj,
 		            a.mspo_policy_no,
-		            b.mtra_tgl_terima,
+		            to_char(b.mtra_tgl_terima, 'DD/MM/YYYY') mtra_tgl_terima,
 		            b.mtra_no,
 		            b.mtra_no_terima,
 		            b.mtra_corporate,
@@ -4358,5 +4358,11 @@
 		            b.mtra_tgl_terima desc) e)
 		where
 		    rn between #{pageNumber} and #{pageSize}
+	    <if test="no_batch != null">
+			and mtra_no_batch = #{no_batch}
+		</if>
+		<if test="tgl_terima != null">
+			and mtra_tgl_terima = #{tgl_terima}
+		</if>
 	</select>
 </mapper>

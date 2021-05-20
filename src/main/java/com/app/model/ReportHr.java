@@ -12,7 +12,7 @@ public class ReportHr implements Serializable {
 	private static final long serialVersionUID = 8216231010073285032L;
 	private String reg_spaj;
 	private String mspo_policy_no;
-	private Date mtra_tgl_terima;
+	private String mtra_tgl_terima;
 	private Integer mtra_no;
 	private String mtra_no_terima;
 	private String mtra_corporate;
@@ -37,10 +37,10 @@ public class ReportHr implements Serializable {
 	public void setMspo_policy_no(String mspo_policy_no) {
 		this.mspo_policy_no = mspo_policy_no;
 	}
-	public Date getMtra_tgl_terima() {
+	public String getMtra_tgl_terima() {
 		return mtra_tgl_terima;
 	}
-	public void setMtra_tgl_terima(Date mtra_tgl_terima) {
+	public void setMtra_tgl_terima(String mtra_tgl_terima) {
 		this.mtra_tgl_terima = mtra_tgl_terima;
 	}
 	public Integer getMtra_no() {

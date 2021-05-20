@@ -13,9 +13,18 @@ public class RequestReportHr implements Serializable {
 	private String no_polis;
 	private String no_batch;
 	private String tgl_terima;
+	private String tgl_bayar;
 	private Integer pageNumber;
 	private Integer pageSize;
 	
+	public String getTgl_bayar() {
+		return tgl_bayar;
+	}
+
+	public void setTgl_bayar(String tgl_bayar) {
+		this.tgl_bayar = tgl_bayar;
+	}
+
 	public String getNo_batch() {
 		return no_batch;
 	}

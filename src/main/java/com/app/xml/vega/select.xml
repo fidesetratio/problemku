@@ -4307,62 +4307,46 @@
 	</select>
 	
 	<select id="selectListReportHr" parameterType="HashMap" resultType="com.app.model.ReportHr">	 
-		select
-		    *
-		from
-		    (select
-		        rownum rn,e.*
-		    from
-		        (select
-		            a.reg_spaj,
-		            a.mspo_policy_no,
-		            to_char(b.mtra_tgl_terima, 'DD/MM/YYYY') mtra_tgl_terima,
-		            b.mtra_no,
-		            b.mtra_no_terima,
-		            b.mtra_corporate,
-		            substr(b.mtra_no_batch,1,5)
-		            || '.'
-		            || substr(b.mtra_no_batch,6) mtra_no_batch,
-		            b.mtra_jml_klm,
-		            b.mtra_ttl_tagihan,
-		            b.mtra_nama_peserta,
-		            b.mtra_ketrangan,
-		            c.mbc_kwitansi,
-		            (case when count(d.mbc_no) > 0 then 'SUDAH DIPROSES' else 'BELUM DIPROSES' end) mtra_status,
-		            c.mbc_provider
-		        from
-		            eka.mst_policy@eb a,
-		            eka.mst_trekap_reimburse_admdk@eb b,
-		            eka.mst_batch_claim@eb c,
-		            eka.mst_batch_claim@eb d
-		        where
-		            a.reg_spaj = c.mbc_reg_spaj
-		            and b.mtra_no_batch = c.mbc_no
-		            and c.mbc_no = d.mbc_batch_group
-		            and a.mspo_policy_no = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
-		        group by
-		            a.reg_spaj,
-		            a.mspo_policy_no,
-		            b.mtra_tgl_terima,
-		            b.mtra_no,
-		            b.mtra_no_terima,
-		            b.mtra_corporate,
-		            b.mtra_no_batch,
-		            b.mtra_jml_klm,
-		            b.mtra_ttl_tagihan,
-		            b.mtra_nama_peserta,
-		            b.mtra_ketrangan,
-		            c.mbc_kwitansi,
-		            c.mbc_provider
-		        order by
-		            b.mtra_tgl_terima desc) e)
-		where
-		    rn between #{pageNumber} and #{pageSize}
-	    <if test="no_batch != null">
-			and mtra_no_batch = #{no_batch}
-		</if>
-		<if test="tgl_terima != null">
-			and mtra_tgl_terima = #{tgl_terima}
-		</if>
+		SELECT *
+		FROM (SELECT ROWNUM rn,
+		                    t.*
+		      FROM (SELECT   SUBSTR (a.mbc_no, 1, 5)
+		                     || '.'
+		                     || SUBSTR (a.mbc_no, 6) no_batch,
+		                     SUBSTR (a.mbc_no, 1, 1) tipe_batch,
+		                     TO_CHAR(a.mbc_tgl_input, 'dd/mm/yyyy') as tgl_input,
+		                     TO_CHAR(a.mbc_tgl_terima, 'dd/mm/yyyy') as tgl_terima,
+		                     TO_CHAR(a.mbc_tgl_back, 'dd/mm/yyyy') as tgl_bayar,
+		                     b.mspo_policy_no,
+		                     d.lspd_position,
+		                     a.mbc_kwitansi
+		                FROM eka.mst_batch_claim@eb a,
+		                     eka.mst_policy@eb b,
+		                     eka.mst_client@eb c,
+		                     eka.lst_document_position@eb d,
+		                     eka.mst_claim_ebn@eb e
+		               WHERE b.mspo_policy_no = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
+		                 AND b.reg_spaj = e.reg_spaj
+		                 AND e.mbc_no = a.mbc_no
+		                 AND a.mbc_posisi = d.lspd_id
+		                 AND b.mspo_policy_holder = c.mcl_id
+		                 <if test="no_batch != null">
+						    and a.mbc_no like '%'|| REPLACE(#{no_batch},'.') ||'%'
+						</if>
+						<if test="tgl_terima != null">
+						    and TO_CHAR(a.mbc_tgl_terima, 'dd/mm/yyyy') = #{tgl_terima}
+						</if>
+						<if test="tgl_bayar != null">
+						    and TO_CHAR(a.mbc_tgl_back, 'dd/mm/yyyy') = #{tgl_bayar}
+						</if>
+		            GROUP BY a.mbc_no,
+		                     a.mbc_tgl_input,
+		                     a.mbc_tgl_terima,
+		                     a.mbc_tgl_back,
+		                     b.mspo_policy_no,
+		                     d.lspd_position,
+		                     a.mbc_kwitansi
+		            ORDER BY a.mbc_no) t)
+		WHERE rn BETWEEN #{pageNumber} AND #{pageSize}
 	</select>
 </mapper>

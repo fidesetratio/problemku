@@ -3047,49 +3047,39 @@ public class PolicyIndividualCorporateController {
 		String no_polis = requestReportHr.getNo_polis();
 		String no_batch = requestReportHr.getNo_batch();
 		String tgl_terima = requestReportHr.getTgl_terima();
+		String tgl_bayar = requestReportHr.getTgl_bayar();
 		Integer pageNumber = requestReportHr.getPageNumber();
 		Integer pageSize = requestReportHr.getPageSize();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
-				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis, no_batch, tgl_terima, pageNumber, pageSize);
+				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis, no_batch, tgl_terima, tgl_bayar, pageNumber, pageSize);
 				
 				if (listReportHr.size()==0) {
 					// Data List Kosong
+					data = null;
 					error = false;
 					message = "Data list report hr empty";
 				} else {
 					for(int i = 0; i<listReportHr.size();i++) {
 						HashMap<String, Object> dataTemp = new HashMap<>();
-						
-						String reg_spaj = listReportHr.get(i).getReg_spaj();
+
+						String no_batch_ = listReportHr.get(i).getNo_batch();
+						String tipe_batch = listReportHr.get(i).getTipe_batch();
+						String tgl_input = listReportHr.get(i).getTgl_input();
+						String tgl_terima_ = listReportHr.get(i).getTgl_terima();
+						String tgl_bayar_ = listReportHr.get(i).getTgl_bayar();
 						String mspo_policy_no = listReportHr.get(i).getMspo_policy_no();
-						String mtra_tgl_terima = listReportHr.get(i).getMtra_tgl_terima();
-						Integer mtra_no = listReportHr.get(i).getMtra_no();
-						String mtra_no_terima = listReportHr.get(i).getMtra_no_terima();
-						String mtra_corporate = listReportHr.get(i).getMtra_corporate();
-						String mtra_no_batch = listReportHr.get(i).getMtra_no_batch();
-						Integer mtra_jml_klm = listReportHr.get(i).getMtra_jml_klm();
-						String mtra_ttl_tagihan = listReportHr.get(i).getMtra_ttl_tagihan();
-						String mtra_nama_peserta = listReportHr.get(i).getMtra_nama_peserta();
-						String mtra_ketrangan = listReportHr.get(i).getMtra_ketrangan();
+						String lspd_position = listReportHr.get(i).getLspd_position();
 						String mbc_kwitansi = listReportHr.get(i).getMbc_kwitansi();
-						String mtra_status = listReportHr.get(i).getMtra_status();
-						Integer mbc_provider = listReportHr.get(i).getMbc_provider();
 						
-						dataTemp.put("reg_spaj", reg_spaj);
+						dataTemp.put("no_batch_", no_batch_);
+						dataTemp.put("tipe_batch", tipe_batch);
+						dataTemp.put("tgl_input", tgl_input);
+						dataTemp.put("tgl_terima_", tgl_terima_);
+						dataTemp.put("tgl_bayar_", tgl_bayar_);
 						dataTemp.put("mspo_policy_no", mspo_policy_no);
-						dataTemp.put("mtra_tgl_terima", mtra_tgl_terima);
-						dataTemp.put("mtra_no", mtra_no);
-						dataTemp.put("mtra_no_terima", mtra_no_terima);
-						dataTemp.put("mtra_corporate", mtra_corporate);
-						dataTemp.put("mtra_no_batch", mtra_no_batch);
-						dataTemp.put("mtra_jml_klm", mtra_jml_klm);
-						dataTemp.put("mtra_ttl_tagihan", mtra_ttl_tagihan);
-						dataTemp.put("mtra_nama_peserta", mtra_nama_peserta);
-						dataTemp.put("mtra_ketrangan", mtra_ketrangan);
-						dataTemp.put("mbc_kwitansi", mbc_kwitansi);
-						dataTemp.put("mtra_status", mtra_status);
-						dataTemp.put("mbc_provider", mbc_provider);				
+						dataTemp.put("lspd_position", lspd_position);
+						dataTemp.put("mbc_kwitansi", mbc_kwitansi);			
 						
 						listsReportHr.add(dataTemp);
 					}

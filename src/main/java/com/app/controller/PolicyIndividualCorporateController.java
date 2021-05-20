@@ -3046,13 +3046,12 @@ public class PolicyIndividualCorporateController {
 		String key = requestReportHr.getKey();
 		String no_polis = requestReportHr.getNo_polis();
 		String no_batch = requestReportHr.getNo_batch();
-		String tgl_terima = requestReportHr.getTgl_terima();
-		String tgl_bayar = requestReportHr.getTgl_bayar();
+		String tgl_input = requestReportHr.getTgl_input();
 		Integer pageNumber = requestReportHr.getPageNumber();
 		Integer pageSize = requestReportHr.getPageSize();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
-				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis, no_batch, tgl_terima, tgl_bayar, pageNumber, pageSize);
+				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis, no_batch, tgl_input, pageNumber, pageSize);
 				
 				if (listReportHr.size()==0) {
 					// Data List Kosong
@@ -3065,18 +3064,18 @@ public class PolicyIndividualCorporateController {
 
 						String no_batch_ = listReportHr.get(i).getNo_batch();
 						String tipe_batch = listReportHr.get(i).getTipe_batch();
-						String tgl_input = listReportHr.get(i).getTgl_input();
-						String tgl_terima_ = listReportHr.get(i).getTgl_terima();
+						String tgl_input_ = listReportHr.get(i).getTgl_input();
+						String tgl_terima = listReportHr.get(i).getTgl_terima();
 						String tgl_bayar_ = listReportHr.get(i).getTgl_bayar();
 						String mspo_policy_no = listReportHr.get(i).getMspo_policy_no();
 						String lspd_position = listReportHr.get(i).getLspd_position();
 						String mbc_kwitansi = listReportHr.get(i).getMbc_kwitansi();
 						
-						dataTemp.put("no_batch_", no_batch_);
+						dataTemp.put("no_batch", no_batch_);
 						dataTemp.put("tipe_batch", tipe_batch);
-						dataTemp.put("tgl_input", tgl_input);
-						dataTemp.put("tgl_terima_", tgl_terima_);
-						dataTemp.put("tgl_bayar_", tgl_bayar_);
+						dataTemp.put("tgl_input", tgl_input_);
+						dataTemp.put("tgl_terima", tgl_terima);
+						dataTemp.put("tgl_bayar", tgl_bayar_);
 						dataTemp.put("mspo_policy_no", mspo_policy_no);
 						dataTemp.put("lspd_position", lspd_position);
 						dataTemp.put("mbc_kwitansi", mbc_kwitansi);			

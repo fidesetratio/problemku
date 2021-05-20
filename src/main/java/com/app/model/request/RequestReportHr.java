@@ -12,19 +12,10 @@ public class RequestReportHr implements Serializable {
 	private String key;
 	private String no_polis;
 	private String no_batch;
-	private String tgl_terima;
-	private String tgl_bayar;
+	private String tgl_input;
 	private Integer pageNumber;
 	private Integer pageSize;
 	
-	public String getTgl_bayar() {
-		return tgl_bayar;
-	}
-
-	public void setTgl_bayar(String tgl_bayar) {
-		this.tgl_bayar = tgl_bayar;
-	}
-
 	public String getNo_batch() {
 		return no_batch;
 	}
@@ -33,12 +24,12 @@ public class RequestReportHr implements Serializable {
 		this.no_batch = no_batch;
 	}
 
-	public String getTgl_terima() {
-		return tgl_terima;
+	public String getTgl_input() {
+		return tgl_input;
 	}
 
-	public void setTgl_terima(String tgl_terima) {
-		this.tgl_terima = tgl_terima;
+	public void setTgl_input(String tgl_input) {
+		this.tgl_input = tgl_input;
 	}
 
 	public Integer getPageNumber() {

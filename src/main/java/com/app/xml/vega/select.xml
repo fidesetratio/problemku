@@ -4333,11 +4333,8 @@
 		                 <if test="no_batch != null">
 						    and a.mbc_no like '%'|| REPLACE(#{no_batch},'.') ||'%'
 						</if>
-						<if test="tgl_terima != null">
-						    and TO_CHAR(a.mbc_tgl_terima, 'dd/mm/yyyy') = #{tgl_terima}
-						</if>
-						<if test="tgl_bayar != null">
-						    and TO_CHAR(a.mbc_tgl_back, 'dd/mm/yyyy') = #{tgl_bayar}
+						<if test="tgl_input != null">
+						    and TO_CHAR(a.mbc_tgl_input, 'dd/mm/yyyy') = #{tgl_input}
 						</if>
 		            GROUP BY a.mbc_no,
 		                     a.mbc_tgl_input,

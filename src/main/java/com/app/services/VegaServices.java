@@ -24,6 +24,7 @@ import com.app.model.CostFinancialTransaction;
 import com.app.model.DataUsulan;
 import com.app.model.DetailClaimCorporate;
 import com.app.model.DetailWithdraw;
+import com.app.model.DownloadReportHr;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Fund;
@@ -1454,6 +1455,14 @@ public class VegaServices {
 		hashMap.put("pageSize", pageSize);
 		return dao.selectListReportHr(hashMap);
 	}
-	
-	
+
+	public ArrayList<DownloadReportHr> selectPathReportHr(String no_batch) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectPathReportHr(no_batch);
+	}
+
+	public Integer selectCountReportHr(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectCountReportHr(no_polis);
+	}
 }

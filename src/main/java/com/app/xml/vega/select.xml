@@ -4346,4 +4346,46 @@
 		            ORDER BY a.mbc_no) t)
 		WHERE rn BETWEEN #{pageNumber} AND #{pageSize}
 	</select>
+	
+	<select id="selectCountReportHr" parameterType="String" resultType="Integer">
+		SELECT COUNT(*) count
+		FROM(
+		SELECT   a.mbc_no
+		    FROM eka.mst_batch_claim@eb a,
+		         eka.mst_policy@eb b,
+		         eka.mst_client@eb c,
+		         eka.lst_document_position@eb d,
+		         eka.mst_claim_ebn@eb e
+		   WHERE b.mspo_policy_no = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
+		     AND b.reg_spaj = e.reg_spaj
+		     AND e.mbc_no = a.mbc_no
+		     AND a.mbc_posisi = d.lspd_id
+		     AND b.mspo_policy_holder = c.mcl_id
+		GROUP BY a.mbc_no)
+	</select>
+	
+	<select id="selectPathReportHr" parameterType="String" resultType="com.app.model.DownloadReportHr">	 
+		select  substr(a.mbc_no,1,5) || '.' || substr(a.mbc_no,6) mbc_no_format,
+		        CASE
+		            WHEN a.lgc_group_id in ('02','05','07','08','82','85','87','88')
+		                THEN 'Inpatient'
+		            WHEN a.lgc_group_id in ('01','03','04','06','81','83','84','86')
+		                THEN 'Outpatient'
+		            ELSE 'Undefined'
+		        END type_claim,
+		        to_char(b.mbc_tgl_input, 'yyyymm') mbc_tgl_input,
+		        a.mbc_no,
+		        a.mce_klaim_admedika
+		from    eka.mst_claim_ebn@eb a,
+		        eka.mst_batch_claim@eb b,
+		        eka.mst_policy@eb c
+		where   a.mbc_no = b.mbc_no
+		    and a.reg_spaj = c.reg_spaj
+		    and a.mbc_no = REPLACE(#{no_batch, jdbcType=VARCHAR}, '.')
+		group by a.mbc_no,
+		         a.reg_spaj,
+		         b.mbc_tgl_input,
+		         a.lgc_group_id,
+		         a.mce_klaim_admedika
+	</select>
 </mapper>

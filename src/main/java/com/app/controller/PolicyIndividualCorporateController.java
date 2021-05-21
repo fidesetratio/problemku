@@ -44,6 +44,7 @@ import com.app.feignclient.ServiceOTP;
 import com.app.model.Article;
 import com.app.model.Beneficiary;
 import com.app.model.Data;
+import com.app.model.DownloadReportHr;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Inbox;
@@ -65,6 +66,7 @@ import com.app.model.request.RequestBanner;
 import com.app.model.request.RequestCountInboxUnread;
 import com.app.model.request.RequestDeleteAllInbox;
 import com.app.model.request.RequestDownloadArticle;
+import com.app.model.request.RequestDownloadReportHr;
 import com.app.model.request.RequestFurtherClaimSubmission;
 import com.app.model.request.RequestInbox;
 import com.app.model.request.RequestListArticle;
@@ -101,6 +103,9 @@ public class PolicyIndividualCorporateController {
 	
 	@Value("${path.download.article}")
 	private String pathDownloadArticle;
+	
+	@Value("${path.storage.reporthr}")
+	private String pathDownloadReportHr;
 
 	@Autowired
 	private VegaServices services;
@@ -3059,6 +3064,8 @@ public class PolicyIndividualCorporateController {
 					error = false;
 					message = "Data list report hr empty";
 				} else {
+					Integer count = services.selectCountReportHr(no_polis);
+					
 					for(int i = 0; i<listReportHr.size();i++) {
 						HashMap<String, Object> dataTemp = new HashMap<>();
 
@@ -3082,6 +3089,83 @@ public class PolicyIndividualCorporateController {
 						
 						listsReportHr.add(dataTemp);
 					}
+					data.put("list_report_batch", listsReportHr);
+					data.put("count", count);
+					error = false;
+					message = "Successfully get data";
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/downloadreporthr", produces = "application/json", method = RequestMethod.POST)
+	public String downloadRerportHr(@RequestBody RequestDownloadReportHr requestDownloadReportHr,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestDownloadReportHr);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+		ArrayList<HashMap<String, Object>> listsReportHr = new ArrayList<>();
+
+		String username = requestDownloadReportHr.getUsername();
+		String key = requestDownloadReportHr.getKey();
+		String no_batch = requestDownloadReportHr.getNo_batch();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				ArrayList<DownloadReportHr> downloadReportHr = services.selectPathReportHr(no_batch);
+				
+				if (downloadReportHr==null) {
+					// Data List Kosong
+					data = null;
+					error = false;
+					message = "Data download report hr empty";
+				} else {
+					//('\\storage.sinarmasmsiglife.co.id\ekamedicare\' || to_char(b.mbc_tgl_input, 'yyyymm') || '\' || a.mbc_no || '\Kwitansi\' || a.mce_klaim_admedika || '.pdf') as path_download
+					for(int i = 0; i<downloadReportHr.size();i++) {
+						HashMap<String, Object> dataTemp = new HashMap<>();
+						String path = null;
+						
+						//String mbc_no_format = downloadReportHr.get(i).getMbc_no_format();
+						//String type_claim = downloadReportHr.get(i).getType_claim();
+						String mbc_tgl_input = downloadReportHr.get(i).getMbc_tgl_input();
+						String mbc_no = downloadReportHr.get(i).getMbc_no();
+						String mce_klaim_admedika = downloadReportHr.get(i).getMce_klaim_admedika();
+						
+						path = pathDownloadReportHr + mbc_tgl_input + File.separator + mbc_no + File.separator + "Kwitansi" + File.separator + mce_klaim_admedika + ".pdf";
+						
+						dataTemp.put("path", path);
+						
+						listsReportHr.add(dataTemp);
+					}
+					
+					
 					data.put("list_report_batch", listsReportHr);
 					error = false;
 					message = "Successfully get data";

@@ -17,6 +17,7 @@ import com.app.model.CostFinancialTransaction;
 import com.app.model.DataUsulan;
 import com.app.model.DetailClaimCorporate;
 import com.app.model.DetailWithdraw;
+import com.app.model.DownloadReportHr;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Fund;
@@ -414,6 +415,10 @@ public interface VegaMapper {
 	public ArrayList<UserHR> selectListPesertaHR(HashMap<String, Object> hashMap);
 	
 	public ArrayList<ReportHr> selectListReportHr(HashMap<String, Object> hashMap);
+	
+	public ArrayList<DownloadReportHr> selectPathReportHr(String no_batch);
+	
+	public Integer selectCountReportHr(String no_polis);
 
 	// Update
 	public void updateUserKeyName(LstUserSimultaneous user);

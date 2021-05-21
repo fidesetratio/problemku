@@ -80,6 +80,7 @@ import com.app.model.request.RequestGetInfoTopup;
 import com.app.model.request.RequestGetTopupList;
 import com.app.model.request.RequestListClaimSubmission;
 import com.app.model.request.RequestListClaimSubmissionCorporate;
+import com.app.model.request.RequestListClaimHr;
 import com.app.model.request.RequestListSwitching;
 import com.app.model.request.RequestListSwitchingRedirection;
 import com.app.model.request.RequestListWithdraw;
@@ -94,6 +95,7 @@ import com.app.model.request.RequestTopup;
 import com.app.model.request.RequestUploadDeleteFileClaimSub;
 import com.app.model.request.RequestUploadDeleteFileClaimSubCorp;
 import com.app.model.request.RequestValidateSwitchingRedirection;
+import com.app.model.request.RequestViewClaimHr;
 import com.app.model.request.RequestViewClaimSubmission;
 import com.app.model.request.RequestViewClaimSubmissionCorporate;
 import com.app.model.request.RequestViewPolicyAlteration;
@@ -7194,5 +7196,208 @@ public class FinancialTransactionController {
 		customResourceLoader.insertHistActivityWS(12, 64, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
-	}	
+	}
+	
+	@RequestMapping(value = "/listclaimhr", produces = "application/json", method = RequestMethod.POST)
+	public String listClaimHr(
+			@RequestBody RequestListClaimHr requestListClaimHr,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestListClaimHr);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<HashMap<String, Object>> data = new ArrayList<>();
+
+		String username = requestListClaimHr.getUsername();
+		String key = requestListClaimHr.getKey();
+		String mste_insured = requestListClaimHr.getMste_insured();
+		String reg_spaj = requestListClaimHr.getReg_spaj();
+		Integer pageNumber = requestListClaimHr.getPageNumber();
+		Integer pageSize = requestListClaimHr.getPageSize();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				ArrayList<ClaimSubmissionCorporate> dataClaimSubmissionCorporate = services
+						.selectListClaimSubmissionCorporate(reg_spaj, mste_insured, pageNumber, pageSize);
+
+				if (dataClaimSubmissionCorporate.isEmpty()) {
+					// Data List Kosong
+					error = false;
+					message = "Data list claim hr empty";
+				} else {
+					error = false;
+					message = "Successfully get data";
+
+					for (int x = 0; x < dataClaimSubmissionCorporate.size(); x++) {
+						String mpcc_id = dataClaimSubmissionCorporate.get(x).getMpcc_id();
+						Date request_date = dataClaimSubmissionCorporate.get(x).getCreated_date();
+						Date status_date = dataClaimSubmissionCorporate.get(x).getDate_update_status();
+						BigDecimal amount = dataClaimSubmissionCorporate.get(x).getAmount_dibayar();
+						BigDecimal flag_susulan = dataClaimSubmissionCorporate.get(x).getFlag_susulan();
+						BigDecimal id_status = dataClaimSubmissionCorporate.get(x).getId_status();
+						String status = dataClaimSubmissionCorporate.get(x).getStatus();
+						String jenis_claim = dataClaimSubmissionCorporate.get(x).getJenis_claim();
+						String further_document = dataClaimSubmissionCorporate.get(x).getReason_further();
+
+						HashMap<String, Object> hashMap = new HashMap<>();
+						hashMap.put("mpcc_id", mpcc_id);
+						hashMap.put("request_date", request_date != null ? df1.format(request_date) : null);
+						hashMap.put("status_date",
+								status_date != null ? df1.format(status_date) : df1.format(request_date));
+						hashMap.put("amount", amount);
+						hashMap.put("status", status);
+						hashMap.put("jenis_claim", jenis_claim);
+						hashMap.put("further_document", further_document);
+
+						if (id_status.intValue() == 2 && flag_susulan.intValue() == 0) {
+							hashMap.put("enable_further", true);
+						} else {
+							hashMap.put("enable_further", false);
+						}
+
+						data.add(hashMap);
+					}
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 77, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/viewclaimhr", produces = "application/json", method = RequestMethod.POST)
+	public String viewClaimHr(
+			@RequestBody RequestViewClaimHr requestViewClaimHr,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestViewClaimHr);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+
+		String username = requestViewClaimHr.getUsername();
+		String key = requestViewClaimHr.getKey();
+		String mste_insured = requestViewClaimHr.getMste_insured();
+		String reg_spaj = requestViewClaimHr.getReg_spaj();
+		String mpcc_id = requestViewClaimHr.getMpcc_id();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				ClaimSubmissionCorporate dataClaimSubmissionCorporate = services
+						.selectViewClaimSubmissionCorporate(reg_spaj, mste_insured, mpcc_id);
+
+				if (dataClaimSubmissionCorporate == null) {
+					error = true;
+					message = "Data mpcc_id empty";
+					resultErr = "Data mppc_id yang dimasukkan kosong";
+					logger.error(
+							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				} else {
+					Date created_date = dataClaimSubmissionCorporate.getCreated_date();
+					Date update_status_date = dataClaimSubmissionCorporate.getDate_update_status();
+					Date start_date = dataClaimSubmissionCorporate.getStart_date();
+					Date end_date = dataClaimSubmissionCorporate.getEnd_date();
+					String jenis_claim = dataClaimSubmissionCorporate.getJenis_claim();
+					String status = dataClaimSubmissionCorporate.getStatus();
+					String mspo_policy_no_format = dataClaimSubmissionCorporate.getMspo_policy_no_format();
+					String mcl_first = dataClaimSubmissionCorporate.getMcl_first();
+					String bank = dataClaimSubmissionCorporate.getBank();
+					String no_rekening = dataClaimSubmissionCorporate.getNo_rekening();
+					String path_storage = dataClaimSubmissionCorporate.getPath_storage();
+					String lms_status = dataClaimSubmissionCorporate.getLms_status();
+					String reason_decline = dataClaimSubmissionCorporate.getReason_decline();
+					BigDecimal amount_dibayar = dataClaimSubmissionCorporate.getAmount_dibayar();
+					Integer double_cover_claim = dataClaimSubmissionCorporate.getDouble_cover_claim();
+
+					error = false;
+					message = "Successfully get data";
+					data.put("mpcc_id", mpcc_id);
+					data.put("created_date", created_date != null ? df1.format(created_date) : null);
+					data.put("update_status_date",
+							update_status_date != null ? df1.format(update_status_date) : df1.format(created_date));
+					data.put("amount_dibayar", amount_dibayar);
+					data.put("jenis_claim", jenis_claim);
+					data.put("jenis_claim", jenis_claim);
+					data.put("status", status);
+					data.put("mspo_policy_no_format", mspo_policy_no_format);
+					data.put("mcl_first", mcl_first);
+					data.put("start_date", start_date != null ? df1.format(start_date) : null);
+					data.put("end_date", end_date != null ? df1.format(end_date) : null);
+					data.put("double_cover_claim", double_cover_claim.equals(0) ? false : true);
+					data.put("bank", bank);
+					data.put("no_rekening", customResourceLoader.formatRekening(no_rekening));
+					data.put("reason_decline", reason_decline);
+
+					// List file in folder claim corporate
+					ArrayList<HashMap<String, Object>> arrayTemp = new ArrayList<>();
+					List<String> pathFileClaim = customResourceLoader.listFilesUsingJavaIO2CustomSorted(path_storage);
+					for (String name : pathFileClaim) {
+						HashMap<String, Object> hashMapPathClaim = new HashMap<>();
+						if ((!name.toLowerCase().contains("form_rawat_inap.pdf"))
+								&& (!name.toLowerCase().substring(0, 1).equals("."))
+								&& (!name.toLowerCase().contains("formrawatinapgenerate.pdf"))) {
+							hashMapPathClaim.put("name", name.replace("MPOLIS_", "").replace("_", " "));
+							hashMapPathClaim.put("path_file", path_storage + "\\" + name);
+
+							arrayTemp.add(hashMapPathClaim);
+						}
+					}
+
+					data.put("data_claim_corporate", arrayTemp);
+					data.put("lms_status", lms_status);
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Update activity user table LST_USER_SIMULTANEOUS
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 78, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
 }

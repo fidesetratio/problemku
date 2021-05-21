@@ -14,6 +14,33 @@ public class BenefitCorporate implements Serializable {
 	private String reimburse;
 	private BigDecimal naik_kelas;
 	private BigDecimal batas_benefit_tahunan;
+	private BigDecimal limit_benefit;
+	private BigDecimal jml_pemakaian;
+	private BigDecimal sisa_limit;
+	
+	public BigDecimal getLimit_benefit() {
+		return limit_benefit;
+	}
+
+	public void setLimit_benefit(BigDecimal limit_benefit) {
+		this.limit_benefit = limit_benefit;
+	}
+
+	public BigDecimal getJml_pemakaian() {
+		return jml_pemakaian;
+	}
+
+	public void setJml_pemakaian(BigDecimal jml_pemakaian) {
+		this.jml_pemakaian = jml_pemakaian;
+	}
+
+	public BigDecimal getSisa_limit() {
+		return sisa_limit;
+	}
+
+	public void setSisa_limit(BigDecimal sisa_limit) {
+		this.sisa_limit = sisa_limit;
+	}
 
 	public String getNm_plan() {
 		return nm_plan;

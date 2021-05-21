@@ -301,6 +301,9 @@ public class PolicyCorporateController {
 								BigDecimal batas_benefit = dataListBenefitCorporate.get(y).getNaik_kelas();
 								BigDecimal batas_benefit_tahunan = dataListBenefitCorporate.get(y)
 										.getBatas_benefit_tahunan();
+								BigDecimal limit_benefit = dataListBenefitCorporate.get(y).getLimit_benefit();
+								BigDecimal jml_pemakaian = dataListBenefitCorporate.get(y).getJml_pemakaian();
+								BigDecimal sisa_limit = dataListBenefitCorporate.get(y).getSisa_limit();
 
 								String statusBenefitResult = null;
 
@@ -316,6 +319,9 @@ public class PolicyCorporateController {
 								dataPlanDetails.put("status_benefit", statusBenefitResult);
 								dataPlanDetails.put("batas_benefit", batas_benefit);
 								dataPlanDetails.put("batas_benefit_tahunan", batas_benefit_tahunan);
+								dataPlanDetails.put("limit_benefit", limit_benefit);
+								dataPlanDetails.put("jml_pemakaian", jml_pemakaian);
+								dataPlanDetails.put("sisa_limit", sisa_limit);
 
 								detailsPlan.add(dataPlanDetails);
 							}

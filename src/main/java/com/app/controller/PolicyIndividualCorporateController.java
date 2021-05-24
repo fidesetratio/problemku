@@ -2719,8 +2719,8 @@ public class PolicyIndividualCorporateController {
 		String key = requestViewPolicyAlteration.getKey();
 		String no_polis = requestViewPolicyAlteration.getNo_polis();
 		Insured insured = requestViewPolicyAlteration.getInsured();
-		PolicyHolder policyholder = requestViewPolicyAlteration.getPolicyholder();
 		Payor payor = requestViewPolicyAlteration.getPayor();
+		PolicyHolder policyholder = requestViewPolicyAlteration.getPolicyholder();
 		ArrayList <Beneficiary> beneficiary = requestViewPolicyAlteration.getBeneficiary();
 		
 		String msde_old1 = null, msde_old2 = null, msde_old3 = null, msde_old4 = null, msde_old5 = null, msde_old6 = null,
@@ -2772,7 +2772,7 @@ public class PolicyIndividualCorporateController {
 												
 						//UPDATE STATUS
 						//services.updateStatus(policyAlteration);
-					} else if(agama_tt!=null) {
+					} if(agama_tt!=null) {
 						Integer id_endors = agama_tt.getId_endors();
 						String old = agama_tt.getOld();
 						String new_ = agama_tt.getNew_();
@@ -2792,7 +2792,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(Nama_perusahaan_tt!=null) {
+					} if(Nama_perusahaan_tt!=null) {
 						Integer id_endors = Nama_perusahaan_tt.getId_endors();
 						String old = Nama_perusahaan_tt.getOld();
 						String new_ = Nama_perusahaan_tt.getNew_();
@@ -2812,7 +2812,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(Tipe_usaha_tt!=null) {
+					} if(Tipe_usaha_tt!=null) {
 						Integer id_endors = Tipe_usaha_tt.getId_endors();
 						String old = Tipe_usaha_tt.getOld();
 						String new_ = Tipe_usaha_tt.getNew_();
@@ -2832,7 +2832,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(Jabatan_tt!=null) {
+					} if(Jabatan_tt!=null) {
 						Integer id_endors = Jabatan_tt.getId_endors();
 						String old = Jabatan_tt.getOld();
 						String new_ = Jabatan_tt.getNew_();
@@ -2853,8 +2853,9 @@ public class PolicyIndividualCorporateController {
 						}
 						
 					}
+				}
 				//AMBIL PAYOR
-				} else if(payor!=null) {
+				if(payor!=null) {
 					DetailPolicyAlteration cara_bayar = payor.getCara_bayar();
 					DetailPolicyAlteration nama_bank_payor = payor.getNama_bank_payor();
 					DetailPolicyAlteration cabang_bank_payor = payor.getCabang_bank_payor();
@@ -2902,7 +2903,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(nama_bank_payor!=null) {
+					} if(nama_bank_payor!=null) {
 						Integer id_endors = nama_bank_payor.getId_endors();
 						String old = nama_bank_payor.getOld();
 						String new_ = nama_bank_payor.getNew_();
@@ -2922,7 +2923,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(cabang_bank_payor!=null) {
+					} if(cabang_bank_payor!=null) {
 						Integer id_endors = cabang_bank_payor.getId_endors();
 						String old = cabang_bank_payor.getOld();
 						String new_ = cabang_bank_payor.getNew_();
@@ -2942,7 +2943,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kota_bank_payor!=null) {
+					} if(kota_bank_payor!=null) {
 						Integer id_endors = kota_bank_payor.getId_endors();
 						String old = kota_bank_payor.getOld();
 						String new_ = kota_bank_payor.getNew_();
@@ -2962,7 +2963,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(no_rekening_payor!=null) {
+					} if(no_rekening_payor!=null) {
 						Integer id_endors = no_rekening_payor.getId_endors();
 						String old = no_rekening_payor.getOld();
 						String new_ = no_rekening_payor.getNew_();
@@ -2982,7 +2983,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(pemilik_rekening_payor!=null) {
+					} if(pemilik_rekening_payor!=null) {
 						Integer id_endors = pemilik_rekening_payor.getId_endors();
 						String old = pemilik_rekening_payor.getOld();
 						String new_ = pemilik_rekening_payor.getNew_();
@@ -3002,7 +3003,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(masa_berlaku!=null) {
+					} if(masa_berlaku!=null) {
 						Integer id_endors = masa_berlaku.getId_endors();
 						String old = masa_berlaku.getOld();
 						String new_ = masa_berlaku.getNew_();
@@ -3022,7 +3023,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(hubungan_payor!=null) {
+					} if(hubungan_payor!=null) {
 						Integer id_endors = hubungan_payor.getId_endors();
 						String old = hubungan_payor.getOld();
 						String new_ = hubungan_payor.getNew_();
@@ -3042,7 +3043,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(nama_payor!=null) {
+					} if(nama_payor!=null) {
 						Integer id_endors = nama_payor.getId_endors();
 						String old = nama_payor.getOld();
 						String new_ = nama_payor.getNew_();
@@ -3062,7 +3063,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(nama_perusahaan!=null) {
+					} if(nama_perusahaan!=null) {
 						Integer id_endors = nama_perusahaan.getId_endors();
 						String old = nama_perusahaan.getOld();
 						String new_ = nama_perusahaan.getNew_();
@@ -3082,7 +3083,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(jabatan!=null) {
+					} if(jabatan!=null) {
 						Integer id_endors = jabatan.getId_endors();
 						String old = jabatan.getOld();
 						String new_ = jabatan.getNew_();
@@ -3102,7 +3103,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(alamat_rumah!=null) {
+					} if(alamat_rumah!=null) {
 						Integer id_endors = alamat_rumah.getId_endors();
 						String old = alamat_rumah.getOld();
 						String new_ = alamat_rumah.getNew_();
@@ -3122,7 +3123,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(negara!=null) {
+					} if(negara!=null) {
 						Integer id_endors = negara.getId_endors();
 						String old = negara.getOld();
 						String new_ = negara.getNew_();
@@ -3142,7 +3143,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(propinsi!=null) {
+					} if(propinsi!=null) {
 						Integer id_endors = propinsi.getId_endors();
 						String old = propinsi.getOld();
 						String new_ = propinsi.getNew_();
@@ -3162,7 +3163,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kabupaten!=null) {
+					} if(kabupaten!=null) {
 						Integer id_endors = kabupaten.getId_endors();
 						String old = kabupaten.getOld();
 						String new_ = kabupaten.getNew_();
@@ -3182,7 +3183,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kecamatan!=null) {
+					} if(kecamatan!=null) {
 						Integer id_endors = kecamatan.getId_endors();
 						String old = kecamatan.getOld();
 						String new_ = kecamatan.getNew_();
@@ -3202,7 +3203,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kelurahan!=null) {
+					} if(kelurahan!=null) {
 						Integer id_endors = kelurahan.getId_endors();
 						String old = kelurahan.getOld();
 						String new_ = kelurahan.getNew_();
@@ -3222,7 +3223,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kodepos!=null) {
+					} if(kodepos!=null) {
 						Integer id_endors = kodepos.getId_endors();
 						String old = kodepos.getOld();
 						String new_ = kodepos.getNew_();
@@ -3242,7 +3243,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(area_code_rumah!=null) {
+					} if(area_code_rumah!=null) {
 						Integer id_endors = area_code_rumah.getId_endors();
 						String old = area_code_rumah.getOld();
 						String new_ = area_code_rumah.getNew_();
@@ -3262,7 +3263,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(telpon_rumah!=null) {
+					} if(telpon_rumah!=null) {
 						Integer id_endors = telpon_rumah.getId_endors();
 						String old = telpon_rumah.getOld();
 						String new_ = telpon_rumah.getNew_();
@@ -3282,7 +3283,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(no_hp!=null) {
+					} if(no_hp!=null) {
 						Integer id_endors = no_hp.getId_endors();
 						String old = no_hp.getOld();
 						String new_ = no_hp.getNew_();
@@ -3302,7 +3303,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(tujuan!=null) {
+					} if(tujuan!=null) {
 						Integer id_endors = tujuan.getId_endors();
 						String old = tujuan.getOld();
 						String new_ = tujuan.getNew_();
@@ -3322,7 +3323,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(sumber_dana!=null) {
+					} if(sumber_dana!=null) {
 						Integer id_endors = sumber_dana.getId_endors();
 						String old = sumber_dana.getOld();
 						String new_ = sumber_dana.getNew_();
@@ -3342,7 +3343,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(mkl_kerja!=null) {
+					} if(mkl_kerja!=null) {
 						Integer id_endors = mkl_kerja.getId_endors();
 						String old = mkl_kerja.getOld();
 						String new_ = mkl_kerja.getNew_();
@@ -3362,7 +3363,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(mkl_penghasilan!=null) {
+					} if(mkl_penghasilan!=null) {
 						Integer id_endors = mkl_penghasilan.getId_endors();
 						String old = mkl_penghasilan.getOld();
 						String new_ = mkl_penghasilan.getNew_();
@@ -3382,7 +3383,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(mkl_smbr_penghasilan!=null) {
+					} if(mkl_smbr_penghasilan!=null) {
 						Integer id_endors = mkl_smbr_penghasilan.getId_endors();
 						String old = mkl_smbr_penghasilan.getOld();
 						String new_ = mkl_smbr_penghasilan.getNew_();
@@ -3403,8 +3404,9 @@ public class PolicyIndividualCorporateController {
 						}
 						
 					}
+				}
 				//AMBIL POLICY HOLDER
-				} else if(policyholder!=null) {
+				if(policyholder!=null) {
 					DetailPolicyAlteration nama_pp = policyholder.getNama_pp();
 					DetailPolicyAlteration jenis_produk = policyholder.getJenis_produk();
 					DetailPolicyAlteration status = policyholder.getStatus();
@@ -3464,7 +3466,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(jenis_produk!=null) {
+					} if(jenis_produk!=null) {
 						Integer id_endors = jenis_produk.getId_endors();
 						String old = jenis_produk.getOld();
 						String new_ = jenis_produk.getNew_();
@@ -3484,7 +3486,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(status!=null) {
+					} if(status!=null) {
 						Integer id_endors = status.getId_endors();
 						String old = status.getOld();
 						String new_ = status.getNew_();
@@ -3504,7 +3506,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(agama!=null) {
+					} if(agama!=null) {
 						Integer id_endors = agama.getId_endors();
 						String old = agama.getOld();
 						String new_ = agama.getNew_();
@@ -3524,7 +3526,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kewarganegaraan_pp!=null) {
+					} if(kewarganegaraan_pp!=null) {
 						Integer id_endors = kewarganegaraan_pp.getId_endors();
 						String old = kewarganegaraan_pp.getOld();
 						String new_ = kewarganegaraan_pp.getNew_();
@@ -3544,7 +3546,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(npwp!=null) {
+					} if(npwp!=null) {
 						Integer id_endors = npwp.getId_endors();
 						String old = npwp.getOld();
 						String new_ = npwp.getNew_();
@@ -3564,7 +3566,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(nama_perusahaan_pp!=null) {
+					} if(nama_perusahaan_pp!=null) {
 						Integer id_endors = nama_perusahaan_pp.getId_endors();
 						String old = nama_perusahaan_pp.getOld();
 						String new_ = nama_perusahaan_pp.getNew_();
@@ -3584,7 +3586,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(jabatan_pp!=null) {
+					} if(jabatan_pp!=null) {
 						Integer id_endors = jabatan_pp.getId_endors();
 						String old = jabatan_pp.getOld();
 						String new_ = jabatan_pp.getNew_();
@@ -3604,7 +3606,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(uraian_pekerjaan!=null) {
+					} if(uraian_pekerjaan!=null) {
 						Integer id_endors = uraian_pekerjaan.getId_endors();
 						String old = uraian_pekerjaan.getOld();
 						String new_ = uraian_pekerjaan.getNew_();
@@ -3624,7 +3626,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(alamat_kantor!=null) {
+					} if(alamat_kantor!=null) {
 						Integer id_endors = alamat_kantor.getId_endors();
 						String old = alamat_kantor.getOld();
 						String new_ = alamat_kantor.getNew_();
@@ -3644,7 +3646,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(propinsi_kantor!=null) {
+					} if(propinsi_kantor!=null) {
 						Integer id_endors = propinsi_kantor.getId_endors();
 						String old = propinsi_kantor.getOld();
 						String new_ = propinsi_kantor.getNew_();
@@ -3664,7 +3666,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kabupaten_kantor!=null) {
+					} if(kabupaten_kantor!=null) {
 						Integer id_endors = kabupaten_kantor.getId_endors();
 						String old = kabupaten_kantor.getOld();
 						String new_ = kabupaten_kantor.getNew_();
@@ -3684,7 +3686,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kecamatan_kantor!=null) {
+					} if(kecamatan_kantor!=null) {
 						Integer id_endors = kecamatan_kantor.getId_endors();
 						String old = kecamatan_kantor.getOld();
 						String new_ = kecamatan_kantor.getNew_();
@@ -3704,7 +3706,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kelurahan_kantor!=null) {
+					} if(kelurahan_kantor!=null) {
 						Integer id_endors = kelurahan_kantor.getId_endors();
 						String old = kelurahan_kantor.getOld();
 						String new_ = kelurahan_kantor.getNew_();
@@ -3724,7 +3726,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kodepos_kantor!=null) {
+					} if(kodepos_kantor!=null) {
 						Integer id_endors = kodepos_kantor.getId_endors();
 						String old = kodepos_kantor.getOld();
 						String new_ = kodepos_kantor.getNew_();
@@ -3744,7 +3746,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(area_code_rumah_pp!=null) {
+					} if(area_code_rumah_pp!=null) {
 						Integer id_endors = area_code_rumah_pp.getId_endors();
 						String old = area_code_rumah_pp.getOld();
 						String new_ = area_code_rumah_pp.getNew_();
@@ -3764,7 +3766,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(telpon_rumah_pp!=null) {
+					} if(telpon_rumah_pp!=null) {
 						Integer id_endors = telpon_rumah_pp.getId_endors();
 						String old = telpon_rumah_pp.getOld();
 						String new_ = telpon_rumah_pp.getNew_();
@@ -3784,7 +3786,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(alamat_rumah_pp!=null) {
+					} if(alamat_rumah_pp!=null) {
 						Integer id_endors = alamat_rumah_pp.getId_endors();
 						String old = alamat_rumah_pp.getOld();
 						String new_ = alamat_rumah_pp.getNew_();
@@ -3804,7 +3806,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(propinsi_rumah!=null) {
+					} if(propinsi_rumah!=null) {
 						Integer id_endors = propinsi_rumah.getId_endors();
 						String old = propinsi_rumah.getOld();
 						String new_ = propinsi_rumah.getNew_();
@@ -3824,7 +3826,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kabupaten_rumah!=null) {
+					} if(kabupaten_rumah!=null) {
 						Integer id_endors = kabupaten_rumah.getId_endors();
 						String old = kabupaten_rumah.getOld();
 						String new_ = kabupaten_rumah.getNew_();
@@ -3844,7 +3846,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kecamatan_rumah!=null) {
+					} if(kecamatan_rumah!=null) {
 						Integer id_endors = kecamatan_rumah.getId_endors();
 						String old = kecamatan_rumah.getOld();
 						String new_ = kecamatan_rumah.getNew_();
@@ -3864,7 +3866,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kelurahan_rumah!=null) {
+					} if(kelurahan_rumah!=null) {
 						Integer id_endors = kelurahan_rumah.getId_endors();
 						String old = kelurahan_rumah.getOld();
 						String new_ = kelurahan_rumah.getNew_();
@@ -3884,7 +3886,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kodepos_rumah!=null) {
+					} if(kodepos_rumah!=null) {
 						Integer id_endors = kodepos_rumah.getId_endors();
 						String old = kodepos_rumah.getOld();
 						String new_ = kodepos_rumah.getNew_();
@@ -3904,7 +3906,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(alamat_tpt_tinggal!=null) {
+					} if(alamat_tpt_tinggal!=null) {
 						Integer id_endors = alamat_tpt_tinggal.getId_endors();
 						String old = alamat_tpt_tinggal.getOld();
 						String new_ = alamat_tpt_tinggal.getNew_();
@@ -3924,7 +3926,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(korespondensi_flag!=null) {
+					} if(korespondensi_flag!=null) {
 						Integer id_endors = korespondensi_flag.getId_endors();
 						String old = korespondensi_flag.getOld();
 						String new_ = korespondensi_flag.getNew_();
@@ -3944,7 +3946,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(nama_bank_pp!=null) {
+					} if(nama_bank_pp!=null) {
 						Integer id_endors = nama_bank_pp.getId_endors();
 						String old = nama_bank_pp.getOld();
 						String new_ = nama_bank_pp.getNew_();
@@ -3964,7 +3966,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(cabang_bank_pp!=null) {
+					} if(cabang_bank_pp!=null) {
 						Integer id_endors = cabang_bank_pp.getId_endors();
 						String old = cabang_bank_pp.getOld();
 						String new_ = cabang_bank_pp.getNew_();
@@ -3984,7 +3986,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kota_bank_pp!=null) {
+					} if(kota_bank_pp!=null) {
 						Integer id_endors = kota_bank_pp.getId_endors();
 						String old = kota_bank_pp.getOld();
 						String new_ = kota_bank_pp.getNew_();
@@ -4004,7 +4006,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(no_rekening_pp!=null) {
+					} if(no_rekening_pp!=null) {
 						Integer id_endors = no_rekening_pp.getId_endors();
 						String old = no_rekening_pp.getOld();
 						String new_ = no_rekening_pp.getNew_();
@@ -4024,7 +4026,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(pemilik_rekening_pp!=null) {
+					} if(pemilik_rekening_pp!=null) {
 						Integer id_endors = pemilik_rekening_pp.getId_endors();
 						String old = pemilik_rekening_pp.getOld();
 						String new_ = pemilik_rekening_pp.getNew_();
@@ -4044,7 +4046,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(email!=null) {
+					} if(email!=null) {
 						Integer id_endors = email.getId_endors();
 						String old = email.getOld();
 						String new_ = email.getNew_();
@@ -4064,7 +4066,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(tipe_usaha_pp!=null) {
+					} if(tipe_usaha_pp!=null) {
 						Integer id_endors = tipe_usaha_pp.getId_endors();
 						String old = tipe_usaha_pp.getOld();
 						String new_ = tipe_usaha_pp.getNew_();
@@ -4084,7 +4086,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(negara_tinggal!=null) {
+					} if(negara_tinggal!=null) {
 						Integer id_endors = negara_tinggal.getId_endors();
 						String old = negara_tinggal.getOld();
 						String new_ = negara_tinggal.getNew_();
@@ -4104,7 +4106,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(propinsi_tinggal!=null) {
+					} if(propinsi_tinggal!=null) {
 						Integer id_endors = propinsi_tinggal.getId_endors();
 						String old = propinsi_tinggal.getOld();
 						String new_ = propinsi_tinggal.getNew_();
@@ -4124,7 +4126,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kabupaten_tinggal!=null) {
+					} if(kabupaten_tinggal!=null) {
 						Integer id_endors = kabupaten_tinggal.getId_endors();
 						String old = kabupaten_tinggal.getOld();
 						String new_ = kabupaten_tinggal.getNew_();
@@ -4144,7 +4146,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kecamatan_tinggal!=null) {
+					} if(kecamatan_tinggal!=null) {
 						Integer id_endors = kecamatan_tinggal.getId_endors();
 						String old = kecamatan_tinggal.getOld();
 						String new_ = kecamatan_tinggal.getNew_();
@@ -4164,7 +4166,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kelurahan_tinggal!=null) {
+					} if(kelurahan_tinggal!=null) {
 						Integer id_endors = kelurahan_tinggal.getId_endors();
 						String old = kelurahan_tinggal.getOld();
 						String new_ = kelurahan_tinggal.getNew_();
@@ -4184,7 +4186,7 @@ public class PolicyIndividualCorporateController {
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 						}
 						
-					} else if(kodepos_tinggal!=null) {
+					} if(kodepos_tinggal!=null) {
 						Integer id_endors = kodepos_tinggal.getId_endors();
 						String old = kodepos_tinggal.getOld();
 						String new_ = kodepos_tinggal.getNew_();
@@ -4205,7 +4207,9 @@ public class PolicyIndividualCorporateController {
 						}
 						
 					}
-				} else if(beneficiary!=null) {
+				}
+				
+				if(beneficiary!=null) {
 					for(int i=0; i<beneficiary.size(); i++) {
 						Anggota anggota = beneficiary.get(i).getAnggota();
 						
@@ -4235,7 +4239,7 @@ public class PolicyIndividualCorporateController {
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 							}
 							
-						} else if(msaw_birth!=null) {
+						} if(msaw_birth!=null) {
 							Integer id_endors = msaw_birth.getId_endors();
 							String old = msaw_birth.getOld();
 							String new_ = msaw_birth.getNew_();
@@ -4255,11 +4259,11 @@ public class PolicyIndividualCorporateController {
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 							}
 							
-						} else if(msaw_persen!=null) {
+						} if(msaw_persen!=null) {
 							Integer id_endors = msaw_persen.getId_endors();
 							String old = msaw_persen.getOld();
 							String new_ = msaw_persen.getNew_();
-							Integer flag_direct = msaw_birth.getFlag_direct();
+							Integer flag_direct = msaw_persen.getFlag_direct();
 
 							Integer lsje_id = id_endors;
 							Endorse endors = services.selectListJenisEndors(lsje_id);
@@ -4275,7 +4279,7 @@ public class PolicyIndividualCorporateController {
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 							}
 							
-						} else if(lsre_relation!=null) {
+						} if(lsre_relation!=null) {
 							Integer id_endors = lsre_relation.getId_endors();
 							String old = lsre_relation.getOld();
 							String new_ = lsre_relation.getNew_();
@@ -4295,7 +4299,7 @@ public class PolicyIndividualCorporateController {
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 							}
 							
-						} else if(msaw_sex!=null) {
+						} if(msaw_sex!=null) {
 							Integer id_endors = msaw_sex.getId_endors();
 							String old = msaw_sex.getOld();
 							String new_ = msaw_sex.getNew_();

@@ -3,6 +3,10 @@ package com.app.model.request;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.app.model.Beneficiary;
+import com.app.model.Insured;
+import com.app.model.Payor;
+import com.app.model.PolicyHolder;
 import com.app.model.SubmitPolicyAlteration;
 
 public class RequestViewPolicyAlteration implements Serializable {
@@ -18,7 +22,6 @@ public class RequestViewPolicyAlteration implements Serializable {
 	private String tanggal_akhir;
 	private Integer id_endors;
 	private Integer flag_direct;
-	ArrayList<SubmitPolicyAlteration> policy_alteration;
 
 	private String cara_bayar;
 	private String nama_bank_payor;
@@ -83,16 +86,36 @@ public class RequestViewPolicyAlteration implements Serializable {
 	private String kota_bank_pp;
 	private String no_rekening_pp;
 	private String pemilik_rekening_pp;
-
 	
-	public ArrayList<SubmitPolicyAlteration> getPolicy_alteration() {
-		return policy_alteration;
+	private PolicyHolder policyholder;
+	private Insured insured;
+	private Payor payor;
+	private ArrayList<Beneficiary> beneficiary;
+	
+	public ArrayList<Beneficiary> getBeneficiary() {
+		return beneficiary;
 	}
-
-	public void setPolicy_alteration(ArrayList<SubmitPolicyAlteration> policy_alteration) {
-		this.policy_alteration = policy_alteration;
+	public void setBeneficiary(ArrayList<Beneficiary> beneficiary) {
+		this.beneficiary = beneficiary;
 	}
-
+	public PolicyHolder getPolicyholder() {
+		return policyholder;
+	}
+	public void setPolicyholder(PolicyHolder policyholder) {
+		this.policyholder = policyholder;
+	}
+	public Insured getInsured() {
+		return insured;
+	}
+	public void setInsured(Insured insured) {
+		this.insured = insured;
+	}
+	public Payor getPayor() {
+		return payor;
+	}
+	public void setPayor(Payor payor) {
+		this.payor = payor;
+	}
 	public Integer getFlag_direct() {
 		return flag_direct;
 	}

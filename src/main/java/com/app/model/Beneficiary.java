@@ -16,6 +16,14 @@ public class Beneficiary implements Serializable {
     private Integer msaw_persen;
     private Integer msaw_sex;
     
+    private Anggota anggota;    
+	
+	public Anggota getAnggota() {
+		return anggota;
+	}
+	public void setAnggota(Anggota anggota) {
+		this.anggota = anggota;
+	}
 	public Integer getMsaw_sex() {
 		return msaw_sex;
 	}

@@ -2722,6 +2722,7 @@ public class PolicyIndividualCorporateController {
 		Payor payor = requestViewPolicyAlteration.getPayor();
 		PolicyHolder policyholder = requestViewPolicyAlteration.getPolicyholder();
 		ArrayList <Beneficiary> beneficiary = requestViewPolicyAlteration.getBeneficiary();
+		ArrayList <Beneficiary> beneficiary_add = requestViewPolicyAlteration.getBeneficiary();
 		
 		String msde_old1 = null, msde_old2 = null, msde_old3 = null, msde_old4 = null, msde_old5 = null, msde_old6 = null,
 				msde_new1 = null, msde_new2 = null, msde_new3 = null, msde_new4 = null, msde_new5 = null, msde_new6 = null;
@@ -4212,6 +4213,120 @@ public class PolicyIndividualCorporateController {
 				if(beneficiary!=null) {
 					for(int i=0; i<beneficiary.size(); i++) {
 						Anggota anggota = beneficiary.get(i).getAnggota();
+						
+						DetailPolicyAlteration msaw_first = anggota.getMsaw_first();
+						DetailPolicyAlteration msaw_birth = anggota.getMsaw_birth();
+						DetailPolicyAlteration msaw_persen = anggota.getMsaw_persen();
+					    DetailPolicyAlteration lsre_relation = anggota.getLsre_relation();
+					    DetailPolicyAlteration msaw_sex = anggota.getMsaw_sex();
+					    
+					    if(msaw_first!=null) {
+							Integer id_endors = msaw_first.getId_endors();
+							String old = msaw_first.getOld();
+							String new_ = msaw_first.getNew_();
+							Integer flag_direct = msaw_first.getFlag_direct();
+
+							Integer lsje_id = id_endors;
+							Endorse endors = services.selectListJenisEndors(lsje_id);
+							String msen_alasan = endors.getLsje_jenis();
+							msde_old1 = old;
+							msde_new1 = new_;
+							
+							if(flag_direct==1) {
+								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+							} else if (flag_direct==2) {
+								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+							}
+							
+						} if(msaw_birth!=null) {
+							Integer id_endors = msaw_birth.getId_endors();
+							String old = msaw_birth.getOld();
+							String new_ = msaw_birth.getNew_();
+							Integer flag_direct = msaw_birth.getFlag_direct();
+
+							Integer lsje_id = id_endors;
+							Endorse endors = services.selectListJenisEndors(lsje_id);
+							String msen_alasan = endors.getLsje_jenis();
+							msde_old1 = old;
+							msde_new1 = new_;
+							
+							if(flag_direct==1) {
+								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+							} else if (flag_direct==2) {
+								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+							}
+							
+						} if(msaw_persen!=null) {
+							Integer id_endors = msaw_persen.getId_endors();
+							String old = msaw_persen.getOld();
+							String new_ = msaw_persen.getNew_();
+							Integer flag_direct = msaw_persen.getFlag_direct();
+
+							Integer lsje_id = id_endors;
+							Endorse endors = services.selectListJenisEndors(lsje_id);
+							String msen_alasan = endors.getLsje_jenis();
+							msde_old1 = old;
+							msde_new1 = new_;
+							
+							if(flag_direct==1) {
+								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+							} else if (flag_direct==2) {
+								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+							}
+							
+						} if(lsre_relation!=null) {
+							Integer id_endors = lsre_relation.getId_endors();
+							String old = lsre_relation.getOld();
+							String new_ = lsre_relation.getNew_();
+							Integer flag_direct = lsre_relation.getFlag_direct();
+
+							Integer lsje_id = id_endors;
+							Endorse endors = services.selectListJenisEndors(lsje_id);
+							String msen_alasan = endors.getLsje_jenis();
+							msde_old1 = old;
+							msde_new1 = new_;
+							
+							if(flag_direct==1) {
+								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+							} else if (flag_direct==2) {
+								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+							}
+							
+						} if(msaw_sex!=null) {
+							Integer id_endors = msaw_sex.getId_endors();
+							String old = msaw_sex.getOld();
+							String new_ = msaw_sex.getNew_();
+							Integer flag_direct = msaw_sex.getFlag_direct();
+
+							Integer lsje_id = id_endors;
+							Endorse endors = services.selectListJenisEndors(lsje_id);
+							String msen_alasan = endors.getLsje_jenis();
+							msde_old1 = old;
+							msde_new1 = new_;
+							
+							if(flag_direct==1) {
+								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+							} else if (flag_direct==2) {
+								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
+							}
+							
+						}
+					}
+				}
+				
+				if(beneficiary_add!=null) {
+					for(int i=0; i<beneficiary_add.size(); i++) {
+						Anggota anggota = beneficiary_add.get(i).getAnggota();
 						
 						DetailPolicyAlteration msaw_first = anggota.getMsaw_first();
 						DetailPolicyAlteration msaw_birth = anggota.getMsaw_birth();

@@ -62,6 +62,7 @@ import com.app.model.UserCorporate;
 import com.app.model.UserHR;
 import com.app.model.VersionCode;
 import com.app.model.ViewClaim;
+import com.app.model.ViewMclFirst;
 import com.app.model.Withdraw;
 import com.app.model.request.RequestTrackingPolis;
 
@@ -1464,5 +1465,15 @@ public class VegaServices {
 	public Integer selectCountReportHr(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectCountReportHr(no_polis);
+	}
+
+	public ArrayList<ViewMclFirst> selectViewMclFirst(String msag_id, String mspo_policy_no, String mcl_first, Integer both) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("msag_id", msag_id);
+		hashMap.put("mspo_policy_no", mspo_policy_no);
+		hashMap.put("mcl_first", mcl_first);
+		hashMap.put("both", both);
+		return dao.selectViewMclFirst(hashMap);
 	}
 }

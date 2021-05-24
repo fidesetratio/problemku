@@ -62,6 +62,7 @@ import com.app.model.Topup;
 import com.app.model.UnitLink;
 import com.app.model.User;
 import com.app.model.UserCorporate;
+import com.app.model.ViewMclFirst;
 import com.app.model.Withdraw;
 import com.app.model.request.RequestCheckPhoneNumberNasabah;
 import com.app.model.request.RequestCheckRekeningNasabah;
@@ -98,6 +99,7 @@ import com.app.model.request.RequestValidateSwitchingRedirection;
 import com.app.model.request.RequestViewClaimHr;
 import com.app.model.request.RequestViewClaimSubmission;
 import com.app.model.request.RequestViewClaimSubmissionCorporate;
+import com.app.model.request.RequestViewMclFirst;
 import com.app.model.request.RequestViewPolicyAlteration;
 import com.app.model.request.RequestViewSwitching;
 import com.app.model.request.RequestViewSwitchingRedirection;
@@ -7397,6 +7399,80 @@ public class FinancialTransactionController {
 		customResourceLoader.updateActivity(username);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 78, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/viewmclfirst", produces = "application/json", method = RequestMethod.POST)
+	public String viewMclFirst(
+			@RequestBody RequestViewMclFirst requestViewMclFirst,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestViewMclFirst);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<HashMap<String, Object>> data = new ArrayList<>();
+
+		String msag_id = requestViewMclFirst.getMsag_id();
+		String mspo_policy_no = requestViewMclFirst.getMspo_policy_no();
+		String mcl_first = requestViewMclFirst.getMcl_first();
+		try {
+			if (msag_id!=null) {
+				Integer both = 0;
+				if((mspo_policy_no!=null) && (mcl_first!=null)) {
+					both = 1;
+				} else {
+					both = 0;
+				}
+				
+				ArrayList <ViewMclFirst> viewMclFirst = services.selectViewMclFirst(msag_id, mspo_policy_no, mcl_first, both);
+
+				if (viewMclFirst == null) {
+					error = true;
+					message = "Data mcl first empty";
+					resultErr = "Data mccl first kosong";
+					logger.error(
+							"Path: " + request.getServletPath() + " Msag_id: " + msag_id + " Error: " + resultErr);
+				} else {
+					for(int i=0; i<viewMclFirst.size(); i++) {
+						String no_polis = viewMclFirst.get(i).getNo_polis();
+						String nama = viewMclFirst.get(i).getNama();
+						
+						HashMap<String, Object> hashMap = new HashMap<>();
+						hashMap.put("no_polis", no_polis);
+						hashMap.put("nama", nama);
+						
+						data.add(hashMap);
+					}
+					error = false;
+					message = "Successfully get data";
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Msag_id: " + msag_id + ")";
+				logger.error("Path: " + request.getServletPath() + " Msag_id: " + msag_id + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " msag_id: " + msag_id + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		//customResourceLoader.insertHistActivityWS(12, 78, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
 	}

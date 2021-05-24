@@ -4423,4 +4423,34 @@
 		         a.lgc_group_id,
 		         a.mce_klaim_admedika
 	</select>
+	
+	<select id="selectViewMclFirst" parameterType="Hashmap" resultType="com.app.model.ViewMclFirst">	 
+		select MST_POLICY.MSPO_POLICY_NO as NO_POLIS
+		, MST_CLIENT_NEW.MCL_FIRST as NAMA
+		from EKA.MST_POLICY
+		left outer join EKA.MST_CLIENT_NEW on MST_POLICY.MSPO_POLICY_HOLDER = MST_CLIENT_NEW.MCL_ID
+		where REG_SPAJ in (
+		    select distinct MST_AGENT_PROD.REG_SPAJ
+		    from EKA.MST_AGENT
+		    left outer join EKA.MST_CLIENT_NEW on MST_AGENT.MCL_ID = MST_CLIENT_NEW.MCL_ID
+		    left outer join EKA.MST_AGENT_PROD on MST_AGENT.MSAG_ID = MST_AGENT_PROD.MSAG_ID
+		        and MST_AGENT_PROD.LSLE_ID = 4
+		    left outer join EKA.MST_POLICY on MST_AGENT_PROD.REG_SPAJ = MST_POLICY.REG_SPAJ
+		    left outer join EKA.MST_CLIENT_NEW PH on MST_POLICY.MSPO_POLICY_HOLDER = PH.MCL_ID
+		    where MST_AGENT.MSAG_ACTIVE = 1
+		    start with MST_AGENT.MSAG_ID = #{msag_id, jdbcType=VARCHAR}
+		    connect by MST_AGENT.MST_LEADER = prior MST_AGENT.MSAG_ID
+		)
+		and (
+		<if test="mspo_policy_no != null">
+		    MST_POLICY.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+		</if>
+		<if test="both == 1">
+		    or
+		</if>
+		<if test="mcl_first != null">
+		    UPPER(MST_CLIENT_NEW.MCL_FIRST) like '%'|| UPPER(#{mcl_first}) ||'%'
+		</if>
+		)
+	</select>
 </mapper>

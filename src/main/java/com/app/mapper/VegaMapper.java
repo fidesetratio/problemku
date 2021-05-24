@@ -55,6 +55,7 @@ import com.app.model.UserCorporate;
 import com.app.model.UserHR;
 import com.app.model.VersionCode;
 import com.app.model.ViewClaim;
+import com.app.model.ViewMclFirst;
 import com.app.model.Withdraw;
 import com.app.model.request.RequestTrackingPolis;
 
@@ -419,6 +420,8 @@ public interface VegaMapper {
 	public ArrayList<DownloadReportHr> selectPathReportHr(String no_batch);
 	
 	public Integer selectCountReportHr(String no_polis);
+	
+	public ArrayList<ViewMclFirst> selectViewMclFirst(HashMap<String, Object> hashMap);
 
 	// Update
 	public void updateUserKeyName(LstUserSimultaneous user);

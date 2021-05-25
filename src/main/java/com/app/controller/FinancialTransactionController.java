@@ -7254,7 +7254,7 @@ public class FinancialTransactionController {
 								dataTemp.put("tgl_input", tgl_input != null ? df2.format(tgl_input) : null);
 								dataTemp.put("tgl_rawat", tgl_rawat != null ? df2.format(tgl_rawat) : null);
 								dataTemp.put("tgl_status", tgl_status != null ? df2.format(tgl_status) : null);
-								dataTemp.put("tgl_klaim", tgl_klaim != null ? df2.format(tgl_klaim) : null);
+								dataTemp.put("tgl_klaim", tgl_klaim != null ? df3.format(tgl_klaim) : null);
 								dataTemp.put("tgl_bayar", tgl_bayar != null ? df2.format(tgl_bayar) : null);
 								dataTemp.put("jumlah_claim", nfZeroTwo.format(jumlah_claim));
 								dataTemp.put("jumlah_dibayarkan",
@@ -7328,6 +7328,7 @@ public class FinancialTransactionController {
 						String detail_claim = dataDetailClaimCorporate.get(i).getDetail();
 						BigDecimal jml_claim = dataDetailClaimCorporate.get(i).getJml_klaim();
 						BigDecimal jml_dibayar = dataDetailClaimCorporate.get(i).getJml_dibayar();
+						String path = storageClaimMpolicy + File.separator;
 
 						HashMap<String, Object> dataTemp = new HashMap<>();
 						dataTemp.put("detail_claim", detail_claim);

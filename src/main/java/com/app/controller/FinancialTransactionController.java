@@ -7251,11 +7251,11 @@ public class FinancialTransactionController {
 
 								HashMap<String, Object> dataTemp = new HashMap<>();
 								dataTemp.put("no_claim", no_claim);
-								dataTemp.put("tgl_input", tgl_input != null ? df2.format(tgl_input) : null);
-								dataTemp.put("tgl_rawat", tgl_rawat != null ? df2.format(tgl_rawat) : null);
-								dataTemp.put("tgl_status", tgl_status != null ? df2.format(tgl_status) : null);
+								dataTemp.put("tgl_input", tgl_input != null ? df3.format(tgl_input) : null);
+								dataTemp.put("tgl_rawat", tgl_rawat != null ? df3.format(tgl_rawat) : null);
+								dataTemp.put("tgl_status", tgl_status != null ? df3.format(tgl_status) : null);
 								dataTemp.put("tgl_klaim", tgl_klaim != null ? df3.format(tgl_klaim) : null);
-								dataTemp.put("tgl_bayar", tgl_bayar != null ? df2.format(tgl_bayar) : null);
+								dataTemp.put("tgl_bayar", tgl_bayar != null ? df3.format(tgl_bayar) : null);
 								dataTemp.put("jumlah_claim", nfZeroTwo.format(jumlah_claim));
 								dataTemp.put("jumlah_dibayarkan",
 										jumlah_dibayarkan != null ? nfZeroTwo.format(jumlah_dibayarkan) : null);

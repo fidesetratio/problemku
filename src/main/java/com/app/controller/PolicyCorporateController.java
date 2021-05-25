@@ -46,6 +46,7 @@ public class PolicyCorporateController {
 	private VegaCustomResourceLoader customResourceLoader;
 
 	private DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
+	private DateFormat df3 = new SimpleDateFormat("dd MMM yyyy");
 	private NumberFormat nfZeroTwo = new DecimalFormat("#,##0.00;(#,##0.00)");
 
 	@RequestMapping(value = "/listclaimcorporate", produces = "application/json", method = RequestMethod.POST)

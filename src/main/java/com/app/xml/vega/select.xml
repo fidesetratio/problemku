@@ -3512,11 +3512,16 @@
 	</select>
 	
 	<select id="selectDetailClaimCorporate" parameterType="String" resultType="com.app.model.DetailClaimCorporate">
-		SELECT B.LJJ_JENIS_JAMINAN AS DETAIL,
-       		A.MDC_JLH_CLAIM AS JML_KLAIM,
-       		NVL(A.MDC_BAYAR, 0) AS JML_DIBAYAR
-  		FROM EKA.MST_DET_CLAIM_EBN@EB A
-       		INNER JOIN EKA.LST_JN_JAMINAN_EBN@EB B ON A.LGC_GROUP_ID = B.LGC_GROUP_ID AND A.LJJ_JENIS_ID = B.LJJ_JENIS_ID
+		SELECT  B.LJJ_JENIS_JAMINAN AS DETAIL,
+		        A.MDC_JLH_CLAIM AS JML_KLAIM,
+		        NVL(A.MDC_BAYAR, 0) AS JML_DIBAYAR,
+		        TO_CHAR(D.MBC_TGL_INPUT, 'YYYYMM') AS TGL_INPUT,
+		        C.MBC_NO,
+		        C.MCE_KLAIM_ADMEDIKA
+		FROM    EKA.MST_DET_CLAIM_EBN@EB A
+		INNER JOIN EKA.LST_JN_JAMINAN_EBN@EB B ON A.LGC_GROUP_ID = B.LGC_GROUP_ID AND A.LJJ_JENIS_ID = B.LJJ_JENIS_ID
+		INNER JOIN EKA.MST_CLAIM_EBN@EB C ON A.MCE_NO_KLAIM = C.MCE_NO_KLAIM
+		INNER JOIN EKA.MST_BATCH_CLAIM@EB D ON C.MBC_NO = D.MBC_NO
  		WHERE A.MCE_NO_KLAIM = #{no_claim, jdbcType=VARCHAR}
 	</select>
 	
@@ -4452,5 +4457,21 @@
 		    UPPER(MST_CLIENT_NEW.MCL_FIRST) like '%'|| UPPER(#{mcl_first}) ||'%'
 		</if>
 		)
+	</select>
+	
+	<select id="selectGetIdTicket" resultType="String">	 
+		select  (nvl(max(id_ticket), 0) + 1) id_ticket
+		from    hrd.hd_tickets@ebmuat
+	</select>
+	
+	<select id="selectListEndorseHr" parameterType="String" resultType="com.app.model.EndorseHr">	 
+		SELECT  a.id_ticket,
+		        a.subject,
+		        to_char(a.create_date, 'dd/mm/yyyy') create_date,
+		        b.nama_status
+		FROM    HRD.HD_TICKETS@EBMUAT a,
+		        HRD.HD_STATUS@EBMUAT b
+		WHERE   a.NIK_REQ = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
+		    AND a.ID_STATUS = b.ID_STATUS
 	</select>
 </mapper>

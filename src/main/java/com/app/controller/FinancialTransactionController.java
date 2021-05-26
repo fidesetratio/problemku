@@ -7328,12 +7328,22 @@ public class FinancialTransactionController {
 						String detail_claim = dataDetailClaimCorporate.get(i).getDetail();
 						BigDecimal jml_claim = dataDetailClaimCorporate.get(i).getJml_klaim();
 						BigDecimal jml_dibayar = dataDetailClaimCorporate.get(i).getJml_dibayar();
-						String path = storageClaimMpolicy + File.separator;
-
+						String tgl_input = dataDetailClaimCorporate.get(i).getTgl_input();
+						String mbc_no = dataDetailClaimCorporate.get(i).getMbc_no();
+						String mce_klaim_admedika = dataDetailClaimCorporate.get(i).getMce_klaim_admedika();
+						String path = null;
+						
+						if(mce_klaim_admedika!=null) {
+							path = storageClaimMpolicy + File.separator + tgl_input + File.separator + mbc_no + File.separator + "Kwitansi" + File.separator + mce_klaim_admedika;
+						} else {
+							path = null;
+						}
+						
 						HashMap<String, Object> dataTemp = new HashMap<>();
 						dataTemp.put("detail_claim", detail_claim);
 						dataTemp.put("jml_claim", nfZeroTwo.format(jml_claim));
 						dataTemp.put("jml_dibayar", nfZeroTwo.format(jml_dibayar));
+						dataTemp.put("path", path);
 
 						arrayDetails.add(dataTemp);
 					}

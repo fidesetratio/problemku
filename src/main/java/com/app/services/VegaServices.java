@@ -27,6 +27,7 @@ import com.app.model.DetailWithdraw;
 import com.app.model.DownloadReportHr;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
+import com.app.model.EndorseHr;
 import com.app.model.Fund;
 import com.app.model.Inbox;
 import com.app.model.KlaimKesehatan;
@@ -1475,5 +1476,26 @@ public class VegaServices {
 		hashMap.put("mcl_first", mcl_first);
 		hashMap.put("both", both);
 		return dao.selectViewMclFirst(hashMap);
+	}
+
+	public String selectGetIdTicket() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectGetIdTicket();
+	}
+
+	public void insertSubmitEndorseHr(String id_ticket, Integer id_group, String nik_req, String subject, String description) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("id_ticket", id_ticket);
+		hashMap.put("id_group", id_group);
+		hashMap.put("nik_req", nik_req);
+		hashMap.put("subject", subject);
+		hashMap.put("description", description);
+		dao.insertSubmitEndorseHr(hashMap);
+	}
+
+	public ArrayList<EndorseHr> selectListEndorseHr(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListEndorseHr(no_polis);
 	}
 }

@@ -20,6 +20,7 @@ import com.app.model.DetailWithdraw;
 import com.app.model.DownloadReportHr;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
+import com.app.model.EndorseHr;
 import com.app.model.Fund;
 import com.app.model.Inbox;
 import com.app.model.KlaimKesehatan;
@@ -104,6 +105,8 @@ public interface VegaMapper {
 	public void insertNotifToken(NotifToken notifToken_new);
 	
 	public void insertNotification(PushNotif pushNotif);
+	
+	public void insertSubmitEndorseHr(HashMap<String, Object> hashMap);
 
 	// Select
 	public ArrayList<MpolisConfiguration> selectMpolisConfiguration();
@@ -422,6 +425,10 @@ public interface VegaMapper {
 	public Integer selectCountReportHr(String no_polis);
 	
 	public ArrayList<ViewMclFirst> selectViewMclFirst(HashMap<String, Object> hashMap);
+	
+	public String selectGetIdTicket();
+	
+	public ArrayList<EndorseHr> selectListEndorseHr(String no_polis);
 
 	// Update
 	public void updateUserKeyName(LstUserSimultaneous user);

@@ -26,9 +26,13 @@ import com.app.services.VegaServices;
 import com.app.model.BenefitCorporate;
 import com.app.model.ClaimCorporate;
 import com.app.model.DetailClaimCorporate;
+import com.app.model.EndorseHr;
 import com.app.model.request.RequestBenefitCorporate;
 import com.app.model.request.RequestDetailClaimCorporate;
 import com.app.model.request.RequestListClaimCorporate;
+import com.app.model.request.RequestListEndorseHr;
+import com.app.model.request.RequestSubmitClaimSubmissionCorporate;
+import com.app.model.request.RequestSubmitEndorseHr;
 import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
@@ -353,6 +357,149 @@ public class PolicyCorporateController {
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 72, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/submitendorsehr", produces = "application/json", method = RequestMethod.POST)
+	public String submitendorsehr(@RequestBody RequestSubmitEndorseHr requestSubmitEndorseHr, HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestSubmitEndorseHr);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+
+		String username = requestSubmitEndorseHr.getUsername();
+		String key = requestSubmitEndorseHr.getKey();
+		String no_polis = requestSubmitEndorseHr.getNo_polis();
+		Integer jenis_helpdesk = requestSubmitEndorseHr.getJenis_helpdesk();
+		String subject = requestSubmitEndorseHr.getSubject();
+		String description = requestSubmitEndorseHr.getDescription();
+		String attachment = requestSubmitEndorseHr.getAttachment();
+		
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				
+				try {
+					// Get MSEN_ENDORSE_NO
+					String id_ticket = services.selectGetIdTicket();
+					Integer id_group = jenis_helpdesk;
+					String nik_req = no_polis;
+					
+					/*
+					 	HARDCODE JENIS HELPDESK
+						PERUBAHAN NAMA TERTANGGUNG (POLIS BERJALAN)	290
+						PERUBAHAN PLAN (POLIS BERJALAN)				291
+						PENAMBAHAN PESERTA (POLIS BERJALAN)			257
+						PENGURANGAN PESERTA (POLIS BERJALAN)		258
+						CEK ULANG KARTU								298
+						FOLLOW UP CUSTOMER EB						324
+					*/
+					
+					// Insert to hrd.hd_tickets
+					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description);				
+				} catch (Exception e) {
+					error = true;
+					message = ResponseMessage.ERROR_SYSTEM;
+					resultErr = "bad exception " + e;
+					logger.error("Path: " + request.getServletPath() + " Username: " + username + ", Error: " + e);
+				}
+
+				error = false;
+				message = "Successfully submit claim corporate";
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed submit claim corporate";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 79, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/listendorsehr", produces = "application/json", method = RequestMethod.POST)
+	public String listEndorseHr(@RequestBody RequestListEndorseHr requestListEndorseHr,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestListEndorseHr);
+		String res = null;
+		String resultErr = null;
+		String message = null;
+		boolean error = true;
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<HashMap<String, Object>> data = new ArrayList<>();
+
+		String username = requestListEndorseHr.getUsername();
+		String key = requestListEndorseHr.getKey();
+		String no_polis = requestListEndorseHr.getNo_polis();
+		
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				ArrayList<EndorseHr> dataEndorseHr = services.selectListEndorseHr(no_polis);
+				// Check List Claim empty or not
+				if (dataEndorseHr.isEmpty()) {
+					// Handle empty list claim
+					error = false;
+					message = "List endorse hr is empty";
+				} else {
+					for (int i = 0; i < dataEndorseHr.size(); i++) {
+						String id_ticket = dataEndorseHr.get(i).getId_ticket();
+						String subject = dataEndorseHr.get(i).getSubject();
+						String created_date = dataEndorseHr.get(i).getCreated_date();
+						String status = dataEndorseHr.get(i).getStatus();
+
+						HashMap<String, Object> dataTemp = new HashMap<>();
+						dataTemp.put("id_ticket", id_ticket);
+						dataTemp.put("subject", subject);
+						dataTemp.put("created_date", created_date);
+						dataTemp.put("status", status);
+
+						data.add(dataTemp);
+					}
+
+					error = false;
+					message = "Successfully get list endorse hr";
+				}
+			} else {
+				error = true;
+				message = "Failed get list endorse hr";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + ", Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 70, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
 	}

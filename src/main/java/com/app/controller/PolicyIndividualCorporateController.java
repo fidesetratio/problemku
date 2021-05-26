@@ -111,11 +111,14 @@ public class PolicyIndividualCorporateController {
 	@Value("${path.download.article}")
 	private String pathDownloadArticle;
 	
-	@Value("${path.storage.reporthr}")
+	@Value("${path.download.reporthr}")
 	private String pathDownloadReportHr;
-
+	
 	@Value("${path.storage.mpolicydb}")
 	private String storageMpolicyDB;
+	
+	@Value("${path.storage.mpolicy}")
+	private String storageMpolicy;
 	
 	@Autowired
 	private VegaServices services;
@@ -4828,7 +4831,7 @@ public class PolicyIndividualCorporateController {
 						dataTemp.put("tgl_bayar", tgl_bayar_);
 						dataTemp.put("mspo_policy_no", mspo_policy_no);
 						dataTemp.put("lspd_position", lspd_position);
-						dataTemp.put("mbc_kwitansi", mbc_kwitansi);		
+						dataTemp.put("mbc_kwitansi", mbc_kwitansi);	
 						dataTemp.put("path", path);
 						
 						listsReportHr.add(dataTemp);
@@ -4862,77 +4865,71 @@ public class PolicyIndividualCorporateController {
 	}
 	
 	@RequestMapping(value = "/downloadreporthr", produces = "application/json", method = RequestMethod.POST)
-	public String downloadRerportHr(@RequestBody RequestDownloadReportHr requestDownloadReportHr,
-			HttpServletRequest request) {
-		Date start = new Date();
+	public String downloadReportHr(@RequestBody RequestDownloadReportHr requestDownloadReportHr, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		GsonBuilder builder = new GsonBuilder();
 		builder.serializeNulls();
 		Gson gson = new Gson();
 		gson = builder.create();
-		String req = gson.toJson(requestDownloadReportHr);
 		String res = null;
 		String message = null;
-		String resultErr = null;
 		Boolean error = false;
 		HashMap<String, Object> map = new HashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
-		ArrayList<HashMap<String, Object>> listsReportHr = new ArrayList<>();
-
-		String username = requestDownloadReportHr.getUsername();
-		String key = requestDownloadReportHr.getKey();
-		String no_batch = requestDownloadReportHr.getNo_batch();
 		try {
-			if (customResourceLoader.validateCredential(username, key)) {
-				ArrayList<DownloadReportHr> downloadReportHr = services.selectPathReportHr(no_batch);
-				
-				if (downloadReportHr==null) {
-					// Data List Kosong
-					data = null;
-					error = false;
-					message = "Data download report hr empty";
-				} else {
-					//('\\storage.sinarmasmsiglife.co.id\ekamedicare\' || to_char(b.mbc_tgl_input, 'yyyymm') || '\' || a.mbc_no || '\Kwitansi\' || a.mce_klaim_admedika || '.pdf') as path_download
-					for(int i = 0; i<downloadReportHr.size();i++) {
-						HashMap<String, Object> dataTemp = new HashMap<>();
-						String path = null;
-						
-						//String mbc_no_format = downloadReportHr.get(i).getMbc_no_format();
-						//String type_claim = downloadReportHr.get(i).getType_claim();
-						String mbc_tgl_input = downloadReportHr.get(i).getMbc_tgl_input();
-						String mbc_no = downloadReportHr.get(i).getMbc_no();
-						String mce_klaim_admedika = downloadReportHr.get(i).getMce_klaim_admedika();
-						
-						path = pathDownloadReportHr + mbc_tgl_input + File.separator + mbc_no + File.separator + "Kwitansi" + File.separator + mce_klaim_admedika + ".pdf";
-						
-						dataTemp.put("path", path);
-						
-						listsReportHr.add(dataTemp);
-					}
-					
-					
-					data.put("list_report_batch", listsReportHr);
-					error = false;
-					message = "Successfully get data";
+			// path file
+			String pathWS = requestDownloadReportHr.getPath();
+			String tempPathWS = pathWS.replace("\\", "/");
+			tempPathWS = tempPathWS.replace("//", "/");
+			String tempPath[] = tempPathWS.split("/");
+			String tgl_input = tempPath[5].toString();
+			String no_batch = tempPath[6].toString();
+			String file_name = tempPath[7].toString();
+			System.out.println(tgl_input);
+			System.out.println(no_batch);
+			System.out.println(file_name);
+			String NewPathWS = pathDownloadReportHr + File.separator + tgl_input + File.separator + no_batch + File.separator + file_name;
+			String file_type = "pdf";
+			System.out.println(NewPathWS);
+
+			// path file yang mau di download
+			File file = new File(NewPathWS);
+
+			try {
+				// Content-Disposition
+				response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+						"attachment; filename=" + file_name.replace("  ", "_").replace(" ", "_") + "." + file_type);
+
+				// Content-Length
+				response.setContentLength((int) file.length());
+
+				BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+				BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+				byte[] buffer = new byte[1024];
+				int bytesRead = 0;
+				while ((bytesRead = inStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
 				}
-			} else {
-				// Handle username & key not match
+				outStream.flush();
+				inStream.close();
+
+				error = false;
+				message = "Download Success";
+			} catch (Exception e) {
 				error = true;
-				message = "Failed get data";
-				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
-				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				message = "Download Failed";
+				logger.error("Path: " + request.getServletPath() + " Error: " + e);
 			}
 		} catch (Exception e) {
 			error = true;
 			message = ResponseMessage.ERROR_SYSTEM;
-			resultErr = "bad exception " + e;
-			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+			logger.error("Path: " + request.getServletPath() + " Error: " + e);
 		}
 		map.put("error", error);
 		map.put("message", message);
 		map.put("data", data);
 		res = gson.toJson(map);
-		// Insert Log LST_HIST_ACTIVITY_WS
-		customResourceLoader.insertHistActivityWS(12, 63, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
 	}

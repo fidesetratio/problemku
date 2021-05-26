@@ -101,6 +101,7 @@ path:
   banner: http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/api-vega/downloadbanner?value=
   article: /mnt/storage/E-Sehat/upload/artikel
   polisall: \\storage\pdfind\Polis_Testing\
+  reporthr: /mnt/storage/m-Policytest/Ekamedicare
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
   
@@ -200,6 +201,7 @@ path:
   banner: http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/api-vega/downloadbanner?value=
   article: /mnt/storage/E-Sehat/upload/artikel
   polisall: /mnt/storage/Polis_Testing
+  reporthr: /mnt/storage/m-Policytest/Ekamedicare
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
 

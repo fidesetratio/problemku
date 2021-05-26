@@ -4359,7 +4359,15 @@
 		                     TO_CHAR(a.mbc_tgl_back, 'dd/mm/yyyy') as tgl_bayar,
 		                     b.mspo_policy_no,
 		                     d.lspd_position,
-		                     a.mbc_kwitansi
+		                     a.mbc_kwitansi,
+		                     CASE
+		                        WHEN e.lgc_group_id in ('02','05','07','08','82','85','87','88')
+		                            THEN 'AKP RI RB PA EKW'
+		                        WHEN e.lgc_group_id in ('01','03','04','06','81','83','84','86')
+		                            THEN 'AKP RJ RG KM RK'
+		                        ELSE 'group not found'
+		                    END as group_claim,
+                   	 		TO_CHAR(a.mbc_tgl_input, 'yyyymm') as tgl_input_format
 		                FROM eka.mst_batch_claim@eb a,
 		                     eka.mst_policy@eb b,
 		                     eka.mst_client@eb c,
@@ -4382,7 +4390,8 @@
 		                     a.mbc_tgl_back,
 		                     b.mspo_policy_no,
 		                     d.lspd_position,
-		                     a.mbc_kwitansi
+		                     a.mbc_kwitansi,
+		                     e.lgc_group_id
 		            ORDER BY a.mbc_no) t)
 		WHERE rn BETWEEN #{pageNumber} AND #{pageSize}
 	</select>

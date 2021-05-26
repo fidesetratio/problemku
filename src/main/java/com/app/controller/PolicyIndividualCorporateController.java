@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.text.DateFormat;
@@ -113,6 +114,9 @@ public class PolicyIndividualCorporateController {
 	@Value("${path.storage.reporthr}")
 	private String pathDownloadReportHr;
 
+	@Value("${path.storage.mpolicydb}")
+	private String storageMpolicyDB;
+	
 	@Autowired
 	private VegaServices services;
 	
@@ -4777,6 +4781,9 @@ public class PolicyIndividualCorporateController {
 					message = "Data list report hr empty";
 				} else {
 					Integer count = services.selectCountReportHr(no_polis);
+					String path = null;
+					String path_check = null;
+					String filename = null;
 					
 					for(int i = 0; i<listReportHr.size();i++) {
 						HashMap<String, Object> dataTemp = new HashMap<>();
@@ -4789,7 +4796,31 @@ public class PolicyIndividualCorporateController {
 						String mspo_policy_no = listReportHr.get(i).getMspo_policy_no();
 						String lspd_position = listReportHr.get(i).getLspd_position();
 						String mbc_kwitansi = listReportHr.get(i).getMbc_kwitansi();
+						String group_claim = listReportHr.get(i).getGroup_claim();
+						String tgl_input_format = listReportHr.get(i).getTgl_input_format();
 						
+						path_check = storageMpolicyDB + "Ekamedicare" + File.separator + tgl_input_format + File.separator + no_batch;
+						//System.out.println(path_check);
+						
+						File dir = new File(path_check);
+					      FilenameFilter filter = new FilenameFilter() {
+					         public boolean accept (File dir, String name) { 
+					            return name.startsWith(group_claim);
+					         } 
+					      }; 
+					      String[] children = dir.list(filter);
+					      if (children == null) {
+					         //System.out.println("Either dir does not exist or is not a directory");
+					         filename = null;					         
+					      } else { 
+					         for (int j = 0; j< children.length; j++) {
+					            filename = children[j];
+					            //System.out.println(filename);
+					         } 
+					      }
+						
+					    path = path_check + File.separator + filename;
+					    //System.out.println(path);
 						dataTemp.put("no_batch", no_batch_);
 						dataTemp.put("tipe_batch", tipe_batch);
 						dataTemp.put("tgl_input", tgl_input_);
@@ -4797,7 +4828,8 @@ public class PolicyIndividualCorporateController {
 						dataTemp.put("tgl_bayar", tgl_bayar_);
 						dataTemp.put("mspo_policy_no", mspo_policy_no);
 						dataTemp.put("lspd_position", lspd_position);
-						dataTemp.put("mbc_kwitansi", mbc_kwitansi);			
+						dataTemp.put("mbc_kwitansi", mbc_kwitansi);		
+						dataTemp.put("path", path);
 						
 						listsReportHr.add(dataTemp);
 					}

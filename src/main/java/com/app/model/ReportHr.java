@@ -16,7 +16,21 @@ public class ReportHr implements Serializable {
 	private String mspo_policy_no;
 	private String lspd_position;
 	private String mbc_kwitansi;
+	private String group_claim;
+	private String tgl_input_format;
 	
+	public String getTgl_input_format() {
+		return tgl_input_format;
+	}
+	public void setTgl_input_format(String tgl_input_format) {
+		this.tgl_input_format = tgl_input_format;
+	}
+	public String getGroup_claim() {
+		return group_claim;
+	}
+	public void setGroup_claim(String group_claim) {
+		this.group_claim = group_claim;
+	}
 	public String getNo_batch() {
 		return no_batch;
 	}

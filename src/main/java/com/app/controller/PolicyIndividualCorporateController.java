@@ -73,6 +73,7 @@ import com.app.model.request.RequestBanner;
 import com.app.model.request.RequestCountInboxUnread;
 import com.app.model.request.RequestDeleteAllInbox;
 import com.app.model.request.RequestDownloadArticle;
+import com.app.model.request.RequestDownloadKwitansi;
 import com.app.model.request.RequestDownloadReportHr;
 import com.app.model.request.RequestFurtherClaimSubmission;
 import com.app.model.request.RequestInbox;
@@ -4802,7 +4803,7 @@ public class PolicyIndividualCorporateController {
 						String group_claim = listReportHr.get(i).getGroup_claim();
 						String tgl_input_format = listReportHr.get(i).getTgl_input_format();
 						
-						path_check = storageMpolicyDB + "Ekamedicare" + File.separator + tgl_input_format + File.separator + no_batch;
+						path_check = storageMpolicyDB + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch;
 						//System.out.println(path_check);
 						
 						File dir = new File(path_check);
@@ -4822,7 +4823,7 @@ public class PolicyIndividualCorporateController {
 					         } 
 					      }
 						
-					    path = path_check + File.separator + filename;
+					    path = path_check + "\\" + filename;
 					    //System.out.println(path);
 						dataTemp.put("no_batch", no_batch_);
 						dataTemp.put("tipe_batch", tipe_batch);
@@ -4885,12 +4886,74 @@ public class PolicyIndividualCorporateController {
 			String tgl_input = tempPath[5].toString();
 			String no_batch = tempPath[6].toString();
 			String file_name = tempPath[7].toString();
-			System.out.println(tgl_input);
-			System.out.println(no_batch);
-			System.out.println(file_name);
 			String NewPathWS = pathDownloadReportHr + File.separator + tgl_input + File.separator + no_batch + File.separator + file_name;
 			String file_type = "pdf";
-			System.out.println(NewPathWS);
+
+			// path file yang mau di download
+			File file = new File(NewPathWS);
+
+			try {
+				// Content-Disposition
+				response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+						"attachment; filename=" + file_name.replace("  ", "_").replace(" ", "_") + "." + file_type);
+
+				// Content-Length
+				response.setContentLength((int) file.length());
+
+				BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+				BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+				byte[] buffer = new byte[1024];
+				int bytesRead = 0;
+				while ((bytesRead = inStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+				outStream.flush();
+				inStream.close();
+
+				error = false;
+				message = "Download Success";
+			} catch (Exception e) {
+				error = true;
+				message = "Download Failed";
+				logger.error("Path: " + request.getServletPath() + " Error: " + e);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			logger.error("Path: " + request.getServletPath() + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/downloadkwitansi", produces = "application/json", method = RequestMethod.POST)
+	public String downloadKwitansi(@RequestBody RequestDownloadKwitansi requestDownloadKwitansi, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String res = null;
+		String message = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+		try {
+			// path file
+			String pathWS = requestDownloadKwitansi.getPath();
+			String tempPathWS = pathWS.replace("\\", "/");
+			tempPathWS = tempPathWS.replace("//", "/");
+			String tempPath[] = tempPathWS.split("/");
+			String tgl_input = tempPath[5].toString();
+			String no_batch = tempPath[6].toString();
+			String file_name = tempPath[7].toString();
+			String NewPathWS = pathDownloadReportHr + File.separator + tgl_input + File.separator + no_batch + File.separator + file_name;
+			String file_type = "pdf";
 
 			// path file yang mau di download
 			File file = new File(NewPathWS);

@@ -4787,6 +4787,7 @@ public class PolicyIndividualCorporateController {
 					Integer count = services.selectCountReportHr(no_polis);
 					String path = null;
 					String path_check = null;
+					String path_display = null;
 					String filename = null;
 					
 					for(int i = 0; i<listReportHr.size();i++) {
@@ -4803,7 +4804,8 @@ public class PolicyIndividualCorporateController {
 						String group_claim = listReportHr.get(i).getGroup_claim();
 						String tgl_input_format = listReportHr.get(i).getTgl_input_format();
 						
-						path_check = storageMpolicyDB + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch;
+						path_check = storageMpolicyDB + "Ekamedicare" + File.separator + tgl_input_format + File.separator + no_batch;
+						path_display = storageMpolicyDB + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch;
 						//System.out.println(path_check);
 						
 						File dir = new File(path_check);
@@ -4823,7 +4825,7 @@ public class PolicyIndividualCorporateController {
 					         } 
 					      }
 						
-					    path = path_check + "\\" + filename;
+					    path = path_display + "\\" + filename;
 					    //System.out.println(path);
 						dataTemp.put("no_batch", no_batch_);
 						dataTemp.put("tipe_batch", tipe_batch);

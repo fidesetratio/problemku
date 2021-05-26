@@ -7334,7 +7334,8 @@ public class FinancialTransactionController {
 						String path = null;
 						
 						if(mce_klaim_admedika!=null) {
-							path = storageClaimMpolicy + File.separator + tgl_input + File.separator + mbc_no + File.separator + "Kwitansi" + File.separator + mce_klaim_admedika;
+							path = storageMpolicyDB + "Ekamedicare" + tgl_input + File.separator + mbc_no +
+									File.separator + "Kwitansi" + File.separator + mce_klaim_admedika + ".pdf";
 						} else {
 							path = null;
 						}

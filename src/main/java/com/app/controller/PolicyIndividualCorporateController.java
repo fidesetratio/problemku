@@ -4825,7 +4825,12 @@ public class PolicyIndividualCorporateController {
 					         } 
 					      }
 						
-					    path = path_display + "\\" + filename;
+					    if (filename!=null) {
+					    	path = path_display + "\\" + filename;
+					    } else {
+					    	path = null;
+					    }
+					    
 					    //System.out.println(path);
 						dataTemp.put("no_batch", no_batch_);
 						dataTemp.put("tipe_batch", tipe_batch);
@@ -4953,8 +4958,8 @@ public class PolicyIndividualCorporateController {
 			String tempPath[] = tempPathWS.split("/");
 			String tgl_input = tempPath[5].toString();
 			String no_batch = tempPath[6].toString();
-			String file_name = tempPath[7].toString();
-			String NewPathWS = pathDownloadReportHr + File.separator + tgl_input + File.separator + no_batch + File.separator + file_name;
+			String file_name = tempPath[8].toString();
+			String NewPathWS = pathDownloadReportHr + File.separator + tgl_input + File.separator + no_batch + File.separator + "Kwitansi" + File.separator + file_name;
 			String file_type = "pdf";
 
 			// path file yang mau di download

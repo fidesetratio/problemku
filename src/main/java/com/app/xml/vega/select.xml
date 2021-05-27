@@ -328,12 +328,11 @@
 		    a.mspr_tsi,
 		    c.lku_symbol,
 		    a.lsbs_id,
-		    e.mcl_first as tertanggung
+		    d.nama as tertanggung
 		FROM eka.mst_product_insured a
 		    INNER JOIN eka.lst_det_bisnis b ON a.lsbs_id = b.lsbs_id AND a.lsdbs_number = b.lsdbs_number
 		    INNER JOIN EKA.LST_KURS c ON a.lku_id = c.lku_id
-		    INNER JOIN EKA.MST_INSURED d ON a.reg_spaj = d.reg_spaj
-		    INNER JOIN EKA.MST_CLIENT_NEW e ON d.mste_insured = e.mcl_id
+		    INNER JOIN EKA.MST_PESERTA d ON a.reg_spaj = d.reg_spaj AND a.lsbs_id = d.lsbs_id AND a.lsdbs_number = b.lsdbs_number
 		WHERE a.reg_spaj = #{spaj, jdbcType=VARCHAR}
 		    AND b.lsbs_id <![CDATA[>=]]> 800
 		    AND a.mspr_active = 1

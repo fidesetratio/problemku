@@ -12,24 +12,33 @@ public class RequestReportHr implements Serializable {
 	private String key;
 	private String no_polis;
 	private String no_batch;
-	private String tgl_input;
+	private String beg_date;
+	private String end_date;
 	private Integer pageNumber;
 	private Integer pageSize;
 	
+	public String getBeg_date() {
+		return beg_date;
+	}
+
+	public void setBeg_date(String beg_date) {
+		this.beg_date = beg_date;
+	}
+
+	public String getEnd_date() {
+		return end_date;
+	}
+
+	public void setEnd_date(String end_date) {
+		this.end_date = end_date;
+	}
+
 	public String getNo_batch() {
 		return no_batch;
 	}
 
 	public void setNo_batch(String no_batch) {
 		this.no_batch = no_batch;
-	}
-
-	public String getTgl_input() {
-		return tgl_input;
-	}
-
-	public void setTgl_input(String tgl_input) {
-		this.tgl_input = tgl_input;
 	}
 
 	public Integer getPageNumber() {

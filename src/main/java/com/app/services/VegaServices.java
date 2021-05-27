@@ -1447,12 +1447,13 @@ public class VegaServices {
 		return dao.selectListPesertaHR(hashMap);
 	}
 
-	public ArrayList<ReportHr> selectListReportHr(String no_polis, String no_batch, String tgl_input, Integer pageNumber, Integer pageSize) {
+	public ArrayList<ReportHr> selectListReportHr(String no_polis, String no_batch, String beg_date, String end_date, Integer pageNumber, Integer pageSize) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
 		hashMap.put("no_polis", no_polis);
 		hashMap.put("no_batch", no_batch);
-		hashMap.put("tgl_input", tgl_input);
+		hashMap.put("beg_date", beg_date);
+		hashMap.put("end_date", end_date);
 		hashMap.put("pageNumber", pageNumber);
 		hashMap.put("pageSize", pageSize);
 		return dao.selectListReportHr(hashMap);

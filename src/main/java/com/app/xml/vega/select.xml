@@ -4367,7 +4367,7 @@
 		                            THEN 'AKP RJ RG KM RK'
 		                        ELSE 'group not found'
 		                    END as group_claim,
-                   	 		TO_CHAR(a.mbc_tgl_input, 'yyyymm') as tgl_input_format
+		                    TO_CHAR(a.mbc_tgl_input, 'yyyymm') as tgl_input_format
 		                FROM eka.mst_batch_claim@eb a,
 		                     eka.mst_policy@eb b,
 		                     eka.mst_client@eb c,
@@ -4379,11 +4379,14 @@
 		                 AND a.mbc_posisi = d.lspd_id
 		                 AND b.mspo_policy_holder = c.mcl_id
 		                 <if test="no_batch != null">
-						    and a.mbc_no like '%'|| REPLACE(#{no_batch},'.') ||'%'
-						</if>
-						<if test="tgl_input != null">
-						    and TO_CHAR(a.mbc_tgl_input, 'dd/mm/yyyy') = #{tgl_input}
-						</if>
+		                    and a.mbc_no like '%'|| REPLACE(#{no_batch},'.') ||'%'
+		                 </if>
+		                 <if test="start_date != null">
+		                    and a.mbc_tgl_terima <![CDATA[ >= ]]> to_date(#{start_date}, 'YYYY-MM')
+		                 </if>
+		                 <if test="end_date != null">
+		                    and a.mbc_tgl_terima <![CDATA[ <= ]]> to_date(#{end_date}, 'YYYY-MM') + interval '1' MONTH
+		                 </if>
 		            GROUP BY a.mbc_no,
 		                     a.mbc_tgl_input,
 		                     a.mbc_tgl_terima,
@@ -4392,7 +4395,7 @@
 		                     d.lspd_position,
 		                     a.mbc_kwitansi,
 		                     e.lgc_group_id
-		            ORDER BY a.mbc_no) t)
+		            ORDER BY a.mbc_tgl_terima desc) t)
 		WHERE rn BETWEEN #{pageNumber} AND #{pageSize}
 	</select>
 	

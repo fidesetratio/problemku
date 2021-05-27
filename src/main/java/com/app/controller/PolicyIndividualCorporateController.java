@@ -4774,12 +4774,13 @@ public class PolicyIndividualCorporateController {
 		String key = requestReportHr.getKey();
 		String no_polis = requestReportHr.getNo_polis();
 		String no_batch = requestReportHr.getNo_batch();
-		String tgl_input = requestReportHr.getTgl_input();
+		String beg_date = requestReportHr.getBeg_date();
+		String end_date = requestReportHr.getEnd_date();
 		Integer pageNumber = requestReportHr.getPageNumber();
 		Integer pageSize = requestReportHr.getPageSize();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
-				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis, no_batch, tgl_input, pageNumber, pageSize);
+				ArrayList<ReportHr> listReportHr = services.selectListReportHr(no_polis, no_batch, beg_date, end_date, pageNumber, pageSize);
 				
 				if (listReportHr.size()==0) {
 					// Data List Kosong
@@ -4809,8 +4810,6 @@ public class PolicyIndividualCorporateController {
 						
 						path_check = storageReportHr + File.separator + "Ekamedicare" + File.separator + tgl_input_format + File.separator + no_batch;
 						path_display = storageMpolicyDB + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch;
-						System.out.println(path_check);
-						System.out.println(path_display);
 						
 						File dir = new File(path_check);
 					      FilenameFilter filter = new FilenameFilter() {

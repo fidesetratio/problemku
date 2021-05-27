@@ -4486,7 +4486,7 @@
 		                THEN 'Done'
 		        END AS status
 		FROM    HRD.HD_TICKETS@EBMUAT
-		WHERE   a.nik_req = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
+		WHERE   nik_req = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
 	</select>
 	
 	<select id="selectViewEndorseHr" parameterType="String" resultType="com.app.model.EndorseHr">	 

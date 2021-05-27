@@ -67,6 +67,9 @@ public class PolicyCorporateController {
 	
 	@Value("${path.storage.reporthr}")
 	private String storageReportHr;
+	
+	@Value("${path.download.endorsehr}")
+	private String downloadEndorseHr;
 
 	@RequestMapping(value = "/listclaimcorporate", produces = "application/json", method = RequestMethod.POST)
 	public String listClaimCorporate(@RequestBody RequestListClaimCorporate requestListClaimCorporate,
@@ -435,7 +438,7 @@ public class PolicyCorporateController {
 					// Insert to hrd.hd_tickets
 					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description);
 					
-					String pathFolder = storageMpolicy + File.separator + "EB Endorse" + File.separator + id_ticket;
+					String pathFolder = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket;
 					
 					File folder = new File(pathFolder);
 					if (!folder.exists()) {
@@ -444,7 +447,7 @@ public class PolicyCorporateController {
 				
 					try {
 						byte[] fileByte = Base64.getDecoder().decode(attachment);
-						String directory = folder + "\\" + filename + "." + extension;
+						String directory = folder + File.separator + filename + "." + extension;
 				
 						FileOutputStream fos = new FileOutputStream(directory);
 						fos.write(fileByte);
@@ -590,7 +593,7 @@ public class PolicyCorporateController {
 		        String description = endorseHr.getDescription();
 		        String nama_file = null;
 		        
-		        String path_check = storageMpolicy + File.separator + "EB Endorse" + File.separator + id_ticket;
+		        String path_check = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket;
 				
 				File dir = new File(path_check);
 			      FilenameFilter filter = new FilenameFilter() {

@@ -592,8 +592,10 @@ public class PolicyCorporateController {
 		        String subject = endorseHr.getSubject();
 		        String description = endorseHr.getDescription();
 		        String nama_file = null;
+		        String path = null;
 		        
 		        String path_check = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket;
+		        String path_display = storageMpolicyDB + "EB Endorse" + "\\" + id_ticket;
 				
 		        //cari file xls
 				File dir = new File(path_check);
@@ -635,12 +637,19 @@ public class PolicyCorporateController {
 				      }
 			    }
 			    
+			    if (nama_file!=null) {
+			    	path = path_display + "\\" + nama_file;
+			    } else {
+			    	path = null;
+			    }
+			    
 				data.put("no_polis", no_polis);
 				data.put("nama_perusahaan", nama_perusahaan);
 				data.put("type_helpdesk", type_helpdesk);
 				data.put("subject", subject);
 				data.put("description", description);
 				data.put("nama_file", nama_file);
+				data.put("path", path);
 
 				error = false;
 				message = "Successfully get endorse hr";

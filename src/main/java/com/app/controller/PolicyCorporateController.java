@@ -2,6 +2,7 @@ package com.app.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -63,6 +64,9 @@ public class PolicyCorporateController {
 	
 	@Value("${path.storage.mpolicy}")
 	private String storageMpolicy;
+	
+	@Value("${path.storage.reporthr}")
+	private String storageReportHr;
 
 	@RequestMapping(value = "/listclaimcorporate", produces = "application/json", method = RequestMethod.POST)
 	public String listClaimCorporate(@RequestBody RequestListClaimCorporate requestListClaimCorporate,
@@ -431,7 +435,7 @@ public class PolicyCorporateController {
 					// Insert to hrd.hd_tickets
 					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description);
 					
-					String pathFolder = storageMpolicy + "EB Endorse" + File.separator + id_ticket;
+					String pathFolder = storageMpolicy + File.separator + "EB Endorse" + File.separator + id_ticket;
 					
 					File folder = new File(pathFolder);
 					if (!folder.exists()) {
@@ -585,6 +589,25 @@ public class PolicyCorporateController {
 		        String subject = endorseHr.getSubject();
 		        String description = endorseHr.getDescription();
 		        String nama_file = null;
+		        
+		        String path_check = storageMpolicy + File.separator + "EB Endorse" + File.separator + id_ticket;
+				
+				File dir = new File(path_check);
+			      FilenameFilter filter = new FilenameFilter() {
+			         public boolean accept (File dir, String name) { 
+			            return name.startsWith("xls");
+			         } 
+			      }; 
+			      String[] children = dir.list(filter);
+			      if (children == null) {
+			         //System.out.println("Either dir does not exist or is not a directory");
+			    	  nama_file = null;					         
+			      } else { 
+			         for (int j = 0; j< children.length; j++) {
+			        	 nama_file = children[j];
+			            //System.out.println(filename);
+			         } 
+			      }
 
 				data.put("no_polis", no_polis);
 				data.put("nama_perusahaan", nama_perusahaan);

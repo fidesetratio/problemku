@@ -4810,7 +4810,7 @@ public class PolicyIndividualCorporateController {
 						String group_claim = listReportHr.get(i).getGroup_claim();
 						String tgl_input_format = listReportHr.get(i).getTgl_input_format();
 						
-						path_check = storageMpolicyDB + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch;
+						path_check = storageReportHr + File.separator + tgl_input_format + File.separator + no_batch;
 						path_display = storageMpolicyDB2 + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch;
 						System.out.println(path_check);
 						System.out.println(path_display);

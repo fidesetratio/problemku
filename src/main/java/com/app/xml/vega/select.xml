@@ -4474,14 +4474,19 @@
 	</select>
 	
 	<select id="selectListEndorseHr" parameterType="String" resultType="com.app.model.EndorseHr">	 
-		SELECT  a.id_ticket,
-		        a.subject,
-		        to_char(a.create_date, 'dd/mm/yyyy') create_date,
-		        b.nama_status as status
-		FROM    HRD.HD_TICKETS@EBMUAT a,
-		        HRD.HD_STATUS@EBMUAT b
-		WHERE   a.NIK_REQ = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
-		    AND a.ID_STATUS = b.ID_STATUS
+		SELECT  id_ticket,
+		        subject,
+		        to_char(create_date, 'dd/mm/yyyy') create_date,
+		        CASE
+		            WHEN ID_STATUS IN (1, 8)
+		                THEN 'Submitted'
+		            WHEN ID_STATUS IN (2, 3, 4)
+		                THEN 'On Progress'
+		            WHEN ID_STATUS IN (7)
+		                THEN 'Done'
+		        END AS status
+		FROM    HRD.HD_TICKETS@EBMUAT
+		WHERE   a.nik_req = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
 	</select>
 	
 	<select id="selectViewEndorseHr" parameterType="String" resultType="com.app.model.EndorseHr">	 

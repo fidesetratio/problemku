@@ -4477,7 +4477,7 @@
 		SELECT  a.id_ticket,
 		        a.subject,
 		        to_char(a.create_date, 'dd/mm/yyyy') create_date,
-		        b.nama_status
+		        b.nama_status as status
 		FROM    HRD.HD_TICKETS@EBMUAT a,
 		        HRD.HD_STATUS@EBMUAT b
 		WHERE   a.NIK_REQ = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')

@@ -11,9 +11,15 @@ public class EndorseHr implements Serializable {
 	private static final long serialVersionUID = -5577393152312579813L;
 	private String id_ticket;
 	private String subject;
-	private String created_date;
+	private String create_date;
 	private String status;
 	
+	public String getCreate_date() {
+		return create_date;
+	}
+	public void setCreate_date(String create_date) {
+		this.create_date = create_date;
+	}
 	public String getId_ticket() {
 		return id_ticket;
 	}
@@ -25,12 +31,6 @@ public class EndorseHr implements Serializable {
 	}
 	public void setSubject(String subject) {
 		this.subject = subject;
-	}
-	public String getCreated_date() {
-		return created_date;
-	}
-	public void setCreated_date(String created_date) {
-		this.created_date = created_date;
 	}
 	public String getStatus() {
 		return status;

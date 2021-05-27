@@ -493,13 +493,13 @@ public class PolicyCorporateController {
 					for (int i = 0; i < dataEndorseHr.size(); i++) {
 						String id_ticket = dataEndorseHr.get(i).getId_ticket();
 						String subject = dataEndorseHr.get(i).getSubject();
-						String created_date = dataEndorseHr.get(i).getCreated_date();
+						String create_date = dataEndorseHr.get(i).getCreate_date();
 						String status = dataEndorseHr.get(i).getStatus();
 
 						HashMap<String, Object> dataTemp = new HashMap<>();
 						dataTemp.put("id_ticket", id_ticket);
 						dataTemp.put("subject", subject);
-						dataTemp.put("created_date", created_date);
+						dataTemp.put("create_date", create_date);
 						dataTemp.put("status", status);
 
 						data.add(dataTemp);

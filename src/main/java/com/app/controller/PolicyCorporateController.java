@@ -60,6 +60,9 @@ public class PolicyCorporateController {
 	
 	@Value("${path.storage.mpolicydb}")
 	private String storageMpolicyDB;
+	
+	@Value("${path.storage.mpolicy}")
+	private String storageMpolicy;
 
 	@RequestMapping(value = "/listclaimcorporate", produces = "application/json", method = RequestMethod.POST)
 	public String listClaimCorporate(@RequestBody RequestListClaimCorporate requestListClaimCorporate,
@@ -402,6 +405,8 @@ public class PolicyCorporateController {
 		String subject = requestSubmitEndorseHr.getSubject();
 		String description = requestSubmitEndorseHr.getDescription();
 		String attachment = requestSubmitEndorseHr.getAttachment();
+		String filename = requestSubmitEndorseHr.getFilename();
+		String extension = requestSubmitEndorseHr.getExtension();
 		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
@@ -426,27 +431,27 @@ public class PolicyCorporateController {
 					// Insert to hrd.hd_tickets
 					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description);
 					
-					/*
+					String pathFolder = storageMpolicy + "EB Endorse" + File.separator + id_ticket;
+					
 					File folder = new File(pathFolder);
 					if (!folder.exists()) {
 						folder.mkdirs();
 					}
 				
 					try {
-						byte[] fileByte = Base64.getDecoder().decode(fileBase64);
-						String directory = folder + "\\" + fileName + ".pdf";
+						byte[] fileByte = Base64.getDecoder().decode(attachment);
+						String directory = folder + "\\" + filename + "." + extension;
 				
 						FileOutputStream fos = new FileOutputStream(directory);
 						fos.write(fileByte);
 						fos.close();
 						fos.flush();
-				
-						result = true;
 					} catch (Exception e) {
-						logger.error("Path: " + urlPath + " Username: " + username + " Error: " + e);
-						result = false;
+						error = true;
+						message = ResponseMessage.ERROR_SYSTEM;
+						resultErr = "bad exception " + e;
+						logger.error("Path: " + request.getServletPath() + " Username: " + username + ", Error: " + e);
 					}
-					*/
 					
 				} catch (Exception e) {
 					error = true;

@@ -180,7 +180,7 @@ path:
   claim: /mnt/storage/m-Policytest
   withdraw: /mnt/storage/m-Policytest
   withdrawdb: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\
-  reporthr: /mnt/storage/m-Policytest/Ekamedicare
+  reporthr: /mnt/storage/m-Policytest
  manfaatpdf:
   mpolicy: \\\\ebserver\\pdfind\\Polis\\
  logoBank:

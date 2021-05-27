@@ -118,9 +118,6 @@ public class PolicyIndividualCorporateController {
 	@Value("${path.storage.mpolicydb}")
 	private String storageMpolicyDB;
 	
-	@Value("${path.storage.mpolicydb2}")
-	private String storageMpolicyDB2;
-	
 	@Value("${path.storage.mpolicy}")
 	private String storageMpolicy;
 	
@@ -4811,7 +4808,7 @@ public class PolicyIndividualCorporateController {
 						String tgl_input_format = listReportHr.get(i).getTgl_input_format();
 						
 						path_check = storageReportHr + File.separator + tgl_input_format + File.separator + no_batch;
-						path_display = storageMpolicyDB2 + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch;
+						path_display = storageMpolicyDB + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch;
 						System.out.println(path_check);
 						System.out.println(path_display);
 						

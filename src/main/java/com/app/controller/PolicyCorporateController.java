@@ -411,6 +411,7 @@ public class PolicyCorporateController {
 					String id_ticket = services.selectGetIdTicket();
 					Integer id_group = jenis_helpdesk;
 					String nik_req = no_polis;
+					subject = "Endorsement - " + subject;
 					
 					/*
 					 	HARDCODE JENIS HELPDESK
@@ -512,6 +513,8 @@ public class PolicyCorporateController {
 						String subject = dataEndorseHr.get(i).getSubject();
 						String create_date = dataEndorseHr.get(i).getCreate_date();
 						String status = dataEndorseHr.get(i).getStatus();
+						
+						subject = subject.replace("Endorsement - ", "");
 
 						HashMap<String, Object> dataTemp = new HashMap<>();
 						dataTemp.put("id_ticket", id_ticket);

@@ -595,12 +595,14 @@ public class PolicyCorporateController {
 		        
 		        String path_check = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket;
 				
+		        //cari file xls
 				File dir = new File(path_check);
 			      FilenameFilter filter = new FilenameFilter() {
 			         public boolean accept (File dir, String name) { 
-			            return name.startsWith("xls");
-			         } 
-			      }; 
+			            return name.endsWith("xls");
+			         }
+			      };
+			      
 			      String[] children = dir.list(filter);
 			      if (children == null) {
 			         //System.out.println("Either dir does not exist or is not a directory");
@@ -611,7 +613,28 @@ public class PolicyCorporateController {
 			            //System.out.println(filename);
 			         } 
 			      }
-
+			    
+			    //cari file xlsx
+			    if (nama_file == null) {
+			    	File dir2 = new File(path_check);
+				      FilenameFilter filter2 = new FilenameFilter() {
+				         public boolean accept (File dir, String name) { 
+				            return name.endsWith("xlsx");
+				         }
+				      };
+				      
+				      String[] children2 = dir2.list(filter2);
+				      if (children2 == null) {
+				         //System.out.println("Either dir2 does not exist or is not a directory");
+				    	  nama_file = null;					         
+				      } else { 
+				         for (int j = 0; j< children2.length; j++) {
+				        	 nama_file = children2[j];
+				            //System.out.println(filename);
+				         } 
+				      }
+			    }
+			    
 				data.put("no_polis", no_polis);
 				data.put("nama_perusahaan", nama_perusahaan);
 				data.put("type_helpdesk", type_helpdesk);

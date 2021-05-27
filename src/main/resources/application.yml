@@ -102,7 +102,7 @@ path:
   article: /mnt/storage/E-Sehat/upload/artikel
   polisall: \\storage\pdfind\Polis_Testing\
   reporthr: /mnt/storage/m-Policytest/Ekamedicare
-  endorsehr: /mnt/storage/m-Policytest
+  endorsehr: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
   

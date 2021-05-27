@@ -1,11 +1,14 @@
 package com.app.controller;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -403,7 +406,30 @@ public class PolicyCorporateController {
 					*/
 					
 					// Insert to hrd.hd_tickets
-					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description);				
+					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description);
+					
+					/*
+					File folder = new File(pathFolder);
+					if (!folder.exists()) {
+						folder.mkdirs();
+					}
+				
+					try {
+						byte[] fileByte = Base64.getDecoder().decode(fileBase64);
+						String directory = folder + "\\" + fileName + ".pdf";
+				
+						FileOutputStream fos = new FileOutputStream(directory);
+						fos.write(fileByte);
+						fos.close();
+						fos.flush();
+				
+						result = true;
+					} catch (Exception e) {
+						logger.error("Path: " + urlPath + " Username: " + username + " Error: " + e);
+						result = false;
+					}
+					*/
+					
 				} catch (Exception e) {
 					error = true;
 					message = ResponseMessage.ERROR_SYSTEM;

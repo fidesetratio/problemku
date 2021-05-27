@@ -1,6 +1,9 @@
 package com.app.controller;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.math.BigDecimal;
@@ -17,11 +20,13 @@ import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +39,8 @@ import com.app.model.DetailClaimCorporate;
 import com.app.model.EndorseHr;
 import com.app.model.request.RequestBenefitCorporate;
 import com.app.model.request.RequestDetailClaimCorporate;
+import com.app.model.request.RequestDownloadEndorseHr;
+import com.app.model.request.RequestDownloadReportHr;
 import com.app.model.request.RequestListClaimCorporate;
 import com.app.model.request.RequestListEndorseHr;
 import com.app.model.request.RequestSubmitClaimSubmissionCorporate;
@@ -592,6 +599,7 @@ public class PolicyCorporateController {
 		        String subject = endorseHr.getSubject();
 		        String description = endorseHr.getDescription();
 		        String nama_file = null;
+		        String file_type = null;
 		        String path = null;
 		        
 		        String path_check = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket;
@@ -612,6 +620,7 @@ public class PolicyCorporateController {
 			      } else { 
 			         for (int j = 0; j< children.length; j++) {
 			        	 nama_file = children[j];
+			        	 file_type = "xls";
 			            //System.out.println(filename);
 			         } 
 			      }
@@ -632,6 +641,7 @@ public class PolicyCorporateController {
 				      } else { 
 				         for (int j = 0; j< children2.length; j++) {
 				        	 nama_file = children2[j];
+				        	 file_type = "xlsx";
 				            //System.out.println(filename);
 				         } 
 				      }
@@ -650,6 +660,7 @@ public class PolicyCorporateController {
 				data.put("description", description);
 				data.put("nama_file", nama_file);
 				data.put("path", path);
+				data.put("file_type", file_type);
 
 				error = false;
 				message = "Successfully get endorse hr";
@@ -671,6 +682,74 @@ public class PolicyCorporateController {
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 70, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/downloadendorsehr", produces = "application/json", method = RequestMethod.POST)
+	public String downloadEndorseHr(@RequestBody RequestDownloadEndorseHr requestDownloadEndorseHr, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String res = null;
+		String message = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+		try {
+			// path file
+			String pathWS = requestDownloadEndorseHr.getPath();
+			String tempPathWS = pathWS.replace("\\", "/");
+			tempPathWS = tempPathWS.replace("//", "/");
+			String tempPath[] = tempPathWS.split("/");
+			String id_ticket = tempPath[5].toString();
+			String file_name = tempPath[6].toString();
+			String newfilename = file_name.substring(0, file_name.lastIndexOf('.'));
+			String NewPathWS = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket + File.separator + file_name;
+			String file_type = requestDownloadEndorseHr.getFile_type();
+			
+			/*\\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\EB Endorse\\148039\\tes.xls*/
+			
+			// path file yang mau di download
+			File file = new File(NewPathWS);
+
+			try {
+				// Content-Disposition
+				response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+						"attachment; filename=" + newfilename.replace("  ", "_").replace(" ", "_") + "." + file_type);
+
+				// Content-Length
+				response.setContentLength((int) file.length());
+
+				BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+				BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+				byte[] buffer = new byte[1024];
+				int bytesRead = 0;
+				while ((bytesRead = inStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+				outStream.flush();
+				inStream.close();
+				
+				error = false;
+				message = "Download Success";
+			} catch (Exception e) {
+				error = true;
+				message = "Download Failed";
+				logger.error("Path: " + request.getServletPath() + " Error: " + e);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			logger.error("Path: " + request.getServletPath() + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
 
 		return res;
 	}

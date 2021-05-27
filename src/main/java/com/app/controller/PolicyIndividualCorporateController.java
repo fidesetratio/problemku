@@ -4221,6 +4221,7 @@ public class PolicyIndividualCorporateController {
 					}
 				}
 				
+				//AMBIL BENEF
 				if(beneficiary!=null) {
 					for(int i=0; i<beneficiary.size(); i++) {
 						Anggota anggota = beneficiary.get(i).getAnggota();
@@ -4335,6 +4336,7 @@ public class PolicyIndividualCorporateController {
 					}
 				}
 				
+				//ADD BENEF
 				if(beneficiary_add!=null) {
 					for(int i=0; i<beneficiary_add.size(); i++) {
 						Anggota anggota = beneficiary_add.get(i).getAnggota();

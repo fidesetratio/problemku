@@ -4807,8 +4807,9 @@ public class PolicyIndividualCorporateController {
 						String mbc_kwitansi = listReportHr.get(i).getMbc_kwitansi();
 						String group_claim = listReportHr.get(i).getGroup_claim();
 						String tgl_input_format = listReportHr.get(i).getTgl_input_format();
+						String no_batch_format = no_batch.replace(".", "");
 						
-						path_check = storageReportHr + File.separator + "Ekamedicare" + File.separator + tgl_input_format + File.separator + no_batch;
+						path_check = storageReportHr + File.separator + "Ekamedicare" + File.separator + tgl_input_format + File.separator + no_batch_format;
 						path_display = storageMpolicyDB + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch;
 						
 						File dir = new File(path_check);

@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,6 +57,9 @@ public class PolicyCorporateController {
 	private DateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
 	private DateFormat df3 = new SimpleDateFormat("dd MMM yyyy");
 	private NumberFormat nfZeroTwo = new DecimalFormat("#,##0.00;(#,##0.00)");
+	
+	@Value("${path.storage.mpolicydb}")
+	private String storageMpolicyDB;
 
 	@RequestMapping(value = "/listclaimcorporate", produces = "application/json", method = RequestMethod.POST)
 	public String listClaimCorporate(@RequestBody RequestListClaimCorporate requestListClaimCorporate,
@@ -181,11 +185,23 @@ public class PolicyCorporateController {
 						String detail_claim = dataDetailClaimCorporate.get(i).getDetail();
 						BigDecimal jml_claim = dataDetailClaimCorporate.get(i).getJml_klaim();
 						BigDecimal jml_dibayar = dataDetailClaimCorporate.get(i).getJml_dibayar();
+						String tgl_input = dataDetailClaimCorporate.get(i).getTgl_input();
+						String mbc_no = dataDetailClaimCorporate.get(i).getMbc_no();
+						String mce_klaim_admedika = dataDetailClaimCorporate.get(i).getMce_klaim_admedika();
+						String path = null;
+						
+						if(mce_klaim_admedika!=null) {
+							path = storageMpolicyDB + "Ekamedicare" + "\\"  + tgl_input + "\\" + mbc_no +
+									"\\" + "Kwitansi" + "\\" + mce_klaim_admedika + ".pdf";
+						} else {
+							path = null;
+						}
 
 						HashMap<String, Object> dataTemp = new HashMap<>();
 						dataTemp.put("detail_claim", detail_claim);
 						dataTemp.put("jml_claim", nfZeroTwo.format(jml_claim));
 						dataTemp.put("jml_dibayar", nfZeroTwo.format(jml_dibayar));
+						dataTemp.put("path", path);
 
 						arrayDetails.add(dataTemp);
 					}
@@ -560,12 +576,14 @@ public class PolicyCorporateController {
 		        Integer type_helpdesk = endorseHr.getType_helpdesk();
 		        String subject = endorseHr.getSubject();
 		        String description = endorseHr.getDescription();
+		        String nama_file = null;
 
 				data.put("no_polis", no_polis);
 				data.put("nama_perusahaan", nama_perusahaan);
 				data.put("type_helpdesk", type_helpdesk);
 				data.put("subject", subject);
 				data.put("description", description);
+				data.put("nama_file", nama_file);
 
 				error = false;
 				message = "Successfully get endorse hr";

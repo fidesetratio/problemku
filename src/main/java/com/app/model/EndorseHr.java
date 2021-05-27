@@ -13,7 +13,35 @@ public class EndorseHr implements Serializable {
 	private String subject;
 	private String create_date;
 	private String status;
+	private String no_polis;
+	private String nama_perusahaan;
+	private Integer type_helpdesk;
+	private String description;
 	
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getNo_polis() {
+		return no_polis;
+	}
+	public void setNo_polis(String no_polis) {
+		this.no_polis = no_polis;
+	}
+	public String getNama_perusahaan() {
+		return nama_perusahaan;
+	}
+	public void setNama_perusahaan(String nama_perusahaan) {
+		this.nama_perusahaan = nama_perusahaan;
+	}
+	public Integer getType_helpdesk() {
+		return type_helpdesk;
+	}
+	public void setType_helpdesk(Integer type_helpdesk) {
+		this.type_helpdesk = type_helpdesk;
+	}
 	public String getCreate_date() {
 		return create_date;
 	}

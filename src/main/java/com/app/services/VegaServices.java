@@ -1498,4 +1498,9 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListEndorseHr(no_polis);
 	}
+
+	public EndorseHr selectViewEndorseHr(String id_ticket) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectViewEndorseHr(id_ticket);
+	}
 }

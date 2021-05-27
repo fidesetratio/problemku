@@ -36,6 +36,7 @@ import com.app.model.request.RequestListClaimCorporate;
 import com.app.model.request.RequestListEndorseHr;
 import com.app.model.request.RequestSubmitClaimSubmissionCorporate;
 import com.app.model.request.RequestSubmitEndorseHr;
+import com.app.model.request.RequestViewEndorseHr;
 import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
@@ -508,6 +509,66 @@ public class PolicyCorporateController {
 					error = false;
 					message = "Successfully get list endorse hr";
 				}
+			} else {
+				error = true;
+				message = "Failed get list endorse hr";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + ", Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 70, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/viewendorsehr", produces = "application/json", method = RequestMethod.POST)
+	public String viewEndorseHr(@RequestBody RequestViewEndorseHr requestViewEndorseHr,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestViewEndorseHr);
+		String res = null;
+		String resultErr = null;
+		String message = null;
+		boolean error = true;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+
+		String username = requestViewEndorseHr.getUsername();
+		String key = requestViewEndorseHr.getKey();
+		String id_ticket = requestViewEndorseHr.getId_ticket();
+		
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				EndorseHr endorseHr = services.selectViewEndorseHr(id_ticket);
+
+				String no_polis = endorseHr.getNo_polis();
+		        String nama_perusahaan = endorseHr.getNama_perusahaan();
+		        Integer type_helpdesk = endorseHr.getType_helpdesk();
+		        String subject = endorseHr.getSubject();
+		        String description = endorseHr.getDescription();
+
+				data.put("no_polis", no_polis);
+				data.put("nama_perusahaan", nama_perusahaan);
+				data.put("type_helpdesk", type_helpdesk);
+				data.put("subject", subject);
+				data.put("description", description);
+
+				error = false;
+				message = "Successfully get endorse hr";
 			} else {
 				error = true;
 				message = "Failed get list endorse hr";

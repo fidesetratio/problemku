@@ -4483,4 +4483,19 @@
 		WHERE   a.NIK_REQ = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
 		    AND a.ID_STATUS = b.ID_STATUS
 	</select>
+	
+	<select id="selectViewEndorseHr" parameterType="String" resultType="com.app.model.EndorseHr">	 
+		SELECT  A.ID_TICKET,
+		        A.NIK_REQ AS NO_POLIS,
+		        C.MCL_FIRST AS NAMA_PERUSAHAAN,
+		        A.ID_GROUP AS TYPE_HELPDESK,
+		        A.SUBJECT,
+		        A.DESCRIPTION
+		FROM    HRD.HD_TICKETS@EBMUAT A,
+		        EKA.MST_POLICY@EB B,
+		        EKA.MST_CLIENT@EB C
+		WHERE   A.NIK_REQ = B.MSPO_POLICY_NO
+		    AND B.MSPO_POLICY_HOLDER = C.MCL_ID
+		    AND A.ID_TICKET = #{id_ticket, jdbcType=VARCHAR}
+	</select>
 </mapper>

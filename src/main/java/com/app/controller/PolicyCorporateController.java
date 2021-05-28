@@ -188,6 +188,7 @@ public class PolicyCorporateController {
 			if (customResourceLoader.validateCredential(username, key)) {
 				ArrayList<DetailClaimCorporate> dataDetailClaimCorporate = services
 						.selectDetailClaimCorporate(no_claim);
+				String path = null;
 
 				if (dataDetailClaimCorporate.isEmpty()) {
 					// Handle detail claim corporate empty
@@ -205,7 +206,6 @@ public class PolicyCorporateController {
 						String tgl_input = dataDetailClaimCorporate.get(i).getTgl_input();
 						String mbc_no = dataDetailClaimCorporate.get(i).getMbc_no();
 						String mce_klaim_admedika = dataDetailClaimCorporate.get(i).getMce_klaim_admedika();
-						String path = null;
 						
 						if(mce_klaim_admedika!=null) {
 							path = storageMpolicyDB + "Ekamedicare" + "\\"  + tgl_input + "\\" + mbc_no +
@@ -218,7 +218,6 @@ public class PolicyCorporateController {
 						dataTemp.put("detail_claim", detail_claim);
 						dataTemp.put("jml_claim", nfZeroTwo.format(jml_claim));
 						dataTemp.put("jml_dibayar", nfZeroTwo.format(jml_dibayar));
-						dataTemp.put("path", path);
 
 						arrayDetails.add(dataTemp);
 					}
@@ -262,7 +261,8 @@ public class PolicyCorporateController {
 						results2.add(sum);
 						data.put("total_dibayar", nfZeroTwo.format(results2.get(0)));
 					}
-
+					
+					data.put("path", path);
 					data.put("details", arrayDetails);
 					error = false;
 					message = "Successfully get data detail claim corporate";

@@ -4265,18 +4265,22 @@
 	 </select>
 	 
 	 <select id="selectListPolisHRUser" parameterType="String" resultType="com.app.model.UserHR">
-		SELECT  d.lus_login_name,
-		        b.reg_spaj,
+		SELECT  POLIS.*
+		FROM
+		(SELECT  SUBSTR (b.reg_spaj, 1, 2) || '.' || SUBSTR (b.reg_spaj, 3, 4) || '.' || SUBSTR (b.reg_spaj, 7) spaj_formatted,
+		        DECODE (b.mspo_policy_no, NULL, '', SUBSTR (b.mspo_policy_no, 1, 2) || '.' || SUBSTR (b.mspo_policy_no, 3, 3) || '.' || SUBSTR (b.mspo_policy_no, 6, 4) || '.' || SUBSTR (b.mspo_policy_no, 10, 5)) policy_formatted,
 		        b.mspo_policy_no no_polis,
+		        b.reg_spaj,
 		        c.mcl_first,
 		        b.mspo_beg_date
-		FROM    eka.mst_policy@EB b,
-		        eka.mst_insured@EB ins,
-		        eka.mst_product_insured@EB prod,
-		        eka.mst_client@EB c,
-		        eka.lst_user@EB d,
-		        eka.lst_user_policy@EB e
-		WHERE   b.lssp_id = 1
+		FROM    eka.mst_policy@eb b,
+		        eka.mst_insured@eb ins,
+		        eka.mst_product_insured@eb prod,
+		        eka.mst_client@eb c,
+		        eka.lst_user@eb d,
+		        eka.lst_user_policy@eb e
+		WHERE   d.lus_login_name = #{eb_hr_username, jdbcType=VARCHAR}
+		    AND b.lssp_id = 1
 		    AND b.lstb_id = 3
 		    AND b.reg_spaj = ins.reg_spaj
 		    AND ins.mste_insured_no = prod.mste_insured_no
@@ -4286,8 +4290,36 @@
 		    AND b.reg_spaj = e.reg_spaj 
 		    AND d.lus_id = e.lus_id
 		    AND prod.mspr_active = 1
-		    AND d.lus_login_name = #{eb_hr_username, jdbcType=VARCHAR}
-		GROUP BY b.reg_spaj, b.mspo_policy_no, c.mcl_first, d.lus_id, d.lus_login_name, d.lus_password, b.mspo_beg_date
+		GROUP BY b.reg_spaj, b.mspo_policy_no, c.mcl_first, b.mspo_beg_date
+		UNION
+		SELECT  SUBSTR (b.reg_spaj, 1, 2) || '.' || SUBSTR (b.reg_spaj, 3, 4) || '.' || SUBSTR (b.reg_spaj, 7) spaj_formatted,
+		        DECODE (b.mspo_policy_no, NULL, '', SUBSTR (b.mspo_policy_no, 1, 2) || '.' || SUBSTR (b.mspo_policy_no, 3, 3) || '.' || SUBSTR (b.mspo_policy_no, 6, 4) || '.' || SUBSTR (b.mspo_policy_no, 10, 5)) policy_formatted,
+		        b.mspo_policy_no no_polis,
+		        b.reg_spaj,
+		        c.mcl_first,
+		        b.mspo_beg_date
+		FROM    eka.mst_policy@eb b, 
+		        eka.mst_client@eb c
+		WHERE   b.mspo_oldpol_eb IN (
+		    SELECT  b.mspo_policy_no
+		    FROM    eka.mst_policy@eb b,
+		            eka.mst_insured@eb ins,
+		            eka.mst_product_insured@eb prod,
+		            eka.lst_user@eb d,
+		            eka.lst_user_policy@eb e
+		    WHERE   d.lus_login_name = #{eb_hr_username, jdbcType=VARCHAR}
+		        AND b.lssp_id = 1
+		        AND prod.mspr_active = 1
+		        AND b.lstb_id = 3
+		        AND b.reg_spaj = ins.reg_spaj
+		        AND ins.mste_insured_no = prod.mste_insured_no
+		        AND ins.reg_spaj = prod.reg_spaj
+		        AND b.reg_spaj = e.reg_spaj
+		        AND d.lus_id = e.lus_id
+		    GROUP BY b.mspo_policy_no)
+		    AND b.mspo_policy_holder = c.mcl_id
+		    AND b.mspo_policy_no IS NOT NULL) POLIS
+		WHERE   SUBSTR(POLIS.NO_POLIS, 1, 1) = '0'
 	 </select>
 
 	 <select id="selectListPesertaHR" parameterType="HashMap" resultType="com.app.model.UserHR">	 

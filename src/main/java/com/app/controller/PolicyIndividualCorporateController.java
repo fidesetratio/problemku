@@ -467,73 +467,12 @@ public class PolicyIndividualCorporateController {
 
 				ArrayList<UserHR> listPolisHRUser = services.selectListPolisHRUser(eb_hr_username);
 				if (!listPolisHRUser.isEmpty()) {
-					// Add no polis dalam satu list
-					List<String> listNoPolis = new ArrayList<String>();
-					for (int i = 0; i < listPolisHRUser.size(); i++) {
-						String distinctNoPolis = listPolisHRUser.get(i).getNo_polis();
-						listNoPolis.add(distinctNoPolis);
-					}
-
-					// Add masa pertanggungan pada satu list
-					List<Date> listBegDate = new ArrayList<Date>();
-					for (int i = 0; i < listPolisHRUser.size(); i++) {
-						Date distinctBegDate = listPolisHRUser.get(i).getMspo_beg_date();
-						if (distinctBegDate != null) {
-							listBegDate.add(distinctBegDate);
-						}
-					}
-					
-					// Add no polis dalam satu list
-					List<String> listMclFirst = new ArrayList<String>();
-					for (int i = 0; i < listPolisHRUser.size(); i++) {
-						String distinctMclFirst = listPolisHRUser.get(i).getMcl_first();
-						listMclFirst.add(distinctMclFirst);
-					}
-
-					// Distinct no polis, masa pertanggungan, mspo_type_rek biar gak dobel2
-					List<String> distinctNoPolis = listNoPolis.stream().distinct().collect(Collectors.toList());
-					List<Date> distinctBegDate = listBegDate.stream().distinct().collect(Collectors.toList());
-					List<String> distinctMclFirst = listMclFirst.stream().distinct().collect(Collectors.toList());
-
-					// Check polis corporate yang keluar ada 1 atau 2 dilihat dari masa berlaku
-					int z = 2;
-					if (distinctBegDate.size() > 1) {
-						LocalDate date = LocalDate.parse(df1.format(distinctBegDate.get(0)));
-						LocalDate datePlus = date.plusMonths(3);
-
-						LocalDate sysdate = LocalDate.now();
-//						LocalDate sysdate = LocalDate.parse("2020-02-01");
-
-						if (datePlus.compareTo(sysdate) < 0) {
-							z = 1;
-						} else {
-							z = 2;
-						}
-					} else {
-						z = 1;
-					}
-
-					// Get data dari polis2 yang sudah di distinct
-					for (int x = 0; x < z; x++) {
+					for(int i = 0; i< listPolisHRUser.size(); i++) {
 						HashMap<String, Object> dataTemp = new HashMap<>();
-						String no_polis = distinctNoPolis.get(x);
-						Date masa_pertanggungan = distinctBegDate.get(x);
-						String mclfirst = distinctMclFirst.get(x);
-
-						// Check no polis terakhir masih berlaku atau tidak
-						if (x == 0) {
-							UserCorporate dataEndDate = services
-									.selectBegDateEndDateCorporate(customResourceLoader.clearData(no_polis));
-							Date endDate = dataEndDate.getMspo_end_date();
-							LocalDate now = LocalDate.now();
-							LocalDate endDateParse = LocalDate.parse(df1.format(endDate));
-							if (endDateParse.compareTo(now) < 0) {
-								policy_hr_user_notinforce = true;
-							} else {
-								policy_hr_user_notinforce = false;
-							}
-						}
-
+						String no_polis = listPolisHRUser.get(i).getNo_polis();
+						Date masa_pertanggungan = listPolisHRUser.get(i).getMspo_beg_date();
+						String mclfirst = listPolisHRUser.get(i).getMcl_first();
+						
 						dataTemp.put("no_polis", no_polis);
 						dataTemp.put("masa_pertanggungan",
 								masa_pertanggungan != null ? df2.format(masa_pertanggungan) : null);

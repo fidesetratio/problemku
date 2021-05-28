@@ -4841,7 +4841,7 @@ public class PolicyIndividualCorporateController {
 						String no_batch_format = no_batch_.replace(".", "");
 						
 						path_check = storageReportHr + File.separator + "Ekamedicare" + File.separator + tgl_input_format + File.separator + no_batch_format;
-						path_display = storageMpolicyDB + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch;
+						path_display = storageMpolicyDB + "Ekamedicare" + "\\" + tgl_input_format + "\\" + no_batch_format;
 						
 						File dir = new File(path_check);
 					      FilenameFilter filter = new FilenameFilter() {

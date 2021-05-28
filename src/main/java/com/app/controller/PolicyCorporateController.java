@@ -422,6 +422,7 @@ public class PolicyCorporateController {
 		String attachment = requestSubmitEndorseHr.getAttachment();
 		String filename = requestSubmitEndorseHr.getFilename();
 		String extension = requestSubmitEndorseHr.getExtension();
+		String pathFolder = null, directory = null;
 		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
@@ -446,7 +447,7 @@ public class PolicyCorporateController {
 					// Insert to hrd.hd_tickets
 					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description);
 					
-					String pathFolder = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket;
+					pathFolder = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket;
 					
 					File folder = new File(pathFolder);
 					if (!folder.exists()) {
@@ -455,7 +456,7 @@ public class PolicyCorporateController {
 				
 					try {
 						byte[] fileByte = Base64.getDecoder().decode(attachment);
-						String directory = folder + File.separator + filename + "." + extension;
+						directory = pathFolder + File.separator + filename + "." + extension;
 				
 						FileOutputStream fos = new FileOutputStream(directory);
 						fos.write(fileByte);
@@ -474,7 +475,7 @@ public class PolicyCorporateController {
 					resultErr = "bad exception " + e;
 					logger.error("Path: " + request.getServletPath() + " Username: " + username + ", Error: " + e);
 				}
-
+				
 				error = false;
 				message = "Successfully submit claim corporate";
 			} else {
@@ -492,6 +493,9 @@ public class PolicyCorporateController {
 		}
 		map.put("error", error);
 		map.put("message", message);
+		map.put("pathFolder", pathFolder);
+		map.put("directory", directory);
+		
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 79, new Date(), req, res, 1, resultErr, start, username);

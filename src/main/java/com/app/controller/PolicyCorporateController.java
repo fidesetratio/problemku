@@ -493,8 +493,6 @@ public class PolicyCorporateController {
 		}
 		map.put("error", error);
 		map.put("message", message);
-		map.put("pathFolder", pathFolder);
-		map.put("directory", directory);
 		
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS

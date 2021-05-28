@@ -4540,6 +4540,7 @@
 		        END AS status
 		FROM    HRD.HD_TICKETS@EBMUAT
 		WHERE   nik_req = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
+		ORDER BY id_ticket desc
 	</select>
 	
 	<select id="selectViewEndorseHr" parameterType="String" resultType="com.app.model.EndorseHr">	 

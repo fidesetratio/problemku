@@ -14,7 +14,7 @@ management:
 # Remember that the name of the application has to be the same name of the registered service in the service discovery tool
 spring:
   profiles:
-    active: "uatprod"
+    active: "dev"
   application:
     name: api-vega
 
@@ -203,7 +203,7 @@ path:
   article: /mnt/storage/E-Sehat/upload/artikel
   polisall: /mnt/storage/Polis_Testing
   reporthr: /mnt/storage/m-Policytest/Ekamedicare
-  endorsehr: /mnt/storage/m-Policytest
+  endorsehr: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
 

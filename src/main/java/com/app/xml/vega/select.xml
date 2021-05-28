@@ -332,11 +332,30 @@
 		FROM eka.mst_product_insured a
 		    INNER JOIN eka.lst_det_bisnis b ON a.lsbs_id = b.lsbs_id AND a.lsdbs_number = b.lsdbs_number
 		    INNER JOIN EKA.LST_KURS c ON a.lku_id = c.lku_id
-		    INNER JOIN EKA.MST_PESERTA d ON a.reg_spaj = d.reg_spaj AND a.lsbs_id = d.lsbs_id AND a.lsdbs_number = b.lsdbs_number
+		    INNER JOIN EKA.MST_PESERTA d ON a.reg_spaj = d.reg_spaj AND a.lsbs_id = d.lsbs_id AND a.lsdbs_number = d.lsdbs_number
 		WHERE a.reg_spaj = #{spaj, jdbcType=VARCHAR}
 		    AND b.lsbs_id <![CDATA[>=]]> 800
 		    AND a.mspr_active = 1
-		ORDER BY a.lsbs_id, a.lsdbs_number
+		UNION ALL
+		SELECT EKA.F_LSDBS_VIEW (a.reg_spaj, a.lsbs_id, a.lsdbs_number) AS newname,
+		    b.lsdbs_name,
+		    TO_CHAR (a.mspr_beg_date, 'yyyy-mm-dd') mspr_beg_date,
+		    TO_CHAR (a.mspr_end_date, 'yyyy-mm-dd') mspr_end_date,
+		    a.mspr_tsi,
+		    c.lku_symbol,
+		    a.lsbs_id,
+		    e.mcl_first as tertanggung
+		FROM eka.mst_product_insured a
+		    INNER JOIN eka.lst_det_bisnis b ON a.lsbs_id = b.lsbs_id AND a.lsdbs_number = b.lsdbs_number
+		    INNER JOIN EKA.LST_KURS c ON a.lku_id = c.lku_id
+		    INNER JOIN eka.mst_insured d ON a.reg_spaj = d.reg_spaj
+		    INNER JOIN eka.mst_client_new e ON e.mcl_id = d.mste_insured
+		WHERE a.reg_spaj = #{spaj, jdbcType=VARCHAR}
+		    AND b.lsbs_id <![CDATA[>=]]> 800
+		    AND a.mspr_active = 1
+		    AND b.lsbs_id not in (
+		        SELECT LSBS_ID FROM EKA.MST_PESERTA WHERE REG_SPAJ = #{spaj, jdbcType=VARCHAR}
+		    )
 	</select>
 
 	<select id="selectTertanggung" resultType="Tertanggung" parameterType="Tertanggung">

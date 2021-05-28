@@ -431,6 +431,8 @@ public interface VegaMapper {
 	public ArrayList<EndorseHr> selectListEndorseHr(String no_polis);
 	
 	public EndorseHr selectViewEndorseHr(String id_ticket);
+	
+	public EndorseHr selectPrepareEndorseHr(String no_polis);
 
 	// Update
 	public void updateUserKeyName(LstUserSimultaneous user);

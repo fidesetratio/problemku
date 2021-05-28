@@ -43,6 +43,7 @@ import com.app.model.request.RequestDownloadEndorseHr;
 import com.app.model.request.RequestDownloadReportHr;
 import com.app.model.request.RequestListClaimCorporate;
 import com.app.model.request.RequestListEndorseHr;
+import com.app.model.request.RequestPrepareEndorseHr;
 import com.app.model.request.RequestSubmitClaimSubmissionCorporate;
 import com.app.model.request.RequestSubmitEndorseHr;
 import com.app.model.request.RequestViewEndorseHr;
@@ -750,6 +751,60 @@ public class PolicyCorporateController {
 		map.put("message", message);
 		map.put("data", data);
 		res = gson.toJson(map);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/prepareendorsehr", produces = "application/json", method = RequestMethod.POST)
+	public String prepareEndorseHr(@RequestBody RequestPrepareEndorseHr requestPrepareEndorseHr,
+			HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestPrepareEndorseHr);
+		String res = null;
+		String resultErr = null;
+		String message = null;
+		boolean error = true;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+
+		String username = requestPrepareEndorseHr.getUsername();
+		String key = requestPrepareEndorseHr.getKey();
+		String no_polis = requestPrepareEndorseHr.getNo_polis();
+		
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				EndorseHr endorseHr = services.selectPrepareEndorseHr(no_polis);
+
+				String no_polis_get = endorseHr.getNo_polis();
+		        String nama_perusahaan = endorseHr.getNama_perusahaan();
+			    
+				data.put("no_polis", no_polis_get);
+				data.put("nama_perusahaan", nama_perusahaan);
+
+				error = false;
+				message = "Successfully get endorse hr";
+			} else {
+				error = true;
+				message = "Failed get endorse hr";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + ", Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 70, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
 	}

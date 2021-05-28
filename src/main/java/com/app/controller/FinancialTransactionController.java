@@ -7389,6 +7389,8 @@ public class FinancialTransactionController {
 						data.put("total_dibayar", nfZeroTwo.format(results2.get(0)));
 					}
 					
+					
+					
 					data.put("path", path);
 					data.put("details", arrayDetails);
 					error = false;

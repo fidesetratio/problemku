@@ -4505,4 +4505,13 @@
 		    AND B.MSPO_POLICY_HOLDER = C.MCL_ID
 		    AND A.ID_TICKET = #{id_ticket, jdbcType=VARCHAR}
 	</select>
+	
+	<select id="selectPrepareEndorseHr" parameterType="String" resultType="com.app.model.EndorseHr">	 
+		SELECT  DECODE (b.mspo_policy_no, NULL, '', SUBSTR (b.mspo_policy_no, 1, 2) || '.' || SUBSTR (b.mspo_policy_no, 3, 3) || '.' || SUBSTR (b.mspo_policy_no, 6, 4) || '.' || SUBSTR (b.mspo_policy_no, 10, 5)) no_polis,
+		        c.mcl_first nama_perusahaan
+		FROM    EKA.MST_POLICY@EB B,
+		        EKA.MST_CLIENT@EB C
+		WHERE   B.MSPO_POLICY_NO = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
+		    AND b.mspo_policy_holder = c.mcl_id
+	</select>
 </mapper>

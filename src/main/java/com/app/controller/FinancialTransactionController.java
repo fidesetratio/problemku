@@ -7419,7 +7419,7 @@ public class FinancialTransactionController {
 		return res;
 	}
 	
-	@RequestMapping(value = "/viewmclfirst", produces = "application/json", method = RequestMethod.POST)
+	@RequestMapping(value = "/listpolisorion", produces = "application/json", method = RequestMethod.POST)
 	public String viewMclFirst(
 			@RequestBody RequestViewMclFirst requestViewMclFirst,
 			HttpServletRequest request) {
@@ -7441,19 +7441,13 @@ public class FinancialTransactionController {
 		String mcl_first = requestViewMclFirst.getMcl_first();
 		try {
 			if (msag_id!=null) {
-				Integer both = 0;
-				if((mspo_policy_no!=null) && (mcl_first!=null)) {
-					both = 1;
-				} else {
-					both = 0;
-				}
 				
-				ArrayList <ViewMclFirst> viewMclFirst = services.selectViewMclFirst(msag_id, mspo_policy_no, mcl_first, both);
+				ArrayList <ViewMclFirst> viewMclFirst = services.selectListPolisOrion(msag_id, mspo_policy_no, mcl_first);
 
 				if (viewMclFirst == null) {
 					error = true;
-					message = "Data mcl first empty";
-					resultErr = "Data mccl first kosong";
+					message = "Data list polis empty";
+					resultErr = "Data list polis kosong";
 					logger.error(
 							"Path: " + request.getServletPath() + " Msag_id: " + msag_id + " Error: " + resultErr);
 				} else {

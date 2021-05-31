@@ -1469,14 +1469,13 @@ public class VegaServices {
 		return dao.selectCountReportHr(no_polis);
 	}
 
-	public ArrayList<ViewMclFirst> selectViewMclFirst(String msag_id, String mspo_policy_no, String mcl_first, Integer both) {
+	public ArrayList<ViewMclFirst> selectListPolisOrion(String msag_id, String mspo_policy_no, String mcl_first) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
 		hashMap.put("msag_id", msag_id);
 		hashMap.put("mspo_policy_no", mspo_policy_no);
 		hashMap.put("mcl_first", mcl_first);
-		hashMap.put("both", both);
-		return dao.selectViewMclFirst(hashMap);
+		return dao.selectListPolisOrion(hashMap);
 	}
 
 	public String selectGetIdTicket() {

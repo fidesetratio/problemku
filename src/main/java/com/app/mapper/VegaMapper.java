@@ -424,7 +424,7 @@ public interface VegaMapper {
 	
 	public Integer selectCountReportHr(String no_polis);
 	
-	public ArrayList<ViewMclFirst> selectViewMclFirst(HashMap<String, Object> hashMap);
+	public ArrayList<ViewMclFirst> selectListPolisOrion(HashMap<String, Object> hashMap);
 	
 	public String selectGetIdTicket();
 	

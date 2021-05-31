@@ -4491,7 +4491,7 @@
 		         a.mce_klaim_admedika
 	</select>
 	
-	<select id="selectViewMclFirst" parameterType="Hashmap" resultType="com.app.model.ViewMclFirst">	 
+	<select id="selectListPolisOrion" parameterType="Hashmap" resultType="com.app.model.ViewMclFirst">	 
 		select MST_POLICY.MSPO_POLICY_NO as NO_POLIS
 		, MST_CLIENT_NEW.MCL_FIRST as NAMA
 		from EKA.MST_POLICY
@@ -4510,13 +4510,17 @@
 		)
 		and (
 		<if test="mspo_policy_no != null">
-		    MST_POLICY.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+			MST_POLICY.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
 		</if>
-		<if test="both == 1">
-		    or
+		<if test="mspo_policy_no == null">
+			MST_POLICY.MSPO_POLICY_NO = ''
 		</if>
+			or
 		<if test="mcl_first != null">
-		    UPPER(MST_CLIENT_NEW.MCL_FIRST) like '%'|| UPPER(#{mcl_first}) ||'%'
+			UPPER(MST_CLIENT_NEW.MCL_FIRST) like '%'|| UPPER(#{mcl_first}) ||'%'
+		</if>
+		<if test="mcl_first == null">
+			UPPER(MST_CLIENT_NEW.MCL_FIRST) like ''
 		</if>
 		)
 	</select>

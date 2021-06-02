@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -342,6 +343,8 @@ public class PolicyIndividualController {
 						sales = null;
 					}
 					
+					BigDecimal BD_uang_pertanggungan = new BigDecimal(dataUsulan.getMspr_tsi(), MathContext.DECIMAL64);
+					
 					data.put("produk", dataUsulan.getNewname());
 					data.put("masa_berlaku_awal",
 							dataUsulan.getMste_beg_date() == null ? null : df3.format(dataUsulan.getMste_beg_date()));
@@ -355,7 +358,7 @@ public class PolicyIndividualController {
 					data.put("cuti_premi",
 							(dataUsulan.getMspo_installment() == null ? null : (dataUsulan.getMspo_installment())));
 					data.put("mata_uang_pertanggungan", dataUsulan.getLku_symbol());
-					data.put("uang_pertanggungan", dataUsulan.getMspr_tsi());
+					data.put("uang_pertanggungan", BD_uang_pertanggungan);
 					data.put("frekuensi_bayar", dataUsulan.getLscb_pay_mode());
 					data.put("cara_bayar", dataUsulan.getCara_bayar());
 					data.put("lsbp_nama", dataUsulan.getLsbp_nama());

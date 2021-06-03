@@ -368,194 +368,21 @@ public class LoginRegisterIndividualCorporateController {
 								+ resultErr);
 					}
 				} else if ((individu.equals(false) && corporate.equals(false) && hr_user.equals(true))) { // Login HR
-					/*User dataActivityUser = services.selectUserHr(username);
-					// Check apakah username terdaftar/ tidak
-					if (dataActivityUser != null) {
-						Integer countDeathClaim = services.selectCountDeathClaim(username);
-						// Check apakah username tersebut mengandung polis death claim
-						if (countDeathClaim == 0) {
-							// Check apakah token yang ada didatabase kosong/ tidak
-							if (dataActivityUser.getLast_login_device() != null) {
-								// Check karena token ada, apakah token yang dikirim sama dengan yang didb
-								if (dataActivityUser.getLast_login_device().equals(lastLoginDevice)) {
-									// Check password yang diinputkan benar atau salah
-									if (user1.getPASSWORD().equals(password)) {
-										ArrayList<User> list = services.selectDetailedPolis(username);
-										// Check apakah username tersebut punya list polis/ tidak
-										if (list.size() > 0) {
-											String today = df.format(new Date());
-											lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
-											lstUserSimultaneous.setUPDATE_DATE_TIME(today);
-											services.updateUserKeyName(lstUserSimultaneous);
-											key = user1.getKEY();
+					String today = df.format(new Date());
+					lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+					lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+					services.updateUserKeyName(lstUserSimultaneous);
+					key = user1.getKEY();
 
-											error = false;
-											message = "Login success";
-											data.put("individual", individu);
-											data.put("corporate", corporate);
-											data.put("hr_user", hr_user);
-											data.put("policy_corporate_status", policy_corporate_notinforce);
-											data.put("user_corporate_notactive", user_corporate_notactive);
-											data.put("key", key);
-											data.put("no_hp", null);
-										} else {
-											// Error list polis kosong
-											error = true;
-											message = "List policy is empty";
-											resultErr = "List Polis Kosong";
-											logger.error("Path: " + request.getServletPath() + " Username: " + username
-													+ " Error: " + resultErr);
-										}
-									} else {
-										// Error password yang dimasukkan salah
-										error = true;
-										message = "Login failed";
-										resultErr = "Password yang dimasukkan salah";
-										logger.error("Path: " + request.getServletPath() + " Username: " + username
-												+ " Error: " + resultErr);
-									}
-								} else {
-									// Kondisi dimana token ada tetapi berbeda dengan yang dikirim
-									Date dateActivity = dataActivityUser.getUpdate_date();
-									Date dateNow = new Date();
-									long diff = dateNow.getTime() - dateActivity.getTime();
-									long diffSeconds = diff / 1000;
-									// Check apakah lama perbedaan waktu token sudah melebihi 15 menit/ belum
-									if (diffSeconds >= time_idle) {
-										// Check apabila lebih dari 15 menit, password yang dimasukkan kosong/ ""
-										if (user1.getPASSWORD() != null || user1.getPASSWORD() != "") {
-											// Check password yang dimasukkan sama/ tidak dengan yang didb
-											if (user1.getPASSWORD().equals(password)) {
-												ArrayList<User> list = services.selectDetailedPolis(username);
-												// Check apakah username tersebut memiliki list polis atau tidak
-												if (list.size() > 0) {
-													try {
-														customResourceLoader.postGoogle(linkFcmGoogle, username,
-																dataActivityUser.getLast_login_device());
-
-														String today = df.format(new Date());
-														lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
-														lstUserSimultaneous.setUPDATE_DATE_TIME(today);
-														services.updateUserKeyName(lstUserSimultaneous);
-														key = user1.getKEY();
-
-														error = false;
-														message = "Login success";
-														data.put("individual", individu);
-														data.put("corporate", corporate);
-														data.put("hr_user", hr_user);
-														data.put("policy_corporate_status",
-																policy_corporate_notinforce);
-														data.put("user_corporate_notactive", user_corporate_notactive);
-														data.put("key", key);
-														data.put("no_hp",
-																dataActivityUser.getNo_hp() != null
-																		? dataActivityUser.getNo_hp()
-																		: dataActivityUser.getNo_hp2());
-													} catch (Exception e) {
-														logger.error("Path: " + request.getServletPath() + " Username: "
-																+ username + " Error: " + e);
-													}
-												} else {
-													// Error list polis pada username tersebut kosong
-													error = true;
-													message = "List policy is empty";
-													resultErr = "List Polis Kosong";
-													logger.error("Path: " + request.getServletPath() + " Username: "
-															+ username + " Error: " + resultErr);
-												}
-											} else {
-												// Error password yang dimasukkan user salah
-												error = true;
-												message = "Login failed";
-												resultErr = "Password yang dimasukkan salah";
-												logger.error("Path: " + request.getServletPath() + " Username: "
-														+ username + " Error: " + resultErr);
-											}
-										} else {
-											// Error password kosong
-											error = true;
-											message = "Login failed";
-											resultErr = "Format password incorect";
-											logger.error("Path: " + request.getServletPath() + " Username: " + username
-													+ " Error: " + resultErr);
-										}
-									} else {
-										// Error perbedaan lama waktu token belum lebih dari 15 menit
-										error = true;
-										message = "Session still active";
-										resultErr = "Account sedang login ditempat lain atau ada session yang belum berakhir";
-										logger.error("Path: " + request.getServletPath() + " Username: " + username
-												+ " Error: " + resultErr);
-									}
-								}
-							} else {
-								// Kondisi token pada database tidak ada bisa kerena logout/ user baru
-								// Check apabila lebih dari 15 menit, password yang dimasukkan kosong/ ""
-								if (user1.getPASSWORD() != null || user1.getPASSWORD() != "") {
-									// Check password yang dimasukkan sama/ tidak dengan yang didb
-									if (user1.getPASSWORD().equals(password)) {
-										ArrayList<User> list = services.selectDetailedPolis(username);
-										// Check apakah username tersebut memiliki list polis atau tidak
-										if (list.size() > 0) {
-											String today = df.format(new Date());
-											lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
-											lstUserSimultaneous.setUPDATE_DATE_TIME(today);
-											services.updateUserKeyName(lstUserSimultaneous);
-											key = user1.getKEY();
-
-											error = false;
-											message = "Login success";
-											data.put("individual", individu);
-											data.put("corporate", corporate);
-											data.put("hr_user", hr_user);
-											data.put("policy_corporate_status", policy_corporate_notinforce);
-											data.put("user_corporate_notactive", user_corporate_notactive);
-											data.put("key", key);
-											data.put("no_hp",
-													dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
-															: dataActivityUser.getNo_hp2());
-										} else {
-											// Error list polis pada username tersebut kosong
-											error = true;
-											message = "List policy is empty";
-											resultErr = "List Polis Kosong";
-											logger.error("Path: " + request.getServletPath() + " Username: " + username
-													+ " Error: " + resultErr);
-										}
-									} else {
-										// Error password yang dimasukkan user salah
-										error = true;
-										message = "Login failed";
-										resultErr = "Password yang dimasukkan salah";
-										logger.error("Path: " + request.getServletPath() + " Username: " + username
-												+ " Error: " + resultErr);
-									}
-								} else {
-									// Error password kosong
-									error = true;
-									message = "Login failed";
-									resultErr = "Format password incorect";
-									logger.error("Path: " + request.getServletPath() + " Username: " + username
-											+ " Error: " + resultErr);
-								}
-							}
-						} else {
-							// Error pada username tersebut mengandung polis death claim
-							error = true;
-							message = "Policy number exists containing death claims";
-							resultErr = "No polis pada username ini ada yang mengandung death claim";
-							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
-									+ resultErr);
-						}
-					} else {
-						// Error username yang dimasukkan tidak ada pada database
-						error = true;
-						message = "Login failed";
-						resultErr = "Username tidak terdaftar";
-						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
-								+ resultErr);
-					}*/
+					error = false;
+					message = "Login success";
+					data.put("individual", individu);
+					data.put("corporate", corporate);
+					data.put("hr_user", hr_user);
+					data.put("policy_corporate_status", policy_corporate_notinforce);
+					data.put("user_corporate_notactive", user_corporate_notactive);
+					data.put("key", key);
+					data.put("no_hp", null);
 				}
 				else { // Login Corporate
 					UserCorporate dataUserCorporate = services.selectUserCorporate(username);

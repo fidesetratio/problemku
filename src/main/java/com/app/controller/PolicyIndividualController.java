@@ -142,6 +142,12 @@ public class PolicyIndividualController {
 		String username = requestPemegangPolis.getUsername();
 		String key = requestPemegangPolis.getKey();
 		String no_polis = requestPemegangPolis.getNo_polis();
+		
+		String key_orion = key;
+		if(key_orion.equalsIgnoreCase("orion")) {
+			key = services.selectEncrypt(username);
+		}
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();
@@ -224,6 +230,12 @@ public class PolicyIndividualController {
 		String username = requestDataAsuransi.getUsername();
 		String key = requestDataAsuransi.getKey();
 		String no_polis = requestDataAsuransi.getNo_polis();
+
+		String key_orion = key;
+		if(key_orion.equalsIgnoreCase("orion")) {
+			key = services.selectEncrypt(username);
+		}
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();
@@ -313,6 +325,12 @@ public class PolicyIndividualController {
 		String username = requestDataAsuransi.getUsername();
 		String key = requestDataAsuransi.getKey();
 		String no_polis = requestDataAsuransi.getNo_polis();
+		
+		String key_orion = key;
+		if(key_orion.equalsIgnoreCase("orion")) {
+			key = services.selectEncrypt(username);
+		}
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();
@@ -570,6 +588,12 @@ public class PolicyIndividualController {
 		String username = requestTertanggung.getUsername();
 		String key = requestTertanggung.getKey();
 		String no_polis = requestTertanggung.getNo_polis();
+
+		String key_orion = key;
+		if(key_orion.equalsIgnoreCase("orion")) {
+			key = services.selectEncrypt(username);
+		}
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Tertanggung tertanggung = new Tertanggung();
@@ -674,6 +698,12 @@ public class PolicyIndividualController {
 		String username = requestPembayarPremi.getUsername();
 		String key = requestPembayarPremi.getKey();
 		String no_polis = requestPembayarPremi.getNo_polis();
+
+		String key_orion = key;
+		if(key_orion.equalsIgnoreCase("orion")) {
+			key = services.selectEncrypt(username);
+		}
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				PembayarPremi pembayarPremi = services.selectPembayarPremi(no_polis);
@@ -752,6 +782,12 @@ public class PolicyIndividualController {
 		String username = requestPenerimaManfaat.getUsername();
 		String key = requestPenerimaManfaat.getKey();
 		String no_polis = requestPenerimaManfaat.getNo_polis();
+
+		String key_orion = key;
+		if(key_orion.equalsIgnoreCase("orion")) {
+			key = services.selectEncrypt(username);
+		}
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				ArrayList<PenerimaManfaat> dataBenef = services.selectPenerimaManfaat(no_polis);
@@ -928,6 +964,12 @@ public class PolicyIndividualController {
 		String username = requestCurrentInvestasiTransaksi.getUsername();
 		String key = requestCurrentInvestasiTransaksi.getKey();
 		String no_polis = requestCurrentInvestasiTransaksi.getNo_polis();
+
+		String key_orion = key;
+		if(key_orion.equalsIgnoreCase("orion")) {
+			key = services.selectEncrypt(username);
+		}
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();

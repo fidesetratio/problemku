@@ -4494,9 +4494,18 @@
 	<select id="selectListPolisOrion" parameterType="Hashmap" resultType="com.app.model.ViewMclFirst">	 
 		select MST_POLICY.MSPO_POLICY_NO as NO_POLIS
 		, MST_CLIENT_NEW.MCL_FIRST as NAMA
+		, LST_MASTER_STATUS.LMS_ID as POLICY_STATUS
+		, CASE
+		    WHEN LST_BISNIS.LSGP_ID IN (0, 1, 2, 3, 4) THEN LST_BISNIS.LSGP_ID
+		    ELSE 0
+		  END AS GPROD_ID
 		from EKA.MST_POLICY
 		left outer join EKA.MST_CLIENT_NEW on MST_POLICY.MSPO_POLICY_HOLDER = MST_CLIENT_NEW.MCL_ID
-		where REG_SPAJ in (
+		left join EKA.LST_POLICY_STATUS on MST_POLICY.LSSP_ID = LST_POLICY_STATUS.LSSP_ID
+		left join EKA.LST_MASTER_STATUS on LST_MASTER_STATUS.LMS_ID = LST_POLICY_STATUS.LMS_ID
+		left join EKA.MST_PRODUCT_INSURED on MST_PRODUCT_INSURED.REG_SPAJ = MST_POLICY.REG_SPAJ
+		left join EKA.LST_BISNIS on LST_BISNIS.LSBS_ID = MST_PRODUCT_INSURED.LSBS_ID
+		where MST_POLICY.REG_SPAJ in (
 		    select distinct MST_AGENT_PROD.REG_SPAJ
 		    from EKA.MST_AGENT
 		    left outer join EKA.MST_CLIENT_NEW on MST_AGENT.MCL_ID = MST_CLIENT_NEW.MCL_ID
@@ -4508,19 +4517,20 @@
 		    start with MST_AGENT.MSAG_ID = #{msag_id, jdbcType=VARCHAR}
 		    connect by MST_AGENT.MST_LEADER = prior MST_AGENT.MSAG_ID
 		)
+		and LST_BISNIS.LSBS_ID <![CDATA[<]]> 300
 		and (
 		<if test="mspo_policy_no != null">
-			MST_POLICY.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+		    MST_POLICY.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
 		</if>
 		<if test="mspo_policy_no == null">
-			MST_POLICY.MSPO_POLICY_NO = ''
+		    MST_POLICY.MSPO_POLICY_NO = ''
 		</if>
-			or
+		    or
 		<if test="mcl_first != null">
-			UPPER(MST_CLIENT_NEW.MCL_FIRST) like '%'|| UPPER(#{mcl_first}) ||'%'
+		    UPPER(MST_CLIENT_NEW.MCL_FIRST) like '%'|| UPPER(#{mcl_first}) ||'%'
 		</if>
 		<if test="mcl_first == null">
-			UPPER(MST_CLIENT_NEW.MCL_FIRST) like ''
+		    UPPER(MST_CLIENT_NEW.MCL_FIRST) like ''
 		</if>
 		)
 	</select>

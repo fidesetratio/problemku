@@ -1874,7 +1874,7 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 	
 	public void PolicyAlterationDirect(String reg_spaj, String msen_alasan, Integer lsje_id, String msde_old1, String msde_old2,
 			String msde_old3, String msde_old4, String msde_old5, String msde_old6, String msde_new1, String msde_new2, String msde_new3,
-			String msde_new4, String msde_new5, String msde_new6)
+			String msde_new4, String msde_new5, String msde_new6, String kolom)
 	{
 		Integer lspd_id = 99;
 		
@@ -1894,7 +1894,7 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 	
 	public void PolicyAlterationIndirect(String reg_spaj, String msen_alasan, Integer lsje_id, String msde_old1, String msde_old2,
 			String msde_old3, String msde_old4, String msde_old5, String msde_old6, String msde_new1, String msde_new2, String msde_new3,
-			String msde_new4, String msde_new5, String msde_new6)
+			String msde_new4, String msde_new5, String msde_new6, String kolom)
 	{
 		Integer lspd_id = 13;
 		

@@ -33,10 +33,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
+import com.app.model.Beneficiary;
 import com.app.model.BenefitCorporate;
 import com.app.model.ClaimCorporate;
 import com.app.model.DetailClaimCorporate;
 import com.app.model.EndorseHr;
+import com.app.model.Upload;
 import com.app.model.request.RequestBenefitCorporate;
 import com.app.model.request.RequestDetailClaimCorporate;
 import com.app.model.request.RequestDownloadEndorseHr;
@@ -419,9 +421,7 @@ public class PolicyCorporateController {
 		Integer jenis_helpdesk = requestSubmitEndorseHr.getJenis_helpdesk();
 		String subject = requestSubmitEndorseHr.getSubject();
 		String description = requestSubmitEndorseHr.getDescription();
-		String attachment = requestSubmitEndorseHr.getAttachment();
-		String filename = requestSubmitEndorseHr.getFilename();
-		String extension = requestSubmitEndorseHr.getExtension();
+		ArrayList <Upload> upload = requestSubmitEndorseHr.getUpload();
 		String pathFolder = null, directory = null;
 		
 		try {
@@ -447,28 +447,33 @@ public class PolicyCorporateController {
 					// Insert to hrd.hd_tickets
 					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description);
 					
-					pathFolder = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket;
+					for(int i=0; i<upload.size(); i++) {
+						String attachment = upload.get(i).getAttachment();
+						String filename = upload.get(i).getFilename();
+						String extension = upload.get(i).getExtension();
+						
+						pathFolder = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket;
+						
+						File folder = new File(pathFolder);
+						if (!folder.exists()) {
+							folder.mkdirs();
+						}
 					
-					File folder = new File(pathFolder);
-					if (!folder.exists()) {
-						folder.mkdirs();
-					}
-				
-					try {
-						byte[] fileByte = Base64.getDecoder().decode(attachment);
-						directory = pathFolder + File.separator + filename + "." + extension;
-				
-						FileOutputStream fos = new FileOutputStream(directory);
-						fos.write(fileByte);
-						fos.close();
-						fos.flush();
-					} catch (Exception e) {
-						error = true;
-						message = ResponseMessage.ERROR_SYSTEM;
-						resultErr = "bad exception " + e;
-						logger.error("Path: " + request.getServletPath() + " Username: " + username + ", Error: " + e);
-					}
+						try {
+							byte[] fileByte = Base64.getDecoder().decode(attachment);
+							directory = pathFolder + File.separator + filename + "." + extension;
 					
+							FileOutputStream fos = new FileOutputStream(directory);
+							fos.write(fileByte);
+							fos.close();
+							fos.flush();
+						} catch (Exception e) {
+							error = true;
+							message = ResponseMessage.ERROR_SYSTEM;
+							resultErr = "bad exception " + e;
+							logger.error("Path: " + request.getServletPath() + " Username: " + username + ", Error: " + e);
+						}
+					}
 				} catch (Exception e) {
 					error = true;
 					message = ResponseMessage.ERROR_SYSTEM;

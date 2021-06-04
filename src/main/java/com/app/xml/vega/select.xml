@@ -4580,4 +4580,46 @@
 		WHERE   B.MSPO_POLICY_NO = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
 		    AND b.mspo_policy_holder = c.mcl_id
 	</select>
+	
+	<select id="selectTransactionHistory" parameterType="String" resultType="com.app.model.TransactionHistory">	 
+		SELECT * FROM (
+			SELECT  'PAS-01' AS KODE_TRANSAKSI,
+			        'Penebusan Polis' AS TRANSACTION_TYPE,
+			        REG_SPAJ,
+			        MI_URL AS FILE_PATH,
+			        TO_CHAR(TRANS_DATE, 'dd/mm/yyyy') AS TGL_TRANSAKSI
+			FROM    EKA.MST_INBOX
+			WHERE   LJJ_ID in (2, 3)
+			UNION ALL
+			SELECT  'PAS-02' AS KODE_TRANSAKSI,
+			        'Penebusan Polis (Save Series)' AS TRANSACTION_TYPE,
+			        REG_SPAJ,
+			        MI_URL AS FILE_PATH,
+			        TO_CHAR(TGL_BAYAR, 'dd/mm/yyyy') AS TGL_TRANSAKSI
+			FROM    EKA.MST_INBOX
+			WHERE   LJJ_ID = 20
+			UNION ALL
+			SELECT  'PAS-11' AS KODE_TRANSAKSI,
+			        'Perubahan Polis' AS TRANSACTION_TYPE,
+			        REG_SPAJ,
+			        MI_URL AS FILE_PATH,
+			        TO_CHAR(TGL_BAYAR, 'dd/mm/yyyy') AS TGL_TRANSAKSI
+			FROM    EKA.MST_INBOX
+			WHERE   LJJ_ID = 22
+			UNION ALL
+			SELECT  'PAS-13' AS KODE_TRANSAKSI,
+			        'Pemulihan Polis' AS TRANSACTION_TYPE,
+			        REG_SPAJ,
+			        MI_URL AS FILE_PATH,
+			        TO_CHAR(TRANS_DATE, 'dd/mm/yyyy') AS TGL_TRANSAKSI
+			FROM    EKA.MST_INBOX
+			WHERE   LJJ_ID = 1
+			)
+		WHERE   REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		ORDER BY TGL_TRANSAKSI DESC
+	</select>
+	
+	<select id="selectGetOnlyRegSpaj" parameterType="String" resultType="String">	 
+		SELECT  REG_SPAJ FROM EKA.MST_POLICY WHERE MSPO_POLICY_NO = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
+	</select>
 </mapper>

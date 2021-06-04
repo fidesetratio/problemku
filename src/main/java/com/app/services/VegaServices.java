@@ -57,6 +57,7 @@ import com.app.model.Tertanggung;
 import com.app.model.TertanggungTambahan;
 import com.app.model.Topup;
 import com.app.model.TrackingPolis;
+import com.app.model.TransactionHistory;
 import com.app.model.UnitLink;
 import com.app.model.User;
 import com.app.model.UserCorporate;
@@ -1507,5 +1508,15 @@ public class VegaServices {
 	public EndorseHr selectPrepareEndorseHr(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectPrepareEndorseHr(no_polis);
+	}
+
+	public ArrayList<TransactionHistory> selectTransactionHistory(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectTransactionHistory(reg_spaj);
+	}
+
+	public String selectGetOnlyRegSpaj(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectGetOnlyRegSpaj(no_polis);
 	}
 }

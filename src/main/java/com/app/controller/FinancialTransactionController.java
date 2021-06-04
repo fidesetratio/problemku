@@ -61,6 +61,7 @@ import com.app.model.ProductUtama;
 import com.app.model.Rekening;
 import com.app.model.SwitchingRedirection;
 import com.app.model.Topup;
+import com.app.model.TransactionHistory;
 import com.app.model.UnitLink;
 import com.app.model.User;
 import com.app.model.UserCorporate;
@@ -97,6 +98,7 @@ import com.app.model.request.RequestSubmitSwitchingRedirection;
 import com.app.model.request.RequestSubmitWithdraw;
 import com.app.model.request.RequestSwitchingRedirection;
 import com.app.model.request.RequestTopup;
+import com.app.model.request.RequestTransactionHistory;
 import com.app.model.request.RequestUploadDeleteFileClaimSub;
 import com.app.model.request.RequestUploadDeleteFileClaimSubCorp;
 import com.app.model.request.RequestValidateSwitchingRedirection;
@@ -7480,6 +7482,77 @@ public class FinancialTransactionController {
 			message = ResponseMessage.ERROR_SYSTEM;
 			resultErr = "bad exception " + e;
 			logger.error("Path: " + request.getServletPath() + " msag_id: " + msag_id + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		//customResourceLoader.insertHistActivityWS(12, 78, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/transactionhistory", produces = "application/json", method = RequestMethod.POST)
+	public String transactionHistory(@RequestBody RequestTransactionHistory requestTransactionHistory, HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestTransactionHistory);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		ArrayList<HashMap<String, Object>> data = new ArrayList<>();
+
+		String username = requestTransactionHistory.getUsername();
+		String key = requestTransactionHistory.getKey();
+		String no_polis = requestTransactionHistory.getNo_polis();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				String reg_spaj = services.selectGetOnlyRegSpaj(no_polis);
+				
+				ArrayList <TransactionHistory> listTransactionHistory = services.selectTransactionHistory(reg_spaj);
+
+				if (listTransactionHistory == null) {
+					error = true;
+					message = "Data transaction history empty";
+					resultErr = "Data transaction history kosong";
+					logger.error(
+							"Path: " + request.getServletPath() + "Username: " + username + " Error: " + resultErr);
+				} else {
+					for(int i=0; i<listTransactionHistory.size(); i++) {
+						String kode_transaksi = listTransactionHistory.get(i).getKode_transaksi();
+						String transaction_type = listTransactionHistory.get(i).getTransaction_type();
+						String file_path = listTransactionHistory.get(i).getFile_path();
+						String tgl_transaksi = listTransactionHistory.get(i).getTgl_transaksi();
+						
+						HashMap<String, Object> hashMap = new HashMap<>();
+						hashMap.put("kode_transaksi", kode_transaksi);
+						hashMap.put("transaction_type", transaction_type);
+						hashMap.put("file_path", file_path);
+						hashMap.put("tgl_transaksi", tgl_transaksi);
+						
+						data.add(hashMap);
+					}
+					error = false;
+					message = "Successfully get data";
+				}
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username  + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
 		}
 		map.put("error", error);
 		map.put("message", message);

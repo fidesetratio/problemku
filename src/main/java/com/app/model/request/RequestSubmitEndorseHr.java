@@ -1,6 +1,10 @@
 package com.app.model.request;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+
+import com.app.model.Beneficiary;
+import com.app.model.Upload;
 
 public class RequestSubmitEndorseHr implements Serializable {
 
@@ -17,7 +21,14 @@ public class RequestSubmitEndorseHr implements Serializable {
 	private String attachment;
 	private String filename;
 	private String extension;
+	private ArrayList<Upload> upload;
 	
+	public ArrayList<Upload> getUpload() {
+		return upload;
+	}
+	public void setUpload(ArrayList<Upload> upload) {
+		this.upload = upload;
+	}
 	public String getExtension() {
 		return extension;
 	}

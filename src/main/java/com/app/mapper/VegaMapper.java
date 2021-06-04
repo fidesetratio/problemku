@@ -50,6 +50,7 @@ import com.app.model.Tertanggung;
 import com.app.model.TertanggungTambahan;
 import com.app.model.Topup;
 import com.app.model.TrackingPolis;
+import com.app.model.TransactionHistory;
 import com.app.model.UnitLink;
 import com.app.model.User;
 import com.app.model.UserCorporate;
@@ -370,6 +371,10 @@ public interface VegaMapper {
 	public NotifToken selectNotifToken(String userid);
 	
 	public Article selectCountListArticle();
+	
+	public ArrayList<TransactionHistory> selectTransactionHistory(String reg_spaj);
+	
+	public String selectGetOnlyRegSpaj(String no_polis);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

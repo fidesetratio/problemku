@@ -7592,14 +7592,14 @@ public class FinancialTransactionController {
 			String pathWS = requestDownloadTransactionHistory.getPath();
 			String tempPathWS = pathWS.replace("\\", "/");
 			tempPathWS = tempPathWS.replace("//", "/");
-			String tempPath[] = tempPathWS.split("/");
-			String id_ticket = tempPath[5].toString();
-			String file_name = tempPath[6].toString();
-			String newfilename = file_name.substring(0, file_name.lastIndexOf('.'));
-			String NewPathWS = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket + File.separator + file_name;
-			String file_type = "pdf";
+			tempPathWS = tempPathWS.substring(tempPathWS.indexOf("/")+29);
+			tempPathWS.trim();
+			String NewPathWS = downloadEndorseHr + File.separator + tempPathWS;
+			String file_type = requestDownloadTransactionHistory.getFile_type();
+			String newfilename = requestDownloadTransactionHistory.getFile_name();
+			System.out.println(tempPathWS);
 			
-			/*\\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\EB Endorse\\148039\\tes.xls*/
+			/*\\storage\pdfind\m-Policytest\09\09170113142\VOID_CAIR_SAVE_82533SR112017_09142201707354.PDF*/
 			
 			// path file yang mau di download
 			File file = new File(NewPathWS);

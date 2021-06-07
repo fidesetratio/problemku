@@ -4583,39 +4583,71 @@
 	
 	<select id="selectTransactionHistory" parameterType="String" resultType="com.app.model.TransactionHistory">	 
 		SELECT * FROM (
-			SELECT  'PAS-01' AS KODE_TRANSAKSI,
-			        'Penebusan Polis' AS TRANSACTION_TYPE,
-			        REG_SPAJ,
-			        MI_URL AS FILE_PATH,
-			        TRANS_DATE AS TGL_TRANSAKSI
-			FROM    EKA.MST_INBOX
-			WHERE   LJJ_ID in (2, 3)
-			UNION ALL
-			SELECT  'PAS-02' AS KODE_TRANSAKSI,
-			        'Penebusan Polis (Save Series)' AS TRANSACTION_TYPE,
-			        REG_SPAJ,
-			        MI_URL AS FILE_PATH,
-			        TGL_BAYAR AS TGL_TRANSAKSI
-			FROM    EKA.MST_INBOX
-			WHERE   LJJ_ID = 20
-			UNION ALL
-			SELECT  'PAS-11' AS KODE_TRANSAKSI,
-			        'Perubahan Polis' AS TRANSACTION_TYPE,
-			        REG_SPAJ,
-			        MI_URL AS FILE_PATH,
-			        TGL_BAYAR AS TGL_TRANSAKSI
-			FROM    EKA.MST_INBOX
-			WHERE   LJJ_ID = 22
-			UNION ALL
-			SELECT  'PAS-13' AS KODE_TRANSAKSI,
-			        'Pemulihan Polis' AS TRANSACTION_TYPE,
-			        REG_SPAJ,
-			        MI_URL AS FILE_PATH,
-			        TRANS_DATE AS TGL_TRANSAKSI
-			FROM    EKA.MST_INBOX
-			WHERE   LJJ_ID = 1
-			)
-		WHERE   REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    SELECT  REG_SPAJ,
+		            'PAS-01' AS KODE_TRANSAKSI,
+		            'Penebusan Polis' AS TRANSACTION_TYPE,
+		            MI_URL AS FILE_PATH,
+		            TRANS_DATE AS TGL_TRANSAKSI
+		    FROM    EKA.MST_INBOX
+		    WHERE   LJJ_ID in (2, 3)
+		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    UNION ALL
+		    SELECT  REG_SPAJ,
+		            'PAS-02' AS KODE_TRANSAKSI,
+		            'Penebusan Polis (Save Series)' AS TRANSACTION_TYPE,
+		            MI_URL AS FILE_PATH,
+		            TGL_BAYAR AS TGL_TRANSAKSI
+		    FROM    EKA.MST_INBOX
+		    WHERE   LJJ_ID = 20
+		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    UNION ALL
+		    SELECT  REG_SPAJ,
+		            'PAS-11' AS KODE_TRANSAKSI,
+		            'Perubahan Polis' AS TRANSACTION_TYPE,
+		            MI_URL AS FILE_PATH,
+		            TGL_BAYAR AS TGL_TRANSAKSI
+		    FROM    EKA.MST_INBOX
+		    WHERE   LJJ_ID = 22
+		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    UNION ALL
+		    SELECT  REG_SPAJ,
+		            'PAS-13' AS KODE_TRANSAKSI,
+		            'Pemulihan Polis' AS TRANSACTION_TYPE,
+		            MI_URL AS FILE_PATH,
+		            TRANS_DATE AS TGL_TRANSAKSI
+		    FROM    EKA.MST_INBOX
+		    WHERE   LJJ_ID = 1
+		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    UNION ALL
+		    select  DISTINCT(SPAJ) AS REG_SPAJ,
+		            'PAS-10' AS KODE_TRANSAKSI,
+		            'Pembatalan dalam Masa Pemahaman Polis (Cancel Freelook)' AS TRANSACTION_TYPE,
+		            'belum ada' as PATH,
+		            trunc(cancel_when) TGL_TRANSAKSI
+		    from (
+		            select  distinct a.reg_spaj as spaj,
+		                    nvl(d.mspa_no_pre, e.msdp_no_pre) as pre_masuk,
+		                    nvl((select rtrim (xmlagg (xmlelement (e, y.no_jm || ',')).extract ('//text()'), ',') from eka.mst_ptc_tm x, eka.mst_ptc_jm y where x.no_jm = y.no_jm
+		                        and x.mtm_position != 0 and y.key_jurnal = a.reg_spaj and y.no_jurnal = 2 and y.mjm_cd = 'C' and y.keterangan like 'TITIPAN PREMI NO%'), '-') as jm_sa,
+		                    nvl(d.mspa_no_jm, '-') as jm,
+		                    nvl(b.no_pre, b.no_pre) as pre_keluar,
+		                    nvl(b.no_jm,'-') as jm_keluar,
+		                    b.cancel_when
+		            from    eka.mst_policy a,
+		                    eka.mst_refund b,
+		                    eka.mst_payment d,
+		                    eka.mst_deposit_premium e
+		            where   a.reg_spaj = b.reg_spaj
+		                and a.reg_spaj = d.reg_spaj (+)
+		                and a.reg_spaj = e.reg_spaj (+)
+		                and a.lku_id = '01'
+		                and b.tindakan_cd = 2
+		                and a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+		                and b.premi_refund != 0
+		            order by b.cancel_when
+		    )
+		    group by spaj, pre_masuk, jm_sa, jm, pre_keluar, jm_keluar, cancel_when
+		    )
 		ORDER BY TGL_TRANSAKSI DESC
 	</select>
 	

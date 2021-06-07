@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -76,8 +77,10 @@ import com.app.model.request.RequestClaimSubmissionCorporate;
 import com.app.model.request.RequestCostWithdraw;
 import com.app.model.request.RequestDetailClaimCorporate;
 import com.app.model.request.RequestDocumentClaimSubmissionCorporate;
+import com.app.model.request.RequestDownloadEndorseHr;
 import com.app.model.request.RequestDownloadFileClaimSubmission;
 import com.app.model.request.RequestDownloadProofTransaction;
+import com.app.model.request.RequestDownloadTransactionHistory;
 import com.app.model.request.RequestDropdownClaimsubmission;
 import com.app.model.request.RequestDropdownPolicyAlteration;
 import com.app.model.request.RequestFurtherClaimSubmission;
@@ -172,6 +175,9 @@ public class FinancialTransactionController {
 
 	@Value("${path.document.claimcorporate}")
 	private String pathDocumentClaimcorporate;
+	
+	@Value("${path.download.endorsehr}")
+	private String downloadEndorseHr;
 
 	@Autowired
 	private VegaServices services;
@@ -7528,12 +7534,17 @@ public class FinancialTransactionController {
 						String kode_transaksi = listTransactionHistory.get(i).getKode_transaksi();
 						String transaction_type = listTransactionHistory.get(i).getTransaction_type();
 						String file_path = listTransactionHistory.get(i).getFile_path();
-						String tgl_transaksi = listTransactionHistory.get(i).getTgl_transaksi();
+						String tgl_transaksi = df3.format(listTransactionHistory.get(i).getTgl_transaksi());
+						String file_name = file_path.substring(file_path.lastIndexOf('\\') + 1).trim();
+						file_name = file_name.substring(0, file_name.lastIndexOf('.'));
+						String file_type = file_path.substring(file_path.lastIndexOf('.') + 1).trim();
 						
 						HashMap<String, Object> hashMap = new HashMap<>();
 						hashMap.put("kode_transaksi", kode_transaksi);
 						hashMap.put("transaction_type", transaction_type);
 						hashMap.put("file_path", file_path);
+						hashMap.put("file_name", file_name);
+						hashMap.put("file_type", file_type);
 						hashMap.put("tgl_transaksi", tgl_transaksi);
 						
 						data.add(hashMap);
@@ -7560,6 +7571,74 @@ public class FinancialTransactionController {
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		//customResourceLoader.insertHistActivityWS(12, 78, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+	
+	@RequestMapping(value = "/downloadtransactionhistory", produces = "application/json", method = RequestMethod.POST)
+	public String downloadEndorseHr(@RequestBody RequestDownloadTransactionHistory requestDownloadTransactionHistory, 
+			HttpServletRequest request, HttpServletResponse response) throws Exception {
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String res = null;
+		String message = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+		try {
+			// path file
+			String pathWS = requestDownloadTransactionHistory.getPath();
+			String tempPathWS = pathWS.replace("\\", "/");
+			tempPathWS = tempPathWS.replace("//", "/");
+			String tempPath[] = tempPathWS.split("/");
+			String id_ticket = tempPath[5].toString();
+			String file_name = tempPath[6].toString();
+			String newfilename = file_name.substring(0, file_name.lastIndexOf('.'));
+			String NewPathWS = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket + File.separator + file_name;
+			String file_type = "pdf";
+			
+			/*\\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\EB Endorse\\148039\\tes.xls*/
+			
+			// path file yang mau di download
+			File file = new File(NewPathWS);
+
+			try {
+				// Content-Disposition
+				response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+						"attachment; filename=" + newfilename.replace("  ", "_").replace(" ", "_") + "." + file_type);
+
+				// Content-Length
+				response.setContentLength((int) file.length());
+
+				BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+				BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+				byte[] buffer = new byte[1024];
+				int bytesRead = 0;
+				while ((bytesRead = inStream.read(buffer)) != -1) {
+					outStream.write(buffer, 0, bytesRead);
+				}
+				outStream.flush();
+				inStream.close();
+				
+				error = false;
+				message = "Download Success";
+			} catch (Exception e) {
+				error = true;
+				message = "Download Failed";
+				logger.error("Path: " + request.getServletPath() + " Error: " + e);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			logger.error("Path: " + request.getServletPath() + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
 
 		return res;
 	}

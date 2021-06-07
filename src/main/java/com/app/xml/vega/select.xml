@@ -4587,7 +4587,7 @@
 			        'Penebusan Polis' AS TRANSACTION_TYPE,
 			        REG_SPAJ,
 			        MI_URL AS FILE_PATH,
-			        TO_CHAR(TRANS_DATE, 'dd MMM yyyy') AS TGL_TRANSAKSI
+			        TRANS_DATE AS TGL_TRANSAKSI
 			FROM    EKA.MST_INBOX
 			WHERE   LJJ_ID in (2, 3)
 			UNION ALL
@@ -4595,7 +4595,7 @@
 			        'Penebusan Polis (Save Series)' AS TRANSACTION_TYPE,
 			        REG_SPAJ,
 			        MI_URL AS FILE_PATH,
-			        TO_CHAR(TGL_BAYAR, 'dd MMM yyyy') AS TGL_TRANSAKSI
+			        TGL_BAYAR AS TGL_TRANSAKSI
 			FROM    EKA.MST_INBOX
 			WHERE   LJJ_ID = 20
 			UNION ALL
@@ -4603,7 +4603,7 @@
 			        'Perubahan Polis' AS TRANSACTION_TYPE,
 			        REG_SPAJ,
 			        MI_URL AS FILE_PATH,
-			        TO_CHAR(TGL_BAYAR, 'dd MMM yyyy') AS TGL_TRANSAKSI
+			        TGL_BAYAR AS TGL_TRANSAKSI
 			FROM    EKA.MST_INBOX
 			WHERE   LJJ_ID = 22
 			UNION ALL
@@ -4611,7 +4611,7 @@
 			        'Pemulihan Polis' AS TRANSACTION_TYPE,
 			        REG_SPAJ,
 			        MI_URL AS FILE_PATH,
-			        TO_CHAR(TRANS_DATE, 'dd MMM yyyy') AS TGL_TRANSAKSI
+			        TRANS_DATE AS TGL_TRANSAKSI
 			FROM    EKA.MST_INBOX
 			WHERE   LJJ_ID = 1
 			)

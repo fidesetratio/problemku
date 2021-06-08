@@ -1519,4 +1519,13 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetOnlyRegSpaj(no_polis);
 	}
+
+	public Integer selectCountListBilling(String reg_spaj, String startDate, String endDate) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("reg_spaj", reg_spaj);
+		hashMap.put("startDate", startDate);
+		hashMap.put("endDate", endDate);
+		return dao.selectCountListBilling(hashMap);
+	}
 }

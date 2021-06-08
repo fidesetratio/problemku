@@ -16,6 +16,15 @@ public class Billing implements Serializable {
 	private BigDecimal th_ke;
 	private Date tgl_bayar;
 	private Date periode;
+	private Integer count;
+	
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
+	}
 
 	public String getPaid() {
 		return paid;

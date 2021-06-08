@@ -4631,7 +4631,7 @@
 		            'PAS-01' AS KODE_TRANSAKSI,
 		            'Penebusan Polis' AS TRANSACTION_TYPE,
 		            MI_URL AS FILE_PATH,
-		            TRANS_DATE AS TGL_TRANSAKSI
+		            TRUNC(TRANS_DATE) AS TGL_TRANSAKSI
 		    FROM    EKA.MST_INBOX
 		    WHERE   LJJ_ID in (2, 3)
 		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
@@ -4640,7 +4640,7 @@
 		            'PAS-02' AS KODE_TRANSAKSI,
 		            'Penebusan Polis (Save Series)' AS TRANSACTION_TYPE,
 		            MI_URL AS FILE_PATH,
-		            TGL_BAYAR AS TGL_TRANSAKSI
+		            TRUNC(TGL_BAYAR) AS TGL_TRANSAKSI
 		    FROM    EKA.MST_INBOX
 		    WHERE   LJJ_ID = 20
 		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
@@ -4649,7 +4649,7 @@
 		            'PAS-11' AS KODE_TRANSAKSI,
 		            'Perubahan Polis' AS TRANSACTION_TYPE,
 		            MI_URL AS FILE_PATH,
-		            TGL_BAYAR AS TGL_TRANSAKSI
+		            TRUNC(TGL_BAYAR) AS TGL_TRANSAKSI
 		    FROM    EKA.MST_INBOX
 		    WHERE   LJJ_ID = 22
 		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
@@ -4658,7 +4658,7 @@
 		            'PAS-13' AS KODE_TRANSAKSI,
 		            'Pemulihan Polis' AS TRANSACTION_TYPE,
 		            MI_URL AS FILE_PATH,
-		            TRANS_DATE AS TGL_TRANSAKSI
+		            TRUNC(TRANS_DATE) AS TGL_TRANSAKSI
 		    FROM    EKA.MST_INBOX
 		    WHERE   LJJ_ID = 1
 		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
@@ -4667,7 +4667,7 @@
 		            'PAS-10' AS KODE_TRANSAKSI,
 		            'Pembatalan dalam Masa Pemahaman Polis (Cancel Freelook)' AS TRANSACTION_TYPE,
 		            'belum ada' as PATH,
-		            trunc(cancel_when) TGL_TRANSAKSI
+		            TRUNC(cancel_when) TGL_TRANSAKSI
 		    from (
 		            select  distinct a.reg_spaj as spaj,
 		                    nvl(d.mspa_no_pre, e.msdp_no_pre) as pre_masuk,
@@ -4697,5 +4697,38 @@
 	
 	<select id="selectGetOnlyRegSpaj" parameterType="String" resultType="String">	 
 		SELECT  REG_SPAJ FROM EKA.MST_POLICY WHERE MSPO_POLICY_NO = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
+	</select>
+	
+	<select id="selectCountListBilling" parameterType="Hashmap" resultType="Integer">	 
+		SELECT COUNT(PREMI_KE) AS COUNT FROM
+		(select a.*, DECODE(a.msbi_paid, 1, 'Paid', 'OutS') paid, 
+		b.lku_symbol from
+		(
+		    select a.reg_spaj,
+		    a.lku_id, 
+		    a.msbi_tahun_ke th_ke, 
+		    a.msbi_beg_date periode,
+		    a.msbi_paid,
+		    a.msbi_paid_date tgl_bayar, 
+		    sum(b.msdb_premium - nvl(b.msdb_discount,0)) total_premi,
+		    row_number() over ( partition by a.reg_spaj order by a.msbi_tahun_ke, a.msbi_beg_date asc) premi_ke
+		    from
+		        eka.mst_billing a, 
+		        eka.mst_det_billing b
+		    where a.reg_spaj = b.reg_spaj
+		        and a.msbi_tahun_ke = b.msbi_tahun_ke
+		        and a.msbi_premi_ke = b.msbi_premi_ke
+		        and a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+		        and nvl(a.msbi_flag_topup, 0) <![CDATA[ < ]]> 3
+		        <if test="startDate != null">
+		            AND a.msbi_beg_date <![CDATA[ >= ]]> to_date(#{startDate}, 'YYYY-MM')
+		        </if>
+		        <if test="endDate != null">
+		            AND a.msbi_beg_date <![CDATA[ <= ]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+		        </if>
+		    group by a.reg_spaj, a.lku_id, a.msbi_tahun_ke, a.msbi_beg_date, a.msbi_paid, a.msbi_paid_date) a, 
+		        eka.lst_kurs b
+		where a.lku_id = b.lku_id
+		order by 4 desc)
 	</select>
 </mapper>

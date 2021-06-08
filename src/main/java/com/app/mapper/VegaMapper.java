@@ -375,6 +375,8 @@ public interface VegaMapper {
 	public ArrayList<TransactionHistory> selectTransactionHistory(String reg_spaj);
 	
 	public String selectGetOnlyRegSpaj(String no_polis);
+	
+	public Integer selectCountListBilling(HashMap<String, Object> hashMap);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);

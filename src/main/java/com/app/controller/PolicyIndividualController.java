@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
+import com.app.model.Article;
 import com.app.model.Billing;
 import com.app.model.DataUsulan;
 import com.app.model.KlaimKesehatan;
@@ -921,6 +922,12 @@ public class PolicyIndividualController {
 										+ e);
 							}
 						}
+						
+						Integer total_data = services.selectCountListBilling(pemegang.getReg_spaj(), startDate, endDate);
+						
+						//Integer total_data = countBilling.getCount();
+						
+						map.put("total_data", total_data);
 
 						data.put("billing", lisPay);
 						data.put("totalResults", lisBill.size());

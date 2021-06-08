@@ -4244,7 +4244,11 @@
 	</select>
 	
 	<select id="selectPembayarPremi" parameterType="String" resultType="com.app.model.PembayarPremi">
-		SELECT  C.LSRE_RELATION AS HUBUNGAN,
+		SELECT  CASE
+                    WHEN B.LSRE_ID_PREMI = 40
+                        THEN 'Diri Sendiri'
+                    ELSE C.lsre_relation
+                END AS HUBUNGAN,
 		        B.MCL_FIRST AS NAMA,
 		        CASE
 		            WHEN B.MSPE_SEX = 1

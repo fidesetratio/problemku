@@ -393,6 +393,8 @@ public class PolicyIndividualController {
 					data.put("nama_bank", dataUsulan.getNama_bank());
 					data.put("cabang_bank", dataUsulan.getCabang_bank());
 					data.put("pemilik_rekening", dataUsulan.getPemilik_rekening());
+					data.put("periode_premi_terhutang", dataUsulan.getPeriode_premi_terhutang());
+					data.put("nomor_rekening", dataUsulan.getNomor_rekening());
 					data.put("product_rider", product_rider);
 					data.put("alokasi_dana", fund);
 					data.put("data_sales", sales);

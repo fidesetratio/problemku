@@ -88,7 +88,25 @@ public class DataUsulan implements Serializable {
 	private String cabang_bank;
 	private String nama_bank;
 	private String pemilik_rekening;
+	private Integer periode_premi_terhutang;
+	private String nomor_rekening;
 	
+	public Integer getPeriode_premi_terhutang() {
+		return periode_premi_terhutang;
+	}
+
+	public void setPeriode_premi_terhutang(Integer periode_premi_terhutang) {
+		this.periode_premi_terhutang = periode_premi_terhutang;
+	}
+
+	public String getNomor_rekening() {
+		return nomor_rekening;
+	}
+
+	public void setNomor_rekening(String nomor_rekening) {
+		this.nomor_rekening = nomor_rekening;
+	}
+
 	public String getPemilik_rekening() {
 		return pemilik_rekening;
 	}

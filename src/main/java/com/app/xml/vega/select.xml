@@ -452,23 +452,24 @@
 		        l.lsbp_nama,
 		        j.mar_expired,
 		        d.mste_beg_date commencement_date,
-		        j.tgl_debet last_premi,
-		        CASE
-		            WHEN    c.lscb_id = 0
-		                THEN    null
-		            WHEN    c.lscb_id = 1
-		                THEN    ADD_MONTHS(j.tgl_debet, 3)
-		            WHEN    c.lscb_id = 2
-		                THEN    ADD_MONTHS(j.tgl_debet, 6)
-		            WHEN    c.lscb_id = 3
-		                THEN    ADD_MONTHS(j.tgl_debet, 12)
-		            WHEN    c.lscb_id = 6
-		                THEN    ADD_MONTHS(j.tgl_debet, 1)
-		        END next_premi,
+		        max(p.msbi_paid_date) last_premi,
+		        c.mspo_next_bill next_premi,
 		        n.lms_status_id status,
 		        k.lbn_nama as cabang_bank,
 		        l.lsbp_nama as nama_bank,
-		        j.mar_holder as pemilik_rekening
+		        j.mar_holder as pemilik_rekening,
+		        (select count(count_terhutang) from
+		        (
+		        select  case
+		                    when ((max(msbi_beg_date) <![CDATA[<]]> sysdate) and (msbi_paid <![CDATA[<>]]> 1))
+		                        then '1'
+		                    else '0'
+		                end count_terhutang
+		        from    eka.mst_billing
+		        where   reg_spaj = RPAD(REPLACE(#{reg_spaj, jdbcType=VARCHAR}, '.'), 11, ' ')
+		        group by msbi_paid, msbi_beg_date)
+		        where count_terhutang = 1) as periode_premi_terhutang,
+		        j.mar_acc_no as nomor_rekening
 		FROM    eka.mst_product_insured a,
 		        eka.lst_det_bisnis b,
 		        eka.mst_policy c,
@@ -485,18 +486,20 @@
 		        eka.mst_account_recur j,
 		        eka.lst_bank k,
 		        eka.lst_bank_pusat l,
-		        eka.lst_policy_status m,
+		        eka.lst_policy_status s,
 		        eka.lst_master_status n,
-		        eka.mst_client_new o
+		        eka.mst_client_new o,
+		        eka.mst_billing p
 		WHERE   a.reg_spaj = rpad(replace(#{reg_spaj, jdbcType=VARCHAR},'.'),11,' ')
 		    AND a.lsbs_id <![CDATA[<]]> 300
-		    AND c.lssp_id = m.lssp_id
-		    AND m.lms_id = n.lms_id
+		    AND c.lssp_id = s.lssp_id
+		    AND s.lms_id = n.lms_id
 		    AND o.mcl_id = D.MSTE_INSURED
 		    AND a.lsbs_id = b.lsbs_id(+)
 		    AND a.lsdbs_number = b.lsdbs_number(+)
 		    AND a.reg_spaj = c.reg_spaj
 		    AND c.reg_spaj = d.reg_spaj
+		    AND c.reg_spaj = p.reg_spaj
 		    AND d.reg_spaj = j.reg_spaj(+)
 		    AND j.lbn_id = k.lbn_id(+)
 		    AND k.lsbp_id = l.lsbp_id(+)
@@ -506,6 +509,32 @@
 		    AND c.lstb_id = h.lstb_id(+)
 		    AND c.lstp_id = h.lstp_id(+)
 		    AND c.lus_id = i.lus_id (+)
+		GROUP BY o.mcl_first,
+		        a.reg_spaj,
+		        c.lca_id,
+		        a.mspr_premium,
+		        c.mspo_policy_no,
+		        d.mste_end_date,
+		        d.mste_beg_date,
+		        c.lku_id,
+		        f.lku_symbol,
+		        c.mspo_policy_no,
+		        c.mspo_installment,
+		        a.mspr_tsi,
+		        g.MU_JLH_TU,
+		        m.lscb_pay_mode,
+		        a.reg_spaj,
+		        a.lsbs_id,
+		        a.lsdbs_number,
+		        d.mste_flag_cc,
+		        j.mar_expired,
+		        d.mste_beg_date,
+		        c.mspo_next_bill,
+		        n.lms_status_id,
+		        k.lbn_nama,
+		        l.lsbp_nama,
+		        j.mar_holder,
+		        j.mar_acc_no
 	</select>
 	
 	<select id="selectSales" parameterType="String" resultType="com.app.model.Sales">

@@ -1510,9 +1510,14 @@ public class VegaServices {
 		return dao.selectPrepareEndorseHr(no_polis);
 	}
 
-	public ArrayList<TransactionHistory> selectTransactionHistory(String reg_spaj) {
+	public ArrayList<TransactionHistory> selectTransactionHistory(String reg_spaj, String startDate, String endDate, String jenis_transaksi) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		return dao.selectTransactionHistory(reg_spaj);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("reg_spaj", reg_spaj);
+		hashMap.put("startDate", startDate);
+		hashMap.put("endDate", endDate);
+		hashMap.put("jenis_transaksi", jenis_transaksi);
+		return dao.selectTransactionHistory(hashMap);
 	}
 
 	public String selectGetOnlyRegSpaj(String no_polis) {

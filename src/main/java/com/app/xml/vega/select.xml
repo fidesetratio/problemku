@@ -4692,6 +4692,16 @@
 		    )
 		    group by spaj, pre_masuk, jm_sa, jm, pre_keluar, jm_keluar, cancel_when
 		    )
+	    WHERE	REG_SPAJ IS NOT NULL
+	    <if test="jenis_transaksi != null">
+            AND KODE_TRANSAKSI = #{jenis_transaksi, jdbcType=VARCHAR}
+        </if>
+        <if test="startDate != null">
+            AND TGL_TRANSAKSI <![CDATA[ >= ]]> to_date(#{startDate}, 'YYYY-MM')
+        </if>
+        <if test="endDate != null">
+            AND TGL_TRANSAKSI <![CDATA[ <= ]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+        </if>
 		ORDER BY TGL_TRANSAKSI DESC
 	</select>
 	

@@ -372,7 +372,7 @@ public interface VegaMapper {
 	
 	public Article selectCountListArticle();
 	
-	public ArrayList<TransactionHistory> selectTransactionHistory(String reg_spaj);
+	public ArrayList<TransactionHistory> selectTransactionHistory(HashMap<String, Object> hashMap);
 	
 	public String selectGetOnlyRegSpaj(String no_polis);
 	

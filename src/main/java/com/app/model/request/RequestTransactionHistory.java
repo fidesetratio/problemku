@@ -11,7 +11,28 @@ public class RequestTransactionHistory implements Serializable {
 	private String username;
 	private String key;
 	private String no_polis;
+	private String startDate;
+	private String endDate;
+	private String jenis_transaksi;
 	
+	public String getStartDate() {
+		return startDate;
+	}
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+	public String getEndDate() {
+		return endDate;
+	}
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+	public String getJenis_transaksi() {
+		return jenis_transaksi;
+	}
+	public void setJenis_transaksi(String jenis_transaksi) {
+		this.jenis_transaksi = jenis_transaksi;
+	}
 	public String getNo_polis() {
 		return no_polis;
 	}

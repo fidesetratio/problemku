@@ -7517,11 +7517,15 @@ public class FinancialTransactionController {
 		String username = requestTransactionHistory.getUsername();
 		String key = requestTransactionHistory.getKey();
 		String no_polis = requestTransactionHistory.getNo_polis();
+		String startDate = requestTransactionHistory.getStartDate();
+		String endDate = requestTransactionHistory.getEndDate();
+		String jenis_transaksi = requestTransactionHistory.getJenis_transaksi();
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				String reg_spaj = services.selectGetOnlyRegSpaj(no_polis);
 				
-				ArrayList <TransactionHistory> listTransactionHistory = services.selectTransactionHistory(reg_spaj);
+				ArrayList <TransactionHistory> listTransactionHistory = services.selectTransactionHistory(reg_spaj, startDate, endDate, jenis_transaksi);
 
 				if (listTransactionHistory == null) {
 					error = true;

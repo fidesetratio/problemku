@@ -340,9 +340,15 @@ public class PolicyIndividualController {
 					DataUsulan dataUsulan = new DataUsulan();
 					dataUsulan.setReg_spaj(pemegang.getReg_spaj());
 					dataUsulan = services.selectDataUsulan(dataUsulan);
-					String mspo_ao = pemegang.getMspo_ao();
+					String mspo_ao = null;
 					Sales sales = new Sales();
 					ArrayList<Object> fund = new ArrayList<>();
+					
+					if(key_orion.equalsIgnoreCase("orion")) {
+						mspo_ao = username;
+					} else {
+						mspo_ao = dataUsulan.getMspo_ao();
+					}
 					
 					String lca_id = dataUsulan.getLca_id();
 					String reg_spaj = dataUsulan.getReg_spaj();
@@ -353,10 +359,19 @@ public class PolicyIndividualController {
 					String file_path_check = pathDownloadPolisAll + File.separator + lca_id + File.separator + reg_spaj + File.separator
 							+ file_name;
 					String file_path = "\\\\storage\\pdfind\\Polis_Testing\\" + lca_id + "\\" + reg_spaj + "\\" + file_name;
-					
+					System.out.println(mspo_ao);
+					HashMap<String, Object> dataSales = new HashMap<>();
 					if (mspo_ao != null) {
-						sales.setMspo_policy_no(no_polis);
-						sales = services.selectSales(no_polis);
+						String msag_id = mspo_ao;
+						sales = services.selectSales(msag_id);
+						
+						dataSales.put("nama_sales", sales.getMcl_first());
+						dataSales.put("no_hp_sales", sales.getMsag_smart_no());
+						dataSales.put("email_sales", sales.getMspe_email());
+						dataSales.put("nama_leader", sales.getMcl_first_leader());
+						dataSales.put("no_hp_leader", sales.getMsag_smart_no_leader());
+						dataSales.put("email_leader", sales.getMspe_email_leader());
+						dataSales.put("agent_code", sales.getAgent_code());
 					} else {
 						sales = null;
 					}
@@ -395,9 +410,10 @@ public class PolicyIndividualController {
 					data.put("pemilik_rekening", dataUsulan.getPemilik_rekening());
 					data.put("periode_premi_terhutang", dataUsulan.getPeriode_premi_terhutang());
 					data.put("nomor_rekening", dataUsulan.getNomor_rekening());
+					data.put("lama_pembayaran", dataUsulan.getLama_pembayaran());
 					data.put("product_rider", product_rider);
 					data.put("alokasi_dana", fund);
-					data.put("data_sales", sales);
+					data.put("data_sales", dataSales);
 					
 					File checkPolisAll = new File(file_path_check);
 					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) { 

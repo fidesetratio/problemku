@@ -90,7 +90,25 @@ public class DataUsulan implements Serializable {
 	private String pemilik_rekening;
 	private Integer periode_premi_terhutang;
 	private String nomor_rekening;
+	private Integer lama_pembayaran;
+	private String mspo_ao;
 	
+	public String getMspo_ao() {
+		return mspo_ao;
+	}
+
+	public void setMspo_ao(String mspo_ao) {
+		this.mspo_ao = mspo_ao;
+	}
+
+	public Integer getLama_pembayaran() {
+		return lama_pembayaran;
+	}
+
+	public void setLama_pembayaran(Integer lama_pembayaran) {
+		this.lama_pembayaran = lama_pembayaran;
+	}
+
 	public Integer getPeriode_premi_terhutang() {
 		return periode_premi_terhutang;
 	}

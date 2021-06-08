@@ -16,7 +16,21 @@ public class Sales implements Serializable {
 	private String mcl_first_leader;
 	private String msag_smart_no_leader;
 	private String mspe_email_leader;
+	private String agent_code;
+	private String msag_id;
 	
+	public String getMsag_id() {
+		return msag_id;
+	}
+	public void setMsag_id(String msag_id) {
+		this.msag_id = msag_id;
+	}
+	public String getAgent_code() {
+		return agent_code;
+	}
+	public void setAgent_code(String agent_code) {
+		this.agent_code = agent_code;
+	}
 	public String getMcl_first() {
 		return mcl_first;
 	}

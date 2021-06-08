@@ -469,7 +469,9 @@
 		        where   reg_spaj = RPAD(REPLACE(#{reg_spaj, jdbcType=VARCHAR}, '.'), 11, ' ')
 		        group by msbi_paid, msbi_beg_date)
 		        where count_terhutang = 1) as periode_premi_terhutang,
-		        j.mar_acc_no as nomor_rekening
+		        j.mar_acc_no as nomor_rekening,
+        		c.mspo_pay_period as lama_pembayaran,
+        		c.mspo_ao
 		FROM    eka.mst_product_insured a,
 		        eka.lst_det_bisnis b,
 		        eka.mst_policy c,
@@ -534,26 +536,35 @@
 		        k.lbn_nama,
 		        l.lsbp_nama,
 		        j.mar_holder,
-		        j.mar_acc_no
+		        j.mar_acc_no,
+		        c.mspo_pay_period,
+		        c.mspo_ao
 	</select>
 	
 	<select id="selectSales" parameterType="String" resultType="com.app.model.Sales">
-		SELECT  c.mcl_first,
+		SELECT  b.msag_id as agent_code,
+				c.mcl_first,
 		        b.msag_smart_no,
 		        c.mspe_email,
-		        cc.mcl_first mcl_first_leader,
-		        bb.msag_smart_no msag_smart_no_leader,
-		        cc.mspe_email mspe_email_leader
-		FROM    eka.mst_policy a,
-		        eka.mst_agent b,
-		        eka.mst_agent bb,
-		        eka.mst_client_new c,
-		        eka.mst_client_new cc
-		WHERE   a.mspo_ao = b.msag_id
-		    AND b.mcl_id = c.mcl_id
-		    AND b.mst_leader = bb.msag_id
-		    AND bb.mcl_id = cc.mcl_id
-		    AND a.mspo_policy_no = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+		        CASE
+                    WHEN b.mst_leader is not null
+                        THEN (select mcl_first from eka.mst_client_new where mcl_id = b.mcl_id)
+                    ELSE ''
+                END as mcl_first_leader,
+                CASE
+                    WHEN b.mst_leader is not null
+                        THEN (select msag_smart_no from eka.mst_agent where msag_id = b.mst_leader)
+                    ELSE ''
+                END as msag_smart_no_leader,
+                CASE
+                    WHEN b.mst_leader is not null
+                        THEN (select mspe_email from eka.mst_client_new where mcl_id = b.mcl_id)
+                    ELSE ''
+                END as mspe_email_leader
+		FROM    eka.mst_agent b,
+		        eka.mst_client_new c
+		WHERE   b.mcl_id = c.mcl_id
+		    AND b.msag_id = #{msag_id, jdbcType=VARCHAR}
 	</select>
 
 	<select id="selectListNav" resultType="com.app.model.Nav">

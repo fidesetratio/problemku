@@ -4607,15 +4607,17 @@
 		        C.MCL_FIRST AS NAMA_PERUSAHAAN,
 		        A.ID_GROUP AS TYPE_HELPDESK,
 		        TO_CHAR(A.CREATE_DATE, 'dd/MM/yyyy') AS CREATE_DATE,
-		        A.ID_STATUS,
+		        D.NAMA_STATUS AS STATUS,
 		        A.KESIMPULAN AS NOTES,
 		        A.SUBJECT,
 		        A.DESCRIPTION
 		FROM    HRD.HD_TICKETS@EBMUAT A,
 		        EKA.MST_POLICY@EB B,
-		        EKA.MST_CLIENT@EB C
+		        EKA.MST_CLIENT@EB C,
+		        HRD.HD_STATUS@EBMUAT D
 		WHERE   A.NIK_REQ = B.MSPO_POLICY_NO
 		    AND B.MSPO_POLICY_HOLDER = C.MCL_ID
+		    AND A.ID_STATUS = D.ID_STATUS
 		    AND A.ID_TICKET = #{id_ticket, jdbcType=VARCHAR}
 	</select>
 	

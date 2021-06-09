@@ -610,7 +610,7 @@ public class PolicyCorporateController {
 		        String subject = endorseHr.getSubject();
 		        String description = endorseHr.getDescription();
 		        String create_date = endorseHr.getCreate_date();
-		        Integer id_status = endorseHr.getId_status();
+		        String status = endorseHr.getStatus();
 		        String notes = endorseHr.getNotes();
 		        String nama_file = null;
 		        String file_type = null;
@@ -649,7 +649,7 @@ public class PolicyCorporateController {
 				data.put("description", description);
 				data.put("files", files);
 				data.put("create_date", create_date);
-				data.put("id_status", id_status);
+				data.put("status", status);
 				data.put("notes", notes);
 				
 

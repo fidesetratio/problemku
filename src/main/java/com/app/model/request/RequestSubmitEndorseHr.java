@@ -21,8 +21,15 @@ public class RequestSubmitEndorseHr implements Serializable {
 	private String attachment;
 	private String filename;
 	private String extension;
+	private String notes;
 	private ArrayList<Upload> upload;
 	
+	public String getNotes() {
+		return notes;
+	}
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
 	public ArrayList<Upload> getUpload() {
 		return upload;
 	}

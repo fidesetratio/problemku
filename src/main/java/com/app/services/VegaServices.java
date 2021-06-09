@@ -1484,7 +1484,7 @@ public class VegaServices {
 		return dao.selectGetIdTicket();
 	}
 
-	public void insertSubmitEndorseHr(String id_ticket, Integer id_group, String nik_req, String subject, String description) {
+	public void insertSubmitEndorseHr(String id_ticket, Integer id_group, String nik_req, String subject, String description, String kesimpulan) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
 		hashMap.put("id_ticket", id_ticket);
@@ -1492,6 +1492,7 @@ public class VegaServices {
 		hashMap.put("nik_req", nik_req);
 		hashMap.put("subject", subject);
 		hashMap.put("description", description);
+		hashMap.put("kesimpulan", kesimpulan);
 		dao.insertSubmitEndorseHr(hashMap);
 	}
 

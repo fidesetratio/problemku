@@ -421,6 +421,7 @@ public class PolicyCorporateController {
 		Integer jenis_helpdesk = requestSubmitEndorseHr.getJenis_helpdesk();
 		String subject = requestSubmitEndorseHr.getSubject();
 		String description = requestSubmitEndorseHr.getDescription();
+		String notes = requestSubmitEndorseHr.getNotes();
 		ArrayList <Upload> upload = requestSubmitEndorseHr.getUpload();
 		String pathFolder = null, directory = null;
 		
@@ -433,6 +434,7 @@ public class PolicyCorporateController {
 					Integer id_group = jenis_helpdesk;
 					String nik_req = no_polis;
 					subject = "Endorsement - " + subject;
+					String kesimpulan = notes;
 					
 					/*
 					 	HARDCODE JENIS HELPDESK
@@ -445,7 +447,7 @@ public class PolicyCorporateController {
 					*/
 					
 					// Insert to hrd.hd_tickets
-					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description);
+					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description, kesimpulan);
 					
 					for(int i=0; i<upload.size(); i++) {
 						String attachment = upload.get(i).getAttachment();
@@ -592,6 +594,7 @@ public class PolicyCorporateController {
 		boolean error = true;
 		HashMap<String, Object> map = new HashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
+		ArrayList<HashMap<String, Object>> files = new ArrayList<>();
 
 		String username = requestViewEndorseHr.getUsername();
 		String key = requestViewEndorseHr.getKey();
@@ -606,6 +609,9 @@ public class PolicyCorporateController {
 		        Integer type_helpdesk = endorseHr.getType_helpdesk();
 		        String subject = endorseHr.getSubject();
 		        String description = endorseHr.getDescription();
+		        String create_date = endorseHr.getCreate_date();
+		        Integer id_status = endorseHr.getId_status();
+		        String notes = endorseHr.getNotes();
 		        String nama_file = null;
 		        String file_type = null;
 		        String path = null;
@@ -613,62 +619,39 @@ public class PolicyCorporateController {
 		        String path_check = downloadEndorseHr + File.separator + "EB Endorse" + File.separator + id_ticket;
 		        String path_display = storageMpolicyDB + "EB Endorse" + "\\" + id_ticket;
 				
-		        //cari file xls
-				File dir = new File(path_check);
-			      FilenameFilter filter = new FilenameFilter() {
-			         public boolean accept (File dir, String name) { 
-			            return name.endsWith("xls");
-			         }
-			      };
-			      
-			      String[] children = dir.list(filter);
-			      if (children == null) {
-			         //System.out.println("Either dir does not exist or is not a directory");
-			    	  nama_file = null;					         
-			      } else { 
-			         for (int j = 0; j< children.length; j++) {
-			        	 nama_file = children[j];
-			        	 file_type = "xls";
-			            //System.out.println(filename);
-			         } 
-			      }
-			    
-			    //cari file xlsx
-			    if (nama_file == null) {
-			    	File dir2 = new File(path_check);
-				      FilenameFilter filter2 = new FilenameFilter() {
-				         public boolean accept (File dir, String name) { 
-				            return name.endsWith("xlsx");
-				         }
-				      };
-				      
-				      String[] children2 = dir2.list(filter2);
-				      if (children2 == null) {
-				         //System.out.println("Either dir2 does not exist or is not a directory");
-				    	  nama_file = null;					         
-				      } else { 
-				         for (int j = 0; j< children2.length; j++) {
-				        	 nama_file = children2[j];
-				        	 file_type = "xlsx";
-				            //System.out.println(filename);
-				         } 
-				      }
-			    }
-			    
-			    if (nama_file!=null) {
-			    	path = path_display + "\\" + nama_file;
-			    } else {
-			    	path = null;
-			    }
+		        String[] pathnames;
+		        File f = new File(path_check);
+		        pathnames = f.list();
+		        
+		        for (String pathname : pathnames) {
+		        	HashMap<String, Object> dataTemp = new HashMap<>();
+		        	
+		        	nama_file = pathname.substring(0, pathname.lastIndexOf('.'));
+		        	path = path_display + "\\" + pathname;
+		        	
+		        	if(pathname.contains("xlsx")) {
+		        		file_type = "xlsx";
+		        	} else {
+		        		file_type = "xls";
+		        	}
+		        	
+		        	dataTemp.put("nama_file", nama_file);
+		        	dataTemp.put("path", path);
+		        	dataTemp.put("file_type", file_type);
+		        	
+		        	files.add(dataTemp);
+		        }
 			    
 				data.put("no_polis", no_polis);
 				data.put("nama_perusahaan", nama_perusahaan);
 				data.put("type_helpdesk", type_helpdesk);
 				data.put("subject", subject);
 				data.put("description", description);
-				data.put("nama_file", nama_file);
-				data.put("path", path);
-				data.put("file_type", file_type);
+				data.put("files", files);
+				data.put("create_date", create_date);
+				data.put("id_status", id_status);
+				data.put("notes", notes);
+				
 
 				error = false;
 				message = "Successfully get endorse hr";

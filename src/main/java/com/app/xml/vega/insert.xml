@@ -397,9 +397,9 @@
 	<insert id="insertSubmitEndorseHr" parameterType="HashMap">
 		insert into hrd.hd_tickets@EBMUAT (
 		id_ticket, create_date, id_group, nik_req, phone, subject, description, id_status, nik_pic, id_kriteria, 
-		id_rag, last_update, update_by, nik_uat, cc_email, id_priority, msth_sts_info, system)
+		id_rag, last_update, update_by, nik_uat, cc_email, id_priority, msth_sts_info, kesimpulan, system)
 		values (
 		#{id_ticket, jdbcType=VARCHAR}, trunc(sysdate), #{id_group, jdbcType=INTEGER}, #{nik_req, jdbcType=VARCHAR}, NULL, #{subject, jdbcType=VARCHAR},
-		#{description, jdbcType=VARCHAR}, '8', NULL, '0', '3', trunc(sysdate), NULL, NULL, NULL, '4', NULL, NULL)
+		#{description, jdbcType=VARCHAR}, '8', NULL, '0', '3', trunc(sysdate), NULL, NULL, NULL, '4', NULL, #{kesimpulan, jdbcType=VARCHAR}, NULL)
 	</insert>
 </mapper>

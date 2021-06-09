@@ -17,7 +17,21 @@ public class EndorseHr implements Serializable {
 	private String nama_perusahaan;
 	private Integer type_helpdesk;
 	private String description;
+	private Integer id_status;
+	private String notes;
 	
+	public Integer getId_status() {
+		return id_status;
+	}
+	public void setId_status(Integer id_status) {
+		this.id_status = id_status;
+	}
+	public String getNotes() {
+		return notes;
+	}
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
 	public String getDescription() {
 		return description;
 	}

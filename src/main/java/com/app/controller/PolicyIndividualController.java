@@ -410,7 +410,6 @@ public class PolicyIndividualController {
 					data.put("cabang_bank", dataUsulan.getCabang_bank());
 					data.put("pemilik_rekening", dataUsulan.getPemilik_rekening());
 					data.put("periode_premi_terhutang", dataUsulan.getPeriode_premi_terhutang());
-					data.put("nomor_rekening", dataUsulan.getNomor_rekening());
 					data.put("lama_pembayaran", dataUsulan.getLama_pembayaran());
 					data.put("product_rider", product_rider);
 					data.put("alokasi_dana", fund);
@@ -735,6 +734,7 @@ public class PolicyIndividualController {
 						String jenis_kelamin = pembayarPremi.getJenis_kelamin() != null ? pembayarPremi.getJenis_kelamin() : null;
 						String alamat = pembayarPremi.getAlamat() != null ? pembayarPremi.getAlamat() : null;
 						String no_hp = pembayarPremi.getNo_hp() != null ? pembayarPremi.getNo_hp() : null;
+						String no_rekening = pembayarPremi.getNo_rekening() != null ? pembayarPremi.getNo_rekening() : null;
 
 						pembayar_premi.put("nama", nama);
 						pembayar_premi.put("hubungan", hubungan);
@@ -742,6 +742,7 @@ public class PolicyIndividualController {
 						pembayar_premi.put("jenis_kelamin", jenis_kelamin);
 						pembayar_premi.put("alamat", alamat);
 						pembayar_premi.put("no_hp", no_hp);
+						pembayar_premi.put("no_rekening", no_rekening);
 					} catch (Exception e) {
 						logger.error(
 								"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);

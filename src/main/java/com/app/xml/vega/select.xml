@@ -4272,15 +4272,18 @@
 		                THEN D.ALAMAT_RUMAH
 		            ELSE D.ALAMAT_TPT_TINGGAL
 		        END AS ALAMAT,
-		        D.NO_HP
+		        D.NO_HP,
+		        E.MAR_ACC_NO AS NO_REKENING
 		FROM    EKA.MST_POLICY A,
 		        EKA.MST_CLIENT_NEW B,
 		        EKA.LST_RELATION C,
-		        EKA.MST_ADDRESS_NEW D
+		        EKA.MST_ADDRESS_NEW D,
+		        EKA.MST_ACCOUNT_RECUR E
 		WHERE   A.MSPO_POLICY_NO = REPLACE (#{mspo_policy_no, jdbcType=VARCHAR}, '.')
-		    AND A.MSPO_PAYER = B.MCL_ID
+			AND A.MSPO_PAYER = B.MCL_ID
 		    AND B.LSRE_ID_PREMI = C.LSRE_ID
 		    AND B.MCL_ID = D.MCL_ID
+		    AND A.REG_SPAJ = E.REG_SPAJ
 	</select>
 	
 	 <select id="selectInbox" parameterType="String" resultType="com.app.model.Inbox">

@@ -652,7 +652,6 @@ public class PolicyCorporateController {
 				data.put("status", status);
 				data.put("notes", notes);
 				
-
 				error = false;
 				message = "Successfully get endorse hr";
 			} else {

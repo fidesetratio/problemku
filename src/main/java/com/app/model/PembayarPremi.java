@@ -14,7 +14,14 @@ public class PembayarPremi implements Serializable {
 	private String dob;
 	private String alamat;
 	private String no_hp;
-	
+	private String no_rekening;
+		
+	public String getNo_rekening() {
+		return no_rekening;
+	}
+	public void setNo_rekening(String no_rekening) {
+		this.no_rekening = no_rekening;
+	}
 	public String getHubungan() {
 		return hubungan;
 	}

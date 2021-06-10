@@ -7453,7 +7453,7 @@ public class FinancialTransactionController {
 				ArrayList <ViewMclFirst> viewMclFirst = services.selectListPolisOrion(msag_id, mspo_policy_no, mcl_first);
 
 				if (viewMclFirst == null) {
-					error = true;
+					error = false;
 					message = "Data list polis empty";
 					resultErr = "Data list polis kosong";
 					logger.error(

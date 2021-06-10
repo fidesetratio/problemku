@@ -108,6 +108,8 @@ public interface VegaMapper {
 	public void insertNotification(PushNotif pushNotif);
 	
 	public void insertSubmitEndorseHr(HashMap<String, Object> hashMap);
+	
+	public void insertSubmitHistoryEndorse(HashMap<String, Object> hashMap);
 
 	// Select
 	public ArrayList<MpolisConfiguration> selectMpolisConfiguration();

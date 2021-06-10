@@ -421,7 +421,6 @@ public class PolicyCorporateController {
 		Integer jenis_helpdesk = requestSubmitEndorseHr.getJenis_helpdesk();
 		String subject = requestSubmitEndorseHr.getSubject();
 		String description = requestSubmitEndorseHr.getDescription();
-		String notes = requestSubmitEndorseHr.getNotes();
 		ArrayList <Upload> upload = requestSubmitEndorseHr.getUpload();
 		String pathFolder = null, directory = null;
 		
@@ -434,7 +433,12 @@ public class PolicyCorporateController {
 					Integer id_group = jenis_helpdesk;
 					String nik_req = no_polis;
 					subject = "Endorsement - " + subject;
-					String kesimpulan = notes;
+					String history =  "Task Created by ";
+					String update_by = no_polis;
+					
+					EndorseHr endorseHr = services.selectPrepareEndorseHr(no_polis);
+			        String nama_perusahaan = endorseHr.getNama_perusahaan();
+			        history = history + nama_perusahaan;
 					
 					/*
 					 	HARDCODE JENIS HELPDESK
@@ -447,7 +451,10 @@ public class PolicyCorporateController {
 					*/
 					
 					// Insert to hrd.hd_tickets
-					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description, kesimpulan);
+					services.insertSubmitEndorseHr(id_ticket, id_group, nik_req, subject, description);
+					
+					// Insert to hrd.hd_history
+					services.insertSubmitHistoryEndorse(id_ticket, history, update_by);
 					
 					for(int i=0; i<upload.size(); i++) {
 						String attachment = upload.get(i).getAttachment();

@@ -4610,17 +4610,30 @@
 		        C.MCL_FIRST AS NAMA_PERUSAHAAN,
 		        A.ID_GROUP AS TYPE_HELPDESK,
 		        TO_CHAR(A.CREATE_DATE, 'dd/MM/yyyy') AS CREATE_DATE,
-		        D.NAMA_STATUS AS STATUS,
-		        A.KESIMPULAN AS NOTES,
+		        CASE
+                    WHEN A.ID_STATUS IN ('8', '1')
+                        THEN 'Submitted'
+                    WHEN A.ID_STATUS IN ('7')
+                        THEN 'Done'
+                    WHEN A.ID_STATUS IN ('0')
+                        THEN 'Cancelled'
+                    ELSE
+                        'On Progress'
+                END AS STATUS,
+                CASE
+                    WHEN A.ID_STATUS IN ('7')
+                        THEN (  SELECT  HISTORY 
+                                FROM    (SELECT HISTORY FROM HRD.HD_HISTORY@EBMUAT WHERE ID_TICKET = #{id_ticket, jdbcType=VARCHAR} ORDER BY TGL_UPDATE DESC)
+                                WHERE   ROWNUM = '1')
+                    ELSE '-'
+                END AS NOTES,
 		        A.SUBJECT,
 		        A.DESCRIPTION
 		FROM    HRD.HD_TICKETS@EBMUAT A,
 		        EKA.MST_POLICY@EB B,
-		        EKA.MST_CLIENT@EB C,
-		        HRD.HD_STATUS@EBMUAT D
+		        EKA.MST_CLIENT@EB C
 		WHERE   A.NIK_REQ = B.MSPO_POLICY_NO
 		    AND B.MSPO_POLICY_HOLDER = C.MCL_ID
-		    AND A.ID_STATUS = D.ID_STATUS
 		    AND A.ID_TICKET = #{id_ticket, jdbcType=VARCHAR}
 	</select>
 	

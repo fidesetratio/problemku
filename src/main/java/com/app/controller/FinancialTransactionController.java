@@ -44,6 +44,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
+import com.app.model.MstOTPSimultaneousDet;
+import com.app.model.MstOTPSimultaneous;
 import com.app.model.ClaimCorporate;
 import com.app.model.ClaimLimit;
 import com.app.model.ClaimSubmission;

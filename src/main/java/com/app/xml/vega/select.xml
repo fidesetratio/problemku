@@ -4763,14 +4763,14 @@
 		order by 4 desc)
 	</select>
 	
-	<select id="selectDetailOTP" parameterType="MstOTPSimultaneousDet" resultType="MstOTPSimultaneousDet">
+	<select id="selectDetailOTP" parameterType="MstOTPSimultaneousDet" resultType="com.app.model.MstOTPSimultaneousDet">
 		select * from EKA.MST_OTP_SIMULTANEOUS_DET
 		where jenis_id = #{jenis_id, jdbcType=INTEGER}
 		and menu_id = #{menu_id, jdbcType=INTEGER}
 		and flag_active = 1
 	</select>
 	
-	<select id="selectDataOTP" parameterType="MstOTPSimultaneous" resultType="MstOTPSimultaneous">
+	<select id="selectDataOTP" parameterType="MstOTPSimultaneous" resultType="com.app.model.MstOTPSimultaneous">
 		select * from 
         	(select * from eka.mst_otp_simultaneous
         	where username = #{username, jdbcType=VARCHAR} 

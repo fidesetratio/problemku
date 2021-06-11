@@ -46,6 +46,8 @@
 		<typeAlias type="com.app.model.MpolisConfiguration" alias="MpolisConfiguration"/>
 		<typeAlias type="com.app.model.request.RequestTrackingPolis" alias="RequestTrackingPolis"/>
 		<typeAlias type="com.app.model.UserCorporate" alias="UserCorporate"/>
+		<typeAlias type="com.app.model.MstOTPSimultaneousDet" alias="MstOTPSimultaneousDet"/>
+		<typeAlias type="com.app.model.MstOTPSimultaneous" alias="MstOTPSimultaneous"/>
     </typeAliases>
     
      <mappers>

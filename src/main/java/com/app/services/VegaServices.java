@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.app.mapper.VegaMapper;
+import com.app.model.MstOTPSimultaneousDet;
+import com.app.model.MstOTPSimultaneous;
 import com.app.model.Article;
 import com.app.model.Beneficiary;
 import com.app.model.BenefitCorporate;

@@ -134,4 +134,12 @@
     	and jenis_id = #{jenis_id, jdbcType=INTEGER}
     	and flag_active = 1 
     </update>
+    
+    <update id="updateAttemptOtp" parameterType="MstOTPSimultaneous">
+  		update eka.mst_otp_simultaneous 
+  		set attempt = attempt + 1, date_used = to_date(#{date_created_java, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS')
+  		where id_otp = #{id_otp, jdbcType=INTEGER} 
+  		and jenis_id = #{jenis_id, jdbcType=INTEGER}
+  		and flag_active = 1 
+    </update>
 </mapper>

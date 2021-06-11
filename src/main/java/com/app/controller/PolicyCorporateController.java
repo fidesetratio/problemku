@@ -630,6 +630,11 @@ public class PolicyCorporateController {
 		        File f = new File(path_check);
 		        pathnames = f.list();
 		        
+		        if (f.equals(null)) {
+		        	File f2 = new File(path_check);
+			        pathnames = f2.list();
+		        }
+		        
 		        for (String pathname : pathnames) {
 		        	HashMap<String, Object> dataTemp = new HashMap<>();
 		        	

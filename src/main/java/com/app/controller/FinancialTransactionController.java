@@ -329,8 +329,9 @@ public class FinancialTransactionController {
 										+ "The price used for placement NAV date is do the assignment at Head Office.");
 							}
 						}
-
-						File folder = new File(pathLogoBankMpolicy);
+						
+						String folder_name = pathLogoBankMpolicy;
+						File folder = new File(folder_name);
 						File files[] = folder.listFiles();
 						for (File f : files) {
 							if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas")) {

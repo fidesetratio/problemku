@@ -630,7 +630,7 @@ public class PolicyCorporateController {
 		        File f = new File(path_check);
 		        pathnames = f.list();
 		        
-		        if (f.equals(null)) {
+		        if (pathnames.equals(null)) {
 		        	File f2 = new File(path_check);
 			        pathnames = f2.list();
 		        }

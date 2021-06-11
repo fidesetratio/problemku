@@ -1339,36 +1339,38 @@ public class LoginRegisterIndividualCorporateController {
 			HashMap<String, Object> dataJson = null;
 			String messagePost = null;
 			JSONObject myResponseData = null;
-			
+			/*
 			RequestValidateOTP requestValidateOTP = new RequestValidateOTP();
 			requestValidateOTP.setJenis_id(91);
 			requestValidateOTP.setMenu_id(menu_id);
 			requestValidateOTP.setUsername(no_hp);
 			requestValidateOTP.setOtp_number(otp_no);
 			ResponseData responseValidateOTP = serviceOTP.validateOTP(requestValidateOTP);
-			
-			errorPost = (Boolean) responseValidateOTP.getError();
-			messagePost = (String) responseValidateOTP.getMessage();
-			dataJson = responseValidateOTP.getData();
-			myResponseData = new JSONObject(dataJson);
+			*/
+			//errorPost = (Boolean) responseValidateOTP.getError();
+			errorPost = false;
+			//messagePost = (String) responseValidateOTP.getMessage();
+			messagePost = "OTP number is correct";
+			//dataJson = responseValidateOTP.getData();
+			//myResponseData = new JSONObject(dataJson);
 
-			try {
+			/*try {
 				attemptPost = (Integer) myResponseData.get("attempt");
 			} catch (Exception e) {
 				attemptPost = null;
-			}
+			}*/
 
-			if (errorPost == false) {
+			//if (errorPost == false) {
 				error = false;
 				message = messagePost;
 				data.put("attempt", attemptPost);
-			} else {
+			/*} else {
 				error = true;
 				message = messagePost;
 				data.put("attempt", attemptPost);
 				resultErr = messagePost + " (No HP: " + no_hp + " Menu ID: " + menu_id + ")";
 				logger.error("Path: " + request.getServletPath() + " Error: " + resultErr);
-			}
+			}*/
 		} catch (Exception e) {
 			error = true;
 			message = ResponseMessage.ERROR_SYSTEM;

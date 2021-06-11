@@ -34,6 +34,8 @@ import com.app.model.KlaimKesehatan;
 import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
+import com.app.model.MstOTPSimultaneous;
+import com.app.model.MstOTPSimultaneousDet;
 import com.app.model.Nav;
 import com.app.model.NotifToken;
 import com.app.model.PembayarPremi;
@@ -1541,5 +1543,30 @@ public class VegaServices {
 		hashMap.put("startDate", startDate);
 		hashMap.put("endDate", endDate);
 		return dao.selectCountListBilling(hashMap);
+	}
+	
+	public MstOTPSimultaneousDet selectDetailOTP(MstOTPSimultaneousDet mstOTPSimultaneousDet) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectDetailOTP(mstOTPSimultaneousDet);
+	}
+
+	public MstOTPSimultaneous selectDataOTP(MstOTPSimultaneous paramSelectData) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectDataOTP(paramSelectData);
+	}
+
+	public void updateOtpUsed(MstOTPSimultaneous paramUpdateOtpUsed) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.updateOtpUsed(paramUpdateOtpUsed);
+	}
+
+	public void updateAttemptOtp(MstOTPSimultaneous paramUpdate) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.updateAttemptOtp(paramUpdate);
+	}
+
+	public void updateStatusAttemptOtp(MstOTPSimultaneous paramUpdate) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.updateStatusAttemptOtp(paramUpdate);
 	}
 }

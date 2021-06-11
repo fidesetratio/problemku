@@ -27,6 +27,8 @@ import com.app.model.KlaimKesehatan;
 import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
+import com.app.model.MstOTPSimultaneous;
+import com.app.model.MstOTPSimultaneousDet;
 import com.app.model.Nav;
 import com.app.model.NotifToken;
 import com.app.model.PembayarPremi;
@@ -379,6 +381,10 @@ public interface VegaMapper {
 	public String selectGetOnlyRegSpaj(String no_polis);
 	
 	public Integer selectCountListBilling(HashMap<String, Object> hashMap);
+	
+	public MstOTPSimultaneousDet selectDetailOTP(MstOTPSimultaneousDet mstOTPSimultaneousDet);
+	
+	public MstOTPSimultaneous selectDataOTP(MstOTPSimultaneous paramSelectData);
 
 	// Select Corporate
 	public UserCorporate selectCheckUserCorporateRegister(HashMap<String, Object> hashMap);
@@ -481,4 +487,10 @@ public interface VegaMapper {
 	public void updateJenisPekerjaan(PolicyAlteration policyAlteration);
 
 	public void updateNotifToken(NotifToken notifToken);
+
+	public void updateOtpUsed(MstOTPSimultaneous paramUpdateOtpUsed);
+
+	public void updateAttemptOtp(MstOTPSimultaneous paramUpdate);
+
+	public void updateStatusAttemptOtp(MstOTPSimultaneous paramUpdate);
 }

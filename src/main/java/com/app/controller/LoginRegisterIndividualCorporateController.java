@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
 import com.app.model.LstUserSimultaneous;
+import com.app.model.MstOTPSimultaneous;
+import com.app.model.MstOTPSimultaneousDet;
 import com.app.model.Pemegang;
 import com.app.model.ResponseData;
 import com.app.model.User;
@@ -1329,42 +1331,172 @@ public class LoginRegisterIndividualCorporateController {
 		boolean error = true;
 		HashMap<String, Object> map = new HashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
-
+		
+		String username = reqValidateOTP.getPhone_no();
+		Integer jenis_id = 91;
+		Integer menu_id = reqValidateOTP.getMenu_id();
+		Integer otpNumber = reqValidateOTP.getOtp_no();
+		String no_hp = username;
+		/*
 		String no_hp = reqValidateOTP.getPhone_no();
 		Integer otp_no = reqValidateOTP.getOtp_no();
-		Integer menu_id = reqValidateOTP.getMenu_id();
+		Integer menu_id = reqValidateOTP.getMenu_id();*/
 		try {
+			MstOTPSimultaneousDet paramSelectDetailData = new MstOTPSimultaneousDet();
+			paramSelectDetailData.setJenis_id(jenis_id);
+			paramSelectDetailData.setMenu_id(menu_id);
+
+			MstOTPSimultaneous paramSelectData = new MstOTPSimultaneous();
+			paramSelectData.setUsername(username);
+			paramSelectData.setJenis_id(jenis_id);
+			paramSelectData.setMenu_id(menu_id);
+
+			MstOTPSimultaneousDet detailDataOTP = services.selectDetailOTP(paramSelectDetailData);
+			if (detailDataOTP == null) {
+				error = true;
+				message = "Validate OTP Failed";
+				data = null;
+				resultErr = "Jenis id & menu id tidak terdaftar di database";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			} else {
+				MstOTPSimultaneous dataOTP = services.selectDataOTP(paramSelectData);
+				if (dataOTP != null) {
+					if (dataOTP.getUsername().equalsIgnoreCase(username) && dataOTP.getOtp_no().equals(otpNumber)) {
+
+						Date dateNow1 = customResourceLoader.getDateNow();
+						if (!dateNow1.after(dataOTP.getDate_expired())) {
+							if (dataOTP.getAttempt() < dataOTP.getMax_attempt()) {
+								if (dataOTP.getStatus().equalsIgnoreCase("active")) {
+									String formatDateJava = customResourceLoader.getDatetimeJava();
+									MstOTPSimultaneous paramUpdateOtpUsed = new MstOTPSimultaneous();
+									paramUpdateOtpUsed.setId_otp(dataOTP.getId_otp());
+									paramUpdateOtpUsed.setJenis_id(jenis_id);
+									paramUpdateOtpUsed.setDate_created_java(formatDateJava);
+
+									services.updateOtpUsed(paramUpdateOtpUsed);
+									error = false;
+									message = "OTP number is correct";
+									data.put("attempt", dataOTP.getAttempt());
+								} else {
+									// Handle klo status OTP sudah tidak aktif
+									error = true;
+									message = "OTP number not active";
+									data.put("attempt", dataOTP.getAttempt());
+									resultErr = "OTP number not active(OTP cocok tetapi status ditable OTP sudah tidak aktif lagi)";
+									logger.error("Path: " + request.getServletPath() + " Username: " + username
+											+ " Error: " + resultErr);
+								}
+							} else {
+								// Handle klo OTP cocok tapi attempt sudah habis
+								error = true;
+								message = "OTP close attempt";
+								data.put("attempt", dataOTP.getAttempt());
+								resultErr = "OTP close attempt(OTP cocok tetapi sudah dicoba sesuai dengan batas attempt)";
+								logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+										+ resultErr);
+							}
+						} else {
+							// Handle klo OTP cocok tapi waktu sudah expired
+							error = true;
+							message = "OTP timeout";
+							data.put("attempt", dataOTP.getAttempt());
+							resultErr = "OTP timeout(OTP cocok tetapi sudah melebihi batas expired)";
+							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+									+ resultErr);
+						}
+					} else {
+						// Handle klo OTP tidak cocok
+						Date dateNow2 = customResourceLoader.getDateNow();
+						if (!dateNow2.after(dataOTP.getDate_expired())) {
+							if (dataOTP.getAttempt() < dataOTP.getMax_attempt()) {
+								String formatDateJava = customResourceLoader.getDatetimeJava();
+								MstOTPSimultaneous paramUpdate = new MstOTPSimultaneous();
+								paramUpdate.setId_otp(dataOTP.getId_otp());
+								paramUpdate.setJenis_id(jenis_id);
+								paramUpdate.setDate_created_java(formatDateJava);
+
+								if (dataOTP.getAttempt() == dataOTP.getMax_attempt() - 1) {
+									services.updateAttemptOtp(paramUpdate);
+									MstOTPSimultaneous dataOTP2 = services.selectDataOTP(paramSelectData);
+									services.updateStatusAttemptOtp(paramUpdate);
+
+									error = true;
+									message = "OTP number is incorrect";
+									data.put("attempt", dataOTP2.getAttempt());
+									resultErr = "Username & OTP yang dimasukan tidak sesuai";
+									logger.error("Path: " + request.getServletPath() + " Username: " + username
+											+ " Error: " + resultErr);
+								} else {
+									services.updateAttemptOtp(paramUpdate);
+									MstOTPSimultaneous dataOTP3 = services.selectDataOTP(paramSelectData);
+
+									error = true;
+									message = "OTP number is incorrect";
+									data.put("attempt", dataOTP3.getAttempt());
+									resultErr = "Username & OTP yang dimasukan tidak sesuai";
+									logger.error("Path: " + request.getServletPath() + " Username: " + username
+											+ " Error: " + resultErr);
+								}
+							} else {
+								// Handle klo OTP tidak cocok dan attempt sudah habis
+								error = true;
+								message = "OTP close attempt";
+								data.put("attempt", dataOTP.getAttempt());
+								resultErr = "OTP close attempt(OTP tidak cocok & sudah dicoba sesuai dengan batas attempt)";
+								logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+										+ resultErr);
+							}
+						} else {
+							// Handle klo OTP tidak cocok dan waktu sudah expired
+							error = true;
+							message = "OTP timeout";
+							data.put("attempt", dataOTP.getAttempt());
+							resultErr = "OTP timeout(Nomor OTP tidak cocok & sudah melebihi batas expired)";
+							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+									+ resultErr);
+						}
+					}
+				} else {
+					error = true;
+					message = "Phone number is incorrect";
+					data = null;
+					resultErr = "Phone not registered in OTP(Mungkin OTP belum terkirim/ gagal saat pengiriman)";
+					logger.error(
+							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			}
+			
+			
+			/*
 			Boolean errorPost = false;
 			Integer attemptPost = 0;
 			HashMap<String, Object> dataJson = null;
 			String messagePost = null;
 			JSONObject myResponseData = null;
-			/*
+			
 			RequestValidateOTP requestValidateOTP = new RequestValidateOTP();
 			requestValidateOTP.setJenis_id(91);
 			requestValidateOTP.setMenu_id(menu_id);
 			requestValidateOTP.setUsername(no_hp);
 			requestValidateOTP.setOtp_number(otp_no);
 			ResponseData responseValidateOTP = serviceOTP.validateOTP(requestValidateOTP);
-			*/
-			//errorPost = (Boolean) responseValidateOTP.getError();
-			errorPost = false;
-			//messagePost = (String) responseValidateOTP.getMessage();
-			messagePost = "OTP number is correct";
-			//dataJson = responseValidateOTP.getData();
-			//myResponseData = new JSONObject(dataJson);
+			
+			errorPost = (Boolean) responseValidateOTP.getError();
+			messagePost = (String) responseValidateOTP.getMessage();
+			dataJson = responseValidateOTP.getData();
+			myResponseData = new JSONObject(dataJson);
 
-			/*try {
+			try {
 				attemptPost = (Integer) myResponseData.get("attempt");
 			} catch (Exception e) {
 				attemptPost = null;
-			}*/
+			}
 
-			//if (errorPost == false) {
+			if (errorPost == false) {
 				error = false;
 				message = messagePost;
 				data.put("attempt", attemptPost);
-			/*} else {
+			} else {
 				error = true;
 				message = messagePost;
 				data.put("attempt", attemptPost);

@@ -118,4 +118,20 @@
         where flag_active = 1
         AND username = #{userid, jdbcType=VARCHAR}
     </update>
+    
+    <update id="updateOtpUsed" parameterType="MstOTPSimultaneous">
+    	update eka.mst_otp_simultaneous
+    	set status = 'USED', flag_active = 0, date_used = to_date(#{date_created_java, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS')
+    	where id_otp = #{id_otp, jdbcType=INTEGER} 
+    	and jenis_id = #{jenis_id, jdbcType=INTEGER}
+    	and flag_active = 1  
+    </update>
+    
+    <update id="updateStatusAttemptOtp" parameterType="MstOTPSimultaneous">
+    	update eka.mst_otp_simultaneous
+    	set status = 'CLOSE ATTEMPT', flag_active = 0,  date_used = to_date(#{date_created_java, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS')
+    	where id_otp = #{id_otp, jdbcType=INTEGER} 
+    	and jenis_id = #{jenis_id, jdbcType=INTEGER}
+    	and flag_active = 1 
+    </update>
 </mapper>

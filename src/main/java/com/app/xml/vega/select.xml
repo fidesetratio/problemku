@@ -4762,4 +4762,22 @@
 		where a.lku_id = b.lku_id
 		order by 4 desc)
 	</select>
+	
+	<select id="selectDetailOTP" parameterType="MstOTPSimultaneousDet" resultType="MstOTPSimultaneousDet">
+		select * from EKA.MST_OTP_SIMULTANEOUS_DET
+		where jenis_id = #{jenis_id, jdbcType=INTEGER}
+		and menu_id = #{menu_id, jdbcType=INTEGER}
+		and flag_active = 1
+	</select>
+	
+	<select id="selectDataOTP" parameterType="MstOTPSimultaneous" resultType="MstOTPSimultaneous">
+		select * from 
+        	(select * from eka.mst_otp_simultaneous
+        	where username = #{username, jdbcType=VARCHAR} 
+           	and jenis_id = #{jenis_id, jdbcType=INTEGER}
+           	and menu_id = #{menu_id, jdbcType=INTEGER}
+           	and to_char(date_created, 'YYYY-MM-DD') = to_char(sysdate, 'YYYY-MM-DD')
+           	order by id_otp desc) 
+        where rownum = 1
+	</select>
 </mapper>

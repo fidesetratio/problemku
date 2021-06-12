@@ -1292,6 +1292,12 @@ public class PolicyIndividualController {
 		Integer pageSize = requestDetailInvestasiTransaksi.getPageSize();
 		String startDate = requestDetailInvestasiTransaksi.getStartDate();
 		String endDate = requestDetailInvestasiTransaksi.getEndDate();
+		
+		String key_orion = key;
+		if(key_orion.equalsIgnoreCase("orion")) {
+			key = services.selectEncrypt(username);
+		}
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();
@@ -1382,6 +1388,12 @@ public class PolicyIndividualController {
 		String username = requestDetailStableLink.getUsername();
 		String key = requestDetailStableLink.getKey();
 		String no_polis = requestDetailStableLink.getNo_polis();
+		
+		String key_orion = key;
+		if(key_orion.equalsIgnoreCase("orion")) {
+			key = services.selectEncrypt(username);
+		}
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang paramGetSPAJ = new Pemegang();

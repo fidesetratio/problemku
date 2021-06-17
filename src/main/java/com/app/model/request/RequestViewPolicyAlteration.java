@@ -22,6 +22,7 @@ public class RequestViewPolicyAlteration implements Serializable {
 	private String tanggal_akhir;
 	private Integer id_endors;
 	private Integer flag_direct;
+	private String msen_endors_no;
 
 	private String cara_bayar;
 	private String nama_bank_payor;
@@ -92,6 +93,12 @@ public class RequestViewPolicyAlteration implements Serializable {
 	private Payor payor;
 	private ArrayList<Beneficiary> beneficiary;
 	
+	public String getMsen_endors_no() {
+		return msen_endors_no;
+	}
+	public void setMsen_endors_no(String msen_endors_no) {
+		this.msen_endors_no = msen_endors_no;
+	}
 	public ArrayList<Beneficiary> getBeneficiary() {
 		return beneficiary;
 	}

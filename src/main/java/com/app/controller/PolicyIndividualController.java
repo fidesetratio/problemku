@@ -735,6 +735,7 @@ public class PolicyIndividualController {
 						String alamat = pembayarPremi.getAlamat() != null ? pembayarPremi.getAlamat() : null;
 						String no_hp = pembayarPremi.getNo_hp() != null ? pembayarPremi.getNo_hp() : null;
 						String no_rekening = pembayarPremi.getNo_rekening() != null ? pembayarPremi.getNo_rekening() : null;
+						String cara_bayar = pembayarPremi.getCara_bayar() != null ? pembayarPremi.getCara_bayar() : null;
 
 						pembayar_premi.put("nama", nama);
 						pembayar_premi.put("hubungan", hubungan);
@@ -743,6 +744,7 @@ public class PolicyIndividualController {
 						pembayar_premi.put("alamat", alamat);
 						pembayar_premi.put("no_hp", no_hp);
 						pembayar_premi.put("no_rekening", no_rekening);
+						pembayar_premi.put("cara_bayar", cara_bayar);
 					} catch (Exception e) {
 						logger.error(
 								"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);

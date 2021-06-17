@@ -4256,10 +4256,10 @@
 	
 	<select id="selectPembayarPremi" parameterType="String" resultType="com.app.model.PembayarPremi">
 		SELECT  CASE
-                    WHEN B.LSRE_ID_PREMI = 40
-                        THEN 'Diri Sendiri'
-                    ELSE C.lsre_relation
-                END AS HUBUNGAN,
+		            WHEN B.LSRE_ID_PREMI = 40
+		                THEN 'Diri Sendiri'
+		            ELSE C.lsre_relation
+		        END AS HUBUNGAN,
 		        B.MCL_FIRST AS NAMA,
 		        CASE
 		            WHEN B.MSPE_SEX = 1
@@ -4273,17 +4273,31 @@
 		            ELSE D.ALAMAT_TPT_TINGGAL
 		        END AS ALAMAT,
 		        D.NO_HP,
-		        E.MAR_ACC_NO AS NO_REKENING
+		        E.MAR_ACC_NO AS NO_REKENING,
+		        CASE
+		            WHEN    F.mste_flag_cc = 0
+		                THEN    'Transfer'
+		            WHEN    F.mste_flag_cc = 1
+		                THEN    'Debet Rekening Credit Card'
+		            WHEN    F.mste_flag_cc = 2
+		                THEN    'Debet Rekening Tabungan'
+		            WHEN    F.mste_flag_cc = 3
+		                THEN    'Payroll'
+		            ELSE
+		                        'Transfer'
+		        END CARA_BAYAR
 		FROM    EKA.MST_POLICY A,
 		        EKA.MST_CLIENT_NEW B,
 		        EKA.LST_RELATION C,
 		        EKA.MST_ADDRESS_NEW D,
-		        EKA.MST_ACCOUNT_RECUR E
+		        EKA.MST_ACCOUNT_RECUR E,
+		        EKA.MST_INSURED F
 		WHERE   A.MSPO_POLICY_NO = REPLACE (#{mspo_policy_no, jdbcType=VARCHAR}, '.')
-			AND A.MSPO_PAYER = B.MCL_ID
+		    AND A.MSPO_PAYER = B.MCL_ID
 		    AND B.LSRE_ID_PREMI = C.LSRE_ID
 		    AND B.MCL_ID = D.MCL_ID
 		    AND A.REG_SPAJ = E.REG_SPAJ
+		    AND A.REG_SPAJ = F.REG_SPAJ
 	</select>
 	
 	 <select id="selectInbox" parameterType="String" resultType="com.app.model.Inbox">

@@ -4273,7 +4273,11 @@
 		            ELSE D.ALAMAT_TPT_TINGGAL
 		        END AS ALAMAT,
 		        D.NO_HP,
-		        E.MAR_ACC_NO AS NO_REKENING,
+		        CASE
+		            WHEN E.MAR_JENIS = 2
+		                THEN E.MAR_ACC_NO
+		            ELSE '-'
+		        END AS NO_REKENING,
 		        CASE
 		            WHEN    F.mste_flag_cc = 0
 		                THEN    'Transfer'
@@ -4285,19 +4289,29 @@
 		                THEN    'Payroll'
 		            ELSE
 		                        'Transfer'
-		        END CARA_BAYAR
+		        END CARA_BAYAR,
+		        I.LSBP_NAMA AS NAMA_BANK,
+		        CASE
+		            WHEN E.MAR_JENIS = 1
+		                THEN E.MAR_ACC_NO
+		            ELSE '-'
+		        END AS NO_CC        
 		FROM    EKA.MST_POLICY A,
 		        EKA.MST_CLIENT_NEW B,
 		        EKA.LST_RELATION C,
 		        EKA.MST_ADDRESS_NEW D,
 		        EKA.MST_ACCOUNT_RECUR E,
-		        EKA.MST_INSURED F
+		        EKA.MST_INSURED F,
+		        EKA.LST_BANK H,
+		        EKA.LST_BANK_PUSAT I
 		WHERE   A.MSPO_POLICY_NO = REPLACE (#{mspo_policy_no, jdbcType=VARCHAR}, '.')
 		    AND A.MSPO_PAYER = B.MCL_ID
 		    AND B.LSRE_ID_PREMI = C.LSRE_ID
 		    AND B.MCL_ID = D.MCL_ID
-		    AND A.REG_SPAJ = E.REG_SPAJ
+		    AND A.REG_SPAJ = E.REG_SPAJ(+)
 		    AND A.REG_SPAJ = F.REG_SPAJ
+		    AND E.LBN_ID = H.LBN_ID(+)
+		    AND H.LSBP_ID = I.LSBP_ID(+)
 	</select>
 	
 	 <select id="selectInbox" parameterType="String" resultType="com.app.model.Inbox">

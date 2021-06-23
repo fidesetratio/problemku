@@ -250,7 +250,7 @@ public class PolicyIndividualController {
 					String lca_id = dataUsulan.getLca_id();
 					String reg_spaj = dataUsulan.getReg_spaj();
 					
-					String title = "polis_all";
+					String title = "softcopy";
 					String file_type = "pdf";
 					String file_name = title + "." + file_type;
 					String file_path_check = pathDownloadPolisAll + File.separator + lca_id + File.separator + reg_spaj + File.separator

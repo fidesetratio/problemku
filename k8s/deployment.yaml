@@ -19,6 +19,7 @@ spec:
     metadata:
       labels:
         app: ${PIPELINE_BUILD_IMAGE}
+        fluentd-log-format: "springboot"
     spec:
       containers:
         - name: ${PIPELINE_BUILD_IMAGE}

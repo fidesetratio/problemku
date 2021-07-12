@@ -23,12 +23,17 @@ spec:
           volumeMounts:
             - name: flexvol-mount
               mountPath: /mnt/storage
+            - name: medicare-mount
+              mount: /mnt/Ekamedicare
           ports:
             - containerPort: 9092
       volumes:
         - name: flexvol-mount
           hostPath:
            path: /mnt/storage
+        - name: medicare-mount
+          hostPath:
+           path: /mnt/Ekamedicare
 ---
 kind: Service
 apiVersion: v1

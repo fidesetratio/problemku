@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.app.model.request.RequestSendEmail;
 import com.app.model.ResponseData;
 
-@FeignClient(name = "service-email",url = "http://128.21.33.70:8687/service-email", fallback = ServiceEmailCallback.class)
+@FeignClient(name = "service-email",url = "${cosmos.feign.url}/service-email", fallback = ServiceEmailCallback.class)
 public interface ServiceEmail {
 
 	@RequestMapping(value = "/check", method = RequestMethod.GET)

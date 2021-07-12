@@ -22,23 +22,17 @@ import java.util.ListIterator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.services.VegaServices;
-import com.app.model.Article;
 import com.app.model.Billing;
 import com.app.model.DataUsulan;
 import com.app.model.KlaimKesehatan;
@@ -75,10 +69,10 @@ import com.app.model.request.RequestStatusEmailCS;
 import com.app.model.request.RequestTertanggung;
 import com.app.model.request.RequestTrackingPolis;
 import com.app.model.request.RequestUpdatePemegangPolis;
-import com.app.model.request.RequestViewBeneficiary;
 import com.app.model.request.RequestViewClaim;
-import com.app.utils.VegaCustomResourceLoader;
+import com.app.services.VegaServices;
 import com.app.utils.ResponseMessage;
+import com.app.utils.VegaCustomResourceLoader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -114,6 +108,9 @@ public class PolicyIndividualController {
 	@Autowired
 	private VegaServices services;
 
+	@Value("${path.softcopy.polis}")
+	private String softcopyPolisPath;
+	
 	@Autowired
 	private VegaCustomResourceLoader customResourceLoader;
 
@@ -256,7 +253,7 @@ public class PolicyIndividualController {
 					String file_path_check = pathDownloadPolisAll + File.separator + lca_id + File.separator + reg_spaj + File.separator
 							+ file_name;
 					String file_path = "\\\\storage\\pdfind\\Polis_Testing\\" + lca_id + "\\" + reg_spaj + "\\" + file_name;
-					
+					file_path = softcopyPolisPath+File.separator+lca_id+File.separator+reg_spaj+File.separator+file_name;
 					File checkPolisAll = new File(file_path_check);
 					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) { 
 						data.put("file_path", file_path);
@@ -360,7 +357,7 @@ public class PolicyIndividualController {
 					String file_path_check = pathDownloadPolisAll + File.separator + lca_id + File.separator + reg_spaj + File.separator
 							+ file_name;
 					String file_path = "\\\\storage\\pdfind\\Polis_Testing\\" + lca_id + "\\" + reg_spaj + "\\" + file_name;
-					System.out.println(mspo_ao);
+					file_path = softcopyPolisPath+File.separator+lca_id+File.separator+reg_spaj+File.separator+file_name;
 					HashMap<String, Object> dataSales = new HashMap<>();
 					if (mspo_ao != null) {
 						String msag_id = mspo_ao;

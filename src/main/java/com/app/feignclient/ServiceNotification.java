@@ -8,7 +8,7 @@ import com.app.model.request.RequestSaveToken;
 import com.app.model.request.RequestInbox;
 import com.app.model.ResponseData;
 
-@FeignClient(name = "api-notif", url = "http://128.21.33.70:8687/api-notif", fallback = ServiceNotificationCallback.class)
+@FeignClient(name = "api-notif", url = "${cosmos.feign.url}/api-notif", fallback = ServiceNotificationCallback.class)
 public interface ServiceNotification {
 
 	@RequestMapping(value = "/savetoken")

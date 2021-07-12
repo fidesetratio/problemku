@@ -206,13 +206,40 @@ path:
   endorsehr: /mnt/storage/m-Policytest
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
-
+ softcopy:
+  polis: \\\\storage\\pdfind\\Polis_Testing\\
 kubernetes:
   platform: 1
+cosmos:
+  url:
+   feign: http://128.21.33.70:8687
 ---
-
 spring:
+  main:
+   banner-mode : off
   profiles: prod
+  logging:
+   pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([${springAppName:-},%X{X-B3-TraceId:-},%X{X-B3-SpanId:-},%X{X-Span-Export:-}]){yellow} %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
+  datasource:
+    driverClassName: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@128.21.23.31:1521:ajsdb
+    username: eka
+    password: eka
+  zipkin:
+    baseUrl: http://notyfyd-zipkin.default.svc.cluster.local:9411
+
+ribbon:
+  ConnectTimeout: 8000000
+  ReadTimeout: 8000000
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 8000000
+        readTimeout: 8000000
+
 eureka:
   instance:
     preferIpAddress: true
@@ -222,5 +249,73 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      #defaultZone: http://eureka-0.eureka.nebula.svc.cluster.local:8080/eureka,http://eureka-1.eureka.nebula.svc.cluster.local:8080/eureka
-      defaultZone: http://eureka-0.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-1.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-2.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-3.eureka.cosmos.svc.cluster.local:8080/eureka
+      defaultZone: http://eureka-0.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-1.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-2.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-3.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-4.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-5.eureka.cosmos.svc.cluster.local:8080/eureka
+
+jmx:
+ rmi:
+  port: 1099
+
+logging:
+  level:
+    com.app.mapper.JnBankMapper: DEBUG
+    com.app.mapper.VegaMapper: DEBUG
+    com.app.controller.PolicyIndividualCorporateController: DEBUG
+    com.app.controller.LoginRegisterIndividualCorporateController: DEBUG
+    org.springframework: ERROR
+#server:
+#  servlet:
+#   contextPath: /policy/api/json
+
+link:
+ #redirect:
+  #linkRedirectSendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/send
+  #linkRedirectValidateOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/validate
+  #linkRedirectResendOTP: http://paymentcc.sinarmasmsiglife.co.id:8989/otptest/api/resend
+ send:
+  email: http://paymentcc.sinarmasmsiglife.co.id:8999/autosales/json/sendemail
+ update:
+  activity: http://paymentcc.sinarmasmsiglife.co.id:8999/mpolicy/api/checkactivity
+ fcm:
+  google: https://fcm.googleapis.com/fcm/send
+
+path:
+ direct:
+  notification: http://paymentcc.sinarmasmsiglife.co.id:9813/notif/api/json/pushnotif
+ storage:
+  mpolicy: /mnt/storage/m-Policy
+  mpolicydb: /mnt/storage/m-Policy/
+  claim: /mnt/storage/m-Policy
+  withdraw: /mnt/storage/m-Policy
+  withdrawdb: /mnt/storage/m-Policy
+  reporthr: /mnt/storage/m-Policy
+ manfaatpdf:
+  mpolicy: /mnt/ebserver/Polis/
+ logoBank:
+  mpolicy: /mnt/storage/ajsmsig/mpolicy/LogoBank
+ news:
+  mpolicy: /mnt/storage/ajsmsig/mpolicy/News
+ pdf:
+  faq: /mnt/storage/ajsmsig/mpolicy/FormPDF/formulir_pengkinian_data.pdf
+  formwithdrawumum: /mnt/storage/ajsmsig/mpolicy/FormWithdraw/FormUnitLinkUmum.pdf
+  formwithdrawumumsyariah: /mnt/storage/ajsmsig/mpolicy/FormWithdraw/FormUnitLinkUmumSyariah.pdf
+  formwithdrawsimasmagnalink: /mnt/storage/ajsmsig/mpolicy/FormWithdraw/FormSimasMagnaLinkUmum.pdf
+  formwithdrawsimasmagnalinksyariah: /mnt/storage/ajsmsig/mpolicy/FormWithdraw/FormSimasMagnaLinkSyariah.pdf
+  formclaimsubmission: /mnt/storage/ajsmsig/mpolicy/FormClaimSubmission
+ log:
+  submitclaimsubmission: /mnt/storage/Polis_Testing/m-Policytest/LogSubmitClaimSubmission
+  submitclaimsubmissioncorporate: /mnt/storage/Polis_Testing/m-Policytest/LogSubmitClaimSubmission/Corporate/
+ download:
+  banner: http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/api-vega/downloadbanner?value=
+  article: /mnt/storage/E-Sehat/upload/artikel
+  polisall: /mnt/ebserver/Polis
+  reporthr: /mnt/Ekamedicare
+  endorsehr: /mnt/storage/m-Policytest
+ document:
+  claimcorporate: /mnt/Ekamedicare/m-policy/
+ softcopy:
+  polis: \\\\ebserver\\Polis\\
+kubernetes:
+  platform: 1
+cosmos:
+  url:
+   feign: http://128.21.36.70:8687

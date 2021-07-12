@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluentd-${PIPELINE_BUILD_IMAGE}-conf
-  namespace: msigmonitoring
+  namespace: ${PIPELINE_NAME_SPACE}
 data:
   fluent.conf: |-
       <source>

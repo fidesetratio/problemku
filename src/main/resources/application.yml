@@ -211,8 +211,8 @@ path:
 kubernetes:
   platform: 1
 cosmos:
-  url:
-   feign: http://128.21.33.70:8687
+  feign:
+   url: http://128.21.33.70:8687
 ---
 spring:
   main:
@@ -317,5 +317,5 @@ path:
 kubernetes:
   platform: 1
 cosmos:
-  url:
-   feign: http://128.21.36.70:8687
+  feign:
+   url: http://128.21.36.70:8687

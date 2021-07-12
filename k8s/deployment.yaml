@@ -7,6 +7,11 @@ metadata:
     app: ${PIPELINE_BUILD_IMAGE}
 spec:
   replicas: ${PIPELINE_REPLICA}
+  strategy:
+   type: RollingUpdate
+   rollingUpdate:
+     maxSurge: 1
+     maxUnavailable: 0
   selector:
     matchLabels:
       app: ${PIPELINE_BUILD_IMAGE}
@@ -14,9 +19,8 @@ spec:
     metadata:
       labels:
         app: ${PIPELINE_BUILD_IMAGE}
+        fluentd-log-format: "springboot"
     spec:
-      nodeSelector:
-       nodename: k8s-node-1
       containers:
         - name: ${PIPELINE_BUILD_IMAGE}
           image: ${PIPELINE_IMAGE}
@@ -27,6 +31,13 @@ spec:
               mount: /mnt/Ekamedicare
           ports:
             - containerPort: 9092
+          resources:
+           requests:
+             memory: "50Mi"
+             cpu: "500m"
+           limits:
+             memory: "500Mi"
+             cpu: "2000m" 
       volumes:
         - name: flexvol-mount
           hostPath:
@@ -48,3 +59,17 @@ spec:
     - port: ${PIPELINE_LOAD_BALANCER_PORT}
       protocol: TCP
       targetPort: 9092
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ${PIPELINE_BUILD_IMAGE}
+  namespace: ${PIPELINE_NAME_SPACE}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ${PIPELINE_BUILD_IMAGE}
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75

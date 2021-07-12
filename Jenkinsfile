@@ -1,10 +1,10 @@
 def getHost(){
     def remote = [:]
-    remote.name = 'master'
-    remote.host = '128.21.33.43'
+    remote.name = 'automation'
+    remote.host = '128.21.24.61'
     remote.user = 'administrator'
     remote.port = 22
-    remote.password = 'Ajs123456'
+    remote.password = 'P@ssw0rd'
     remote.allowAnyHosts = true
     return remote
 }
@@ -15,14 +15,14 @@ pipeline {
            PIPELINE_BUILD_IMAGE = "api-vega"
            PIPELINE_NAME_SPACE = "vega"
            PIPELINE_REPLICA = 2
-          // PIPELINE_LOAD_BALANCER_IP= "128.21.33.66"
            PIPELINE_LOAD_BALANCER_PORT=9092
-           //PIPELINE_EUREKA_SERVICE_ADDRESS = "http://${PIPELINE_BUILD_IMAGE}-0.eureka:8080/eureka,http://${PIPELINE_BUILD_IMAGE}-1.eureka:8080/eureka"
-           PIPELINE_EUREKA_SERVICE_ADDRESS = "http://eureka-0.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-1.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-2.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-3.eureka.cosmos.svc.cluster.local:8080/eureka"
-           PIPELINE_IMAGE = "128.21.33.43:5000/${env.PIPELINE_NAME_SPACE}/${env.PIPELINE_BUILD_IMAGE}${env.BUILD_NUMBER}:${env.BUILD_NUMBER}"
+           PIPELINE_EUREKA_SERVICE_ADDRESS = "http://eureka-0.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-1.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-2.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-3.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-4.eureka.cosmos.svc.cluster.local:8080/eureka,http://eureka-5.eureka.cosmos.svc.cluster.local:8080/eureka"
+           PIPELINE_IMAGE = "128.21.24.60:8087/${env.PIPELINE_NAME_SPACE}/${env.PIPELINE_BUILD_IMAGE}:${env.BUILD_NUMBER}"
            def server = ''
            def name_space = "${env.PIPELINE_NAME_SPACE}"
            def build_image = "${env.PIPELINE_BUILD_IMAGE}"
+      	   def latestTag = sh(returnStdout:  true, script: "git tag --sort=-creatordate | head -n 1").trim()
+      
       }
 
     stages {
@@ -31,7 +31,18 @@ pipeline {
                 script {                 
                    server = getHost()                                   
                 }
-                 git branch:"api-vega-02" ,credentialsId: 'gitcredentialadmin', url: 'http://128.21.33.43:8888/vega/api-vega'
+              
+              
+			checkout([
+                        $class                           : 'GitSCM',
+                        branches                         : [[name: "refs/tags/${latestTag}"]],
+                        userRemoteConfigs                : [[credentialsId: 'gitcredentialadmin', url: 'http://128.21.24.60:8888/vega/api-vega']],
+                        doGenerateSubmoduleConfigurations: false
+                ])
+
+
+              
+              
                
             }
         }
@@ -78,7 +89,7 @@ pipeline {
                 sh "ls"
                  script {
                    sshPut remote: server, from: "k8s/deployment${name_space}${build_image}.yaml", into: '.'
-                   sshCommand remote: server, command: "kubectl apply -f deployment${name_space}${build_image}.yaml;kubectl -n ${name_space} rollout status deployment.app/${build_image}"
+                   sshCommand remote: server, command: "kubectl apply -f deployment${name_space}${build_image}.yaml --record=true;kubectl -n ${name_space} rollout status deployment.app/${build_image}"
                 }
                  sh "docker rmi -f ${env.PIPELINE_IMAGE}"
            }

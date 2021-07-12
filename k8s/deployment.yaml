@@ -28,7 +28,7 @@ spec:
             - name: flexvol-mount
               mountPath: /mnt/storage
             - name: medicare-mount
-              mount: /mnt/Ekamedicare
+              mountPath: /mnt/Ekamedicare
           ports:
             - containerPort: 9092
           resources:

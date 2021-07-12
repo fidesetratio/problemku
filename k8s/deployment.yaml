@@ -90,7 +90,7 @@ spec:
            path: /mnt/Ekamedicare
         - name: fluentd-monitoring-hook-conf
           configMap:
-            name: fluentd-monitoring-hook-conf
+            name: fluentd-${PIPELINE_BUILD_IMAGE}-conf
         - name: springboot-log
           emptyDir: {}
 ---

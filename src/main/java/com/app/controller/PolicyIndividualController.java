@@ -840,7 +840,7 @@ public class PolicyIndividualController {
 					message = "Successfully get penerima manfaat details";
 				} else {
 					error = true;
-					message = "Policy is not active";
+					message = "Data penerima manfaat kosong";
 					resultErr = "Data penerima manfaat kosong";
 					logger.error(
 							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);

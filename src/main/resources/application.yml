@@ -14,7 +14,7 @@ management:
 # Remember that the name of the application has to be the same name of the registered service in the service discovery tool
 spring:
   profiles:
-    active: "uat-prod"
+    active: "uatprod"
   application:
     name: api-vega
 
@@ -213,7 +213,7 @@ kubernetes:
   platform: 1
 cosmos:
   feign:
-   url: http://128.21.33.70:8687
+   url: http://128.21.36.70:8687
 ---
 spring:
   main:

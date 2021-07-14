@@ -14,7 +14,7 @@ management:
 # Remember that the name of the application has to be the same name of the registered service in the service discovery tool
 spring:
   profiles:
-    active: "prod"
+    active: "uat-prod"
   application:
     name: api-vega
 
@@ -150,6 +150,7 @@ jmx:
   port: 1099
 
 logging:
+  path: /opt/logs
   level:
     com.app.mapper.JnBankMapper: DEBUG
     com.app.mapper.VegaMapper: DEBUG

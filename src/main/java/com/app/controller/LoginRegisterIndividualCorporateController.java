@@ -370,21 +370,32 @@ public class LoginRegisterIndividualCorporateController {
 								+ resultErr);
 					}
 				} else if ((individu.equals(false) && corporate.equals(false) && hr_user.equals(true))) { // Login HR
-					String today = df.format(new Date());
-					lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
-					lstUserSimultaneous.setUPDATE_DATE_TIME(today);
-					services.updateUserKeyName(lstUserSimultaneous);
-					key = user1.getKEY();
-
-					error = false;
-					message = "Login success";
-					data.put("individual", individu);
-					data.put("corporate", corporate);
-					data.put("hr_user", hr_user);
-					data.put("policy_corporate_status", policy_corporate_notinforce);
-					data.put("user_corporate_notactive", user_corporate_notactive);
-					data.put("key", key);
-					data.put("no_hp", null);
+					if (user1.getPASSWORD().equals(password)) {
+								
+							String today = df.format(new Date());
+							lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+							lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+							services.updateUserKeyName(lstUserSimultaneous);
+							key = user1.getKEY();
+							error = false;
+							message = "Login success";
+							data.put("individual", individu);
+							data.put("corporate", corporate);
+							data.put("hr_user", hr_user);
+							data.put("policy_corporate_status", policy_corporate_notinforce);
+							data.put("user_corporate_notactive", user_corporate_notactive);
+							data.put("key", key);
+							data.put("no_hp", null);
+					}else {
+						// Error username yang dimasukkan tidak ada pada database
+						error = true;
+						message = "Login failed";
+						resultErr = "Username tidak terdaftar";
+						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+								+ resultErr);
+				
+						
+					}
 				}
 				else { // Login Corporate
 					UserCorporate dataUserCorporate = services.selectUserCorporate(username);

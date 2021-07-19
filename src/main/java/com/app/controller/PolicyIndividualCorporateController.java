@@ -1126,7 +1126,7 @@ public class PolicyIndividualCorporateController {
 			if ((username.equalsIgnoreCase("guest") && key.equalsIgnoreCase("guest"))
 					|| (username.equalsIgnoreCase("") && key.equalsIgnoreCase(""))
 					|| (username.equalsIgnoreCase(null) && key.equalsIgnoreCase(null))) {
-				ArrayList<Nav> lisNav = services.selectListNav();
+				ArrayList<Nav> lisNav = servicesprod.selectListNav();
 				if (lisNav != null) {
 					ListIterator<Nav> liter = lisNav.listIterator();
 					while (liter.hasNext()) {
@@ -1199,7 +1199,7 @@ public class PolicyIndividualCorporateController {
 				}
 			} else {
 				if (customResourceLoader.validateCredential(username, key)) {
-					ArrayList<Nav> lisNav = services.selectListNav();
+					ArrayList<Nav> lisNav = servicesprod.selectListNav();
 					if (lisNav != null) {
 						ListIterator<Nav> liter = lisNav.listIterator();
 						while (liter.hasNext()) {

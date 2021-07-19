@@ -7603,6 +7603,8 @@ public class FinancialTransactionController {
 		String startDate = null;
 		String endDate = null;
 		String jenis_transaksi = null;
+		
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				String reg_spaj = services.selectGetOnlyRegSpaj(no_polis);

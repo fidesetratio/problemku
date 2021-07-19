@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
+  'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
+<mapper namespace='com.app.mapper.VegaMapperProd'>
+    <update id="updateUserKeyName" parameterType="User">
+        UPDATE eka.LST_USER_SIMULTANEOUS
+        <trim prefix="SET" suffixOverrides=",">
+        	<if test="UPDATE_DATE_TIME !=null"> update_date = to_date(#{UPDATE_DATE_TIME,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),</if>
+        	<if test="LAST_LOGIN_DATE_TIME !=null"> last_login_date = to_date(#{LAST_LOGIN_DATE_TIME,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),</if>
+        	<if test="LAST_LOGIN_DATE !=null"> last_login_date = sysdate,</if>
+        	<if test="FLAG_ACTIVE !=null"> flag_active = #{FLAG_ACTIVE,jdbcType=INTEGER},</if>
+        	<if test="LAST_LOGIN_DEVICE != null"> last_login_device = #{LAST_LOGIN_DEVICE, jdbcType=VARCHAR},</if>
+        </trim>
+        where USERNAME = #{USERNAME, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateLinkAccount" parameterType="com.app.model.LstUserSimultaneous">
+    	UPDATE EKA.LST_USER_SIMULTANEOUS
+    	<trim prefix="SET" suffixOverrides=",">
+    		<if test="REG_SPAJ != null"> REG_SPAJ = #{REG_SPAJ, jdbcType=VARCHAR}, ID_SIMULTAN = #{ID_SIMULTAN, jdbcType=VARCHAR}</if>
+        	<if test="MCL_ID_EMPLOYEE != null"> MCL_ID_EMPLOYEE = #{MCL_ID_EMPLOYEE, jdbcType=VARCHAR},</if>
+        </trim>
+    	WHERE USERNAME = #{USERNAME, jdbcType=VARCHAR} AND FLAG_ACTIVE = 1
+    </update>
+	
+    <update id="updatePassword" parameterType="User">
+        UPDATE eka.lst_user_simultaneous 
+        set password = eka.encrypt(#{password, jdbcType=VARCHAR}) 
+        where username = #{username, jdbcType=VARCHAR}
+	</update>
+	
+	<update id="updateLspdId" parameterType="String">
+        UPDATE eka.mst_policy 
+        set lspd_id = 13
+        where reg_spaj = #{regspaj, jdbcType=VARCHAR}
+	</update>
+    
+    <update id="updateDataMstAddressNew" parameterType="Pemegang">
+    	update eka.mst_address_new 
+    	set alamat_rumah = #{alamat_rumah, jdbcType=VARCHAR},
+    	lspr_id = #{lspr_id, jdbcType=INTEGER}, lska_id = #{lska_id, jdbcType=INTEGER}, 
+    	lskc_id = #{lskc_id, jdbcType=INTEGER}, lskl_id = #{lskl_id, jdbcType=INTEGER},
+    	kota_rumah = #{kota_rumah, jdbcType=VARCHAR}, KD_POS_RUMAH = #{kd_pos_rumah, jdbcType=VARCHAR}
+    	where mcl_id = #{mcl_id, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateDataMstAddressBilling" parameterType="Pemegang">
+    	update eka.mst_address_billing 
+    	set e_mail = #{email, jdbcType=VARCHAR}
+    	where reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateKeyLoginClear" parameterType="User">
+    	update eka.lst_user_simultaneous 
+    	set last_login_device = null 
+    	where username = #{username, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="deleteAllInbox" parameterType="User">
+    	update EKA.MST_NOTIFICATION_INBOX 
+    	set status = 'A' 
+    	where jenis_id = 93 and username = #{username, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateInboxStatus" parameterType="User">
+    	update eka.mst_notification_inbox
+    	set status = #{new_status, jdbcType=VARCHAR} 
+    	where 
+    	<if test="inbox_id !=null">
+    		id = #{inbox_id, jdbcType=INTEGER} and
+    	</if> 
+    	username = #{username, jdbcType=VARCHAR} and jenis_id = 93 and status != 'A'
+    </update>
+    
+    <update id="updateActivityStatus" parameterType="User">
+    	update eka.lst_user_simultaneous 
+    	set update_date = to_date(#{date_created_java, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS') 
+    	where username = #{username, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateUnlinkAccountCorporate" parameterType="UserCorporate">
+    	update eka.lst_user_simultaneous
+    	set mcl_id_employee = null 
+    	where username = #{username, jdbcType=VARCHAR}
+    </update>
+    
+    <update	id="updateFurtherClaimIndividu" parameterType="String">
+    	update eka.mst_mpol_claim_trans set flag_susulan = 1 where kode_trans = #{mpc_id, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateFurtherClaimCorporate" parameterType="String">
+    	update eka.mst_mpol_claim_corporate_trans set flag_susulan = 1 where mpcc_id = #{mpcc_id, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateAgama" parameterType="com.app.model.PolicyAlteration">
+    	update eka.mst_client_new set lsag_id = #{lsag_id, jdbcType=INTEGER} where mcl_id = #{mcl_id, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateAlamatKantor" parameterType="com.app.model.PolicyAlteration">
+    	update eka.mst_address_new set alamat_kantor = #{alamat_kantor, jdbcType=VARCHAR} where mcl_id = #{mcl_id, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateKewarganegaraan" parameterType="com.app.model.PolicyAlteration">
+    	update eka.mst_client_new set lsne_id = #{lsne_id, jdbcType=INTEGER} where mcl_id = #{mcl_id, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateStatus" parameterType="com.app.model.PolicyAlteration">
+    	update eka.mst_client_new set mspe_sts_mrt = #{mspe_sts_mrt, jdbcType=INTEGER} where mcl_id = #{mcl_id, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateJenisPekerjaan" parameterType="com.app.model.PolicyAlteration">
+    	update eka.mst_client_new set mcl_company_name = #{nama_perusahaan_pp, jdbcType=VARCHAR}, mkl_industri = #{tipe_usaha_pp, jdbcType=VARCHAR}
+    	where mcl_id = #{mcl_id, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateNotifToken" parameterType="com.app.model.NotifToken">
+        update eka.mst_notification_token set token = #{token, jdbcType=VARCHAR}, update_date = sysdate
+        where flag_active = 1
+        AND username = #{userid, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateOtpUsed" parameterType="com.app.model.MstOTPSimultaneous">
+    	update eka.mst_otp_simultaneous
+    	set status = 'USED', flag_active = 0, date_used = to_date(#{date_created_java, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS')
+    	where id_otp = #{id_otp, jdbcType=INTEGER} 
+    	and jenis_id = #{jenis_id, jdbcType=INTEGER}
+    	and flag_active = 1  
+    </update>
+    
+    <update id="updateStatusAttemptOtp" parameterType="com.app.model.MstOTPSimultaneous">
+    	update eka.mst_otp_simultaneous
+    	set status = 'CLOSE ATTEMPT', flag_active = 0,  date_used = to_date(#{date_created_java, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS')
+    	where id_otp = #{id_otp, jdbcType=INTEGER} 
+    	and jenis_id = #{jenis_id, jdbcType=INTEGER}
+    	and flag_active = 1 
+    </update>
+    
+    <update id="updateAttemptOtp" parameterType="MstOTPSimultaneous">
+  		update eka.mst_otp_simultaneous 
+  		set attempt = attempt + 1, date_used = to_date(#{date_created_java, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS')
+  		where id_otp = #{id_otp, jdbcType=INTEGER} 
+  		and jenis_id = #{jenis_id, jdbcType=INTEGER}
+  		and flag_active = 1 
+    </update>
+</mapper>

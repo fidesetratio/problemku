@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
+import com.app.services.VegaServicesProd;
 import com.app.feignclient.ServiceNotification;
 import com.app.feignclient.ServiceOTP;
 import com.app.model.Anggota;
@@ -126,6 +127,9 @@ public class PolicyIndividualCorporateController {
 	
 	@Autowired
 	private VegaServices services;
+
+	@Autowired
+	private VegaServicesProd servicesprod;
 	
 	@Autowired
 	ServiceNotification serviceNotification;
@@ -1310,7 +1314,6 @@ public class PolicyIndividualCorporateController {
 		BigDecimal max_value = null;
 		HashMap<String, Object> map = new HashMap<>();
 		ArrayList<Object> data = new ArrayList<>();
-
 		String username = requestNabchart.getUsername();
 		String key = requestNabchart.getKey();
 		try {
@@ -1326,7 +1329,7 @@ public class PolicyIndividualCorporateController {
 					nilai = customResourceLoader.nilaiValNabchart(nilai);
 				}
 
-				ArrayList<Nav> lisNabChart = services.selectDetailNav(lji_id, nilai);
+				ArrayList<Nav> lisNabChart = servicesprod.selectDetailNav(lji_id, nilai);
 				ArrayList<BigDecimal> valueNilai = new ArrayList<>();
 				if (!lisNabChart.isEmpty()) {
 					ListIterator<Nav> liter = lisNabChart.listIterator();
@@ -1379,7 +1382,7 @@ public class PolicyIndividualCorporateController {
 						nilai = customResourceLoader.nilaiValNabchart(nilai);
 					}
 
-					ArrayList<Nav> lisNabChart = services.selectDetailNav(lji_id, nilai);
+					ArrayList<Nav> lisNabChart = servicesprod.selectDetailNav(lji_id, nilai);
 					ArrayList<BigDecimal> valueNilai = new ArrayList<>();
 					if (!lisNabChart.isEmpty()) {
 						ListIterator<Nav> liter = lisNabChart.listIterator();

@@ -14,7 +14,7 @@ management:
 # Remember that the name of the application has to be the same name of the registered service in the service discovery tool
 spring:
   profiles:
-    active: "uatprod"
+    active: "dev"
   application:
     name: api-vega
 
@@ -34,6 +34,12 @@ spring:
     url: jdbc:oracle:thin:@128.21.23.31:1521:ajsdb
     username: eka
     password: eka
+    prod:
+      driverClassName: oracle.jdbc.driver.OracleDriver
+      url: jdbc:oracle:thin:@128.21.22.31:1521:ajsdb
+      username: dev
+      password: linkdev
+  
   zipkin:
     baseUrl: http://128.21.33.45:30411
 
@@ -119,6 +125,11 @@ spring:
     url: jdbc:oracle:thin:@128.21.23.31:1521:ajsdb
     username: eka
     password: eka
+    prod:
+      driverClassName: oracle.jdbc.driver.OracleDriver
+      url: jdbc:oracle:thin:@128.21.23.31:1521:ajsdb
+      username: dev
+      password: linkdev
   zipkin:
     baseUrl: http://notyfyd-zipkin.default.svc.cluster.local:9411
 

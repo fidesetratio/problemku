@@ -4727,6 +4727,17 @@
 		    WHERE   LJJ_ID = 1
 		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
 		    UNION ALL
+            SELECT A.REG_SPAJ,DECODE(A.JENIS, 70,'PAS-04', 71,'PAS-05',A.JENIS,'PAS-TMP-'|| A.JENIS) as KODE_TRANSAKSI,
+                C.LT_TRANSKSI TRANSACTION_TYPE, 
+                A.URL FILE_PATH,
+                TRUNC(B.MU_TGL_TRANS) TGL_TRANSAKSI
+                FROM EKA.MST_SURAT_HISTORY A, EKA.MST_ULINK B, EKA.LST_TRANSAKSI C
+                WHERE A.REG_SPAJ = B.REG_SPAJ
+                AND A.TRX_KE = B.MU_KE 
+                AND A.JENIS IN (70, 71, 72)
+                AND B.LT_ID = C.LT_ID
+                AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}   
+		    UNION ALL
 		    select  DISTINCT(SPAJ) AS REG_SPAJ,
 		            'PAS-10' AS KODE_TRANSAKSI,
 		            'Pembatalan dalam Masa Pemahaman Polis (Cancel Freelook)' AS TRANSACTION_TYPE,

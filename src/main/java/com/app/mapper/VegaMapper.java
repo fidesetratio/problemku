@@ -149,6 +149,8 @@ public interface VegaMapper {
 	public User selectForgotPassword(User user);
 
 	public ArrayList<UnitLink> selectUnitLink(String reg_spaj);
+	
+	public Double selectTotalTunggakanUnitLink(String reg_spaj);
 
 	public ArrayList<UnitLink> selectDetailUnitLink(HashMap<String, Object> hashMap);
 

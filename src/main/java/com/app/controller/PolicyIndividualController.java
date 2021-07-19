@@ -1027,6 +1027,8 @@ public class PolicyIndividualController {
 									tempData.put("unit_price", nfZeroFour.format(m.getHarga_Unit()));
 									tempData.put("total_unit", nfZeroFour.format(m.getTotal_Unit()));
 									tempData.put("policy_value", nfZeroTwo.format(m.getNilai_polis()));
+									
+									
 									investment.add(tempData);
 									unit_link.put("investment", investment);
 								} catch (Exception e) {
@@ -1053,8 +1055,11 @@ public class PolicyIndividualController {
 								}
 								results.add(sum);
 								unit_link.put("total", nfZeroTwo.format(results.get(0)));
+								
 							}
-
+							
+							Double totalTungakanUnitLink = services.selectTotalTunggakanUnitLink(reg_spaj);
+							unit_link.put("total_tunggakan", nfZeroTwo.format(totalTungakanUnitLink) );
 							data.put("unit_link", unit_link);
 							data.put("powersave", null);
 							data.put("stable_save", null);

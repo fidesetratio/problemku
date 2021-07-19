@@ -408,6 +408,11 @@ public class VegaServices {
 		return dao.selectUnitLink(reg_spaj);
 	}
 
+	
+	public Double selectTotalTunggakanUnitLink(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectTotalTunggakanUnitLink(reg_spaj);
+	}
 	public ArrayList<UnitLink> selectDetailUnitLink(String spaj, String lji_id, Integer pageNumber, Integer pageSize,
 			String startDate, String endDate) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);

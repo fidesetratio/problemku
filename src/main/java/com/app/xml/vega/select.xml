@@ -690,6 +690,21 @@
     	ORDER BY 3
 	</select>
 	
+	<select id="selectTotalTunggakanUnitLink" parameterType="String" resultType="Double">
+	SELECT NVL(SUM(NVL(C.TOTAL_PREMI,0) + NVL(B.TOTAL_PREMI,0)),0)  TOTAL
+	FROM EKA.MST_POLICY A, EKA.MST_ULINK_BILL B, EKA.MST_ULINK_BILL_TGK C
+	WHERE A.REG_SPAJ = B.REG_SPAJ
+	AND B.REG_SPAJ = C.REG_SPAJ(+)
+	AND B.POT_KE = C.POT_KE(+)
+	AND B.FLAG_KURANG = 1
+	AND C.FLAG_KURANG (+)= 1
+	AND B.TGL_PROD <![CDATA[ <= ]]> TRUNC(SYSDATE)
+	AND NVL(B.TOTAL_PREMI,0) <![CDATA[ <> ]]> 0
+	AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+	</select>
+	
+	
+	
 	<select id="selectDetailUnitLink" parameterType="HashMap" resultType="com.app.model.UnitLink">
 		SELECT * FROM
 		(SELECT x.*, rownum r__

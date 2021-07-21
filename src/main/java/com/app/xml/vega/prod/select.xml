@@ -3163,7 +3163,7 @@
 		            nvl((select acceptdate
  from EKA.ID_MST_CLM where mspo_policy_no = pol.mspo_policy_no and to_char(acceptdate,'yyyy') = to_char(sysdate,'yyyy') and st_acp = 10
  and acceptdate =  (select max(acceptdate) from EKA.id_mst_clm where mspo_policy_no = pol.mspo_policy_no and to_char(acceptdate,'yyyy') = to_char(sysdate,'yyyy') and st_acp = 10 ) 
- ), to_date(to_char(pi.mspr_beg_date,'dd/mm')||'/'||to_char(sysdate,'yyyy'),'dd/mm/yyyy')) as tgl_akseptasi2
+ ), to_date(to_char(pi.mspr_beg_date,'dd/mm')||'/'||to_char(sysdate,'yyyy'),'dd/mm/yyyy')) as tgl_akseptasi
 		        FROM EKA.MST_INSURED ins,
 		            EKA.MST_PRODUCT_INSURED pi,
 		            EKA.LST_DET_BISNIS detbis,

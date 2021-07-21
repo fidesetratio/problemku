@@ -3135,7 +3135,7 @@
 	</select>
 	
 	<select id="selectClaimLimit" parameterType="String" resultType="ClaimLimit">
-		SELECT  A.*,
+SELECT  A.*,
 		        (A.limit - A.bayar_klaim) as sisa_limit
 		FROM
 		        (SELECT  
@@ -3165,8 +3165,11 @@
 		            CASE
 		                WHEN maxcl.lmc_max_claim = pl.mpl_max_yearly THEN 'AS CHARGE'
 		            END as_charge,
-		            (select sum(pay_claim) from EKA.ID_TRX_CLMDTL where regclaim = clm.regclaim) as bayar_klaim,
-		            to_char(clm.tglfinance,'dd/mm/yyyy') as tgl_akseptasi
+		            nvl((select sum(pay_claim) from EKA.ID_TRX_CLMDTL where regclaim = clm.regclaim and to_char(clm.acceptdate,'yyyy') = to_char(sysdate,'yyyy') and clm.st_acp = 10),0) as bayar_klaim,
+		            nvl((select acceptdate
+ from EKA.ID_MST_CLM where mspo_policy_no = pol.mspo_policy_no and to_char(acceptdate,'yyyy') = to_char(sysdate,'yyyy') and st_acp = 10
+ and acceptdate =  (select max(acceptdate) from EKA.id_mst_clm where mspo_policy_no = pol.mspo_policy_no and to_char(acceptdate,'yyyy') = to_char(sysdate,'yyyy') and st_acp = 10 ) 
+ ), to_date(to_char(pi.mspr_beg_date,'dd/mm')||'/'||to_char(sysdate,'yyyy'),'dd/mm/yyyy')) as tgl_akseptasi
 		        FROM EKA.MST_INSURED ins,
 		            EKA.MST_PRODUCT_INSURED pi,
 		            EKA.LST_DET_BISNIS detbis,
@@ -3200,7 +3203,8 @@
 		            AND pol.mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
 		        ORDER BY detbis.lsbs_id asc
 		        ) A
-	</select>
+	
+</select>
 	
 	<select id="selectViewClaimsubmission" parameterType="HashMap" resultType="ClaimSubmission">
 		SELECT B.KODE_TRANS,

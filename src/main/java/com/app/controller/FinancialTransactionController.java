@@ -5,7 +5,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -17,14 +16,12 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +31,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -43,16 +39,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.services.VegaServices;
-import com.app.model.MstOTPSimultaneousDet;
-import com.app.model.MstOTPSimultaneous;
 import com.app.model.ClaimCorporate;
 import com.app.model.ClaimLimit;
 import com.app.model.ClaimSubmission;
 import com.app.model.ClaimSubmissionCorporate;
 import com.app.model.CostFinancialTransaction;
 import com.app.model.DetailClaimCorporate;
-import com.app.model.DetailDestSwitching;
 import com.app.model.DetailRedirection;
 import com.app.model.DetailSwitching;
 import com.app.model.DetailWithdraw;
@@ -79,7 +71,6 @@ import com.app.model.request.RequestClaimSubmissionCorporate;
 import com.app.model.request.RequestCostWithdraw;
 import com.app.model.request.RequestDetailClaimCorporate;
 import com.app.model.request.RequestDocumentClaimSubmissionCorporate;
-import com.app.model.request.RequestDownloadEndorseHr;
 import com.app.model.request.RequestDownloadFileClaimSubmission;
 import com.app.model.request.RequestDownloadProofTransaction;
 import com.app.model.request.RequestDownloadTransactionHistory;
@@ -91,7 +82,6 @@ import com.app.model.request.RequestGetTopupList;
 import com.app.model.request.RequestListClaimCorporate;
 import com.app.model.request.RequestListClaimSubmission;
 import com.app.model.request.RequestListClaimSubmissionCorporate;
-import com.app.model.request.RequestListClaimHr;
 import com.app.model.request.RequestListSwitching;
 import com.app.model.request.RequestListSwitchingRedirection;
 import com.app.model.request.RequestListWithdraw;
@@ -106,8 +96,6 @@ import com.app.model.request.RequestTopup;
 import com.app.model.request.RequestTransactionHistory;
 import com.app.model.request.RequestUploadDeleteFileClaimSub;
 import com.app.model.request.RequestUploadDeleteFileClaimSubCorp;
-import com.app.model.request.RequestValidateSwitchingRedirection;
-import com.app.model.request.RequestViewClaimHr;
 import com.app.model.request.RequestViewClaimSubmission;
 import com.app.model.request.RequestViewClaimSubmissionCorporate;
 import com.app.model.request.RequestViewMclFirst;
@@ -117,8 +105,9 @@ import com.app.model.request.RequestViewSwitchingRedirection;
 import com.app.model.request.RequestViewUserInputTopup;
 import com.app.model.request.RequestViewWithdraw;
 import com.app.model.request.RequestWithdraw;
-import com.app.utils.VegaCustomResourceLoader;
+import com.app.services.VegaServices;
 import com.app.utils.ResponseMessage;
+import com.app.utils.VegaCustomResourceLoader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.itextpdf.text.Document;
@@ -5665,6 +5654,12 @@ public class FinancialTransactionController {
 		String username = requestClaimLimit.getUsername();
 		String key = requestClaimLimit.getKey();
 		String no_polis = requestClaimLimit.getNo_polis();
+		String key_orion = key;
+		if(key_orion.equalsIgnoreCase("orion")) {
+			key = services.selectEncrypt(username);
+		}
+		
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				ArrayList<ClaimLimit> arrayList = services.selectClaimLimit(no_polis);

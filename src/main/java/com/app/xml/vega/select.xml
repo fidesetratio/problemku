@@ -3135,7 +3135,7 @@
 	</select>
 	
 	<select id="selectClaimLimit" parameterType="String" resultType="ClaimLimit">
-SELECT  A.*,
+		SELECT  A.*,
 		        (A.limit - A.bayar_klaim) as sisa_limit
 		FROM
 		        (SELECT  
@@ -3202,10 +3202,8 @@ SELECT  A.*,
 		            AND pol.reg_spaj = ins.reg_spaj
 		            AND pol.mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
 		        ORDER BY detbis.lsbs_id asc
-		        ) A    where REGCLAIM IS NOT NULL
-		     
-	
-</select>
+		        ) A
+	</select>
 	
 	<select id="selectViewClaimsubmission" parameterType="HashMap" resultType="ClaimSubmission">
 		SELECT B.KODE_TRANS,

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.app.model.Article;
 import com.app.model.Beneficiary;
@@ -44,6 +45,7 @@ import com.app.model.PushNotif;
 import com.app.model.Rekening;
 import com.app.model.ReportHr;
 import com.app.model.Sales;
+import com.app.model.SavedProvider;
 import com.app.model.SmsServerOut;
 import com.app.model.StableLink;
 import com.app.model.StableSave;
@@ -71,6 +73,8 @@ public interface VegaMapper {
 	public void storedProcedureSubmitFinancialTransaction(HashMap<String, Object> hashMap);
 
 	// Insert
+	public void insertSavedProvider(SavedProvider savedProvider);
+	
 	public void insertLstHistActvWs(LstHistActivityWS lstHistActivityWS);
 
 	public void insertSmsServerOut(SmsServerOut smsOut);
@@ -114,9 +118,14 @@ public interface VegaMapper {
 	public void insertSubmitHistoryEndorse(HashMap<String, Object> hashMap);
 
 	// Select
+	
+	public List<SavedProvider> selectproviderbyusername(String username);
+	
 	public ArrayList<MpolisConfiguration> selectMpolisConfiguration();
 
 	public String selectEncrypt(String value);
+	
+	
 
 	public User decryptPassword(User user);
 

@@ -3,7 +3,6 @@ package com.app.services;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.app.mapper.VegaMapper;
-import com.app.model.MstOTPSimultaneousDet;
-import com.app.model.MstOTPSimultaneous;
 import com.app.model.Article;
 import com.app.model.Beneficiary;
 import com.app.model.BenefitCorporate;
@@ -53,6 +50,7 @@ import com.app.model.PushNotif;
 import com.app.model.Rekening;
 import com.app.model.ReportHr;
 import com.app.model.Sales;
+import com.app.model.SavedProvider;
 import com.app.model.SmsServerOut;
 import com.app.model.StableLink;
 import com.app.model.StableSave;
@@ -1361,6 +1359,10 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateAgama(policyAlteration);
 	}
+
+	
+	
+	
 	
 	public void insertLstUlangan(String reg_spaj, String msen_alasan) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
@@ -1370,6 +1372,17 @@ public class VegaServices {
 		dao.insertLstUlangan(hashMap);
 	}
 
+	
+	public void insertSavedProvider(SavedProvider savedProvider) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.insertSavedProvider(savedProvider);
+	}
+	
+	public List<SavedProvider> selectproviderbyusername(String username){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectproviderbyusername(username);
+	}
+	
 	public String selectMclId_PP(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectMclId_PP(reg_spaj);

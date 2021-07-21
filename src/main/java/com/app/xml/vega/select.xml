@@ -1,6 +1,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.app.mapper.VegaMapper">
 	
+	
+	<select id="selectproviderbyusername" parameterType="String" resultType="SavedProvider">
+			select nama_provider as namaProvider, address as alamat, phone, positionx,positiony,username from eka.LST_SAVED_PROVIDER where trim(username) = #{username, jdbcType=VARCHAR} 
+  	</select>
+	
+	
 	<select id="selectMpolisConfiguration" resultType="MpolisConfiguration">
 		select * from eka.mst_mpolis_configuration where active = 1
   	</select>

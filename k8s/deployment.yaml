@@ -23,12 +23,17 @@ spec:
           volumeMounts:
             - name: flexvol-mount
               mountPath: /mnt/storage
+            - name: date-config
+              mountPath: /etc/localtime 
           ports:
             - containerPort: 9092
       volumes:
         - name: flexvol-mount
           hostPath:
            path: /mnt/storage
+        - name: date-config
+          hostPath:
+           path: /etc/localtime
 ---
 kind: Service
 apiVersion: v1

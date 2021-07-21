@@ -3202,7 +3202,8 @@ SELECT  A.*,
 		            AND pol.reg_spaj = ins.reg_spaj
 		            AND pol.mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
 		        ORDER BY detbis.lsbs_id asc
-		        ) A
+		        ) A    where REGCLAIM IS NOT NULL
+		     
 	
 </select>
 	

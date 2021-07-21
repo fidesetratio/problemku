@@ -4101,7 +4101,7 @@
 	</select>
 	
 	<select id="selectPolicyHolder" parameterType="String" resultType="com.app.model.PolicyAlteration">
-		SELECT  A.MSPO_POLICY_NO AS NO_POLIS,
+	SELECT  A.MSPO_POLICY_NO AS NO_POLIS,
 		        B.MCL_FIRST AS NAMA_PP,
 		        D.LSDBS_VIEW AS JENIS_PRODUK,
 		        B.MSPE_STS_MRT AS STATUS,
@@ -4122,7 +4122,7 @@
 		        H.ALAMAT_TPT_TINGGAL,
 		        H.KOTA_TPT_TINGGAL,
 		        H.KD_POS_TPT_TINGGAL,
-		        A.MSPO_KORESPONDENSI AS KORESPONDENSI_FLAG,
+		        nvl(A.MSPO_KORESPONDENSI,0) AS KORESPONDENSI_FLAG,
 		        K.LSBP_ID AS NAMA_BANK_PP,
 		        I.LBN_ID AS CABANG_BANK_PP,
 		        J.LBN_KOTA AS KOTA_BANK_PP,
@@ -4139,31 +4139,35 @@
 		        EKA.LST_BANK J,
 		        EKA.LST_BANK_PUSAT K,
 		        (
+		    
 		            SELECT  V.LSPR_ID AS PROPINSI_KANTOR,
 		                    V.LSKA_ID AS KABUPATEN_KANTOR,
 		                    V.LSKC_ID AS KECAMATAN_KANTOR,
-		                    V.LSKL_ID AS KELURAHAN_KANTOR,
-		                    V.KODEPOS AS KODEPOS_KANTOR
-		            FROM    EKA.V_PROPINSI V,
-		                    EKA.MST_POLICY M,
+		                     nvl(V.LSKL_ID,AN.LSKL_ID_KANTOR) AS KELURAHAN_KANTOR,
+                            nvl(V.KODEPOS,AN.KD_POS_KANTOR) as  KODEPOS_KANTOR
+		             FROM    EKA.MST_POLICY M,
 		                    EKA.MST_ADDRESS_NEW AN
-		            WHERE   M.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
-		                AND M.MSPO_POLICY_HOLDER = AN.MCL_ID
-		                AND V.KODEPOS = AN.KD_POS_KANTOR
-		                AND V.LSKL_ID = AN.LSKL_ID_KANTOR) KANTOR,
+		          
+                    LEFT JOIN EKA.V_PROPINSI V ON (V.KODEPOS = AN.KD_POS_KANTOR AND  V.LSKL_ID = AN.LSKL_ID_KANTOR)
+                       WHERE   M.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+		           
+		            		                AND M.MSPO_POLICY_HOLDER = AN.MCL_ID
+		                
+) KANTOR,
 		        (
 		            SELECT  V.LSPR_ID AS PROPINSI_RUMAH,
 		                    V.LSKA_ID AS KABUPATEN_RUMAH,
 		                    V.LSKC_ID AS KECAMATAN_RUMAH,
-		                    V.LSKL_ID AS KELURAHAN_RUMAH,
-		                    V.KODEPOS AS KODEPOS_RUMAH
-		            FROM    EKA.V_PROPINSI V,
-		                    EKA.MST_POLICY M,
+		                    nvl(V.LSKL_ID,AN.LSKL_ID) AS KELURAHAN_RUMAH,
+                            nvl(V.KODEPOS,AN.KD_POS_RUMAH) as  KODEPOS_RUMAH
+		            FROM    EKA.MST_POLICY M,
 		                    EKA.MST_ADDRESS_NEW AN
-		            WHERE   M.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
+		                    LEFT JOIN EKA.V_PROPINSI V ON (V.KODEPOS = AN.KD_POS_RUMAH AND  V.LSKL_ID = AN.LSKL_ID)
+		                    WHERE   M.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
 		                AND M.MSPO_POLICY_HOLDER = AN.MCL_ID
-		                AND V.KODEPOS = AN.KD_POS_RUMAH
-		                AND V.LSKL_ID = AN.LSKL_ID) RUMAH
+		            
+		         
+		            ) RUMAH
 		WHERE   A.MSPO_POLICY_HOLDER = B.MCL_ID
 		    AND A.REG_SPAJ = C.REG_SPAJ
 		    AND C.LSBS_ID = D.LSBS_ID
@@ -4174,7 +4178,7 @@
 		    AND J.LSBP_ID = K.LSBP_ID (+)
 		    AND C.LSBS_ID <![CDATA[<]]> 300
 		    AND A.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
-	</select>
+		</select>
 
 	<select id="SelectKorespondensi" parameterType="String" resultType="com.app.model.PolicyAlteration">
 		SELECT  '1' AS NEGARA_TINGGAL,

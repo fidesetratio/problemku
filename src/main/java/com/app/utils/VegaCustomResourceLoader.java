@@ -1878,6 +1878,7 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 	{
 		Integer lspd_id = 99;
 		
+		
 		// Get MSEN_ENDORSE_NO
 		String msen_endors_no = services.selectGetNoEndors();
 		
@@ -1888,8 +1889,18 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 		services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 				msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 		
+		try {
+			Thread.currentThread().sleep(1);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//INSERT LST ULANGAN
 		services.insertLstUlangan(reg_spaj, msen_alasan);
+		
+		
+		
+		
 	}
 	
 	public void PolicyAlterationIndirect(String reg_spaj, String msen_alasan, Integer lsje_id, String msde_old1, String msde_old2,

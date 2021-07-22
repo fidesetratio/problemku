@@ -381,7 +381,7 @@
 		   (REG_SPAJ, TANGGAL, JENIS, STATUS_POLIS, LUS_ID, 
 		    KETERANGAN, ID_TICKET)
 		 Values
-		   (#{reg_spaj, jdbcType=VARCHAR}, SYSDATE + (1 / (24 * 60 * 60)), #{msen_alasan, jdbcType=VARCHAR}, 99, 0, 
+		   (#{reg_spaj, jdbcType=VARCHAR}, SYSDATE + (#{counter, jdbcType=INTEGER} / (24 * 60 * 60)), #{msen_alasan, jdbcType=VARCHAR}, 99, 0, 
 		    #{msen_alasan, jdbcType=VARCHAR}, NULL)
 	</insert>
 	

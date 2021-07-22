@@ -2659,6 +2659,9 @@ public class PolicyIndividualCorporateController {
 	@RequestMapping(value = "/submitpolicyalteration", produces = "application/json", method = RequestMethod.POST)
 	public String submitPolicyAlteration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
 			HttpServletRequest request) {
+		
+		
+		
 		Date start = new Date();
 		GsonBuilder builder = new GsonBuilder();
 		builder.serializeNulls();
@@ -2682,6 +2685,8 @@ public class PolicyIndividualCorporateController {
 		
 		String msde_old1 = null, msde_old2 = null, msde_old3 = null, msde_old4 = null, msde_old5 = null, msde_old6 = null,
 				msde_new1 = null, msde_new2 = null, msde_new3 = null, msde_new4 = null, msde_new5 = null, msde_new6 = null;
+		Integer counter = 1;
+		
 		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
@@ -2706,6 +2711,7 @@ public class PolicyIndividualCorporateController {
 						Integer flag_direct = status_tt.getFlag_direct();
 						String kolom = "status_tt";
 						if(id_endors != null) {
+							counter = counter + 1;
 							Integer lsje_id = id_endors;
 							Endorse endors = services.selectListJenisEndors(lsje_id);
 							String msen_alasan = endors.getLsje_jenis();
@@ -2714,7 +2720,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2733,7 +2739,7 @@ public class PolicyIndividualCorporateController {
 					} if(agama_tt!=null) {
 						Integer id_endors = agama_tt.getId_endors();
 						if(id_endors != null) {
-							
+							counter = counter + 1;
 							String old = agama_tt.getOld();
 							String new_ = agama_tt.getNew_();
 							Integer flag_direct = agama_tt.getFlag_direct();
@@ -2747,7 +2753,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2756,7 +2762,7 @@ public class PolicyIndividualCorporateController {
 					} if(Nama_perusahaan_tt!=null) {
 						Integer id_endors = Nama_perusahaan_tt.getId_endors();
 						if(id_endors != null) {
-							
+							counter = counter + 1;
 							String old = Nama_perusahaan_tt.getOld();
 							String new_ = Nama_perusahaan_tt.getNew_();
 							Integer flag_direct = Nama_perusahaan_tt.getFlag_direct();
@@ -2770,7 +2776,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2779,6 +2785,7 @@ public class PolicyIndividualCorporateController {
 					} if(Tipe_usaha_tt!=null) {
 						Integer id_endors = Tipe_usaha_tt.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = Tipe_usaha_tt.getOld();
 							String new_ = Tipe_usaha_tt.getNew_();
@@ -2793,7 +2800,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2802,6 +2809,7 @@ public class PolicyIndividualCorporateController {
 					} if(Jabatan_tt!=null) {
 						Integer id_endors = Jabatan_tt.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = Jabatan_tt.getOld();
 							String new_ = Jabatan_tt.getNew_();
@@ -2816,7 +2824,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2856,6 +2864,7 @@ public class PolicyIndividualCorporateController {
 					if(cara_bayar!=null) {
 						Integer id_endors = cara_bayar.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = cara_bayar.getOld();
 							String new_ = cara_bayar.getNew_();
@@ -2870,7 +2879,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2880,7 +2889,7 @@ public class PolicyIndividualCorporateController {
 					} if(nama_bank_payor!=null) {
 						Integer id_endors = nama_bank_payor.getId_endors();
 						if(id_endors != null) {
-							
+							counter = counter + 1;
 							String old = nama_bank_payor.getOld();
 							String new_ = nama_bank_payor.getNew_();
 							Integer flag_direct = nama_bank_payor.getFlag_direct();
@@ -2894,7 +2903,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2903,6 +2912,7 @@ public class PolicyIndividualCorporateController {
 					} if(cabang_bank_payor!=null) {
 						Integer id_endors = cabang_bank_payor.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = cabang_bank_payor.getOld();
 							String new_ = cabang_bank_payor.getNew_();
@@ -2917,7 +2927,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2926,6 +2936,7 @@ public class PolicyIndividualCorporateController {
 					} if(kota_bank_payor!=null) {
 						Integer id_endors = kota_bank_payor.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = kota_bank_payor.getOld();
 							String new_ = kota_bank_payor.getNew_();
@@ -2940,7 +2951,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2949,6 +2960,7 @@ public class PolicyIndividualCorporateController {
 					} if(no_rekening_payor!=null) {
 						Integer id_endors = no_rekening_payor.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = no_rekening_payor.getOld();
 							String new_ = no_rekening_payor.getNew_();
@@ -2963,7 +2975,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2972,6 +2984,7 @@ public class PolicyIndividualCorporateController {
 					} if(pemilik_rekening_payor!=null) {
 						Integer id_endors = pemilik_rekening_payor.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = pemilik_rekening_payor.getOld();
 							String new_ = pemilik_rekening_payor.getNew_();
@@ -2986,7 +2999,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -2995,6 +3008,7 @@ public class PolicyIndividualCorporateController {
 					} if(masa_berlaku!=null) {
 						Integer id_endors = masa_berlaku.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = masa_berlaku.getOld();
 							String new_ = masa_berlaku.getNew_();
@@ -3009,7 +3023,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3018,6 +3032,7 @@ public class PolicyIndividualCorporateController {
 					} if(hubungan_payor!=null) {
 						Integer id_endors = hubungan_payor.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = hubungan_payor.getOld();
 							String new_ = hubungan_payor.getNew_();
@@ -3032,7 +3047,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3041,7 +3056,8 @@ public class PolicyIndividualCorporateController {
 					} if(nama_payor!=null) {
 						Integer id_endors = nama_payor.getId_endors();
 						if(id_endors != null) {
-								
+							counter = counter + 1;
+							
 							String old = nama_payor.getOld();
 							String new_ = nama_payor.getNew_();
 							Integer flag_direct = nama_payor.getFlag_direct();
@@ -3055,7 +3071,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3064,6 +3080,7 @@ public class PolicyIndividualCorporateController {
 					} if(nama_perusahaan!=null) {
 						Integer id_endors = nama_perusahaan.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = nama_perusahaan.getOld();
 							String new_ = nama_perusahaan.getNew_();
@@ -3078,7 +3095,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3087,6 +3104,7 @@ public class PolicyIndividualCorporateController {
 					} if(jabatan!=null) {
 						Integer id_endors = jabatan.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = jabatan.getOld();
 							String new_ = jabatan.getNew_();
@@ -3101,7 +3119,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3110,6 +3128,7 @@ public class PolicyIndividualCorporateController {
 					} if(alamat_rumah!=null) {
 						Integer id_endors = alamat_rumah.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = alamat_rumah.getOld();
 							String new_ = alamat_rumah.getNew_();
@@ -3124,7 +3143,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3133,6 +3152,7 @@ public class PolicyIndividualCorporateController {
 					} if(negara!=null) {
 						Integer id_endors = negara.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = negara.getOld();
 							String new_ = negara.getNew_();
@@ -3147,7 +3167,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3156,6 +3176,7 @@ public class PolicyIndividualCorporateController {
 					} if(propinsi!=null) {
 						Integer id_endors = propinsi.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = propinsi.getOld();
 							String new_ = propinsi.getNew_();
@@ -3170,7 +3191,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3179,6 +3200,7 @@ public class PolicyIndividualCorporateController {
 					} if(kabupaten!=null) {
 						Integer id_endors = kabupaten.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kabupaten.getOld();
 							String new_ = kabupaten.getNew_();
@@ -3193,7 +3215,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3202,6 +3224,7 @@ public class PolicyIndividualCorporateController {
 					} if(kecamatan!=null) {
 						Integer id_endors = kecamatan.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = kecamatan.getOld();
 							String new_ = kecamatan.getNew_();
@@ -3216,7 +3239,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3225,6 +3248,7 @@ public class PolicyIndividualCorporateController {
 					} if(kelurahan!=null) {
 						Integer id_endors = kelurahan.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kelurahan.getOld();
 							String new_ = kelurahan.getNew_();
@@ -3239,7 +3263,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3248,6 +3272,7 @@ public class PolicyIndividualCorporateController {
 					} if(kodepos!=null) {
 						Integer id_endors = kodepos.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = kodepos.getOld();
 							String new_ = kodepos.getNew_();
@@ -3262,7 +3287,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3271,6 +3296,7 @@ public class PolicyIndividualCorporateController {
 					} if(area_code_rumah!=null) {
 						Integer id_endors = area_code_rumah.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = area_code_rumah.getOld();
 							String new_ = area_code_rumah.getNew_();
@@ -3285,7 +3311,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3294,6 +3320,7 @@ public class PolicyIndividualCorporateController {
 					} if(telpon_rumah!=null) {
 						Integer id_endors = telpon_rumah.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = telpon_rumah.getOld();
 							String new_ = telpon_rumah.getNew_();
@@ -3308,7 +3335,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3317,6 +3344,7 @@ public class PolicyIndividualCorporateController {
 					} if(no_hp!=null) {
 						Integer id_endors = no_hp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = no_hp.getOld();
 							String new_ = no_hp.getNew_();
@@ -3331,7 +3359,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3340,6 +3368,7 @@ public class PolicyIndividualCorporateController {
 					} if(tujuan!=null) {
 						Integer id_endors = tujuan.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = tujuan.getOld();
 							String new_ = tujuan.getNew_();
@@ -3354,7 +3383,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3363,6 +3392,7 @@ public class PolicyIndividualCorporateController {
 					} if(sumber_dana!=null) {
 						Integer id_endors = sumber_dana.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = sumber_dana.getOld();
 							String new_ = sumber_dana.getNew_();
@@ -3377,7 +3407,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3386,6 +3416,7 @@ public class PolicyIndividualCorporateController {
 					} if(mkl_kerja!=null) {
 						Integer id_endors = mkl_kerja.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = mkl_kerja.getOld();
 							String new_ = mkl_kerja.getNew_();
@@ -3400,7 +3431,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3409,6 +3440,7 @@ public class PolicyIndividualCorporateController {
 					} if(mkl_penghasilan!=null) {
 						Integer id_endors = mkl_penghasilan.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = mkl_penghasilan.getOld();
 							String new_ = mkl_penghasilan.getNew_();
@@ -3423,7 +3455,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3432,6 +3464,7 @@ public class PolicyIndividualCorporateController {
 					} if(mkl_smbr_penghasilan!=null) {
 						Integer id_endors = mkl_smbr_penghasilan.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = mkl_smbr_penghasilan.getOld();
 							String new_ = mkl_smbr_penghasilan.getNew_();
@@ -3446,7 +3479,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3498,6 +3531,7 @@ public class PolicyIndividualCorporateController {
 					if(nama_pp!=null) {
 						Integer id_endors = nama_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = nama_pp.getOld();
 							String new_ = nama_pp.getNew_();
@@ -3512,7 +3546,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3521,6 +3555,7 @@ public class PolicyIndividualCorporateController {
 					} if(jenis_produk!=null) {
 						Integer id_endors = jenis_produk.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = jenis_produk.getOld();
 							String new_ = jenis_produk.getNew_();
@@ -3535,7 +3570,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3544,6 +3579,7 @@ public class PolicyIndividualCorporateController {
 					} if(status!=null) {
 						Integer id_endors = status.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = status.getOld();
 							String new_ = status.getNew_();
@@ -3558,7 +3594,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3567,6 +3603,7 @@ public class PolicyIndividualCorporateController {
 					} if(agama!=null) {
 						Integer id_endors = agama.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = agama.getOld();
 							String new_ = agama.getNew_();
@@ -3581,7 +3618,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3590,6 +3627,7 @@ public class PolicyIndividualCorporateController {
 					} if(kewarganegaraan_pp!=null) {
 						Integer id_endors = kewarganegaraan_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kewarganegaraan_pp.getOld();
 							String new_ = kewarganegaraan_pp.getNew_();
@@ -3604,7 +3642,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3613,6 +3651,7 @@ public class PolicyIndividualCorporateController {
 					} if(npwp!=null) {
 						Integer id_endors = npwp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = npwp.getOld();
 							String new_ = npwp.getNew_();
@@ -3627,7 +3666,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3636,6 +3675,7 @@ public class PolicyIndividualCorporateController {
 					} if(nama_perusahaan_pp!=null) {
 						Integer id_endors = nama_perusahaan_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = nama_perusahaan_pp.getOld();
 							String new_ = nama_perusahaan_pp.getNew_();
@@ -3650,7 +3690,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3659,6 +3699,7 @@ public class PolicyIndividualCorporateController {
 					} if(jabatan_pp!=null) {
 						Integer id_endors = jabatan_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = jabatan_pp.getOld();
 							String new_ = jabatan_pp.getNew_();
@@ -3673,7 +3714,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3682,6 +3723,7 @@ public class PolicyIndividualCorporateController {
 					} if(uraian_pekerjaan!=null) {
 						Integer id_endors = uraian_pekerjaan.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = uraian_pekerjaan.getOld();
 							String new_ = uraian_pekerjaan.getNew_();
@@ -3696,7 +3738,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3705,6 +3747,7 @@ public class PolicyIndividualCorporateController {
 					} if(alamat_kantor!=null) {
 						Integer id_endors = alamat_kantor.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = alamat_kantor.getOld();
 							String new_ = alamat_kantor.getNew_();
@@ -3719,7 +3762,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3728,6 +3771,7 @@ public class PolicyIndividualCorporateController {
 					} if(propinsi_kantor!=null) {
 						Integer id_endors = propinsi_kantor.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = propinsi_kantor.getOld();
 							String new_ = propinsi_kantor.getNew_();
@@ -3742,7 +3786,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3751,6 +3795,8 @@ public class PolicyIndividualCorporateController {
 					} if(kabupaten_kantor!=null) {
 						Integer id_endors = kabupaten_kantor.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
+							
 								
 							String old = kabupaten_kantor.getOld();
 							String new_ = kabupaten_kantor.getNew_();
@@ -3765,7 +3811,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3774,6 +3820,7 @@ public class PolicyIndividualCorporateController {
 					} if(kecamatan_kantor!=null) {
 						Integer id_endors = kecamatan_kantor.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kecamatan_kantor.getOld();
 							String new_ = kecamatan_kantor.getNew_();
@@ -3788,7 +3835,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3797,8 +3844,10 @@ public class PolicyIndividualCorporateController {
 					} if(kelurahan_kantor!=null) {
 						
 						Integer id_endors = kelurahan_kantor.getId_endors();
+						
 						if(id_endors != null) {
-							
+							counter = counter + 1;
+								
 							String old = kelurahan_kantor.getOld();
 							String new_ = kelurahan_kantor.getNew_();
 							Integer flag_direct = kelurahan_kantor.getFlag_direct();
@@ -3812,7 +3861,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3821,6 +3870,7 @@ public class PolicyIndividualCorporateController {
 					} if(kodepos_kantor!=null) {
 						Integer id_endors = kodepos_kantor.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kodepos_kantor.getOld();
 							String new_ = kodepos_kantor.getNew_();
@@ -3835,7 +3885,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3844,6 +3894,7 @@ public class PolicyIndividualCorporateController {
 					} if(area_code_rumah_pp!=null) {
 						Integer id_endors = area_code_rumah_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 							
 							String old = area_code_rumah_pp.getOld();
 							String new_ = area_code_rumah_pp.getNew_();
@@ -3858,7 +3909,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3866,8 +3917,10 @@ public class PolicyIndividualCorporateController {
 						}
 					} if(telpon_rumah_pp!=null) {
 						Integer id_endors = telpon_rumah_pp.getId_endors();
+						
 						if(id_endors != null) {
-								
+							counter = counter + 1;
+									
 							String old = telpon_rumah_pp.getOld();
 							String new_ = telpon_rumah_pp.getNew_();
 							Integer flag_direct = telpon_rumah_pp.getFlag_direct();
@@ -3881,7 +3934,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3890,6 +3943,7 @@ public class PolicyIndividualCorporateController {
 					} if(alamat_rumah_pp!=null) {
 						Integer id_endors = alamat_rumah_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = alamat_rumah_pp.getOld();
 							String new_ = alamat_rumah_pp.getNew_();
@@ -3904,7 +3958,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3913,6 +3967,7 @@ public class PolicyIndividualCorporateController {
 					} if(propinsi_rumah!=null) {
 						Integer id_endors = propinsi_rumah.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = propinsi_rumah.getOld();
 							String new_ = propinsi_rumah.getNew_();
@@ -3927,7 +3982,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3936,6 +3991,7 @@ public class PolicyIndividualCorporateController {
 					} if(kabupaten_rumah!=null) {
 						Integer id_endors = kabupaten_rumah.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kabupaten_rumah.getOld();
 							String new_ = kabupaten_rumah.getNew_();
@@ -3950,7 +4006,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3959,6 +4015,7 @@ public class PolicyIndividualCorporateController {
 					} if(kecamatan_rumah!=null) {
 						Integer id_endors = kecamatan_rumah.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kecamatan_rumah.getOld();
 							String new_ = kecamatan_rumah.getNew_();
@@ -3973,7 +4030,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -3982,6 +4039,7 @@ public class PolicyIndividualCorporateController {
 					} if(kelurahan_rumah!=null) {
 						Integer id_endors = kelurahan_rumah.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kelurahan_rumah.getOld();
 							String new_ = kelurahan_rumah.getNew_();
@@ -3996,7 +4054,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4005,6 +4063,7 @@ public class PolicyIndividualCorporateController {
 					} if(kodepos_rumah!=null) {
 						Integer id_endors = kodepos_rumah.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kodepos_rumah.getOld();
 							String new_ = kodepos_rumah.getNew_();
@@ -4019,7 +4078,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4028,6 +4087,7 @@ public class PolicyIndividualCorporateController {
 					} if(alamat_tpt_tinggal!=null) {
 						Integer id_endors = alamat_tpt_tinggal.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = alamat_tpt_tinggal.getOld();
 							String new_ = alamat_tpt_tinggal.getNew_();
@@ -4042,7 +4102,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4051,7 +4111,8 @@ public class PolicyIndividualCorporateController {
 					} if(korespondensi_flag!=null) {
 						Integer id_endors = korespondensi_flag.getId_endors();
 						if(id_endors != null) {
-								
+							counter = counter + 1;
+							
 							String old = korespondensi_flag.getOld();
 							String new_ = korespondensi_flag.getNew_();
 							Integer flag_direct = korespondensi_flag.getFlag_direct();
@@ -4065,7 +4126,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4074,6 +4135,7 @@ public class PolicyIndividualCorporateController {
 					} if(nama_bank_pp!=null) {
 						Integer id_endors = nama_bank_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = nama_bank_pp.getOld();
 							String new_ = nama_bank_pp.getNew_();
@@ -4088,7 +4150,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4097,6 +4159,7 @@ public class PolicyIndividualCorporateController {
 					} if(cabang_bank_pp!=null) {
 						Integer id_endors = cabang_bank_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = cabang_bank_pp.getOld();
 							String new_ = cabang_bank_pp.getNew_();
@@ -4111,7 +4174,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4120,6 +4183,7 @@ public class PolicyIndividualCorporateController {
 					} if(kota_bank_pp!=null) {
 						Integer id_endors = kota_bank_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kota_bank_pp.getOld();
 							String new_ = kota_bank_pp.getNew_();
@@ -4134,7 +4198,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4143,6 +4207,8 @@ public class PolicyIndividualCorporateController {
 					} if(no_rekening_pp!=null) {
 						Integer id_endors = no_rekening_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
+							
 								
 							String old = no_rekening_pp.getOld();
 							String new_ = no_rekening_pp.getNew_();
@@ -4157,7 +4223,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4166,7 +4232,8 @@ public class PolicyIndividualCorporateController {
 					} if(pemilik_rekening_pp!=null) {
 						Integer id_endors = pemilik_rekening_pp.getId_endors();
 						if(id_endors != null) {
-							
+							counter = counter + 1;
+								
 						String old = pemilik_rekening_pp.getOld();
 						String new_ = pemilik_rekening_pp.getNew_();
 						Integer flag_direct = pemilik_rekening_pp.getFlag_direct();
@@ -4180,7 +4247,7 @@ public class PolicyIndividualCorporateController {
 						
 						if(flag_direct==1) {
 							customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 						} else if (flag_direct==2) {
 							customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 									msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4190,7 +4257,8 @@ public class PolicyIndividualCorporateController {
 					} if(email!=null) {
 						Integer id_endors = email.getId_endors();
 						if(id_endors != null) {
-							
+							counter = counter + 1;
+								
 							String old = email.getOld();
 							String new_ = email.getNew_();
 							Integer flag_direct = email.getFlag_direct();
@@ -4204,7 +4272,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4213,6 +4281,7 @@ public class PolicyIndividualCorporateController {
 					} if(tipe_usaha_pp!=null) {
 						Integer id_endors = tipe_usaha_pp.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = tipe_usaha_pp.getOld();
 							String new_ = tipe_usaha_pp.getNew_();
@@ -4227,7 +4296,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4236,6 +4305,7 @@ public class PolicyIndividualCorporateController {
 					} if(negara_tinggal!=null) {
 						Integer id_endors = negara_tinggal.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = negara_tinggal.getOld();
 							String new_ = negara_tinggal.getNew_();
@@ -4250,7 +4320,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4259,6 +4329,7 @@ public class PolicyIndividualCorporateController {
 					} if(propinsi_tinggal!=null) {
 						Integer id_endors = propinsi_tinggal.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = propinsi_tinggal.getOld();
 							String new_ = propinsi_tinggal.getNew_();
@@ -4273,7 +4344,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4282,7 +4353,8 @@ public class PolicyIndividualCorporateController {
 					} if(kabupaten_tinggal!=null) {
 						Integer id_endors = kabupaten_tinggal.getId_endors();
 						if(id_endors != null) {
-								
+							counter = counter + 1;
+							
 							String old = kabupaten_tinggal.getOld();
 							String new_ = kabupaten_tinggal.getNew_();
 							Integer flag_direct = kabupaten_tinggal.getFlag_direct();
@@ -4296,7 +4368,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4305,6 +4377,7 @@ public class PolicyIndividualCorporateController {
 					} if(kecamatan_tinggal!=null) {
 						Integer id_endors = kecamatan_tinggal.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kecamatan_tinggal.getOld();
 							String new_ = kecamatan_tinggal.getNew_();
@@ -4319,7 +4392,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4328,6 +4401,7 @@ public class PolicyIndividualCorporateController {
 					} if(kelurahan_tinggal!=null) {
 						Integer id_endors = kelurahan_tinggal.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kelurahan_tinggal.getOld();
 							String new_ = kelurahan_tinggal.getNew_();
@@ -4342,7 +4416,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4352,6 +4426,7 @@ public class PolicyIndividualCorporateController {
 					} if(kodepos_tinggal!=null) {
 						Integer id_endors = kodepos_tinggal.getId_endors();
 						if(id_endors != null) {
+							counter = counter + 1;
 								
 							String old = kodepos_tinggal.getOld();
 							String new_ = kodepos_tinggal.getNew_();
@@ -4366,7 +4441,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4389,7 +4464,8 @@ public class PolicyIndividualCorporateController {
 					    if(msaw_first!=null) {
 							Integer id_endors = msaw_first.getId_endors();
 							if(id_endors != null) {
-								
+								counter = counter + 1;
+									
 							String old = msaw_first.getOld();
 							String new_ = msaw_first.getNew_();
 							Integer flag_direct = msaw_first.getFlag_direct();
@@ -4403,7 +4479,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4412,6 +4488,8 @@ public class PolicyIndividualCorporateController {
 						} if(msaw_birth!=null) {
 							Integer id_endors = msaw_birth.getId_endors();
 							if(id_endors != null) {
+								counter = counter + 1;
+								
 								
 							String old = msaw_birth.getOld();
 							String new_ = msaw_birth.getNew_();
@@ -4426,7 +4504,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4435,7 +4513,8 @@ public class PolicyIndividualCorporateController {
 						} if(msaw_persen!=null) {
 							Integer id_endors = msaw_persen.getId_endors();
 							if(id_endors != null) {
-								
+								counter = counter + 1;
+									
 							String old = msaw_persen.getOld();
 							String new_ = msaw_persen.getNew_();
 							Integer flag_direct = msaw_persen.getFlag_direct();
@@ -4449,7 +4528,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4458,7 +4537,8 @@ public class PolicyIndividualCorporateController {
 						} if(lsre_relation!=null) {
 							Integer id_endors = lsre_relation.getId_endors();
 							if(id_endors != null) {
-								
+								counter = counter + 1;
+										
 							String old = lsre_relation.getOld();
 							String new_ = lsre_relation.getNew_();
 							Integer flag_direct = lsre_relation.getFlag_direct();
@@ -4472,7 +4552,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4481,7 +4561,8 @@ public class PolicyIndividualCorporateController {
 						} if(msaw_sex!=null) {
 							Integer id_endors = msaw_sex.getId_endors();
 							if(id_endors != null) {
-								
+								counter = counter + 1;
+									
 							String old = msaw_sex.getOld();
 							String new_ = msaw_sex.getNew_();
 							Integer flag_direct = msaw_sex.getFlag_direct();
@@ -4495,7 +4576,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4519,6 +4600,8 @@ public class PolicyIndividualCorporateController {
 					    if(msaw_first!=null) {
 							Integer id_endors = msaw_first.getId_endors();
 							if(id_endors != null) {
+								counter = counter + 1;
+								
 								
 							String old = msaw_first.getOld();
 							String new_ = msaw_first.getNew_();
@@ -4533,7 +4616,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4542,6 +4625,7 @@ public class PolicyIndividualCorporateController {
 						} if(msaw_birth!=null) {
 							Integer id_endors = msaw_birth.getId_endors();
 							if(id_endors != null) {
+								counter = counter + 1;
 								
 							String old = msaw_birth.getOld();
 							String new_ = msaw_birth.getNew_();
@@ -4556,7 +4640,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4564,8 +4648,10 @@ public class PolicyIndividualCorporateController {
 							}
 						} if(msaw_persen!=null) {
 							Integer id_endors = msaw_persen.getId_endors();
+							
 							if(id_endors != null) {
-								
+								counter = counter + 1;
+									
 							String old = msaw_persen.getOld();
 							String new_ = msaw_persen.getNew_();
 							Integer flag_direct = msaw_persen.getFlag_direct();
@@ -4579,7 +4665,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4588,6 +4674,8 @@ public class PolicyIndividualCorporateController {
 						} if(lsre_relation!=null) {
 							Integer id_endors = lsre_relation.getId_endors();
 							if(id_endors != null) {
+								
+								counter = counter + 1;
 								
 							String old = lsre_relation.getOld();
 							String new_ = lsre_relation.getNew_();
@@ -4602,7 +4690,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
@@ -4611,7 +4699,8 @@ public class PolicyIndividualCorporateController {
 						} if(msaw_sex!=null) {
 							Integer id_endors = msaw_sex.getId_endors();
 							if(id_endors != null) {
-								
+								counter = counter + 1;
+									
 							String old = msaw_sex.getOld();
 							String new_ = msaw_sex.getNew_();
 							Integer flag_direct = msaw_sex.getFlag_direct();
@@ -4625,7 +4714,7 @@ public class PolicyIndividualCorporateController {
 							
 							if(flag_direct==1) {
 								customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
+										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom, counter);
 							} else if (flag_direct==2) {
 								customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 										msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);

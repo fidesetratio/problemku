@@ -1364,12 +1364,13 @@ public class VegaServices {
 	
 	
 	
-	public void insertLstUlangan(String reg_spaj, String msen_alasan) {
+	public void insertLstUlangan(String reg_spaj, String msen_alasan, Integer counter) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
 		hashMap.put("reg_spaj", reg_spaj);
 		hashMap.put("msen_alasan", msen_alasan);
-		dao.insertLstUlangan(hashMap);
+		hashMap.put("counter", counter);
+			dao.insertLstUlangan(hashMap);
 	}
 
 	

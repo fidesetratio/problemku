@@ -1874,7 +1874,7 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 	
 	public void PolicyAlterationDirect(String reg_spaj, String msen_alasan, Integer lsje_id, String msde_old1, String msde_old2,
 			String msde_old3, String msde_old4, String msde_old5, String msde_old6, String msde_new1, String msde_new2, String msde_new3,
-			String msde_new4, String msde_new5, String msde_new6, String kolom)
+			String msde_new4, String msde_new5, String msde_new6, String kolom, Integer counter)
 	{
 		Integer lspd_id = 99;
 		
@@ -1889,14 +1889,8 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 		services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 				msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6);
 		
-		try {
-			Thread.currentThread().sleep(1);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		//INSERT LST ULANGAN
-		services.insertLstUlangan(reg_spaj, msen_alasan);
+		services.insertLstUlangan(reg_spaj, msen_alasan,counter);
 		
 		
 		

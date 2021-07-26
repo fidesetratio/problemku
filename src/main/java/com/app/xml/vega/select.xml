@@ -1190,7 +1190,10 @@
                 F.LKU_SYMBOL,
                 (select sum(b.MTU_JUMLAH) from eka.mst_ulink a 
                     inner join eka.mst_trans_ulink b on a.reg_spaj = b.reg_spaj and a.mu_ke = b.mu_ke
-                where b.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}) AS MPT_JUMLAH,
+                where b.reg_spaj = #{reg_spaj, jdbcType=VARCHAR} and
+                TO_CHAR (b.MTU_TGL_TRANS, 'yyyymmdd') = TO_CHAR (TRANS.MTU_TGL_TRANS, 'yyyymmdd') and 
+                TRANS.MU_KE = b.mu_ke 
+                ) AS MPT_JUMLAH,
                 A.MU_TGL_TRANS AS CREATED_DATE,
                 NVL(TO_DATE(TRANS.TGL_FILLING, 'DD/MM/YYYY'), TO_DATE(A.MU_TGL_TRANS, 'DD/MM/YYYY')) DATE_STATUS,
                 (CASE

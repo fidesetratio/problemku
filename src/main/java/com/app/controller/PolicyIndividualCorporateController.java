@@ -32,25 +32,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.services.VegaServices;
-import com.app.services.VegaServicesProd;
 import com.app.feignclient.ServiceNotification;
-import com.app.feignclient.ServiceOTP;
 import com.app.model.Anggota;
 import com.app.model.Article;
 import com.app.model.Beneficiary;
 import com.app.model.Data;
-import com.app.model.DetailDestinationSwitching;
 import com.app.model.DetailPolicyAlteration;
-import com.app.model.DownloadReportHr;
-import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Inbox;
 import com.app.model.Insured;
@@ -64,8 +57,6 @@ import com.app.model.PolicyHolder;
 import com.app.model.Provider;
 import com.app.model.PushNotif;
 import com.app.model.ReportHr;
-import com.app.model.SubmitPolicyAlteration;
-import com.app.model.SwitchingRedirection;
 import com.app.model.User;
 import com.app.model.UserCorporate;
 import com.app.model.UserHR;
@@ -76,7 +67,6 @@ import com.app.model.request.RequestDeleteAllInbox;
 import com.app.model.request.RequestDownloadArticle;
 import com.app.model.request.RequestDownloadKwitansi;
 import com.app.model.request.RequestDownloadReportHr;
-import com.app.model.request.RequestFurtherClaimSubmission;
 import com.app.model.request.RequestInbox;
 import com.app.model.request.RequestListArticle;
 import com.app.model.request.RequestListNAB;
@@ -85,19 +75,20 @@ import com.app.model.request.RequestNabchart;
 import com.app.model.request.RequestPushNotif;
 import com.app.model.request.RequestReadAllInbox;
 import com.app.model.request.RequestReportHr;
-import com.app.model.request.RequestSMSOTP;
 import com.app.model.request.RequestSaveToken;
-import com.app.model.request.RequestSendOTP;
 import com.app.model.request.RequestUpdateInboxStatus;
 import com.app.model.request.RequestVersionCode;
 import com.app.model.request.RequestViewPolicyAlteration;
 import com.app.model.request.RequestViewProvider;
-import com.app.model.ResponseData;
-import com.app.utils.VegaCustomResourceLoader;
+import com.app.services.VegaServices;
+import com.app.services.VegaServicesProd;
+import com.app.utils.DetailPolicyAlterationUtility;
+import com.app.utils.PolicyAlterationListener;
+import com.app.utils.PolicyAlterationUtility;
 import com.app.utils.ResponseMessage;
+import com.app.utils.VegaCustomResourceLoader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 
 @RestController
 public class PolicyIndividualCorporateController {
@@ -112,7 +103,6 @@ public class PolicyIndividualCorporateController {
 	
 	@Value("${path.download.article}")
 	private String pathDownloadArticle;
-	
 	@Value("${path.download.reporthr}")
 	private String pathDownloadReportHr;
 	
@@ -2656,8 +2646,14 @@ public class PolicyIndividualCorporateController {
 		return res;
 	}
 	
-	@RequestMapping(value = "/submitpolicyalteration", produces = "application/json", method = RequestMethod.POST)
-	public String submitPolicyAlteration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
+	
+	
+		
+	
+	
+	
+	@RequestMapping(value = "/submitpolicyalteration00", produces = "application/json", method = RequestMethod.POST)
+	public String submitpolicyalteration00(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
 			HttpServletRequest request) {
 		
 		
@@ -5185,12 +5181,10 @@ public class PolicyIndividualCorporateController {
 					      }; 
 					      String[] children = dir.list(filter);
 					      if (children == null) {
-					         //System.out.println("Either dir does not exist or is not a directory");
 					         filename = null;					         
 					      } else { 
 					         for (int j = 0; j< children.length; j++) {
 					            filename = children[j];
-					            //System.out.println(filename);
 					         } 
 					      }
 						
@@ -5200,7 +5194,6 @@ public class PolicyIndividualCorporateController {
 					    	path = null;
 					    }
 					    
-					    //System.out.println(path);
 						dataTemp.put("no_batch", no_batch_);
 						dataTemp.put("tipe_batch", tipe_batch);
 						dataTemp.put("tgl_input", tgl_input_);

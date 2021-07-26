@@ -358,6 +358,7 @@ public interface VegaMapper {
 	public PolicyAlteration selectKorespondensi(String no_polis);
 	
 	public ArrayList<Endorse> selectListPolicyAlteration(String reg_spaj);
+	public ArrayList<Endorse> selectListPolicyAlterationInProcessing(String reg_spaj);
 	
 	public ArrayList<DropdownPolicyAlteration> selectListPernikahan();
 

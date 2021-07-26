@@ -1315,6 +1315,10 @@ public class VegaServices {
 		return dao.selectListPolicyAlteration(reg_spaj);
 	}
 
+	public ArrayList<Endorse> selectListPolicyAlterationInProcessing(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListPolicyAlterationInProcessing(reg_spaj);
+	}
 	public ArrayList<DropdownPolicyAlteration> selectListPernikahan() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListPernikahan();

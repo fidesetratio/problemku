@@ -18,11 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.feignclient.ServiceNotification;
 import com.app.model.DetailPolicyAlteration;
+import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.Pemegang;
+import com.app.model.PolicyAlteration;
+import com.app.model.Tertanggung;
 import com.app.services.VegaServices;
 import com.app.services.VegaServicesProd;
 import com.app.utils.DetailPolicyAlterationUtility;
+import com.app.utils.PolicyAlterationCounter;
 import com.app.utils.PolicyAlterationListener;
 import com.app.utils.PolicyAlterationUtility;
 import com.app.utils.ResponseMessage;
@@ -215,8 +219,7 @@ public class PolicyAlterationIndividualController {
 		String no_polis = PolicyAlterationUtility.getFirstLevelJsonValue(req, "no_polis");
 		ArrayList<Exception> internalErrors = new ArrayList<Exception>();
 		DetailPolicyAlterationUtility modelUtility  = new DetailPolicyAlterationUtility();
-		
-			
+		PolicyAlterationCounter counter = new PolicyAlterationCounter();	
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang paramSelectSPAJ = new Pemegang();
@@ -245,31 +248,43 @@ public class PolicyAlterationIndividualController {
 									detailPolicyAlteration.setStatus("INPROGRESS");
 								}else {
 									 Boolean direct = (detailPolicyAlteration.getFlag_direct()==1?true:false);
+									 
+									 String old = detailPolicyAlteration.getOld();
+										String new_ = detailPolicyAlteration.getNew_();
+										Integer flag_direct = detailPolicyAlteration.getFlag_direct();
+										String kolom = endorseColumn;
+										Integer lsje_id = detailPolicyAlteration.getId_endors();
+										Endorse endors = services.selectListJenisEndors(lsje_id);
+										String msen_alasan = endors.getLsje_jenis();
+										String msde_old1 = old;
+										String msde_new1 = new_;
+										String msde_new6 = null;
+										String msde_old2 = null;
+										String msde_old5 = null;
+										String msde_old3 = null;
+										String msde_old6 = null;
+									
+										String msde_old4 = null;
+										String msde_new4 = null;
+								        String msde_new2 =null;
+									    String msde_new3 = null;
+									    String msde_new5 = null;
+						
+									    
+									    
 									 if(direct) {
-											detailPolicyAlteration.setStatus("SUCCESS");
-										 
+											boolean returnofsuccess = directProcess(lsje_id, new_,reg_spaj,no_polis,key);
+											
+											if(returnofsuccess) {
+												customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+														msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter.getCounter());
+												counter.addOne();
+												detailPolicyAlteration.setStatus("SUCCESS");
+															
+											};
+									
 									 }else {
-										    String old = detailPolicyAlteration.getOld();
-											String new_ = detailPolicyAlteration.getNew_();
-											Integer flag_direct = detailPolicyAlteration.getFlag_direct();
-											String kolom = endorseColumn;
-											Integer lsje_id = detailPolicyAlteration.getId_endors();
-											Endorse endors = services.selectListJenisEndors(lsje_id);
-											String msen_alasan = endors.getLsje_jenis();
-											String msde_old1 = old;
-											String msde_new1 = new_;
-											String msde_new6 = null;
-											String msde_old2 = null;
-											String msde_old5 = null;
-											String msde_old3 = null;
-											String msde_old6 = null;
-										
-											String msde_old4 = null;
-											String msde_new4 = null;
-									        String msde_new2 =null;
-										    String msde_new3 = null;
-										    String msde_new5 = null;
-										customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+										    			customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 													msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
 										detailPolicyAlteration.setStatus("SUCCESS");
 										
@@ -302,31 +317,46 @@ public class PolicyAlterationIndividualController {
 											detailPolicyAlteration.setStatus("INPROGRESS");
 										}else {
 											 Boolean direct = (detailPolicyAlteration.getFlag_direct()==1?true:false);
+											 
+											 
+											    String old = detailPolicyAlteration.getOld();
+												String new_ = detailPolicyAlteration.getNew_();
+												Integer flag_direct = detailPolicyAlteration.getFlag_direct();
+												String kolom = endorseColumn;
+												
+												Integer lsje_id = detailPolicyAlteration.getId_endors();
+												Endorse endors = services.selectListJenisEndors(lsje_id);
+												String msen_alasan = endors.getLsje_jenis();
+												String msde_old1 = old;
+												String msde_new1 = new_;
+												String msde_new6 = null;
+												String msde_old2 = null;
+												String msde_old5 = null;
+												String msde_old3 = null;
+												String msde_old6 = null;
+											
+												String msde_old4 = null;
+												String msde_new4 = null;
+										        String msde_new2 =null;
+											    String msde_new3 = null;
+											    String msde_new5 = null;
+											
+											 
 											 if(direct) {
+								
+												boolean returnofsuccess = directProcess(lsje_id, new_,reg_spaj,no_polis,key);
+												
+												if(returnofsuccess) {
+													detailPolicyAlteration.setStatus("SUCCESS");
+													customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+															msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter.getCounter());
+													counter.addOne();
+															
+												};
+										
 											 }else {
 												 
-												    String old = detailPolicyAlteration.getOld();
-													String new_ = detailPolicyAlteration.getNew_();
-													Integer flag_direct = detailPolicyAlteration.getFlag_direct();
-													String kolom = endorseColumn;
-													
-													Integer lsje_id = detailPolicyAlteration.getId_endors();
-													Endorse endors = services.selectListJenisEndors(lsje_id);
-													String msen_alasan = endors.getLsje_jenis();
-													String msde_old1 = old;
-													String msde_new1 = new_;
-													String msde_new6 = null;
-													String msde_old2 = null;
-													String msde_old5 = null;
-													String msde_old3 = null;
-													String msde_old6 = null;
-												
-													String msde_old4 = null;
-													String msde_new4 = null;
-											        String msde_new2 =null;
-												    String msde_new3 = null;
-												    String msde_new5 = null;
-												customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
+												    customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
 															msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
 											
 												detailPolicyAlteration.setStatus("SUCCESS");
@@ -398,4 +428,208 @@ public class PolicyAlterationIndividualController {
 	}
 	
 	
+	public boolean directProcess(Integer lsje_id, String value, String reg_spaj, String no_polis, String key) {
+			boolean success = false;
+			String valueThatNeedToModified = value;
+			Pemegang pemegang = new Pemegang();
+			pemegang.setMspo_policy_no(no_polis);
+			pemegang = services.selectPemegang(pemegang);
+			Tertanggung tertanggung = new Tertanggung();
+			tertanggung.setMspo_policy_no(no_polis);
+			tertanggung = services.selectTertanggung(tertanggung);
+			PolicyAlteration policyAlteration = new PolicyAlteration();
+			Integer lsag_id = 6;
+			Integer mspe_sts_mrt_new = 1;
+			ArrayList<DropdownPolicyAlteration> getListPernikahan = services.selectListPernikahan();
+			ArrayList<DropdownPolicyAlteration> getListNegara = services.selectListNegara();
+			
+			
+			switch(lsje_id) {
+				case 61: // Perubahan agama pemegang polis
+					if(value.equals("ISLAM")) {
+						lsag_id = 1;
+					} else if(value.equals("KRISTEN PROTESTAN")) {
+						lsag_id = 2;
+					} else if(value.equals("KRISTEN KATOLIK")) {
+						lsag_id = 3;
+					} else if(value.equals("BUDHA")) {
+						lsag_id = 4;
+					} else if(value.equals("HINDU")) {
+						lsag_id = 5;
+					} else if(value.equals("[NON]")) {
+						lsag_id = 0;
+					} else if(value.equals("LAIN - LAIN")) {
+						lsag_id = 6;
+					} 
+					if(pemegang != null && pemegang.getMcl_id() != null) {
+						policyAlteration.setLsag_id(lsag_id);
+						policyAlteration.setMcl_id(pemegang.getMcl_id());
+						services.updateAgama(policyAlteration);
+						success = true;
+					}
+				break;
+				case 62: // Perubahan agama tertanggung
+					if(value.equals("ISLAM")) {
+						lsag_id = 1;
+					} else if(value.equals("KRISTEN PROTESTAN")) {
+						lsag_id = 2;
+					} else if(value.equals("KRISTEN KATOLIK")) {
+						lsag_id = 3;
+					} else if(value.equals("BUDHA")) {
+						lsag_id = 4;
+					} else if(value.equals("HINDU")) {
+						lsag_id = 5;
+					} else if(value.equals("[NON]")) {
+						lsag_id = 0;
+					} else if(value.equals("LAIN - LAIN")) {
+						lsag_id = 6;
+					} 
+					if(tertanggung != null && tertanggung.getMcl_id() != null) {
+					policyAlteration.setLsag_id(lsag_id);
+					policyAlteration.setMcl_id(tertanggung.getMcl_id());
+					services.updateAgama(policyAlteration);
+					success = true;
+					}
+				break;
+				case 67:
+		
+					if(pemegang != null) {
+						try {
+							policyAlteration.setMcl_id(pemegang.getMcl_id());
+							policyAlteration.setMspe_sts_mrt(Integer.parseInt(value));
+							services.updateStatus(policyAlteration);
+							success = true;
+						}catch(NumberFormatException e) {
+							
+						}
+				}
+					
+				break;
+				case 68:
+					for(DropdownPolicyAlteration pernikahan: getListPernikahan) {
+						Integer lsst_id = pernikahan.getLsst_id();
+						String lsst_name = pernikahan.getLsst_name();
+						if(lsst_name.equalsIgnoreCase(value.trim())) {
+							mspe_sts_mrt_new = lsst_id;
+							break;
+						}
+					}
+					
+					if(tertanggung != null) {
+						try {
+						policyAlteration.setMcl_id(tertanggung.getMcl_id());
+						policyAlteration.setMspe_sts_mrt(Integer.parseInt(value));
+						
+						services.updateStatus(policyAlteration);
+						success = true;
+						}catch(NumberFormatException e) {
+							
+						}
+					}
+					
+					
+				break;	
+				
+				
+				
+				case 90:
+					if(key != null) {
+					  if(key.equalsIgnoreCase("tipe_usaha_tt")) {
+						  
+						  if(tertanggung != null) {
+							      policyAlteration.setMcl_id(tertanggung.getMcl_id());
+							      policyAlteration.setTipe_usaha_pp(value);
+								  services.updateJenisCompanyPekerjaan(policyAlteration);
+								  success = true;
+						  }
+						  
+					  }else if(key.equalsIgnoreCase("jabatan_tt")) {
+						  if(tertanggung != null) {
+						      policyAlteration.setMcl_id(tertanggung.getMcl_id());
+						      policyAlteration.setMpn_job_desc(value);
+							  services.updatejobdesc(policyAlteration);
+							  success = true;
+					  }
+					  
+						  
+					  }else if(key.equalsIgnoreCase("nama_perusahaan_tt")) {
+						  policyAlteration.setMcl_id(tertanggung.getMcl_id());
+					      policyAlteration.setNama_perusahaan_pp(value);
+						  services.updateCompanyPekerjaan(policyAlteration);
+						  success = true;
+				
+					  }
+					  
+					};
+					
+				break;
+					
+				case 89:
+					
+					if(key != null) {
+						  if(key.equalsIgnoreCase("tipe_usaha_pp")) {
+							  
+							  if(pemegang != null) {
+								      policyAlteration.setMcl_id(pemegang.getMcl_id());
+								      policyAlteration.setTipe_usaha_pp(value);
+									  services.updateJenisCompanyPekerjaan(policyAlteration);
+									  success = true;
+							  }
+							  
+						  }else if(key.equalsIgnoreCase("jabatan_pp")) {
+							  if(pemegang != null) {
+							      policyAlteration.setMcl_id(pemegang.getMcl_id());
+							      policyAlteration.setMpn_job_desc(value);
+								  services.updatejobdesc(policyAlteration);
+								  success = true;
+						  }
+							  
+						  }else if(key.equalsIgnoreCase("nama_perusahaan_pp")) {
+							 if(pemegang != null) {
+								  policyAlteration.setMcl_id(pemegang.getMcl_id());
+							      policyAlteration.setNama_perusahaan_pp(value);
+								  services.updateCompanyPekerjaan(policyAlteration);
+								  success = true;
+							 };
+					
+						  }
+						  
+						};
+					
+				
+					break;
+					
+				case 34:
+					if(pemegang != null) {
+						policyAlteration.setMcl_id(pemegang.getMcl_id());
+						policyAlteration.setAlamat_kantor(value);
+						services.updateAlamatKantor(policyAlteration);
+						success = true;
+					}
+				break;
+				case 39:
+					if(pemegang != null) {
+						Integer lsne_id = 0;
+						for(DropdownPolicyAlteration n:getListNegara) {
+							 lsne_id = n.getLsne_id();
+							String lsne_name = n.getLsne_note();
+							if(lsne_name.equalsIgnoreCase(value.trim())) {
+								break;
+								
+							}
+						}
+						if(lsne_id > 0)
+						{
+						policyAlteration.setMcl_id(pemegang.getMcl_id());
+						policyAlteration.setLsne_id(lsne_id);
+						services.updateKewarganegaraan(policyAlteration);
+						success = true;
+						}
+					}
+				
+				break;
+			}
+			
+			return success;
+	}
 }

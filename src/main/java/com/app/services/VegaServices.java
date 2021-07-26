@@ -1423,6 +1423,21 @@ public class VegaServices {
 		dao.updateJenisPekerjaan(policyAlteration);
 	}
 
+	public void updateJenisCompanyPekerjaan(PolicyAlteration policyAlteration) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.updateJenisCompanyPekerjaan(policyAlteration);
+	}
+
+	public void updateCompanyPekerjaan(PolicyAlteration policyAlteration) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.updateCompanyPekerjaan(policyAlteration);
+	}
+
+	public void updatejobdesc(PolicyAlteration policyAlteration) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.updatejobdesc(policyAlteration);
+	}
+
 	public PembayarPremi selectPembayarPremi(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectPembayarPremi(no_polis);

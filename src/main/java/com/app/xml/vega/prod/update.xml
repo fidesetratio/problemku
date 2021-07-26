@@ -113,6 +113,15 @@
     	where mcl_id = #{mcl_id, jdbcType=VARCHAR}
     </update>
     
+    <update id="updateCompanyPekerjaan" parameterType="com.app.model.PolicyAlteration">
+    	update eka.mst_client_new set mcl_company_name = #{nama_perusahaan_pp, jdbcType=VARCHAR}
+    	where mcl_id = #{mcl_id, jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateJenisCompanyPekerjaan" parameterType="com.app.model.PolicyAlteration">
+    	update eka.mst_client_new set mkl_industri = #{tipe_usaha_pp, jdbcType=VARCHAR}
+    	where mcl_id = #{mcl_id, jdbcType=VARCHAR}
+    </update>
     <update id="updateNotifToken" parameterType="com.app.model.NotifToken">
         update eka.mst_notification_token set token = #{token, jdbcType=VARCHAR}, update_date = sysdate
         where flag_active = 1

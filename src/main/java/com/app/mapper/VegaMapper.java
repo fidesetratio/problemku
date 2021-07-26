@@ -498,8 +498,17 @@ public interface VegaMapper {
 
 	public void updateStatus(PolicyAlteration policyAlteration);
 
+
 	public void updateJenisPekerjaan(PolicyAlteration policyAlteration);
 
+
+	public void updateCompanyPekerjaan(PolicyAlteration policyAlteration);
+	
+
+	public void updateJenisCompanyPekerjaan(PolicyAlteration policyAlteration);
+
+	public void updatejobdesc(PolicyAlteration policyAlteration);
+	
 	public void updateNotifToken(NotifToken notifToken);
 
 	public void updateOtpUsed(MstOTPSimultaneous paramUpdateOtpUsed);

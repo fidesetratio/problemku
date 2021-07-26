@@ -4223,6 +4223,7 @@
 	
 	<select id="selectListPernikahan" resultType="com.app.model.DropdownPolicyAlteration">
 		SELECT * FROM EKA.LST_STATUS
+		
 	</select>
 	
 	<select id="selectListAgama" resultType="com.app.model.DropdownPolicyAlteration">

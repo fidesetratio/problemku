@@ -34,6 +34,13 @@ public class PolicyAlteration implements Serializable {
 	private String mkl_kerja;
 	private String mkl_penghasilan;
 	private String mkl_smbr_penghasilan;
+	public String getMpn_job_desc() {
+		return mpn_job_desc;
+	}
+	public void setMpn_job_desc(String mpn_job_desc) {
+		this.mpn_job_desc = mpn_job_desc;
+	}
+	private String mpn_job_desc;
 	
 	private Integer status_tt;
 	private Integer agama_tt;

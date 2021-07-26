@@ -10,6 +10,7 @@ public class DetailPolicyAlteration implements Serializable {
 	private Integer id_endors;
 	private String old;
 	private String new_;
+	private String new_value;
 	private Integer flag_direct;
 	
 	
@@ -20,6 +21,7 @@ public class DetailPolicyAlteration implements Serializable {
 		object.put("new_", (data.getNew_() == null?JSONObject.NULL:data.getNew_()));
 		object.put("flag_direct", (data.getFlag_direct()==null?JSONObject.NULL:data.getFlag_direct()));
 		object.put("status", (data.getStatus()==null?JSONObject.NULL:data.getStatus()));
+		object.put("new_value", (data.getNew_value()==null?JSONObject.NULL:data.getNew_value()));
 		return object;
 	}
 	public String getGroup() {
@@ -61,6 +63,12 @@ public class DetailPolicyAlteration implements Serializable {
 		this.flag_direct = flag_direct;
 	}	
 
-
+	public String getNew_value() {
+		return new_value;
+	}
+	public void setNew_value(String new_value) {
+		this.new_value = new_value;
+	}
+	
 
 }

@@ -21,7 +21,9 @@ public class DetailPolicyAlteration implements Serializable {
 		object.put("new_", (data.getNew_() == null?JSONObject.NULL:data.getNew_()));
 		object.put("flag_direct", (data.getFlag_direct()==null?JSONObject.NULL:data.getFlag_direct()));
 		object.put("status", (data.getStatus()==null?JSONObject.NULL:data.getStatus()));
+		if(data.getNew_value() != null) {
 		object.put("new_value", (data.getNew_value()==null?JSONObject.NULL:data.getNew_value()));
+		};
 		return object;
 	}
 	public String getGroup() {

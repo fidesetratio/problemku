@@ -126,6 +126,9 @@ public class PolicyAlterationIndividualController {
 							String endorseColumn, String group) {
 						// TODO Auto-generated method stub
 						if(detailPolicyAlteration != null) {
+							
+								
+							
 									detailPolicyAlteration.setStatus("ALLOWED");
 									if(detailPolicyAlteration.getNew_() != null && detailPolicyAlteration.getId_endors() != null) {
 										boolean checkingIsInProgess = (endorseMap.get(detailPolicyAlteration.getId_endors()) !=null? true:false);
@@ -195,6 +198,13 @@ public class PolicyAlterationIndividualController {
 	}
 
 	
+	public String convertToValue(DetailPolicyAlteration policyAlteration, String key) {
+		String str = "";
+		// ngak jadi
+		
+		return str;
+		
+	}
 	
 	
 	@RequestMapping(value = "/submitpolicyalteration", produces = "application/json", method = RequestMethod.POST)

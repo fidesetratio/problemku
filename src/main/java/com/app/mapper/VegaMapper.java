@@ -475,6 +475,8 @@ public interface VegaMapper {
 	public void updateKeyLoginClear(User user);
 
 	public void deleteAllInbox(User user);
+	
+	public void deleteSavedProvider(HashMap<String,Object> params );
 
 	public void updateInboxStatus(User user);
 

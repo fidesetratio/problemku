@@ -62,6 +62,12 @@
     	where jenis_id = 93 and username = #{username, jdbcType=VARCHAR}
     </update>
     
+    
+    <update id="deleteSavedProvider" parameterType="HashMap">
+    	update EKA.LST_SAVED_PROVIDER 
+    	set delflag = '1' 
+    	where username = #{username, jdbcType=VARCHAR} and positionx = #{positionx, jdbcType=VARCHAR} and positiony  = #{positiony, jdbcType=VARCHAR}
+    </update>
     <update id="updateInboxStatus" parameterType="User">
     	update eka.mst_notification_inbox
     	set status = #{new_status, jdbcType=VARCHAR} 

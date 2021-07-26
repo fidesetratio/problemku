@@ -1228,7 +1228,17 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.deleteAllInbox(user);
 	}
+	public void deleteSavedProvider(String username, String  positionx,String positiony) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("username", username);
+		params.put("positionx", positionx);
+		params.put("positiony", positiony);
+		dao.deleteSavedProvider(params);
+	}
+	
 
+	
 	public void updateInboxStatus(User user) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateInboxStatus(user);

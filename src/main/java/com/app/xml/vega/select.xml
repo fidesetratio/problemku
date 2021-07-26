@@ -3,7 +3,7 @@
 	
 	
 	<select id="selectproviderbyusername" parameterType="String" resultType="SavedProvider">
-			select nama_provider as namaProvider, address as alamat, phone, positionx,positiony,username from eka.LST_SAVED_PROVIDER where trim(username) = #{username, jdbcType=VARCHAR} 
+			select nama_provider as namaProvider, address as alamat, phone, positionx,positiony,username from eka.LST_SAVED_PROVIDER where trim(username) = #{username, jdbcType=VARCHAR} and delflag = 0 
   	</select>
 	
 	

@@ -57,7 +57,31 @@ public class ProviderController {
 		return provider;
 	}
 	
-	
+
+	@RequestMapping(value = "/deleteprovider", produces = "application/json", method = RequestMethod.POST)
+	public String searchbyusername(@RequestBody SavedProvider savedProvider,HttpServletRequest request) {
+		String ok = "Ok";
+
+		
+		try
+		{
+			
+			String username = savedProvider.getUsername();
+			String positionx = savedProvider.getPositionx();
+			String positiony = savedProvider.getPositiony();
+			services.deleteSavedProvider(username,positionx,positiony);
+			
+		}catch(Exception e) {
+			ok = "There is problem with connection please contact our administrator";
+			
+			logger.error("Path: " + request.getServletPath() + " Error: " + e);
+
+		}
+		
+		
+		return ok;
+	}
+
 	
    private static class SearchProvider{
 	    private String username;
@@ -70,4 +94,5 @@ public class ProviderController {
 			this.username = username;
 		}
    }
+
 }

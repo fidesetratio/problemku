@@ -341,6 +341,8 @@ public class PolicyAlterationIndividualController {
 															String kolom = "";
 															oldvalue.put(keyOld, detailPolicyAlteration.getOld());
 															newvalue.put(keyNew,detailPolicyAlteration.getNew_());
+															detailPolicyAlteration.setStatus("SUCCESS");
+												    		
 															
 																									}	
 											    		

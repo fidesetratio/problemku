@@ -322,6 +322,7 @@ public class PolicyAlterationIndividualController {
 						    	HashMap<String,String> oldvalue = new HashMap<String, String>();
 								HashMap<String,String> newvalue = new HashMap<String, String>();
 								
+								
 									    	for(IndexPolicyAlteration g:t) {
 									    		DetailPolicyAlteration detailPolicyAlteration = g.getDetailPolicyAlteration();
 									    		String jsonGroup = g.getJsonGroup();

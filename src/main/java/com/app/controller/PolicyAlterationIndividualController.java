@@ -3,6 +3,7 @@ package com.app.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import com.app.feignclient.ServiceNotification;
 import com.app.model.DetailPolicyAlteration;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
+import com.app.model.IndexPolicyAlteration;
 import com.app.model.Pemegang;
 import com.app.model.PolicyAlteration;
 import com.app.model.Tertanggung;
@@ -230,6 +232,8 @@ public class PolicyAlterationIndividualController {
 		ArrayList<Exception> internalErrors = new ArrayList<Exception>();
 		DetailPolicyAlterationUtility modelUtility  = new DetailPolicyAlterationUtility();
 		PolicyAlterationCounter counter = new PolicyAlterationCounter();	
+		HashMap<Integer, ArrayList<IndexPolicyAlteration> > listtosubmit = new HashMap<Integer, ArrayList<IndexPolicyAlteration>>();
+		HashSet<Integer> inProgress = new HashSet<Integer>();
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang paramSelectSPAJ = new Pemegang();
@@ -249,68 +253,22 @@ public class PolicyAlterationIndividualController {
 					public void listenArray0(DetailPolicyAlteration detailPolicyAlteration, Integer index,String jsonGroup,String keyArray, String key,
 							String endorseColumn, String group) {
 					
-						
+						//if(detailPolicyAlteration != null) {
+
+						Integer lsje_id =0;
 						if(detailPolicyAlteration != null) {
-							detailPolicyAlteration.setStatus("ALLOWED");
-							if(detailPolicyAlteration.getNew_() != null && detailPolicyAlteration.getId_endors() != null) {
-								boolean checkingIsInProgess = (endorseMap.get(detailPolicyAlteration.getId_endors()) !=null? true:false);
-								if(checkingIsInProgess) {
-									detailPolicyAlteration.setStatus("INPROGRESS");
-								}else {
-									 Boolean direct = (detailPolicyAlteration.getFlag_direct()==1?true:false);
-									 
-									 String old = detailPolicyAlteration.getOld();
-										String new_ = detailPolicyAlteration.getNew_();
-										Integer flag_direct = detailPolicyAlteration.getFlag_direct();
-										String kolom = endorseColumn;
-										Integer lsje_id = detailPolicyAlteration.getId_endors();
-										Endorse endors = services.selectListJenisEndors(lsje_id);
-										String msen_alasan = endors.getLsje_jenis();
-										String msde_old1 = old;
-										String msde_new1 = new_;
-										String msde_new6 = null;
-										String msde_old2 = null;
-										String msde_old5 = null;
-										String msde_old3 = null;
-										String msde_old6 = null;
-									
-										String msde_old4 = null;
-										String msde_new4 = null;
-								        String msde_new2 =null;
-									    String msde_new3 = null;
-									    String msde_new5 = null;
-						
-									    
-									    
-									 if(direct) {
-											boolean returnofsuccess = directProcess(lsje_id, new_,reg_spaj,no_polis,key);
-											
-											if(returnofsuccess) {
-												customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-														msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter.getCounter());
-												counter.addOne();
-												detailPolicyAlteration.setStatus("SUCCESS");
-															
-											};
-									
-									 }else {
-										    			customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-													msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
-										detailPolicyAlteration.setStatus("SUCCESS");
-										
-									 }
-									 
-								}
+							lsje_id = detailPolicyAlteration.getId_endors() == null?0:detailPolicyAlteration.getId_endors();
+						};
+						IndexPolicyAlteration indexPolicyAlteration = new IndexPolicyAlteration(true, jsonGroup, index, keyArray, key, detailPolicyAlteration);
+							if(listtosubmit.get(lsje_id) == null) {
+								listtosubmit.put(lsje_id, new ArrayList<IndexPolicyAlteration>());
 							}
-							if(detailPolicyAlteration.getId_endors() == null) {
-								detailPolicyAlteration.setStatus("IDENDORSENULL");
-								
-							}
-						}
+									    
+							listtosubmit.get(lsje_id).add(indexPolicyAlteration);
+							
+//						}
 						
 						
-						modelUtility.addArray0(jsonGroup, index, keyArray, key, detailPolicyAlteration);
-					
 					}
 					
 					
@@ -318,70 +276,19 @@ public class PolicyAlterationIndividualController {
 					@Override
 					public void listen(DetailPolicyAlteration detailPolicyAlteration, String jsonGroup, String key,
 							String endorseColumn, String group) {
-						// TODO Auto-generated method stub
-						if(detailPolicyAlteration != null) {
-									detailPolicyAlteration.setStatus("ALLOWED");
-									if(detailPolicyAlteration.getNew_() != null && detailPolicyAlteration.getId_endors() != null) {
-										boolean checkingIsInProgess = (endorseMap.get(detailPolicyAlteration.getId_endors()) !=null? true:false);
-										if(checkingIsInProgess) {
-											detailPolicyAlteration.setStatus("INPROGRESS");
-										}else {
-											 Boolean direct = (detailPolicyAlteration.getFlag_direct()==1?true:false);
-											 
-											 
-											    String old = detailPolicyAlteration.getOld();
-												String new_ = detailPolicyAlteration.getNew_();
-												Integer flag_direct = detailPolicyAlteration.getFlag_direct();
-												String kolom = endorseColumn;
-												
-												Integer lsje_id = detailPolicyAlteration.getId_endors();
-												Endorse endors = services.selectListJenisEndors(lsje_id);
-												String msen_alasan = endors.getLsje_jenis();
-												String msde_old1 = old;
-												String msde_new1 = new_;
-												String msde_new6 = null;
-												String msde_old2 = null;
-												String msde_old5 = null;
-												String msde_old3 = null;
-												String msde_old6 = null;
-											
-												String msde_old4 = null;
-												String msde_new4 = null;
-										        String msde_new2 =null;
-											    String msde_new3 = null;
-											    String msde_new5 = null;
-											
-											 
-											 if(direct) {
-								
-												boolean returnofsuccess = directProcess(lsje_id, new_,reg_spaj,no_polis,key);
-												
-												if(returnofsuccess) {
-													detailPolicyAlteration.setStatus("SUCCESS");
-													customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-															msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom,counter.getCounter());
-													counter.addOne();
-															
-												};
-										
-											 }else {
-												 
-												    customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,
-															msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, kolom);
-											
-												detailPolicyAlteration.setStatus("SUCCESS");
-												
-											 }
-
-												
-										}
-									}
-									if(detailPolicyAlteration.getId_endors() == null) {
-										detailPolicyAlteration.setStatus("IDENDORSENULL");
-										
-									}
-						}
-						modelUtility.add(jsonGroup, key, detailPolicyAlteration);
+						Integer lsje_id =0;
+						if(detailPolicyAlteration != null ) {
+						
+							lsje_id = detailPolicyAlteration.getId_endors() == null?0:detailPolicyAlteration.getId_endors();
+						};
+						
+						
+						IndexPolicyAlteration indexPolicyAlteration = new IndexPolicyAlteration(false, jsonGroup, null, null, key, detailPolicyAlteration);
+							if(listtosubmit.get(lsje_id) == null) {
+								listtosubmit.put(lsje_id, new ArrayList<IndexPolicyAlteration>());
+							}
+							listtosubmit.get(lsje_id).add(indexPolicyAlteration);
+						
 					}
 					
 					@Override
@@ -393,7 +300,158 @@ public class PolicyAlterationIndividualController {
 
 				
 			);
+				
+				
+				
+				
+				
+				
+				
+				
 				utility.processparse();
+				
+				
+				
+				
+				if(listtosubmit.size()>0) {
+				
+					for(Integer d:listtosubmit.keySet()) {
+						    if(d != null)
+						    {						
+						    	ArrayList<IndexPolicyAlteration> t = listtosubmit.get(d);
+						    	HashMap<String,String> oldvalue = new HashMap<String, String>();
+								HashMap<String,String> newvalue = new HashMap<String, String>();
+								
+									    	for(IndexPolicyAlteration g:t) {
+									    		DetailPolicyAlteration detailPolicyAlteration = g.getDetailPolicyAlteration();
+									    		String jsonGroup = g.getJsonGroup();
+								    			Integer index = g.getIndex();
+								    			String keyArray = g.getKeyArray();
+								    			String keyt = g.getKey();
+								    			String keyOld = g.getOldColumn();
+								    			String keyNew = g.getNewColumn();
+									    		if(detailPolicyAlteration != null) {
+											    		detailPolicyAlteration.setStatus("ALLOWED");
+											    		boolean checkingIsInProgess = (endorseMap.get(detailPolicyAlteration.getId_endors()) !=null? true:false);
+											    		
+											    		if(checkingIsInProgess) {
+															detailPolicyAlteration.setStatus("INPROGRESS");
+															inProgress.add(d);
+														}else {
+															String kolom = "";
+															oldvalue.put(keyOld, detailPolicyAlteration.getOld());
+															newvalue.put(keyNew,detailPolicyAlteration.getNew_());
+															
+																									}	
+											    		
+											    		if(detailPolicyAlteration.getId_endors() == null) {
+															detailPolicyAlteration.setStatus("IDENDORSENULL");
+														}
+									    		}
+									    		
+									    		if(g.isArray()) {
+									    			modelUtility.addArray0(jsonGroup, index, keyArray, keyt, detailPolicyAlteration);
+									    		}else {
+									    			modelUtility.add(jsonGroup, keyt, detailPolicyAlteration);
+													
+									    		}
+									    	
+									    	}
+									   
+									    	
+									    	
+									    	
+						    	if(d > 0) {
+								Integer lsje_id = d;
+								Endorse endors = services.selectListJenisEndors(lsje_id);
+								String msen_alasan = endors.getLsje_jenis();
+								String kolom = "";
+						    	String msde_old1 = oldvalue.get("msde_old1")==null?null:oldvalue.get("msde_old1").toString();
+								String msde_new1 = newvalue.get("msde_new1")==null?null:newvalue.get("msde_new1").toString();
+								
+								
+
+								String msde_old2 = oldvalue.get("msde_old2")==null?null:oldvalue.get("msde_old2").toString();
+								String msde_new2 = newvalue.get("msde_new2")==null?null:newvalue.get("msde_new2").toString();
+								
+								String msde_old3 = oldvalue.get("msde_old3")==null?null:oldvalue.get("msde_old3").toString();
+								String msde_new3 = newvalue.get("msde_new3")==null?null:newvalue.get("msde_new3").toString();
+								
+
+								String msde_old4 = oldvalue.get("msde_old4")==null?null:oldvalue.get("msde_old4").toString();
+								String msde_new4 = newvalue.get("msde_new4")==null?null:newvalue.get("msde_new4").toString();
+								
+								String msde_old5 = oldvalue.get("msde_old5")==null?null:oldvalue.get("msde_old5").toString();
+								String msde_new5 = newvalue.get("msde_new5")==null?null:newvalue.get("msde_new5").toString();
+					
+								String msde_old6 = oldvalue.get("msde_old6")==null?null:oldvalue.get("msde_old6").toString();
+								String msde_new6 = newvalue.get("msde_new6")==null?null:newvalue.get("msde_new6").toString();
+					
+								String msde_old7 = oldvalue.get("msde_old7")==null?null:oldvalue.get("msde_old7").toString();
+								String msde_new7 = newvalue.get("msde_new7")==null?null:newvalue.get("msde_new7").toString();
+					
+
+								String msde_old8 = oldvalue.get("msde_old8")==null?null:oldvalue.get("msde_old8").toString();
+								String msde_new8 = newvalue.get("msde_new8")==null?null:newvalue.get("msde_new8").toString();
+					
+								if(!inProgress.contains(d)) {
+											if(d == 68 || d == 62 || d == 90 || d==67 || d == 89 || d == 61 || d == 39) {
+												System.out.println(d+"--"+oldvalue.toString()+ "--"+newvalue.toString());
+														
+											
+												
+											
+												for(IndexPolicyAlteration g:t) {
+													
+													DetailPolicyAlteration detailPolicyAlteration = g.getDetailPolicyAlteration();
+										    		String jsonGroup = g.getJsonGroup();
+									    			Integer index = g.getIndex();
+									    			String keyArray = g.getKeyArray();
+									    			String keyt = g.getKey();
+									    			String keyOld = g.getOldColumn();
+									    			String keyNew = g.getNewColumn();
+									    			String new_ = detailPolicyAlteration.getNew_();
+									    			
+										    		if(detailPolicyAlteration != null) {
+										    			boolean returnofsuccess = directProcess(d, new_,reg_spaj,no_polis,key);
+														if(returnofsuccess) {
+															detailPolicyAlteration.setStatus("SUCCESS");
+														};
+												   };
+										    		
+										    		if(g.isArray()) {
+										    			modelUtility.addArray0(jsonGroup, index, keyArray, keyt, detailPolicyAlteration);
+										    		}else {
+										    			modelUtility.add(jsonGroup, keyt, detailPolicyAlteration);
+														
+										    		}
+										   
+												}	
+											
+												customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,
+														msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8, kolom,counter.getCounter());
+												counter.addOne();
+												
+											
+											}else {
+											    customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,
+											    		msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8, kolom);
+											}
+											
+								};
+								
+								
+						    	};
+						    }
+					}
+					
+					
+				}
+				
+				
+				
+				
+				
 				
 				if(internalErrors.size()<=0) {
 					message = "successfuly processed";

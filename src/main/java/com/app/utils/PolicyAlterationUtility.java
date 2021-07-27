@@ -189,6 +189,206 @@ public class PolicyAlterationUtility {
 			return ob1.toString();
 		}
 
+
+
+
+		public static String getSpesificIndexNew(String key) {
+		
+			String index = "msde_new1";
+			if(key == null) {
+				return "";
+			}
+			if(key.equalsIgnoreCase("propinsi_tinggal")) { //3
+					index =  "msde_new1";
+				}
+				if(key.equalsIgnoreCase("kecamatan_tinggal")) { //3
+					index = "msde_new2";
+				}
+				if(key.equalsIgnoreCase("kodepos_tinggal")) { //3
+					index =  "msde_new3";
+				}
+				if(key.equalsIgnoreCase("alamat_rumah_pp")) { //3
+					index = "msde_new4";
+				}	
+				if(key.equalsIgnoreCase("kabupaten_tinggal")) { //3
+					index = "msde_new5";
+				}	
+
+				if(key.equalsIgnoreCase("kelurahan_tinggal")) { //3
+					index = "msde_new6";
+				}	
+
+				if(key.equalsIgnoreCase("negara_tinggal")) { //3
+					index = "msde_new7";
+				}
+				
+				
+				if(key.equalsIgnoreCase("alamat_tpt_tinggal")) { //3
+					index = "msde_new8";
+				}
+
+				if(key.equalsIgnoreCase("nama_bank_payor")) {// 96
+					index = "msde_new1";
+					
+				}
+				
+				if(key.equalsIgnoreCase("pemilik_rekening_payor")) {// 96
+					index = "msde_new2";
+					
+				}
+			
+				if(key.equalsIgnoreCase("cabang_bank_payor")) {// 96
+					index = "msde_new3";
+					
+				}
+				if(key.equalsIgnoreCase("no_rekening_payor")) {// 96
+					index = "msde_new4";
+					
+				}
+				if(key.equalsIgnoreCase("kota_bank_payor")) {// 96
+					index = "msde_new5";
+					
+				}
+				
+				if(key.equalsIgnoreCase("uraian_pekerjaan")) {// 89
+					index = "msde_new1";
+					
+				}
+				
+				if(key.equalsIgnoreCase("jabatan_pp")) {// 89
+					index = "msde_new2";
+					
+				}
+				if(key.equalsIgnoreCase("nama_perusahaan_pp")) {// 89
+					index = "msde_new3";
+					
+				}
+				if(key.equalsIgnoreCase("tipe_usaha_pp")) {// 89
+					index = "msde_new4";
+					
+				}
+				
+				if(key.equalsIgnoreCase("kota_bank_pp")) {// 93
+					index = "msde_new1";
+					
+				}
+
+				if(key.equalsIgnoreCase("no_rekening_pp")) {// 93
+					index = "msde_new2";
+					
+				}
+				if(key.equalsIgnoreCase("nama_bank_pp")) {// 93
+					index = "msde_new3";
+					
+				}
+				if(key.equalsIgnoreCase("pemilik_rekening_pp")) {// 93
+					index = "msde_new4";
+					
+				}
+				if(key.equalsIgnoreCase("cabang_bank_pp")) {// 93
+					index = "msde_new5";
+					
+				}
+				return index;
+		}
+
+
+
+		public static String getSpesificIndexOld(String key) {
+			String index = "msde_old1";
+			if(key == null) {
+				return "";
+			}
+				
+			if(key.equalsIgnoreCase("propinsi_tinggal")) { //3
+					index =  "msde_old1";
+				}
+				if(key.equalsIgnoreCase("kecamatan_tinggal")) { //3
+					index = "msde_old2";
+				}
+				if(key.equalsIgnoreCase("kodepos_tinggal")) { //3
+					index =  "msde_old3";
+				}
+				if(key.equalsIgnoreCase("alamat_rumah_pp")) { //3
+					index = "msde_old4";
+				}	
+				if(key.equalsIgnoreCase("kabupaten_tinggal")) { //3
+					index = "msde_old5";
+				}	
+				if(key.equalsIgnoreCase("kelurahan_tinggal")) { //3
+					index = "msde_old6";
+				}	
+				if(key.equalsIgnoreCase("negara_tinggal")) { //3
+					index = "msde_old7";
+				}
+				if(key.equalsIgnoreCase("alamat_tpt_tinggal")) { //3
+					index = "msde_old8";
+				}
+				if(key.equalsIgnoreCase("nama_bank_payor")) {// 96
+					index = "msde_old1";
+					
+				}
+				if(key.equalsIgnoreCase("pemilik_rekening_payor")) {// 96
+					index = "msde_old2";
+					
+				}
+			
+				if(key.equalsIgnoreCase("cabang_bank_payor")) {// 96
+					index = "msde_old3";
+					
+				}
+				if(key.equalsIgnoreCase("no_rekening_payor")) {// 96
+					index = "msde_old4";
+					
+				}
+				if(key.equalsIgnoreCase("kota_bank_payor")) {// 96
+					index = "msde_old5";
+					
+				}
+				
+				if(key.equalsIgnoreCase("uraian_pekerjaan")) {// 89
+					index = "msde_old1";
+					
+				}
+				
+				if(key.equalsIgnoreCase("jabatan_pp")) {// 89
+					index = "msde_old2";
+					
+				}
+				if(key.equalsIgnoreCase("nama_perusahaan_pp")) {// 89
+					index = "msde_old3";
+					
+				}
+				if(key.equalsIgnoreCase("tipe_usaha_pp")) {// 89
+					index = "msde_old4";
+					
+				}
+				if(key.equalsIgnoreCase("kota_bank_pp")) {// 93
+					index = "msde_old1";
+					
+				}
+
+				if(key.equalsIgnoreCase("no_rekening_pp")) {// 93
+					index = "msde_old2";
+					
+				}
+				if(key.equalsIgnoreCase("nama_bank_pp")) {// 93
+					index = "msde_old3";
+					
+				}
+				if(key.equalsIgnoreCase("pemilik_rekening_pp")) {// 93
+					index = "msde_old4";
+					
+				}
+				if(key.equalsIgnoreCase("cabang_bank_pp")) {// 93
+					index = "msde_old5";
+					
+				}
+				return index;
+		}
+
+
+
 }
 
 	

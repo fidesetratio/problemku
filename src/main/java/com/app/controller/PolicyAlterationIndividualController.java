@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -22,9 +23,11 @@ import com.app.feignclient.ServiceNotification;
 import com.app.model.DetailPolicyAlteration;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
+import com.app.model.EndorsePolicyAlteration;
 import com.app.model.IndexPolicyAlteration;
 import com.app.model.Pemegang;
 import com.app.model.PolicyAlteration;
+import com.app.model.PolicyAlterationKeyAndValue;
 import com.app.model.Tertanggung;
 import com.app.services.VegaServices;
 import com.app.services.VegaServicesProd;
@@ -34,11 +37,8 @@ import com.app.utils.PolicyAlterationListener;
 import com.app.utils.PolicyAlterationUtility;
 import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 @RestController
 public class PolicyAlterationIndividualController {
@@ -66,7 +66,7 @@ public class PolicyAlterationIndividualController {
 	
 	
 	
-	@RequestMapping(value = "/viewstatupolicyalteration", produces = "application/json", method = RequestMethod.POST)
+	@RequestMapping(value = "/viewstatuspolicyalteration", produces = "application/json", method = RequestMethod.POST)
 	public String viewstatuspolicyalteration(@RequestBody String requestViewPolicyAlteration,
 			HttpServletRequest request) {
 		String result = "";
@@ -107,11 +107,32 @@ public class PolicyAlterationIndividualController {
 					Pemegang dataSPAJ = services.selectGetSPAJ(paramSelectSPAJ);
 					String reg_spaj = dataSPAJ.getReg_spaj();
 					
-					ArrayList<Endorse> endorse = services.selectListPolicyAlterationByendorseId(reg_spaj, msen_endorse_no, lsje_id, grouping);
+					ArrayList<EndorsePolicyAlteration> endorse = services.selectListPolicyAlterationByendorseId(reg_spaj, msen_endorse_no, lsje_id, grouping);
+
+					ArrayList<EndorsePolicyAlteration> endorseresult = new ArrayList<EndorsePolicyAlteration>();
+					
 					if(endorse.size()>0) {
+						//JSONArray arr = new JSONArray();
+						for(EndorsePolicyAlteration tmp:endorse) {
+								ArrayList<EndorsePolicyAlteration> tmp2 = mappingEndorseBasedToExtractValue(tmp);
+								for(EndorsePolicyAlteration t:tmp2) {
+									 endorseresult.add(t);
+								}
+						}
+					}else {
+					
+					}
+					
+					
+					
+					
+					
+					
+					
+					if(endorseresult.size()>0) {
 						JSONArray arr = new JSONArray();
-						for(Endorse end:endorse) {
-							arr.put(Endorse.toJSonObject(end));
+						for(EndorsePolicyAlteration end:endorseresult) {
+							arr.put(EndorsePolicyAlteration.toJSonObject(end));
 						}
 						output.put("result",arr);
 					}else {
@@ -168,7 +189,35 @@ public class PolicyAlterationIndividualController {
 	}
 	
 	
-	
+	private ArrayList<EndorsePolicyAlteration> mappingEndorseBasedToExtractValue(EndorsePolicyAlteration tmp) {
+		// TODO Auto-generated method stub
+		ArrayList<EndorsePolicyAlteration> array1 = new ArrayList<EndorsePolicyAlteration>();
+		HashMap<String,String> data = tmp.convertToMsdeNewHashMap();
+		boolean allowed = data.size()>0?true:false;
+		Integer lsje_id = tmp.getLsje_id();
+		if(allowed) {
+			for(String key:data.keySet()) {
+				String value = data.get(key);
+				PolicyAlterationKeyAndValue policyAlterationKeyAndValue = PolicyAlterationUtility.getKeyAndValue(key,lsje_id, value, services);
+				if(policyAlterationKeyAndValue.getKey() != null && policyAlterationKeyAndValue.getValue() != null) {
+					EndorsePolicyAlteration t = (EndorsePolicyAlteration) SerializationUtils.clone(tmp);
+					t.setKey(policyAlterationKeyAndValue.getKey());
+					t.setValue(policyAlterationKeyAndValue.getValue());
+					array1.add(t);
+					
+				}
+			}
+			
+		}
+		return array1;
+	}
+
+
+	public HashMap<String,String> calculateValuePolicyAlteration(String lsje_id,String msde_new1,String msde_new2,String msde_new3,String msde_new4,String msde_new5,String msde_new6,String msde_new7,String msde_new8) {
+		HashMap<String,String> values = new HashMap<String, String>();
+		
+		return values;
+	}
 	
 	
 	
@@ -517,11 +566,6 @@ public class PolicyAlterationIndividualController {
 					
 								if(!inProgress.contains(d)) {
 											if(d == 68 || d == 62 || d == 90 || d==67 || d == 89 || d == 61 || d == 39) {
-												System.out.println(d+"--"+oldvalue.toString()+ "--"+newvalue.toString());
-														
-											
-												
-											
 												for(IndexPolicyAlteration g:t) {
 													
 													DetailPolicyAlteration detailPolicyAlteration = g.getDetailPolicyAlteration();

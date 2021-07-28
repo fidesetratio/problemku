@@ -22,6 +22,7 @@ import com.app.model.DownloadReportHr;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.EndorseHr;
+import com.app.model.EndorsePolicyAlteration;
 import com.app.model.Fund;
 import com.app.model.Inbox;
 import com.app.model.KlaimKesehatan;
@@ -359,13 +360,16 @@ public interface VegaMapper {
 	
 	public ArrayList<Endorse> selectListPolicyAlteration(String reg_spaj);
 	public ArrayList<Endorse> selectListPolicyAlterationInProcessing(String reg_spaj);
-	public ArrayList<Endorse> selectListPolicyAlterationByendorseId(HashMap<String,Object> params);
+	public ArrayList<EndorsePolicyAlteration> selectListPolicyAlterationByendorseId(HashMap<String,Object> params);
 	
 	
 	public ArrayList<DropdownPolicyAlteration> selectListPernikahan();
+	public String selectListPernikahanById(String lsst_id);
+	public String selectListProvinsiById(String lspr_id);
 
 	public ArrayList<DropdownPolicyAlteration> selectListAgama();
 	
+	public String selectListAgamaById(String lsag_id);
 	public ArrayList<DropdownPolicyAlteration> selectListNegara();
 	
 	public ArrayList<DropdownPolicyAlteration> selectListJenisUsaha();
@@ -373,6 +377,9 @@ public interface VegaMapper {
 	public ArrayList<DropdownPolicyAlteration> selectListPekerjaan();
 	
 	public ArrayList<DropdownPolicyAlteration> selectListBank();
+	public String selectListBankById(String lsbp_id);
+	public String selectCabangBankByLbnId(String lbn_id);
+	public String selectListNegaraById(String lsne_id);
 	
 	public ArrayList<DropdownPolicyAlteration> selectCabangBank(Integer lsbp_id_req);
 	

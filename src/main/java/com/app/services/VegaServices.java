@@ -27,6 +27,7 @@ import com.app.model.DownloadReportHr;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.EndorseHr;
+import com.app.model.EndorsePolicyAlteration;
 import com.app.model.Fund;
 import com.app.model.Inbox;
 import com.app.model.KlaimKesehatan;
@@ -519,7 +520,10 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListProvinsi();
 	}
-
+	public String selectListProvinsiById(String lspr_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListProvinsiById(lspr_id);
+	}
 	public ArrayList<Provinsi> selectListKabupaten(Integer lspr_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -1335,7 +1339,7 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListPolicyAlterationInProcessing(reg_spaj);
 	}
-	public ArrayList<Endorse> selectListPolicyAlterationByendorseId(String reg_spaj, String msen_endorse_no, String lsje_id, String grouping) {
+	public ArrayList<EndorsePolicyAlteration> selectListPolicyAlterationByendorseId(String reg_spaj, String msen_endorse_no, String lsje_id, String grouping) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String,Object> params = new HashMap<String, Object>();
 		params.put("reg_spaj", reg_spaj);
@@ -1352,10 +1356,19 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListPernikahan();
 	}
+
+	public String selectListPernikahanById(String lsst_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListPernikahanById(lsst_id);
+	}
 	
 	public ArrayList<DropdownPolicyAlteration> selectListAgama() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListAgama();
+	}
+	public String selectListAgamaById(String lsag_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListAgamaById(lsag_id);
 	}
 	
 	public ArrayList<DropdownPolicyAlteration> selectListNegara() {
@@ -1376,6 +1389,18 @@ public class VegaServices {
 	public ArrayList<DropdownPolicyAlteration> selectListBank() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListBank();
+	}
+	public String selectListBankById(String lsbp_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListBankById(lsbp_id);
+	}
+	public String selectCabangBankByLbnId(String lbn_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectCabangBankByLbnId(lbn_id);
+	}
+	public String selectListNegaraById(String lbn_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListNegaraById(lbn_id);
 	}
 	
 	public ArrayList<DropdownPolicyAlteration> selectListRelation() {

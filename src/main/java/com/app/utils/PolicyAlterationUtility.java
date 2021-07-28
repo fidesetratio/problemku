@@ -8,10 +8,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.app.model.DetailPolicyAlteration;
+import com.app.model.PolicyAlterationKeyAndValue;
+import com.app.services.VegaServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
 
 public class PolicyAlterationUtility {
 		private String json;
@@ -190,6 +191,256 @@ public class PolicyAlterationUtility {
 		}
 
 
+		
+		
+		public static PolicyAlterationKeyAndValue getKeyAndValue(String key, Integer lsje_id, String value, VegaServices services) {
+				//if(lsje_id )
+			PolicyAlterationKeyAndValue keyAndValue = new PolicyAlterationKeyAndValue();
+			
+			if(value != null) {
+				keyAndValue.setValue(value);
+			}
+			
+			if(lsje_id == 93) {
+				if(key.equalsIgnoreCase("msde_new1")) {
+					keyAndValue.setKey("kota_bank_pp");
+				}
+				if(key.equalsIgnoreCase("msde_new2")) {
+					keyAndValue.setKey("no_rekening_pp");
+				}	
+				if(key.equalsIgnoreCase("msde_new3")) {
+					keyAndValue.setKey("nama_bank_pp");
+					if(value != null) {
+					
+						try {
+							 Integer.parseInt(value.trim());
+							 String val = services.selectListBankById(value.trim());
+							 keyAndValue.setValue(val);
+							 }catch(Exception e) {
+								keyAndValue.setValue("error");
+							 }
+						
+					};
+				}	
+
+				if(key.equalsIgnoreCase("msde_new4")) {
+					keyAndValue.setKey("pemilik_rekening_pp");
+			
+				}	
+				if(key.equalsIgnoreCase("msde_new5")) {
+					keyAndValue.setKey("cabang_bank_pp");
+					if(value != null) {
+						
+						try {
+							 Integer.parseInt(value.trim());
+							 String val = services.selectCabangBankByLbnId(value.trim());
+							 keyAndValue.setValue(val);
+							 }catch(Exception e) {
+								keyAndValue.setValue("error");
+							 }
+						
+					};
+			
+			
+				}	
+			}
+			if(lsje_id == 89) {
+
+				if(key.equalsIgnoreCase("msde_new1")) {
+					keyAndValue.setKey("uraian_pekerjaan");
+				}
+				if(key.equalsIgnoreCase("msde_new2")) {
+					keyAndValue.setKey("jabatan_pp");
+				}	
+				if(key.equalsIgnoreCase("msde_new3")) {
+					keyAndValue.setKey("nama_perusahaan_pp");
+				}	
+
+				if(key.equalsIgnoreCase("msde_new4")) {
+					keyAndValue.setKey("tipe_usaha_pp");
+				}	
+				
+			}
+			
+			if(lsje_id==96) {
+				if(key.equalsIgnoreCase("msde_new2")) {// 96
+					keyAndValue.setKey("pemilik_rekening_payor");
+					
+				}
+			
+				if(key.equalsIgnoreCase("msde_new3")) {// 96
+					keyAndValue.setKey("cabang_bank_payor");
+	
+				}
+				if(key.equalsIgnoreCase("msde_new4")) {// 96
+					keyAndValue.setKey("no_rekening_payor");
+									
+				}
+				if(key.equalsIgnoreCase("msde_new5")) {// 96
+					keyAndValue.setKey("kota_bank_payor");
+						
+				}
+			
+			}
+
+			if(lsje_id == 3) {
+				if(key.equalsIgnoreCase("msde_new1")) { //3
+					keyAndValue.setKey("propinsi_tinggal");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListProvinsiById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
+					
+					
+				}
+				if(key.equalsIgnoreCase("msde_new2")) { //3
+					keyAndValue.setKey("kecamatan_tinggal");
+					
+				}
+				if(key.equalsIgnoreCase("msde_new3")) { //3
+					
+					keyAndValue.setKey("kodepos_tinggal");
+					
+				}
+				if(key.equalsIgnoreCase("msde_new4")) { //3
+					
+					keyAndValue.setKey("alamat_rumah_pp");
+					
+				}	
+				if(key.equalsIgnoreCase("msde_new5")) { //3
+					
+					keyAndValue.setKey("kabupaten_tinggal");
+					
+				}	
+
+				if(key.equalsIgnoreCase("msde_new6")) { //3
+					keyAndValue.setKey("kelurahan_tinggal");
+					
+				}	
+
+				if(key.equalsIgnoreCase("msde_new7")) { //3
+					keyAndValue.setKey("negara_tinggal");
+					
+				}
+				
+				
+				if(key.equalsIgnoreCase("msde_new8")) { //3
+					keyAndValue.setKey("alamat_tpt_tinggal");
+				}
+
+			}
+			
+			if(lsje_id == 67) {
+				if(key.equalsIgnoreCase("msde_new1")) {
+					keyAndValue.setKey("status_pp");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListPernikahanById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
+	
+					
+				}
+			}
+			
+			if(lsje_id == 39) {
+				if(key.equalsIgnoreCase("msde_new1")) {
+					keyAndValue.setKey("kewarganegaraan_pp");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListNegaraById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
+	
+				}
+			}
+			if(lsje_id == 61) {
+				if(key.equalsIgnoreCase("msde_new1")) {
+					keyAndValue.setKey("agama_pp");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListAgamaById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
+				}
+			}
+			if(lsje_id == 62) {
+				if(key.equalsIgnoreCase("msde_new1")) {
+					keyAndValue.setKey("agama_tertanggung");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListAgamaById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
+				}
+			}
+			if(lsje_id == 68) {
+				if(key.equalsIgnoreCase("msde_new1")) {
+					keyAndValue.setKey("status_tt");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListPernikahanById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
+				}
+			}
+			if(lsje_id == 90) {
+				
+				
+				if(key.equalsIgnoreCase("msde_new1")) {// 90
+
+					keyAndValue.setKey("nama_perusahaan_tt");
+					if(value != null) {
+						keyAndValue.setValue(value.trim());
+					}
+				}
+				
+				if(key.equalsIgnoreCase("msde_new2")) {// 90
+					
+					keyAndValue.setKey("tipe_usaha_tt");
+					
+					
+				}
+				if(key.equalsIgnoreCase("msde_new3")) {// 90
+					keyAndValue.setKey("jabatan_tt");
+					
+				}
+				
+			}
+			return keyAndValue;
+		}
+		
 
 
 		public static String getSpesificIndexNew(String key) {
@@ -268,8 +519,26 @@ public class PolicyAlterationUtility {
 					
 				}
 				
+				
+				
+				if(key.equalsIgnoreCase("nama_perusahaan_tt")) {// 90
+					index = "msde_new1";
+					
+				}
+				
+				if(key.equalsIgnoreCase("tipe_usaha_tt")) {// 90
+					index = "msde_new2";
+					
+				}
+				if(key.equalsIgnoreCase("jabatan_tt")) {// 90
+					index = "msde_new3";
+					
+				}
+				
+
 				if(key.equalsIgnoreCase("kota_bank_pp")) {// 93
 					index = "msde_new1";
+					
 					
 				}
 
@@ -363,6 +632,23 @@ public class PolicyAlterationUtility {
 					index = "msde_old4";
 					
 				}
+				
+
+				if(key.equalsIgnoreCase("nama_perusahaan_tt")) {// 90
+					index = "msde_old1";
+					
+				}
+				
+				if(key.equalsIgnoreCase("tipe_usaha_tt")) {// 90
+					index = "msde_old2";
+					
+				}
+				if(key.equalsIgnoreCase("jabatan_tt")) {// 90
+					index = "msde_old3";
+					
+				}
+				
+				
 				if(key.equalsIgnoreCase("kota_bank_pp")) {// 93
 					index = "msde_old1";
 					

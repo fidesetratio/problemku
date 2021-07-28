@@ -2,12 +2,13 @@ package com.app.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.json.JSONObject;
 
 import com.app.services.VegaServices;
 
-public class Endorse implements Serializable {
+public class EndorsePolicyAlteration implements Serializable {
 
 	/**
 	 * 
@@ -53,7 +54,52 @@ public class Endorse implements Serializable {
     private String grouping;
     
     
-    public static JSONObject toJSonObject(Endorse endorse) {
+    private String msde_new1;
+    private String msde_new2;
+    private String msde_new3;
+    private String msde_new4;
+    private String msde_new5;
+    private String msde_new6;
+    private String msde_new7;
+    private String msde_new8;
+    
+    private String key;
+    private String value;
+    
+    
+    
+    
+    public HashMap<String,String> convertToMsdeNewHashMap(){
+    	HashMap<String,String> map = new HashMap<String, String>();
+    	if(msde_new1 != null) {
+    			map.put("msde_new1", this.msde_new1);
+    	}
+    	if(msde_new2 != null) {
+			map.put("msde_new2", this.msde_new2);
+	}
+    	if(msde_new3 != null) {
+
+			map.put("msde_new3", this.msde_new3);
+	}
+    	if(msde_new4 != null) {
+			map.put("msde_new4", this.msde_new4);
+	}
+    	if(msde_new5 != null) {
+			map.put("msde_new5", this.msde_new5);
+	}
+    
+    	if(msde_new6 != null) {
+			map.put("msde_new6", this.msde_new6);
+	}
+    	if(msde_new7 != null) {
+			map.put("msde_new7", this.msde_new7);
+	}
+    	if(msde_new8 != null) {
+			map.put("msde_new8", this.msde_new8);
+	}
+    	return map;
+    }
+    public static JSONObject toJSonObject(EndorsePolicyAlteration endorse) {
     	JSONObject obj =new JSONObject();
     	obj.put("grouping", endorse.getGrouping());
     	obj.put("input_date", endorse.getInput_date());
@@ -62,6 +108,9 @@ public class Endorse implements Serializable {
     	obj.put("lsje_id", endorse.getLsje_id());
     	obj.put("msen_alasan", endorse.getMsen_alasan());
     	obj.put("msen_endorse_no", endorse.getMsen_endors_no());
+    	obj.put("key", endorse.getKey());
+    	obj.put("value", endorse.getValue());
+    	
         	
     	return obj;
     	
@@ -285,5 +334,145 @@ public class Endorse implements Serializable {
 	}
 	public void setInput_date(String input_date) {
 		this.input_date = input_date;
+	}
+
+
+
+
+	public String getMsde_new1() {
+		return msde_new1;
+	}
+
+
+
+
+	public void setMsde_new1(String msde_new1) {
+		this.msde_new1 = msde_new1;
+	}
+
+
+
+
+	public String getMsde_new2() {
+		return msde_new2;
+	}
+
+
+
+
+	public void setMsde_new2(String msde_new2) {
+		this.msde_new2 = msde_new2;
+	}
+
+
+
+
+	public String getMsde_new3() {
+		return msde_new3;
+	}
+
+
+
+
+	public void setMsde_new3(String msde_new3) {
+		this.msde_new3 = msde_new3;
+	}
+
+
+
+
+	public String getMsde_new4() {
+		return msde_new4;
+	}
+
+
+
+
+	public void setMsde_new4(String msde_new4) {
+		this.msde_new4 = msde_new4;
+	}
+
+
+
+
+	public String getMsde_new5() {
+		return msde_new5;
+	}
+
+
+
+
+	public void setMsde_new5(String msde_new5) {
+		this.msde_new5 = msde_new5;
+	}
+
+
+
+
+	public String getMsde_new6() {
+		return msde_new6;
+	}
+
+
+
+
+	public void setMsde_new6(String msde_new6) {
+		this.msde_new6 = msde_new6;
+	}
+
+
+
+
+	public String getMsde_new7() {
+		return msde_new7;
+	}
+
+
+
+
+	public void setMsde_new7(String msde_new7) {
+		this.msde_new7 = msde_new7;
+	}
+
+
+
+
+	public String getMsde_new8() {
+		return msde_new8;
+	}
+
+
+
+
+	public void setMsde_new8(String msde_new8) {
+		this.msde_new8 = msde_new8;
+	}
+
+
+
+
+	public String getKey() {
+		return key;
+	}
+
+
+
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+
+
+
+	public String getValue() {
+		return value;
+	}
+
+
+
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 }

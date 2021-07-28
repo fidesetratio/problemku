@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,8 +34,11 @@ import com.app.utils.PolicyAlterationListener;
 import com.app.utils.PolicyAlterationUtility;
 import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 @RestController
 public class PolicyAlterationIndividualController {
@@ -53,6 +57,121 @@ public class PolicyAlterationIndividualController {
 	
 	private static final Logger logger = LogManager.getLogger(PolicyAlterationIndividualController.class);
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@RequestMapping(value = "/viewstatupolicyalteration", produces = "application/json", method = RequestMethod.POST)
+	public String viewstatuspolicyalteration(@RequestBody String requestViewPolicyAlteration,
+			HttpServletRequest request) {
+		String result = "";
+		
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		//String req = gson.toJson(requestViewPolicyAlteration);
+		String req = requestViewPolicyAlteration;
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String,Object> mapresponse = new HashMap<String,Object>();
+		String username = PolicyAlterationUtility.getFirstLevelJsonValue(req, "username");
+		String key = PolicyAlterationUtility.getFirstLevelJsonValue(req, "key");
+		String no_polis = PolicyAlterationUtility.getFirstLevelJsonValue(req, "no_polis");
+		String msen_endorse_no = PolicyAlterationUtility.getFirstLevelJsonValue(req, "msen_endors_no");
+		String grouping = PolicyAlterationUtility.getFirstLevelJsonValue(req, "grouping");
+		String lsje_id = PolicyAlterationUtility.getFirstLevelJsonValue(req, "jen");
+		JSONObject output = new JSONObject();
+		
+		
+		DetailPolicyAlterationUtility modelUtility  = new DetailPolicyAlterationUtility();
+		
+		
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				
+				if(msen_endorse_no != null && grouping != null && lsje_id != null) {
+					
+					
+					Pemegang paramSelectSPAJ = new Pemegang();
+					paramSelectSPAJ.setMspo_policy_no(no_polis);
+					Pemegang dataSPAJ = services.selectGetSPAJ(paramSelectSPAJ);
+					String reg_spaj = dataSPAJ.getReg_spaj();
+					
+					ArrayList<Endorse> endorse = services.selectListPolicyAlterationByendorseId(reg_spaj, msen_endorse_no, lsje_id, grouping);
+					if(endorse.size()>0) {
+						JSONArray arr = new JSONArray();
+						for(Endorse end:endorse) {
+							arr.put(Endorse.toJSonObject(end));
+						}
+						output.put("result",arr);
+					}else {
+						output.put("result", "[]");
+					}
+					
+				}else {
+					
+					
+					error = true;
+					message = "Please make sure parameter is correct";
+					resultErr = ResponseMessage.ERROR_VALIDATION + "Please make sure parameter is correct";
+					logger.error("Path: " + request.getServletPath() + " Error: " + resultErr);
+					
+				}
+				
+				
+			}else {
+				error = true;
+				message = "Username & Password is not matched";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			
+			}
+		
+		
+		}catch(Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+
+		}
+		
+		
+		
+		
+		customResourceLoader.updateActivity(username);
+		// Insert Log LST_HIST_ACTIVITY_WS
+		customResourceLoader.insertHistActivityWS(12, 84, new Date(), req, res, 1, resultErr, start, username);
+		
+		map.put("error", error);
+		map.put("message", message);
+		map.put("result", mapresponse);
+		if(error) {
+			result =  gson.toJson(map);
+		}else {
+			output.put("error", error);
+			output.put("message", message);
+			result = output.toString();
+		}
+		
+		return result;
+	}
+	
+	
+	
+	
+	
+	
 	
 	@RequestMapping(value = "/previewsubmitalteration", produces = "application/json", method = RequestMethod.POST)
 	public String previewsubmitalteration(@RequestBody String requestViewPolicyAlteration,
@@ -76,7 +195,6 @@ public class PolicyAlterationIndividualController {
 		String no_polis = PolicyAlterationUtility.getFirstLevelJsonValue(req, "no_polis");
 		ArrayList<Exception> internalErrors = new ArrayList<Exception>();
 		DetailPolicyAlterationUtility modelUtility  = new DetailPolicyAlterationUtility();
-			
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang paramSelectSPAJ = new Pemegang();

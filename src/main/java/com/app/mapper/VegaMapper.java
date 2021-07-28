@@ -359,6 +359,8 @@ public interface VegaMapper {
 	
 	public ArrayList<Endorse> selectListPolicyAlteration(String reg_spaj);
 	public ArrayList<Endorse> selectListPolicyAlterationInProcessing(String reg_spaj);
+	public ArrayList<Endorse> selectListPolicyAlterationByendorseId(HashMap<String,Object> params);
+	
 	
 	public ArrayList<DropdownPolicyAlteration> selectListPernikahan();
 

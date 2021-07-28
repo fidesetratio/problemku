@@ -3,6 +3,8 @@ package com.app.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.json.JSONObject;
+
 public class Endorse implements Serializable {
 
 	/**
@@ -47,6 +49,21 @@ public class Endorse implements Serializable {
     private String lsje_status;
     private String status;
     private String grouping;
+    
+    
+    public static JSONObject toJSonObject(Endorse endorse) {
+    	JSONObject obj =new JSONObject();
+    	obj.put("grouping", endorse.getGrouping());
+    	obj.put("input_date", endorse.getInput_date());
+    	obj.put("status", endorse.getStatus());
+    	obj.put("lsje_jenis", endorse.getLsje_jenis());
+    	obj.put("lsje_id", endorse.getLsje_id());
+    	obj.put("msen_alasan", endorse.getMsen_alasan());
+    	obj.put("msen_endorse_no", endorse.getMsen_endors_no());
+        	
+    	return obj;
+    	
+    }
     
 	public String getGrouping() {
 		return grouping;

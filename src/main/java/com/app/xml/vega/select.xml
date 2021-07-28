@@ -4308,7 +4308,7 @@
 		    AND D.LSJE_ACTIVE = 1
 		    AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
 		ORDER BY A.MSEN_INPUT_DATE DESC
-		) WHERE MSEN_ENDORS_NO = #{msen_endorse_no,jdbcType=VARCHAR} AND GROUPING = #{grouping,jdbcType=VARCHAR}
+		) WHERE GROUPING = #{grouping,jdbcType=VARCHAR}
 	</select>
 	
 	

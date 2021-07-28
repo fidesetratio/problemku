@@ -4252,9 +4252,9 @@
 		        B.LSJE_ID,
 		        TO_CHAR(A.MSEN_INPUT_DATE, 'DD/MM/YYYY') AS INPUT_DATE,
 		        CASE
-		            WHEN (C.LSPD_ID = 13)
+		            WHEN (A.LSPD_ID = 13)
 		                THEN 'IN PROGRESS'
-		            WHEN C.LSPD_ID = 99
+		            WHEN A.LSPD_ID = 99
 		                THEN 'ACCEPTED'
 		            ELSE 'DECLINED'
 		        END AS STATUS,
@@ -4278,6 +4278,7 @@
 		    AND B.LSJE_ID = D.LSJE_ID
 		    AND A.REG_SPAJ = C.REG_SPAJ
 		    AND D.LSJE_ACTIVE = 1
+		    AND A.LSPD_ID in (99,13)
 		    AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
 		ORDER BY A.MSEN_INPUT_DATE DESC
 	</select>

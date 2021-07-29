@@ -4290,9 +4290,9 @@
 		        B.MSDE_NEW1,B.MSDE_NEW2,B.MSDE_NEW3,B.MSDE_NEW4,B.MSDE_NEW5,B.MSDE_NEW6,B.MSDE_NEW7,B.MSDE_NEW8,
 		        TO_CHAR(A.MSEN_INPUT_DATE, 'DD/MM/YYYY') AS INPUT_DATE,
 		        CASE
-		            WHEN (C.LSPD_ID = 13)
+		            WHEN (A.LSPD_ID = 13)
 		                THEN 'IN PROGRESS'
-		            WHEN C.LSPD_ID = 99
+		            WHEN A.LSPD_ID = 99
 		                THEN 'ACCEPTED'
 		            ELSE 'DECLINED'
 		        END AS STATUS,

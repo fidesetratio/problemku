@@ -335,6 +335,26 @@ public class PolicyAlterationUtility {
 				}
 
 			}
+
+			
+			if(lsje_id == 34) {
+				if(key.equalsIgnoreCase("msde_new1")) { //34
+					keyAndValue.setKey("kabupaten_kantor");
+					
+				};
+					
+				
+				if(key.equalsIgnoreCase("msde_new2")) { //34
+					keyAndValue.setKey("kelurahan_kantor");
+					
+				};
+					
+
+				if(key.equalsIgnoreCase("msde_new3")) { //34
+					keyAndValue.setKey("kecamatan_kantor");
+					
+				};	
+			}
 			
 			if(lsje_id == 67) {
 				if(key.equalsIgnoreCase("msde_new1")) {
@@ -478,6 +498,24 @@ public class PolicyAlterationUtility {
 					index = "msde_new8";
 				}
 
+
+				
+				if(key.equalsIgnoreCase("kabupaten_kantor")) { //34
+					index = "msde_new1";
+				};
+					
+				
+				if(key.equalsIgnoreCase("kelurahan_kantor")) { //34
+					index = "msde_new2";
+				};
+					
+
+				if(key.equalsIgnoreCase("kecamatan_kantor")) { //34
+					index = "msde_new3";
+				};	
+
+
+				
 				if(key.equalsIgnoreCase("nama_bank_payor")) {// 96
 					index = "msde_new1";
 					
@@ -593,6 +631,27 @@ public class PolicyAlterationUtility {
 				if(key.equalsIgnoreCase("alamat_tpt_tinggal")) { //3
 					index = "msde_old8";
 				}
+				
+				
+				
+				
+				
+			if(key.equalsIgnoreCase("kabupaten_kantor")) { //34
+				index = "msde_old1";
+			};
+				
+			
+			if(key.equalsIgnoreCase("kelurahan_kantor")) { //34
+				index = "msde_old2";
+			};
+				
+
+			if(key.equalsIgnoreCase("kecamatan_kantor")) { //34
+				index = "msde_old3";
+			};	
+
+			
+				
 				if(key.equalsIgnoreCase("nama_bank_payor")) {// 96
 					index = "msde_old1";
 					

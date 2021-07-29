@@ -204,9 +204,7 @@ public class VegaServices {
 		hashMap.put("msde_old4", msde_old4);
 		hashMap.put("msde_old5", msde_old5);
 		hashMap.put("msde_old6", msde_old6);
-
 		hashMap.put("msde_old7", msde_old7);
-
 		hashMap.put("msde_old8", msde_old8);
 		hashMap.put("msde_new1", msde_new1);
 		hashMap.put("msde_new2", msde_new2);
@@ -215,7 +213,7 @@ public class VegaServices {
 		hashMap.put("msde_new5", msde_new5);
 		hashMap.put("msde_new6", msde_new6);
 		hashMap.put("msde_new7", msde_new7);
-		hashMap.put("msde_new7", msde_new7);
+		hashMap.put("msde_new8", msde_new8);
 		dao.insertDetailEndorse(hashMap);
 	}
 

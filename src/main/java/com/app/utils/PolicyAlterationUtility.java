@@ -301,6 +301,16 @@ public class PolicyAlterationUtility {
 				}
 				if(key.equalsIgnoreCase("msde_new2")) { //3
 					keyAndValue.setKey("kecamatan_tinggal");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListKecamatanById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
 					
 				}
 				if(key.equalsIgnoreCase("msde_new3")) { //3
@@ -316,6 +326,16 @@ public class PolicyAlterationUtility {
 				if(key.equalsIgnoreCase("msde_new5")) { //3
 					
 					keyAndValue.setKey("kabupaten_tinggal");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListKabupatenById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
 					
 				}	
 
@@ -340,6 +360,16 @@ public class PolicyAlterationUtility {
 			if(lsje_id == 34) {
 				if(key.equalsIgnoreCase("msde_new1")) { //34
 					keyAndValue.setKey("kabupaten_kantor");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListKabupatenById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
 					
 				};
 					
@@ -352,6 +382,17 @@ public class PolicyAlterationUtility {
 
 				if(key.equalsIgnoreCase("msde_new3")) { //34
 					keyAndValue.setKey("kecamatan_kantor");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListKecamatanById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
+					
 					
 				};	
 			}

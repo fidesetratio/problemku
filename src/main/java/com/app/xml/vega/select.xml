@@ -1136,6 +1136,19 @@
 		order by kecamatan asc
 	</select>
 
+	<select id="selectListKecamatanById" parameterType="String" resultType="String">
+		select distinct kecamatan
+		from eka.v_propinsi
+		where lskc_id = #{lskc_id, jdbcType=VARCHAR}
+		order by kecamatan asc
+	</select>
+	
+	
+	<select id="selectListKabupatenById" parameterType="String" resultType="String">
+		select lska_note from EKA.LST_KABUPATEN@EB 
+		where lska_id = #{lska_id, jdbcType=VARCHAR}
+	</select>
+	
 	<select id="selectListKelurahan" parameterType="HashMap" resultType="Provinsi">
 		select distinct kelurahan, lskl_id 
 		from eka.v_propinsi

@@ -537,6 +537,16 @@ public class VegaServices {
 		return dao.selectListKecamatan(hashMap);
 	}
 
+	public String selectListKecamatanById(String lskc_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListKecamatanById(lskc_id);
+	}
+	
+	public String selectListKabupatenById(String lska_id) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectListKabupatenById(lska_id);
+	}
+	
 	public ArrayList<Provinsi> selectListKelurahan(Integer lspr_id, Integer lska_id, Integer lskc_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();

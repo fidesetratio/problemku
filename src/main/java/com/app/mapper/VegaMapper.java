@@ -190,6 +190,9 @@ public interface VegaMapper {
 
 	public ArrayList<Provinsi> selectListKecamatan(HashMap<String, Object> hashMap);
 
+	public String selectListKecamatanById(String lskc_id);
+	public String selectListKabupatenById(String lska_id);
+
 	public ArrayList<Provinsi> selectListKelurahan(HashMap<String, Object> hashMap);
 
 	public ArrayList<Provinsi> selectListKodePos(HashMap<String, Object> hashMap);

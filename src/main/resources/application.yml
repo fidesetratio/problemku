@@ -162,8 +162,8 @@ jmx:
 
 logging:
   level:
-    com.app.mapper.JnBankMapper: DEBUG
-    com.app.mapper.VegaMapper: DEBUG
+    com.app.mapper.JnBankMapper: INFO
+    com.app.mapper.VegaMapper: INFO
     com.app.controller.PolicyIndividualCorporateController: DEBUG
     com.app.controller.LoginRegisterIndividualCorporateController: DEBUG
     org.springframework: ERROR
@@ -217,7 +217,8 @@ path:
   endorsehr: /mnt/storage/m-Policytest
  document:
   claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
-
+ ekamedicare:
+  path: /mnt/Ekamedicare
 kubernetes:
   platform: 1
 ---

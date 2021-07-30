@@ -24,7 +24,9 @@ spec:
             - name: flexvol-mount
               mountPath: /mnt/storage
             - name: date-config
-              mountPath: /etc/localtime 
+              mountPath: /etc/localtime
+            - name: ekamedicare-mount
+              mountPath: /mnt/Ekamedicare
           ports:
             - containerPort: 9092
       volumes:
@@ -34,6 +36,9 @@ spec:
         - name: date-config
           hostPath:
            path: /etc/localtime
+        - name: ekamedicare-mount
+          hostPath:
+           path: /mnt/Ekamedicare
 ---
 kind: Service
 apiVersion: v1

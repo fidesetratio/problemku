@@ -169,6 +169,10 @@ public class FinancialTransactionController {
 	
 	@Value("${path.download.endorsehr}")
 	private String downloadEndorseHr;
+	
+
+	@Value("${ekamedicare.path}")
+	private String ekamedicarepath;
 
 	@Autowired
 	private VegaServices services;
@@ -6101,7 +6105,15 @@ public class FinancialTransactionController {
 
 					// List file in folder claim corporate
 					ArrayList<HashMap<String, Object>> arrayTemp = new ArrayList<>();
+					
+					if(path_storage != null) {
+						path_storage= ekamedicareCalculatePath(path_storage.trim());
+					}
+					
 					List<String> pathFileClaim = customResourceLoader.listFilesUsingJavaIO2CustomSorted(path_storage);
+					
+					
+					
 					if(pathFileClaim.size()>0) {
 					for (String name : pathFileClaim) {
 						HashMap<String, Object> hashMapPathClaim = new HashMap<>();
@@ -6146,6 +6158,14 @@ public class FinancialTransactionController {
 		customResourceLoader.insertHistActivityWS(12, 78, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
+	}
+	
+	public static String ekamedicareCalculatePath(String storage) {
+			storage = storage.trim();
+		//	String storage = "\\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\08202100193\\081902623773\\2020000300";
+			storage = storage.replace("\\\\storage.sinarmasmsiglife.co.id\\ekamedicare", "/mnt/Ekamedicare");
+			storage = storage.replace("\\", "/");
+			return storage;
 	}
 
 	@RequestMapping(value = "/submitclaimsubmissioncorporate", produces = "application/json", method = RequestMethod.POST)

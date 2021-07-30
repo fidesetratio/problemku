@@ -6102,6 +6102,7 @@ public class FinancialTransactionController {
 					// List file in folder claim corporate
 					ArrayList<HashMap<String, Object>> arrayTemp = new ArrayList<>();
 					List<String> pathFileClaim = customResourceLoader.listFilesUsingJavaIO2CustomSorted(path_storage);
+					if(pathFileClaim.size()>0) {
 					for (String name : pathFileClaim) {
 						HashMap<String, Object> hashMapPathClaim = new HashMap<>();
 						if ((!name.toLowerCase().contains("form_rawat_inap.pdf"))
@@ -6113,6 +6114,10 @@ public class FinancialTransactionController {
 							arrayTemp.add(hashMapPathClaim);
 						}
 					}
+					}else {
+						error = true;
+					}
+					
 
 					data.put("data_claim_corporate", arrayTemp);
 					data.put("lms_status", lms_status);
@@ -6130,6 +6135,7 @@ public class FinancialTransactionController {
 			resultErr = "bad exception " + e;
 			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
 		}
+		
 		map.put("error", error);
 		map.put("message", message);
 		map.put("data", data);

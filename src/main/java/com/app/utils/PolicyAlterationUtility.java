@@ -354,6 +354,20 @@ public class PolicyAlterationUtility {
 					keyAndValue.setKey("alamat_tpt_tinggal");
 				}
 
+				
+
+				if(key.equalsIgnoreCase("msde_new9")) { //3
+					keyAndValue.setKey("negara_rumah");
+					try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListNegaraById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+
+				}
 			}
 
 			
@@ -386,6 +400,23 @@ public class PolicyAlterationUtility {
 						try {
 						 Integer.parseInt(value.trim());
 						 String val = services.selectListKecamatanById(value.trim());
+						 keyAndValue.setValue(val);
+						 }catch(Exception e) {
+							keyAndValue.setValue("error");
+						 }
+						 
+					}
+					
+					
+				};	
+				
+
+				if(key.equalsIgnoreCase("msde_new4")) { //34
+					keyAndValue.setKey("negara_kantor");
+					if(value != null) {
+						try {
+						 Integer.parseInt(value.trim());
+						 String val = services.selectListNegaraById(value.trim());
 						 keyAndValue.setValue(val);
 						 }catch(Exception e) {
 							keyAndValue.setValue("error");
@@ -539,12 +570,17 @@ public class PolicyAlterationUtility {
 					index = "msde_new8";
 				}
 
+				if(key.equalsIgnoreCase("negara_rumah")) { //3
+					index = "msde_new9";
+				}
 
 				
 				if(key.equalsIgnoreCase("kabupaten_kantor")) { //34
 					index = "msde_new1";
 				};
 					
+				
+				
 				
 				if(key.equalsIgnoreCase("kelurahan_kantor")) { //34
 					index = "msde_new2";
@@ -555,6 +591,10 @@ public class PolicyAlterationUtility {
 					index = "msde_new3";
 				};	
 
+
+				if(key.equalsIgnoreCase("negara_kantor")) { //34
+					index = "msde_new4";
+				};	
 
 				
 				if(key.equalsIgnoreCase("nama_bank_payor")) {// 96
@@ -672,7 +712,9 @@ public class PolicyAlterationUtility {
 				if(key.equalsIgnoreCase("alamat_tpt_tinggal")) { //3
 					index = "msde_old8";
 				}
-				
+				if(key.equalsIgnoreCase("negara_rumah")) { //3
+					index = "msde_old9";
+				}
 				
 				
 				
@@ -691,6 +733,9 @@ public class PolicyAlterationUtility {
 				index = "msde_old3";
 			};	
 
+			if(key.equalsIgnoreCase("negara_kantor")) { //34
+				index = "msde_old4";
+			};	
 			
 				
 				if(key.equalsIgnoreCase("nama_bank_payor")) {// 96

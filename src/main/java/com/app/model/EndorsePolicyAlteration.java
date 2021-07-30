@@ -62,6 +62,7 @@ public class EndorsePolicyAlteration implements Serializable {
     private String msde_new6;
     private String msde_new7;
     private String msde_new8;
+    private String msde_new9;
     
     private String key;
     private String value;
@@ -474,5 +475,11 @@ public class EndorsePolicyAlteration implements Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+	public String getMsde_new9() {
+		return msde_new9;
+	}
+	public void setMsde_new9(String msde_new9) {
+		this.msde_new9 = msde_new9;
 	}
 }

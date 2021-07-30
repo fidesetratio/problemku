@@ -1865,7 +1865,9 @@ public class PolicyIndividualCorporateController {
 				Integer kecamatan_kantor = policyHolder.getKecamatan_kantor();
 				Integer kelurahan_kantor = policyHolder.getKelurahan_kantor();
 				Integer kodepos_kantor = policyHolder.getKodepos_kantor();
+				Integer negara_kantor = policyHolder.getNegara_kantor();
 				String area_code_rumah_pp = policyHolder.getArea_code_rumah_pp();
+				
 				String telpon_rumah_pp = policyHolder.getTelpon_rumah_pp();
 				String alamat_rumah_pp = policyHolder.getAlamat_rumah_pp();
 				Integer propinsi_rumah = policyHolder.getPropinsi_rumah();
@@ -1873,6 +1875,7 @@ public class PolicyIndividualCorporateController {
 				Integer kecamatan_rumah = policyHolder.getKecamatan_rumah();
 				Integer kelurahan_rumah = policyHolder.getKelurahan_rumah();
 				Integer kodepos_rumah = policyHolder.getKodepos_rumah();
+				Integer negara_rumah = policyHolder.getNegara_rumah();
 				String alamat_tpt_tinggal = policyHolder.getAlamat_tpt_tinggal();
 				Integer korespondensi_flag = policyHolder.getKorespondensi_flag();
 				Integer nama_bank_pp = policyHolder.getNama_bank_pp();
@@ -1938,6 +1941,18 @@ public class PolicyIndividualCorporateController {
 				_kelurahan_rumah.put ("flag_direct", 0);
 				temp_kelurahan_rumah.put("kelurahan_rumah", _kelurahan_rumah);
 				data_policyholder.putAll(temp_kelurahan_rumah);
+				
+				HashMap<String, Object> _negara_rumah = new HashMap<>();
+				HashMap<String, Object> temp_negara_rumah = new HashMap<>();
+				_kelurahan_rumah.put("value", negara_rumah);
+				_kelurahan_rumah.put("id_endors", 3);
+				_kelurahan_rumah.put ("flag_direct", 0);
+				temp_kelurahan_rumah.put("negara_rumah", _negara_rumah);
+				data_policyholder.putAll(temp_negara_rumah);
+				
+				
+				
+				
 				
 				HashMap<String, Object> _kodepos_rumah = new HashMap<>();
 				HashMap<String, Object> temp_kodepos_rumah = new HashMap<>();
@@ -2174,6 +2189,15 @@ public class PolicyIndividualCorporateController {
 				_kodepos_kantor.put ("flag_direct", 0);
 				temp_kodepos_kantor.put("kodepos_kantor", _kodepos_kantor);
 				data_policyholder.putAll(temp_kodepos_kantor);
+				
+				HashMap<String, Object> _negara_kantor = new HashMap<>();
+				HashMap<String, Object> temp_negara_kantor = new HashMap<>();
+				_kodepos_kantor.put("value", negara_kantor);
+				_kodepos_kantor.put("id_endors", 34);
+				_kodepos_kantor.put ("flag_direct", 0);
+				temp_kodepos_kantor.put("negara_kantor", _negara_kantor);
+				data_policyholder.putAll(temp_negara_kantor);
+				
 				
 				HashMap<String, Object> _email = new HashMap<>();
 				HashMap<String, Object> temp_email = new HashMap<>();

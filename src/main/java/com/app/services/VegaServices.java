@@ -193,7 +193,7 @@ public class VegaServices {
 		dao.insertDetailSwitching(hashMap);
 	}
 	
-	public void insertDetailEndorse(String msen_endors_no, Integer lsje_id, String msde_old1, String msde_old2, String msde_old3, String msde_old4, String msde_old5, String msde_old6,String msde_old7,String msde_old8, String msde_new1, String msde_new2, String msde_new3, String msde_new4, String msde_new5, String msde_new6,String msde_new7,String msde_new8) {
+	public void insertDetailEndorse(String msen_endors_no, Integer lsje_id, String msde_old1, String msde_old2, String msde_old3, String msde_old4, String msde_old5, String msde_old6,String msde_old7,String msde_old8, String msde_new1, String msde_new2, String msde_new3, String msde_new4, String msde_new5, String msde_new6,String msde_new7,String msde_new8,String msde_new9) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
 		hashMap.put("msen_endors_no", msen_endors_no);
@@ -214,6 +214,7 @@ public class VegaServices {
 		hashMap.put("msde_new6", msde_new6);
 		hashMap.put("msde_new7", msde_new7);
 		hashMap.put("msde_new8", msde_new8);
+		hashMap.put("msde_new9", msde_new9);
 		dao.insertDetailEndorse(hashMap);
 	}
 

@@ -563,11 +563,13 @@ public class PolicyAlterationIndividualController {
 
 								String msde_old8 = oldvalue.get("msde_old8")==null?null:oldvalue.get("msde_old8").toString();
 								String msde_new8 = newvalue.get("msde_new8")==null?null:newvalue.get("msde_new8").toString();
+								
+								String msde_old9 = oldvalue.get("msde_old9")==null?null:oldvalue.get("msde_old9").toString();
+								String msde_new9 = newvalue.get("msde_new9")==null?null:newvalue.get("msde_new9").toString();
 					
 								if(!inProgress.contains(d)) {
 											if(d == 68 || d == 62 || d == 90 || d==67 || d == 89 || d == 61 || d == 39) {
 												for(IndexPolicyAlteration g:t) {
-													
 													DetailPolicyAlteration detailPolicyAlteration = g.getDetailPolicyAlteration();
 										    		String jsonGroup = g.getJsonGroup();
 									    			Integer index = g.getIndex();
@@ -594,13 +596,13 @@ public class PolicyAlterationIndividualController {
 												}	
 											
 												customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,
-														msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8, kolom,counter.getCounter());
+														msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,msde_new9, kolom,counter.getCounter());
 												counter.addOne();
 												
 											
 											}else {
 											    customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,
-											    		msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8, kolom);
+											    		msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,msde_new9, kolom);
 											}
 											
 								};

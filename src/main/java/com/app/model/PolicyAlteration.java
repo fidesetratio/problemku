@@ -34,6 +34,9 @@ public class PolicyAlteration implements Serializable {
 	private String mkl_kerja;
 	private String mkl_penghasilan;
 	private String mkl_smbr_penghasilan;
+	private Integer negara_rumah;
+	private Integer negara_kantor;
+	
 	public String getMpn_job_desc() {
 		return mpn_job_desc;
 	}
@@ -551,5 +554,17 @@ public class PolicyAlteration implements Serializable {
 	}
 	public void setMkl_smbr_penghasilan(String mkl_smbr_penghasilan) {
 		this.mkl_smbr_penghasilan = mkl_smbr_penghasilan;
+	}
+	public Integer getNegara_rumah() {
+		return negara_rumah;
+	}
+	public void setNegara_rumah(Integer negara_rumah) {
+		this.negara_rumah = negara_rumah;
+	}
+	public Integer getNegara_kantor() {
+		return negara_kantor;
+	}
+	public void setNegara_kantor(Integer negara_kantor) {
+		this.negara_kantor = negara_kantor;
 	}
 }

@@ -4300,7 +4300,7 @@
 	<select id="selectListPolicyAlterationByendorseId" parameterType="HashMap" resultType="com.app.model.EndorsePolicyAlteration">
 		SELECT * FROM (SELECT  A.MSEN_ENDORS_NO,
 		        B.LSJE_ID,
-		        B.MSDE_NEW1,B.MSDE_NEW2,B.MSDE_NEW3,B.MSDE_NEW4,B.MSDE_NEW5,B.MSDE_NEW6,B.MSDE_NEW7,B.MSDE_NEW8,
+		        B.MSDE_NEW1,B.MSDE_NEW2,B.MSDE_NEW3,B.MSDE_NEW4,B.MSDE_NEW5,B.MSDE_NEW6,B.MSDE_NEW7,B.MSDE_NEW8,B.MSDE_NEW9,
 		        TO_CHAR(A.MSEN_INPUT_DATE, 'DD/MM/YYYY') AS INPUT_DATE,
 		        CASE
 		            WHEN (A.LSPD_ID = 13)

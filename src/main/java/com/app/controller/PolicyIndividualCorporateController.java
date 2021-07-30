@@ -1944,10 +1944,10 @@ public class PolicyIndividualCorporateController {
 				
 				HashMap<String, Object> _negara_rumah = new HashMap<>();
 				HashMap<String, Object> temp_negara_rumah = new HashMap<>();
-				_kelurahan_rumah.put("value", negara_rumah);
-				_kelurahan_rumah.put("id_endors", 3);
-				_kelurahan_rumah.put ("flag_direct", 0);
-				temp_kelurahan_rumah.put("negara_rumah", _negara_rumah);
+				_negara_rumah.put("value", negara_rumah);
+				_negara_rumah.put("id_endors", 3);
+				_negara_rumah.put ("flag_direct", 0);
+				temp_negara_rumah.put("negara_rumah", _negara_rumah);
 				data_policyholder.putAll(temp_negara_rumah);
 				
 				
@@ -2192,10 +2192,10 @@ public class PolicyIndividualCorporateController {
 				
 				HashMap<String, Object> _negara_kantor = new HashMap<>();
 				HashMap<String, Object> temp_negara_kantor = new HashMap<>();
-				_kodepos_kantor.put("value", negara_kantor);
-				_kodepos_kantor.put("id_endors", 34);
-				_kodepos_kantor.put ("flag_direct", 0);
-				temp_kodepos_kantor.put("negara_kantor", _negara_kantor);
+				_negara_kantor.put("value", negara_kantor);
+				_negara_kantor.put("id_endors", 34);
+				_negara_kantor.put ("flag_direct", 0);
+				temp_negara_kantor.put("negara_kantor", _negara_kantor);
 				data_policyholder.putAll(temp_negara_kantor);
 				
 				

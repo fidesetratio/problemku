@@ -5186,6 +5186,7 @@ public class FinancialTransactionController {
 				} else if (typeFile.equals(4)) {
 				// 4 Document yang diupload user
 					pathFile = requestDownloadFileClaimSubmission.getPathFile();
+						
 					/*\\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\09\\09170016255\\DocumentClaimSubmission\\2020000410\\MPOLIS_Photocopy_of_prescription_and_diagnostic_test_reading_results.pdf*/
 					String tempPathFile = pathFile.replace("\\", "/");
 					tempPathFile = tempPathFile.replace("//", "/");
@@ -5195,17 +5196,22 @@ public class FinancialTransactionController {
 							+ tempPathArray[6].toString() + "/" + tempPathArray[7].toString() + "/" + tempPathArray[8].toString();
 					
 					pathFile = storageClaimMpolicy + "/" + tempPathClaimJoin;
+					
 				} else if (typeFile.equals(5)) {
 				// 5 Rawat Jalan Corporate
 					pathFile = folder.toString() + File.separator + "FormRawatJalanCorporate" + ".pdf";
 				} else if (typeFile.equals(6)) {
 				// 6 Rawat Inap Corporate
 					pathFile = folder.toString() + File.separator + "FormRawatInapCorporate" + ".pdf";
+				}else if(typeFile.equals("7")) {
+				 // 7 new continue
+					pathFile = requestDownloadFileClaimSubmission.getPathFile();
+					pathFile = pathFile.replace("\\", "/");
 				}
 
 				// Path File yang mau di download
 				File file = new File(pathFile);
-
+				
 				try {
 					// Content-Disposition
 					response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
@@ -6160,10 +6166,10 @@ public class FinancialTransactionController {
 		return res;
 	}
 	
-	public static String ekamedicareCalculatePath(String storage) {
+	public  String ekamedicareCalculatePath(String storage) {
 			storage = storage.trim();
 		//	String storage = "\\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\08202100193\\081902623773\\2020000300";
-			storage = storage.replace("\\\\storage.sinarmasmsiglife.co.id\\ekamedicare", "/mnt/Ekamedicare");
+			storage = storage.replace("\\\\storage.sinarmasmsiglife.co.id\\ekamedicare",ekamedicarepath);
 			storage = storage.replace("\\", "/");
 			return storage;
 	}

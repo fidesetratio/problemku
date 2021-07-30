@@ -88,6 +88,7 @@ public class PolicyAlterationIndividualController {
 		String key = PolicyAlterationUtility.getFirstLevelJsonValue(req, "key");
 		String no_polis = PolicyAlterationUtility.getFirstLevelJsonValue(req, "no_polis");
 		String msen_endorse_no = PolicyAlterationUtility.getFirstLevelJsonValue(req, "msen_endors_no");
+		String status =  PolicyAlterationUtility.getFirstLevelJsonValue(req, "status");
 		String grouping = PolicyAlterationUtility.getFirstLevelJsonValue(req, "grouping");
 		String lsje_id = PolicyAlterationUtility.getFirstLevelJsonValue(req, "jen");
 		JSONObject output = new JSONObject();
@@ -107,7 +108,7 @@ public class PolicyAlterationIndividualController {
 					Pemegang dataSPAJ = services.selectGetSPAJ(paramSelectSPAJ);
 					String reg_spaj = dataSPAJ.getReg_spaj();
 					
-					ArrayList<EndorsePolicyAlteration> endorse = services.selectListPolicyAlterationByendorseId(reg_spaj, msen_endorse_no, lsje_id, grouping);
+					ArrayList<EndorsePolicyAlteration> endorse = services.selectListPolicyAlterationByendorseId(reg_spaj, msen_endorse_no, lsje_id, grouping,status);
 
 					ArrayList<EndorsePolicyAlteration> endorseresult = new ArrayList<EndorsePolicyAlteration>();
 					

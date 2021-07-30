@@ -1348,13 +1348,14 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListPolicyAlterationInProcessing(reg_spaj);
 	}
-	public ArrayList<EndorsePolicyAlteration> selectListPolicyAlterationByendorseId(String reg_spaj, String msen_endorse_no, String lsje_id, String grouping) {
+	public ArrayList<EndorsePolicyAlteration> selectListPolicyAlterationByendorseId(String reg_spaj, String msen_endorse_no, String lsje_id, String grouping, String status) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String,Object> params = new HashMap<String, Object>();
 		params.put("reg_spaj", reg_spaj);
 		params.put("msen_endorse_no", msen_endorse_no);
 		params.put("grouping", grouping);
 		params.put("ljse_id", lsje_id);
+		params.put("status", status);
 		
 		
 		return dao.selectListPolicyAlterationByendorseId(params);

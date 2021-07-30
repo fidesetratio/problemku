@@ -4332,7 +4332,7 @@
 		    AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
             AND A.LSPD_ID in (99,13)
 		ORDER BY A.MSEN_INPUT_DATE DESC
-		) WHERE GROUPING = #{grouping,jdbcType=VARCHAR}
+		) WHERE GROUPING = #{grouping,jdbcType=VARCHAR} AND STATUS = #{status,jdbcType=VARCHAR}
 	</select>
 	
 	

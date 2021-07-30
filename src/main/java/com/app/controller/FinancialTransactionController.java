@@ -5206,7 +5206,11 @@ public class FinancialTransactionController {
 				}else if(typeFile.equals("7")) {
 				 // 7 new continue
 					pathFile = requestDownloadFileClaimSubmission.getPathFile();
+					System.out.println("Path File Before >> "+pathFile);
 					pathFile = pathFile.replace("\\", "/");
+					System.out.println("Path File After >> "+pathFile);
+
+					
 				}
 
 				// Path File yang mau di download

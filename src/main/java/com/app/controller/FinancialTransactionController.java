@@ -5170,6 +5170,7 @@ public class FinancialTransactionController {
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				String pathFolder = pathFormClaimSubmission;
+				
 				File folder = new File(pathFolder);
 				String pathFile = null;
 
@@ -5203,7 +5204,7 @@ public class FinancialTransactionController {
 				} else if (typeFile.equals(6)) {
 				// 6 Rawat Inap Corporate
 					pathFile = folder.toString() + File.separator + "FormRawatInapCorporate" + ".pdf";
-				}else if(typeFile.equals("7")) {
+				}else if(typeFile.equals(7)) {
 				 // 7 new continue
 					pathFile = requestDownloadFileClaimSubmission.getPathFile();
 					System.out.println("Path File Before >> "+pathFile);

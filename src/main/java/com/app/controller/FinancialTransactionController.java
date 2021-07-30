@@ -171,7 +171,7 @@ public class FinancialTransactionController {
 	private String downloadEndorseHr;
 	
 
-	@Value("${ekamedicare.path}")
+	@Value("${path.ekamedicare.path}")
 	private String ekamedicarepath;
 
 	@Autowired

@@ -2705,6 +2705,7 @@ public class PolicyIndividualCorporateController {
 						error = false;
 						message = "Data list premium holiday empty";
 					} else {
+						HashMap<String,ArrayList<Endorse>> preview = new HashMap<String, ArrayList<Endorse>>();
 						for(int i = 0; i<listPolicyAlteration.size();i++) {
 							HashMap<String, Object> dataTemp = new HashMap<>();
 							
@@ -2714,17 +2715,34 @@ public class PolicyIndividualCorporateController {
 							String status = listPolicyAlteration.get(i).getStatus();
 							String lsje_status = listPolicyAlteration.get(i).getLsje_status();
 							String grouping = listPolicyAlteration.get(i).getGrouping();
+							if(preview.get(status) == null) {
+								preview.put(status,new ArrayList<Endorse>());
+							}
+							preview.get(status).add(listPolicyAlteration.get(i));
+							
 							
 							dataTemp.put("msen_endors_no", msen_endors_no);
 							dataTemp.put("lsje_id", lsje_id);
 							dataTemp.put("input_date", input_date);
 							dataTemp.put("status", status);
+							
 							dataTemp.put("lsje_status", lsje_status);
 							dataTemp.put("grouping", grouping);
 							
 							listPolAlt.add(dataTemp);
 						}
-						data.put("list_policy_alteration", listPolAlt);
+						
+						ArrayList<Endorse> sendresult = new ArrayList<Endorse>();
+						if(preview.size()>0) {
+								for(String k:preview.keySet()) {
+									Endorse endorse = preview.get(k).get(0);
+									if(endorse != null)
+									sendresult.add(endorse);
+								}
+						
+						}
+						
+						data.put("list_policy_alteration", sendresult);
 						error = false;
 						message = "Successfully get data";
 					}

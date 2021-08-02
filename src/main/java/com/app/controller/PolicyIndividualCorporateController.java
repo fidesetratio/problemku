@@ -2568,16 +2568,17 @@ public class PolicyIndividualCorporateController {
 			//GET BENEFICIARY
 				ArrayList<Beneficiary> beneficiary = services.selectListBeneficiary(no_polis);
 				ArrayList<Object> array_beneficiary = new ArrayList<>();
-				HashMap<String, Object> listsBeneficiary = new HashMap<>();
-				for (int y = 0; y < beneficiary.size(); y++) {
+				
+				for (Beneficiary b:beneficiary) {
 					HashMap<String, Object> data_beneficiary = new HashMap<>();
+					HashMap<String, Object> listsBeneficiary = new HashMap<>();
 					
-					Integer msaw_number = beneficiary.get(y).getMsaw_number();
-				    String msaw_first = beneficiary.get(y).getMsaw_first();
-				    String msaw_birth = beneficiary.get(y).getMsaw_birth();
-				    String lsre_relation = beneficiary.get(y).getLsre_relation();
-				    Integer msaw_persen = beneficiary.get(y).getMsaw_persen();
-				    Integer msaw_sex = beneficiary.get(y).getMsaw_sex();
+					Integer msaw_number =b.getMsaw_number();
+				    String msaw_first = b.getMsaw_first();
+				    String msaw_birth = b.getMsaw_birth();
+				    String lsre_relation = b.getLsre_relation();
+				    Integer msaw_persen = b.getMsaw_persen();
+				    Integer msaw_sex = b.getMsaw_sex();
 				    
 				    HashMap<String, Object> _msaw_number = new HashMap<>();
 					HashMap<String, Object> temp_msaw_number = new HashMap<>();
@@ -2628,8 +2629,8 @@ public class PolicyIndividualCorporateController {
 					data_beneficiary.putAll(temp_msaw_sex);
 					
 					listsBeneficiary.put("anggota", data_beneficiary);
-					
 					array_beneficiary.add(listsBeneficiary);
+					
 				}
 				
 				data.put("policyholder", data_policyholder);

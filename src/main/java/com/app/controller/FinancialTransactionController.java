@@ -6319,16 +6319,21 @@ public class FinancialTransactionController {
 					if ((name_file != null) && (file_base64 != null) && (reg_spaj != null) && (mpcc_id != null)
 							&& (name_file != "") && (file_base64 != "") && (reg_spaj != "")) {
 						// Path Upload
-						String path_claim = pathDocumentClaimcorporate + reg_spaj + "\\" + mste_insured + "\\"
+						String path_claim = pathDocumentClaimcorporate + reg_spaj + File.separator + mste_insured + File.separator
 								+ mpcc_id;
+						
 
 						System.out.println("Upload Start: " + new Date());
-						Boolean uploadFile = true;/*customResourceLoader.uploadFileToStorage(path_claim, file_base64,
-								name_file, username, request.getServletPath());*/
+						Boolean uploadFile = true;
+						BigInteger mpc_id = new BigInteger(mpcc_id);
+
+						customResourceLoader.uploadFileToStorage(path_claim, file_base64,
+								name_file, username, request.getServletPath(), mpc_id);
 						System.out.println("Upload Done: " + new Date());
 
+						
 						if (uploadFile.equals(true)) {
-							String filePath = path_claim + "\\" + name_file + ".pdf";
+							String filePath = path_claim + File.separator + name_file + ".pdf";
 							Boolean validateFilePdf = customResourceLoader.validateFilePdf(filePath, username, mpcc_id);
 							if (validateFilePdf.equals(true)) {
 								error = false;
@@ -6362,13 +6367,13 @@ public class FinancialTransactionController {
 					if ((name_file != null) && (reg_spaj != null) && (mpcc_id != null) && (name_file != "")
 							&& (reg_spaj != "")) {
 						// Path Delete File
-						String path_claim = pathDocumentClaimcorporate + reg_spaj + "\\" + mste_insured + "\\" + mpcc_id
-								+ "\\" + name_file + ".pdf";
+						String path_claim = pathDocumentClaimcorporate + reg_spaj + File.separator + mste_insured + File.separator + mpcc_id
+								+ File.separator + name_file + ".pdf";
 
 						// Path Log
-						String pathLogClaimRequest = pathLogSubmitClaimSubmissionCorp + mpcc_id + "\\" + "request-"
+						String pathLogClaimRequest = pathLogSubmitClaimSubmissionCorp + mpcc_id + File.separator + "request-"
 								+ name_file + ".txt";
-						String pathLogClaimResponse = pathLogSubmitClaimSubmissionCorp + mpcc_id + "\\" + "response-"
+						String pathLogClaimResponse = pathLogSubmitClaimSubmissionCorp + mpcc_id + File.separator + "response-"
 								+ name_file + ".txt";
 
 						try {
@@ -6408,7 +6413,7 @@ public class FinancialTransactionController {
 				} else if (type.equals(3)) {
 					if ((reg_spaj != null) && (mpcc_id != null) && (reg_spaj != "")) {
 						// Path Delete Folder
-						String path_claim = pathDocumentClaimcorporate + reg_spaj + "\\" + mste_insured + "\\"
+						String path_claim = pathDocumentClaimcorporate + reg_spaj + File.separator+ mste_insured + File.separator
 								+ mpcc_id;
 
 						// Path Log

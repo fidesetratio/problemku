@@ -6393,21 +6393,21 @@ public class FinancialTransactionController {
 								+ File.separator + name_file + ".pdf";
 
 						// Path Log
-						String pathLogClaimRequest = pathLogSubmitClaimSubmissionCorp + mpcc_id + File.separator + "request-"
-								+ name_file + ".txt";
-						String pathLogClaimResponse = pathLogSubmitClaimSubmissionCorp + mpcc_id + File.separator + "response-"
-								+ name_file + ".txt";
+						//String pathLogClaimRequest = pathLogSubmitClaimSubmissionCorp + mpcc_id + File.separator + "request-"
+						//		+ name_file + ".txt";
+						//String pathLogClaimResponse = pathLogSubmitClaimSubmissionCorp + mpcc_id + File.separator + "response-"
+						//			+ name_file + ".txt";
 
 						try {
 							File file = new File(path_claim);
 							if (file.delete()) {
-								Path path2 = Paths.get(pathLogClaimRequest);
-								Files.walk(path2).sorted(Comparator.reverseOrder()).map(Path::toFile)
-										.forEach(File::delete);
+								//Path path2 = Paths.get(pathLogClaimRequest);
+								//Files.walk(path2).sorted(Comparator.reverseOrder()).map(Path::toFile)
+								//		.forEach(File::delete);
 
-								Path path3 = Paths.get(pathLogClaimResponse);
-								Files.walk(path3).sorted(Comparator.reverseOrder()).map(Path::toFile)
-										.forEach(File::delete);
+							//	Path path3 = Paths.get(pathLogClaimResponse);
+							//	Files.walk(path3).sorted(Comparator.reverseOrder()).map(Path::toFile)
+							//			.forEach(File::delete);
 
 								error = false;
 								message = "Successfully delete file";

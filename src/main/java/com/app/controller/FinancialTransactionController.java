@@ -6379,6 +6379,15 @@ public class FinancialTransactionController {
 				} else if (type.equals(2)) {
 					if ((name_file != null) && (reg_spaj != null) && (mpcc_id != null) && (name_file != "")
 							&& (reg_spaj != "")) {
+						
+						String nameFileNew = null;
+						int lastIndexOf = name_file.lastIndexOf(".");
+				        if (lastIndexOf > -1) {
+				            name_file = name_file.substring(0, lastIndexOf);
+				        }
+
+						
+						
 						// Path Delete File
 						String path_claim = pathDocumentClaimcorporate + reg_spaj + File.separator + mste_insured + File.separator + mpcc_id
 								+ File.separator + name_file + ".pdf";

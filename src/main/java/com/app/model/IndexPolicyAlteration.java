@@ -1,5 +1,6 @@
 package com.app.model;
 
+import com.app.services.VegaServices;
 import com.app.utils.PolicyAlterationUtility;
 
 public class IndexPolicyAlteration {
@@ -12,9 +13,9 @@ public class IndexPolicyAlteration {
 	private DetailPolicyAlteration detailPolicyAlteration;
 	private String oldColumn;
 	private String newColumn;
-	
-	
-	
+	private Boolean useDatabase;
+	private Boolean hookBeforeValue;
+	private String newValue;
 	public IndexPolicyAlteration(boolean isArray, String jsonGroup, Integer index, String keyArray, String key,
 			DetailPolicyAlteration detailPolicyAlteration) {
 		super();
@@ -24,12 +25,53 @@ public class IndexPolicyAlteration {
 		this.keyArray = keyArray;
 		this.key = key;
 		this.detailPolicyAlteration = detailPolicyAlteration;
-		this.oldColumn = PolicyAlterationUtility.getSpesificIndexOld(key);
-		this.newColumn = PolicyAlterationUtility.getSpesificIndexNew(key);
+		this.oldColumn = PolicyAlterationUtility.getSpesificIndexOld(detailPolicyAlteration.getId_endors(),key);
+		this.newColumn = PolicyAlterationUtility.getSpesificIndexNew(detailPolicyAlteration.getId_endors(),key);
+		this.useDatabase = false;
+		this.hookBeforeValue = false;
 		
 	}
 
+	public IndexPolicyAlteration(boolean isArray, String jsonGroup, Integer index, String keyArray, String key,
+			DetailPolicyAlteration detailPolicyAlteration, VegaServices vegaServices) {
+		super();
+		this.isArray = isArray;
+		this.jsonGroup = jsonGroup;
+		this.index = index;
+		this.keyArray = keyArray;
+		this.key = key;
+		this.detailPolicyAlteration = detailPolicyAlteration;
+		this.hookBeforeValue = false;
+		if(detailPolicyAlteration != null) {
+			if(detailPolicyAlteration.getId_endors() != null) {
+				
+		this.oldColumn = PolicyAlterationUtility.getSpesificIndexOld(detailPolicyAlteration.getId_endors(),key);
+		this.newColumn = PolicyAlterationUtility.getSpesificIndexNew(detailPolicyAlteration.getId_endors(),key);
+			};
+			};
+		EndorseKeyAndValue keyAndvaluetmp = new EndorseKeyAndValue();
+		this.oldColumn = keyAndvaluetmp.getOldKey();
+		this.newColumn = keyAndvaluetmp.getNewKey();
+		
+		this.useDatabase = true;
+		
 
+		
+		if(this.useDatabase && this.detailPolicyAlteration != null) {
+			if(detailPolicyAlteration.getId_endors() != null) {
+			EndorseKeyAndValue keyAndValue = PolicyAlterationUtility.createMapping(detailPolicyAlteration.getId_endors(),  key ,detailPolicyAlteration, vegaServices);
+			this.oldColumn = keyAndValue.getOldKey();
+			this.newColumn = keyAndValue.getNewKey();
+			this.hookBeforeValue = keyAndValue.getHookBeforeValue();
+			if(this.hookBeforeValue) {
+				this.newValue = keyAndValue.getNewValueKey();
+			}
+			
+			};
+			
+		}
+		
+	}
 
 	public boolean isArray() {
 		return isArray;
@@ -123,5 +165,29 @@ public class IndexPolicyAlteration {
 
 	public void setNewColumn(String newColumn) {
 		this.newColumn = newColumn;
+	}
+
+	public Boolean getUseDatabase() {
+		return useDatabase;
+	}
+
+	public void setUseDatabase(Boolean useDatabase) {
+		this.useDatabase = useDatabase;
+	}
+
+	public Boolean getHookBeforeValue() {
+		return hookBeforeValue;
+	}
+
+	public void setHookBeforeValue(Boolean hookBeforeValue) {
+		this.hookBeforeValue = hookBeforeValue;
+	}
+
+	public String getNewValue() {
+		return newValue;
+	}
+
+	public void setNewValue(String newValue) {
+		this.newValue = newValue;
 	}
 }

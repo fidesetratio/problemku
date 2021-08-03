@@ -332,7 +332,7 @@
 	<insert id="insertEndorse" parameterType="HashMap">
 		INSERT INTO EKA.MST_ENDORS (
 			msen_endors_no, reg_spaj, msen_internal, msen_alasan, msen_input_date, msen_active_date, lspd_id, lus_id, msen_auto_rider, flag_ps, msen_flag_uw,
-		    msen_flag_ttp, msen_aksep_uw, msen_issue_spaj, msen_reproses
+		    msen_flag_ttp, msen_aksep_uw, msen_issue_spaj, msen_reproses,flag_vega
 		) VALUES (
     		#{msen_endors_no, jdbcType=VARCHAR}, 
     		#{reg_spaj, jdbcType=VARCHAR},
@@ -348,14 +348,22 @@
     		0,
     		0,
     		0,
-    		0
+    		0,
+    		1
 		)
 	</insert>
 	
 	<insert id="insertDetailEndorse" parameterType="HashMap">
 		INSERT INTO EKA.MST_DET_ENDORS (
-			msen_endors_no, msenf_number, lsje_id, mste_insured_no, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,
-			msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,msde_new9
+			msen_endors_no, msenf_number, lsje_id, mste_insured_no, 
+			
+			msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,
+			msde_old9,msde_old10,msde_old11,msde_old12,msde_old13,msde_old14,msde_old15,msde_old16,
+			msde_old17,msde_old18,msde_old19,msde_old20,
+			
+			msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,
+			msde_new9,msde_new10,msde_new11,msde_new12,msde_new13,msde_new14,msde_new15,msde_new16,
+			msde_new17,msde_new18,msde_new19,msde_new20
 		) VALUES (
 		 	#{msen_endors_no, jdbcType=VARCHAR},
 		   	1,
@@ -369,6 +377,18 @@
 		   	#{msde_old6, jdbcType=VARCHAR},
 		   	#{msde_old7, jdbcType=VARCHAR},
 		   	#{msde_old8, jdbcType=VARCHAR},
+		   	#{msde_old9, jdbcType=VARCHAR},
+		   	#{msde_old10, jdbcType=VARCHAR},
+		   	#{msde_old11, jdbcType=VARCHAR},
+		   	#{msde_old12, jdbcType=VARCHAR},
+		   	#{msde_old13, jdbcType=VARCHAR},
+		   	#{msde_old14, jdbcType=VARCHAR},
+		   	#{msde_old15, jdbcType=VARCHAR},
+		   	#{msde_old16, jdbcType=VARCHAR},
+		   	#{msde_old17, jdbcType=VARCHAR},
+		   	#{msde_old18, jdbcType=VARCHAR},
+		   	#{msde_old19, jdbcType=VARCHAR},
+		   	#{msde_old20, jdbcType=VARCHAR},
 		   	#{msde_new1, jdbcType=VARCHAR},
 		   	#{msde_new2, jdbcType=VARCHAR},
 		   	#{msde_new3, jdbcType=VARCHAR},
@@ -377,11 +397,75 @@
 		   	#{msde_new6, jdbcType=VARCHAR},
 		   	#{msde_new7, jdbcType=VARCHAR},
 		   	#{msde_new8, jdbcType=VARCHAR},
-		   	#{msde_new9, jdbcType=VARCHAR}
+		   	#{msde_new9, jdbcType=VARCHAR},
+		   	#{msde_new10, jdbcType=VARCHAR},
+		   	#{msde_new11, jdbcType=VARCHAR},
+		   	#{msde_new12, jdbcType=VARCHAR},
+		   	#{msde_new13, jdbcType=VARCHAR},
+		   	#{msde_new14, jdbcType=VARCHAR},
+		   	#{msde_new15, jdbcType=VARCHAR},
+		   	#{msde_new16, jdbcType=VARCHAR},
+		   	#{msde_new17, jdbcType=VARCHAR},
+		   	#{msde_new18, jdbcType=VARCHAR},
+		   	#{msde_new19, jdbcType=VARCHAR},
+		   	#{msde_new20, jdbcType=VARCHAR}   	
 		   	
 		)
 	</insert>
 
+
+<insert id="insertMstInbox" parameterType="com.app.model.MstInbox">
+			insert into eka.mst_inbox
+		(
+			MI_ID,
+			LJJ_ID,
+			LSPD_ID,
+			LSPD_ID_PENDING,
+			LSPD_ID_FROM,
+			REG_SPAJ,
+			NO_REFF,
+			MI_DESC,
+			MI_POS,
+			TGL_BERKAS_MASUK,
+			TGL_BERKAS_LENGKAP,
+			TRANS_ID,
+			TRANS_DATE,
+			CREATE_ID,
+			CREATE_DATE,
+			TGL_JT_TEMPO,
+			TGL_KONFIRMASI,
+			TGL_ADMIN_TERIMA,
+			LSTB_ID,
+			FLAG_PRIORITY,
+			FLAG_VALIDASI,
+			FLAG_CABANG
+		) 
+		values(
+			#{mi_id,jdbcType=VARCHAR},
+			#{ljj_id,jdbcType=INTEGER},
+			#{lspd_id,jdbcType=INTEGER},
+			#{lspd_id_pending,jdbcType=INTEGER},
+			#{lspd_id_from,jdbcType=INTEGER},
+			#{reg_spaj,jdbcType=VARCHAR},
+			#{no_reff,jdbcType=VARCHAR},
+			#{mi_desc,jdbcType=VARCHAR},
+			#{mi_pos,jdbcType=INTEGER},
+			#{tgl_berkas_masuk,jdbcType=DATE},
+			#{tgl_berkas_lengkap,jdbcType=DATE},
+			#{trans_id,jdbcType=INTEGER},
+			#{trans_date,jdbcType=DATE},
+			#{create_id,jdbcType=INTEGER},
+			#{create_date,jdbcType=DATE},
+			#{tgl_jt_tempo,jdbcType=DATE},
+			#{tgl_konfirmasi,jdbcType=DATE},
+			#{tgl_admin_terima,jdbcType=DATE},
+			#{lstb_id,jdbcType=INTEGER},
+			#{flag_priority,jdbcType=INTEGER},
+			#{flag_validasi,jdbcType=INTEGER},
+			#{flag_cabang,jdbcType=INTEGER}			
+		)
+	</insert>
+	
 	<insert id="insertLstUlangan" parameterType="HashMap">
 		Insert into EKA.LST_ULANGAN
 		   (REG_SPAJ, TANGGAL, JENIS, STATUS_POLIS, LUS_ID, 

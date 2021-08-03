@@ -1741,10 +1741,16 @@
 		select EKA.MPCCID_SEQ.nextval from dual
 	</select>
 	
+	<select id="getInboxId" resultType="String">
+		select eka.pac_counter.get_inbox_id from dual
+	</select>
+
+
 	<select id="selectGetNoEndors" resultType="String">
 		select eka.pac_counter.Get_no_endors_seq from dual
 	</select>
-
+	
+	
 	<select id="selectUserIndividual" resultType="User" parameterType="String">
 		SELECT A.*,
 			B.MSPO_POLICY_NO,
@@ -4341,6 +4347,11 @@
 		SELECT * FROM EKA.LST_STATUS
 	</select>
 	
+	<select id="selectDynamicQuery" parameterType="com.app.model.SQLAdapter" resultType="String">
+			${sql}
+	</select>
+	
+	
 	<select id="selectListPernikahanById" resultType="String"  parameterType="String">
 		SELECT lsst_name FROM EKA.LST_STATUS
 		 where lsst_id = #{lsst_id, jdbcType=VARCHAR}
@@ -4406,6 +4417,15 @@
 		WHERE   LSJE_ACTIVE = 1
 			AND LSJE_ID = #{lsje_id, jdbcType=INTEGER}
 	</select>
+	
+	<select id="selectMapEndorse" parameterType="com.app.model.EndorseMapping" resultType="com.app.model.EndorseMapping">
+		select * from eka.mst_vega_endors_map where endorse_id = #{endorse_id} and json_key = #{json_key}
+	</select>
+	
+	<select id="selectMapEndorseForKey" parameterType="com.app.model.EndorseMapping" resultType="com.app.model.EndorseMapping">
+		select * from eka.mst_vega_endors_map where endorse_id = #{endorse_id} and counter_identifier = #{counter_identifier}
+	</select>
+	
 	
 	<select id="selectMclId_PP" parameterType="String" resultType="String">
 		SELECT  MSPO_POLICY_HOLDER

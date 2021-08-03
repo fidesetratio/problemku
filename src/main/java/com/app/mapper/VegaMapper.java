@@ -22,6 +22,7 @@ import com.app.model.DownloadReportHr;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.EndorseHr;
+import com.app.model.EndorseMapping;
 import com.app.model.EndorsePolicyAlteration;
 import com.app.model.Fund;
 import com.app.model.Inbox;
@@ -29,6 +30,7 @@ import com.app.model.KlaimKesehatan;
 import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
+import com.app.model.MstInbox;
 import com.app.model.MstOTPSimultaneous;
 import com.app.model.MstOTPSimultaneousDet;
 import com.app.model.Nav;
@@ -45,6 +47,7 @@ import com.app.model.Provinsi;
 import com.app.model.PushNotif;
 import com.app.model.Rekening;
 import com.app.model.ReportHr;
+import com.app.model.SQLAdapter;
 import com.app.model.Sales;
 import com.app.model.SavedProvider;
 import com.app.model.SmsServerOut;
@@ -74,6 +77,10 @@ public interface VegaMapper {
 	public void storedProcedureSubmitFinancialTransaction(HashMap<String, Object> hashMap);
 
 	// Insert
+	
+	
+	public void insertMstInbox(MstInbox mstInbox);
+	
 	public void insertSavedProvider(SavedProvider savedProvider);
 	
 	public void insertLstHistActvWs(LstHistActivityWS lstHistActivityWS);
@@ -232,6 +239,7 @@ public interface VegaMapper {
 	public Integer selectGetLspdId(String reg_spaj);
 	
 	public String selectGetNoEndors();
+	public String getInboxId();
 
 	public BigInteger selectGetMpcId();
 
@@ -365,6 +373,10 @@ public interface VegaMapper {
 	public ArrayList<Endorse> selectListPolicyAlterationInProcessing(String reg_spaj);
 	public ArrayList<EndorsePolicyAlteration> selectListPolicyAlterationByendorseId(HashMap<String,Object> params);
 	
+	public EndorseMapping selectMapEndorse(EndorseMapping endorseMapping);
+	public EndorseMapping selectMapEndorseForKey(EndorseMapping endorseMapping);
+	
+	public String selectDynamicQuery(SQLAdapter adapter);
 	
 	public ArrayList<DropdownPolicyAlteration> selectListPernikahan();
 	public String selectListPernikahanById(String lsst_id);

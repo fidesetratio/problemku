@@ -49,16 +49,17 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.model.DetailWithdraw;
+import com.app.model.Endorse;
 import com.app.model.LstHistActivityWS;
-import com.app.model.LstUserSimultaneous;
+import com.app.model.MstInbox;
 import com.app.model.NotifToken;
 import com.app.model.Provinsi;
 import com.app.model.PushNotif;
 import com.app.model.User;
 import com.app.services.VegaServices;
-import com.google.gson.JsonObject;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
@@ -1873,8 +1874,17 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 	}
 	
 	public void PolicyAlterationDirect(String reg_spaj, String msen_alasan, Integer lsje_id, String msde_old1, String msde_old2,
-			String msde_old3, String msde_old4, String msde_old5, String msde_old6,String msde_old7,String msde_old8,String msde_new1, String msde_new2, String msde_new3,
-			String msde_new4, String msde_new5, String msde_new6, String msde_new7,String msde_new8,String msde_new9, String kolom, Integer counter)
+			String msde_old3, String msde_old4, String msde_old5, String msde_old6,String msde_old7,String msde_old8,String msde_old9,String msde_old10,
+			String msde_old11, String msde_old12,
+			String msde_old13, String msde_old14, String msde_old15, String msde_old16,String msde_old17,String msde_old18,String msde_old19,String msde_old20
+			
+			,String msde_new1, String msde_new2, String msde_new3,
+			String msde_new4, String msde_new5, String msde_new6, String msde_new7,String msde_new8,String msde_new9,String msde_new10
+
+			,String msde_new11, String msde_new12, String msde_new13,
+			String msde_new14, String msde_new15, String msde_new16, String msde_new17,String msde_new18,String msde_new19,String msde_new20
+			
+			, String kolom, Integer counter)
 	{
 		Integer lspd_id = 99;
 		
@@ -1886,9 +1896,13 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 		services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan, lspd_id);
 		
 		//INSERT DET ENDORSE
-		 services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7, msde_old8,
-					msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, msde_new7, msde_new8,msde_new9);
-			
+	
+		services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7, msde_old8,msde_old9,msde_old10,
+				msde_old11, msde_old12, msde_old13, msde_old14, msde_old15, msde_old16,msde_old17, msde_old18,msde_old19,msde_old20,
+				msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, msde_new7, msde_new8,msde_new9,msde_new10,
+				msde_new11, msde_new12, msde_new13, msde_new14, msde_new15, msde_new16, msde_new17, msde_new18,msde_new19,msde_new20
+				);
+		
 	
 		
 		//INSERT LST ULANGAN
@@ -1899,27 +1913,88 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 		
 	}
 	
+	@Transactional
 	public void PolicyAlterationIndirect(String reg_spaj, String msen_alasan, Integer lsje_id, String msde_old1, String msde_old2,
-			String msde_old3, String msde_old4, String msde_old5, String msde_old6, String msde_old7,String msde_old8, String msde_new1, String msde_new2, String msde_new3,
-			String msde_new4, String msde_new5, String msde_new6, String msde_new7, String msde_new8,String msde_new9, String kolom)
+			String msde_old3, String msde_old4, String msde_old5, String msde_old6, String msde_old7,String msde_old8,String msde_old9,String msde_old10,
+			String msde_old11, String msde_old12,
+			String msde_old13, String msde_old14, String msde_old15, String msde_old16, String msde_old17,String msde_old18,String msde_old19,String msde_old20,
+			
+			
+			String msde_new1, String msde_new2, String msde_new3,
+			String msde_new4, String msde_new5, String msde_new6, String msde_new7, String msde_new8,String msde_new9,String msde_new10,
+			String msde_new11, String msde_new12, String msde_new13,
+			String msde_new14, String msde_new15, String msde_new16, String msde_new17, String msde_new18,String msde_new19,String msde_new20,
+			
+			
+			String kolom)
 	{
 		Integer lspd_id = 13;
 		
 		// Get MSEN_ENDORSE_NO
 		String msen_endors_no = services.selectGetNoEndors();
+		String inbox_id = services.getInboxId();
+		System.out.println("Inbox ID:"+inbox_id);
+		Integer ljj_id = 22;
+		Integer lspd_id_inbox = 203;
+		Integer lspd_id_pending = null;
+		Integer lspd_id_from = 203;
+		Integer user_app1 = 0;
+		Integer user_app2 = 0;
+		String no_reff = msen_endors_no;
+		Date tgl_berkas_masuk = new Date();
+		Date tgl_berkas_lengkap = new Date();
+		Integer trans_id = null;
+		Date trans_date = null;
+		Integer create_id = null;
+		Date create_date = new Date();
+		Integer app_3 = 0;
+		Integer user_app_3 = null;
+		Integer lstb_id = 1;
+		Date tgl_jt_tempo = null;
+		Date tgl_konfirmasi =new Date();
+		Date tgl_admin_terima = new Date();
+		Integer flag_priority = 0;
+		Integer batal = null;
+		Integer batal_id = null;
+		Integer flag_hardcopy= null;
+		Integer flag_validation = null;
+		Integer flag_cabang = null;
+	 	Endorse endors = services.selectListJenisEndors(lsje_id);
+	 	
+	 	String endorseMessage = (endors != null)? endors.getLsje_jenis():"";
+		
+		String mi_desc = "ENDORSMENT FROM VEGA ("+endorseMessage.toUpperCase()+")";
+		Integer mi_pos = null;
+		Date batal_date = null;
+		Integer flag_validasi = null;
+		
+		
+		
 		
 		//INSERT ENDORSE
 		services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan, lspd_id);
 		
-		//INSERT DET ENDORSE
-	//	services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7, msde_old8,
-	//			msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, msde_new7, msde_new8);
-	
-    services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7, msde_old8,
-					msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, msde_new7, msde_new8,msde_new9);
+	services.insertDetailEndorse(msen_endors_no, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7, msde_old8,msde_old9,msde_old10,
+			msde_old11, msde_old12, msde_old13, msde_old14, msde_old15, msde_old16,msde_old17, msde_old18,msde_old19,msde_old20,
+			msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, msde_new7, msde_new8,msde_new9,msde_new10,
+			msde_new11, msde_new12, msde_new13, msde_new14, msde_new15, msde_new16, msde_new17, msde_new18,msde_new19,msde_new20
+			);
 			
+    MstInbox inbox = new MstInbox(inbox_id, ljj_id, lspd_id_inbox, lspd_id_pending, lspd_id_from, user_app1, 
+    		user_app2, reg_spaj, no_reff, mi_desc, mi_pos, tgl_berkas_masuk, tgl_berkas_lengkap, trans_id,
+    		trans_date, 
+    		create_id, create_date, app_3, user_app_3, lstb_id, tgl_jt_tempo, 
+    		tgl_konfirmasi, tgl_admin_terima, flag_priority, batal, batal_date, batal_id, flag_hardcopy, 
+    		flag_validasi, flag_cabang);
+    
+    services.insertMstInbox(inbox);
+    	
+    
+    
 		
 		//UPDATE LSPD_ID IN MSPO_POLICY
-		services.updateLspdId(reg_spaj);
+		//services.updateLspdId(reg_spaj);
+		
+		
 	}
 }

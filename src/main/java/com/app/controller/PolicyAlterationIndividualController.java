@@ -76,7 +76,6 @@ public class PolicyAlterationIndividualController {
 		builder.serializeNulls();
 		Gson gson = new Gson();
 		gson = builder.create();
-		//String req = gson.toJson(requestViewPolicyAlteration);
 		String req = requestViewPolicyAlteration;
 		String res = null;
 		String message = null;
@@ -199,7 +198,7 @@ public class PolicyAlterationIndividualController {
 		if(allowed) {
 			for(String key:data.keySet()) {
 				String value = data.get(key);
-				PolicyAlterationKeyAndValue policyAlterationKeyAndValue = PolicyAlterationUtility.getKeyAndValue(key,lsje_id, value, services);
+				PolicyAlterationKeyAndValue policyAlterationKeyAndValue = PolicyAlterationUtility.getKeyAndValueWithDatabase(key,lsje_id, value, services);
 				if(policyAlterationKeyAndValue.getKey() != null && policyAlterationKeyAndValue.getValue() != null) {
 					EndorsePolicyAlteration t = (EndorsePolicyAlteration) SerializationUtils.clone(tmp);
 					t.setKey(policyAlterationKeyAndValue.getKey());
@@ -427,7 +426,7 @@ public class PolicyAlterationIndividualController {
 						if(detailPolicyAlteration != null) {
 							lsje_id = detailPolicyAlteration.getId_endors() == null?0:detailPolicyAlteration.getId_endors();
 						};
-						IndexPolicyAlteration indexPolicyAlteration = new IndexPolicyAlteration(true, jsonGroup, index, keyArray, key, detailPolicyAlteration);
+						IndexPolicyAlteration indexPolicyAlteration = new IndexPolicyAlteration(true, jsonGroup, index, keyArray, key, detailPolicyAlteration,services);
 							if(listtosubmit.get(lsje_id) == null) {
 								listtosubmit.put(lsje_id, new ArrayList<IndexPolicyAlteration>());
 							}
@@ -451,7 +450,7 @@ public class PolicyAlterationIndividualController {
 						};
 						
 						
-						IndexPolicyAlteration indexPolicyAlteration = new IndexPolicyAlteration(false, jsonGroup, null, null, key, detailPolicyAlteration);
+						IndexPolicyAlteration indexPolicyAlteration = new IndexPolicyAlteration(false, jsonGroup, null, null, key, detailPolicyAlteration,services);
 							if(listtosubmit.get(lsje_id) == null) {
 								listtosubmit.put(lsje_id, new ArrayList<IndexPolicyAlteration>());
 							}
@@ -499,6 +498,8 @@ public class PolicyAlterationIndividualController {
 								    			String keyt = g.getKey();
 								    			String keyOld = g.getOldColumn();
 								    			String keyNew = g.getNewColumn();
+								    			Boolean hookBeforeValue = g.getHookBeforeValue();
+								    			String newValue = g.getNewValue();
 									    		if(detailPolicyAlteration != null) {
 											    		detailPolicyAlteration.setStatus("ALLOWED");
 											    		boolean checkingIsInProgess = (endorseMap.get(detailPolicyAlteration.getId_endors()) !=null? true:false);
@@ -509,7 +510,14 @@ public class PolicyAlterationIndividualController {
 														}else {
 															String kolom = "";
 															oldvalue.put(keyOld, detailPolicyAlteration.getOld());
+															
 															newvalue.put(keyNew,detailPolicyAlteration.getNew_());
+															
+															if(hookBeforeValue) {
+																newvalue.put(keyNew,newValue);
+																	
+															}
+															
 															detailPolicyAlteration.setStatus("SUCCESS");
 												    		
 															
@@ -568,6 +576,46 @@ public class PolicyAlterationIndividualController {
 								String msde_old9 = oldvalue.get("msde_old9")==null?null:oldvalue.get("msde_old9").toString();
 								String msde_new9 = newvalue.get("msde_new9")==null?null:newvalue.get("msde_new9").toString();
 					
+								String msde_old10 = oldvalue.get("msde_old10")==null?null:oldvalue.get("msde_old10").toString();
+								String msde_new10 = newvalue.get("msde_new10")==null?null:newvalue.get("msde_new10").toString();
+					
+
+								
+								
+								String msde_old11 = oldvalue.get("msde_old11")==null?null:oldvalue.get("msde_old11").toString();
+								String msde_new11 = newvalue.get("msde_new11")==null?null:newvalue.get("msde_new11").toString();
+								
+								
+
+								String msde_old12 = oldvalue.get("msde_old12")==null?null:oldvalue.get("msde_old12").toString();
+								String msde_new12 = newvalue.get("msde_new12")==null?null:newvalue.get("msde_new12").toString();
+								
+								String msde_old13 = oldvalue.get("msde_old13")==null?null:oldvalue.get("msde_old13").toString();
+								String msde_new13 = newvalue.get("msde_new13")==null?null:newvalue.get("msde_new13").toString();
+								
+
+								String msde_old14 = oldvalue.get("msde_old14")==null?null:oldvalue.get("msde_old14").toString();
+								String msde_new14 = newvalue.get("msde_new14")==null?null:newvalue.get("msde_new14").toString();
+								
+								String msde_old15 = oldvalue.get("msde_old15")==null?null:oldvalue.get("msde_old15").toString();
+								String msde_new15 = newvalue.get("msde_new15")==null?null:newvalue.get("msde_new15").toString();
+					
+								String msde_old16 = oldvalue.get("msde_old16")==null?null:oldvalue.get("msde_old16").toString();
+								String msde_new16 = newvalue.get("msde_new16")==null?null:newvalue.get("msde_new16").toString();
+					
+								String msde_old17 = oldvalue.get("msde_old17")==null?null:oldvalue.get("msde_old17").toString();
+								String msde_new17 = newvalue.get("msde_new17")==null?null:newvalue.get("msde_new17").toString();
+					
+
+								String msde_old18 = oldvalue.get("msde_old18")==null?null:oldvalue.get("msde_old18").toString();
+								String msde_new18 = newvalue.get("msde_new18")==null?null:newvalue.get("msde_new18").toString();
+								
+								String msde_old19 = oldvalue.get("msde_old19")==null?null:oldvalue.get("msde_old19").toString();
+								String msde_new19 = newvalue.get("msde_new19")==null?null:newvalue.get("msde_new19").toString();
+					
+								String msde_old20 = oldvalue.get("msde_old20")==null?null:oldvalue.get("msde_old20").toString();
+								String msde_new20 = newvalue.get("msde_new20")==null?null:newvalue.get("msde_new20").toString();
+
 								if(!inProgress.contains(d)) {
 											if(d == 68 || d == 62 || d == 90 || d==67 || d == 89 || d == 61 || d == 39) {
 												for(IndexPolicyAlteration g:t) {
@@ -596,14 +644,22 @@ public class PolicyAlterationIndividualController {
 										   
 												}	
 											
-												customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,
-														msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,msde_new9, kolom,counter.getCounter());
+												customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,msde_old9,msde_old10,
+														msde_old11, msde_old12, msde_old13, msde_old14, msde_old15, msde_old16,msde_old17,msde_old18,msde_old19,msde_old20,
+														msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,msde_new9,msde_new10,
+														msde_new11, msde_new12, msde_new13, msde_new14, msde_new15, msde_new16,msde_new17,msde_new18,msde_new19,msde_new20
+														
+														, kolom,counter.getCounter());
 												counter.addOne();
 												
 											
 											}else {
-											    customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,
-											    		msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,msde_new9, kolom);
+											    customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,msde_old9,msde_old10,
+											    		msde_old11, msde_old12, msde_old13, msde_old14, msde_old15, msde_old16,msde_old17,msde_old18,msde_old19,msde_old20,
+											    		msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,msde_new9,msde_new10,
+											    		msde_new11, msde_new12, msde_new13, msde_new14, msde_new15, msde_new16,msde_new17,msde_new18,msde_new19,msde_new20
+
+											    		, kolom);
 											}
 											
 								};

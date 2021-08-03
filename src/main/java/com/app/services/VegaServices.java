@@ -27,6 +27,7 @@ import com.app.model.DownloadReportHr;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
 import com.app.model.EndorseHr;
+import com.app.model.EndorseMapping;
 import com.app.model.EndorsePolicyAlteration;
 import com.app.model.Fund;
 import com.app.model.Inbox;
@@ -34,6 +35,7 @@ import com.app.model.KlaimKesehatan;
 import com.app.model.LstHistActivityWS;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.MpolisConfiguration;
+import com.app.model.MstInbox;
 import com.app.model.MstOTPSimultaneous;
 import com.app.model.MstOTPSimultaneousDet;
 import com.app.model.Nav;
@@ -50,6 +52,7 @@ import com.app.model.Provinsi;
 import com.app.model.PushNotif;
 import com.app.model.Rekening;
 import com.app.model.ReportHr;
+import com.app.model.SQLAdapter;
 import com.app.model.Sales;
 import com.app.model.SavedProvider;
 import com.app.model.SmsServerOut;
@@ -193,7 +196,10 @@ public class VegaServices {
 		dao.insertDetailSwitching(hashMap);
 	}
 	
-	public void insertDetailEndorse(String msen_endors_no, Integer lsje_id, String msde_old1, String msde_old2, String msde_old3, String msde_old4, String msde_old5, String msde_old6,String msde_old7,String msde_old8, String msde_new1, String msde_new2, String msde_new3, String msde_new4, String msde_new5, String msde_new6,String msde_new7,String msde_new8,String msde_new9) {
+	public void insertDetailEndorse(String msen_endors_no, Integer lsje_id, String msde_old1, String msde_old2, String msde_old3, String msde_old4, String msde_old5, String msde_old6,String msde_old7,String msde_old8,
+			String msde_old9,String msde_old10,String msde_old11,String msde_old12,String msde_old13,String msde_old14,String msde_old15,String msde_old16,String msde_old17,String msde_old18,String msde_old19,String msde_old20			
+			, String msde_new1, String msde_new2, String msde_new3, String msde_new4, String msde_new5, String msde_new6,String msde_new7,String msde_new8,String msde_new9,String msde_new10,String msde_new11
+			,String msde_new12,String msde_new13,String msde_new14,String msde_new15,String msde_new16,String msde_new17,String msde_new18,String msde_new19,String msde_new20) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
 		hashMap.put("msen_endors_no", msen_endors_no);
@@ -206,6 +212,20 @@ public class VegaServices {
 		hashMap.put("msde_old6", msde_old6);
 		hashMap.put("msde_old7", msde_old7);
 		hashMap.put("msde_old8", msde_old8);
+		hashMap.put("msde_old9", msde_old9);
+		hashMap.put("msde_old10", msde_old10);
+		hashMap.put("msde_old11", msde_old11);
+		hashMap.put("msde_old12", msde_old12);
+		hashMap.put("msde_old13", msde_old13);
+		hashMap.put("msde_old14", msde_old14);
+		hashMap.put("msde_old15", msde_old15);
+		hashMap.put("msde_old16", msde_old16);
+		hashMap.put("msde_old17", msde_old17);
+		hashMap.put("msde_old18", msde_old18);
+		hashMap.put("msde_old19", msde_old19);
+		hashMap.put("msde_old20", msde_old20);
+		
+		
 		hashMap.put("msde_new1", msde_new1);
 		hashMap.put("msde_new2", msde_new2);
 		hashMap.put("msde_new3", msde_new3);
@@ -215,6 +235,20 @@ public class VegaServices {
 		hashMap.put("msde_new7", msde_new7);
 		hashMap.put("msde_new8", msde_new8);
 		hashMap.put("msde_new9", msde_new9);
+		hashMap.put("msde_new10", msde_new10);
+		hashMap.put("msde_new11", msde_new11);
+		hashMap.put("msde_new12", msde_new12);
+		hashMap.put("msde_new13", msde_new13);
+		hashMap.put("msde_new14", msde_new14);
+		hashMap.put("msde_new15", msde_new15);
+		hashMap.put("msde_new16", msde_new16);
+		hashMap.put("msde_new17", msde_new17);
+		hashMap.put("msde_new18", msde_new18);
+		hashMap.put("msde_new19", msde_new19);
+		hashMap.put("msde_new20", msde_new20);
+		
+		
+		
 		dao.insertDetailEndorse(hashMap);
 	}
 
@@ -326,6 +360,11 @@ public class VegaServices {
 			return null;
 		}
 	}
+	
+	public String selectDynamicQuery(SQLAdapter adapter) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectDynamicQuery(adapter);
+	}
 
 	public HashMap<String, Object> configuration() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
@@ -340,6 +379,17 @@ public class VegaServices {
 	public String selectEncrypt(String value) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectEncrypt(value);
+	}
+
+	
+	public EndorseMapping selectMapEndorse(EndorseMapping endorse) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectMapEndorse(endorse);
+	}
+
+	public EndorseMapping selectMapEndorseForKey(EndorseMapping endorse) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectMapEndorseForKey(endorse);
 	}
 
 	public LstUserSimultaneous selectLoginAuthenticate(LstUserSimultaneous lstUserSimultaneous) {
@@ -670,6 +720,11 @@ public class VegaServices {
 		return dao.selectGetNoEndors();
 	}
 
+	
+	public String getInboxId() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.getInboxId();
+	}
 	public BigInteger selectGetMpcId() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetMpcId();
@@ -1441,6 +1496,12 @@ public class VegaServices {
 			dao.insertLstUlangan(hashMap);
 	}
 
+	
+	public void insertMstInbox(MstInbox mstInbox) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		dao.insertMstInbox(mstInbox);
+	}
+	
 	
 	public void insertSavedProvider(SavedProvider savedProvider) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);

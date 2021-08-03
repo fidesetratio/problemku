@@ -8,7 +8,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.app.model.DetailPolicyAlteration;
+import com.app.model.EndorseKeyAndValue;
+import com.app.model.EndorseMapping;
 import com.app.model.PolicyAlterationKeyAndValue;
+import com.app.model.SQLAdapter;
 import com.app.services.VegaServices;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -190,9 +193,103 @@ public class PolicyAlterationUtility {
 			return ob1.toString();
 		}
 
+		
+		
 
+		public static EndorseKeyAndValue createMapping(Integer lsje_id, String key,DetailPolicyAlteration alteration, VegaServices services) {
+			EndorseKeyAndValue endorseKeyAndValue = new EndorseKeyAndValue();
+			
+			EndorseMapping mapping = new EndorseMapping();
+			mapping.setEndorse_id(Integer.toString(lsje_id));
+			mapping.setJson_key(key);
+			
+			
+			EndorseMapping m = services.selectMapEndorse(mapping);
+			if(key.equals("alamat_rumah_pp")) {
+				System.out.println();
+				
+				//throw new IllegalArgumentException("test");
+			}
+			
+			if(m != null) {
+			
+				endorseKeyAndValue.setNewKey("msde_new"+m.getCounter_identifier());
+				endorseKeyAndValue.setOldKey("msde_old"+m.getCounter_identifier());
+				endorseKeyAndValue.setHookBeforeValue(m.getHook_before_value()>0?true:false);
+				if(m.getHook_before_value()>0) {
+					endorseKeyAndValue.setHookBeforeValue(true);
+					
+					try {
+							String query = m.getQuery_before_value();
+							String value = alteration.getNew_();
+							query = query.replaceAll("#VALUE#", "'"+value.trim()+"'");
+							String result = services.selectDynamicQuery(new SQLAdapter(query));
+							endorseKeyAndValue.setNewValueKey(result);
+					}catch(Exception e) {
+						endorseKeyAndValue.setNewValueKey(e.getMessage());
+							
+					}
+				}
+			
+			}else {
+				endorseKeyAndValue.setNewKey(null);
+				endorseKeyAndValue.setOldKey(null);
+				
+			}
+			return endorseKeyAndValue;
+			
+		}
 		
 		
+		
+		
+		public static PolicyAlterationKeyAndValue getKeyAndValueWithDatabase(String key, Integer lsje_id, String value, VegaServices services) {
+			PolicyAlterationKeyAndValue keyAndValue = new PolicyAlterationKeyAndValue();
+			Integer counter = 1;
+			Boolean proceed = false;
+			if(key.contains("msde_new")) {
+				String counterString = key.substring("msde_new".length());
+				counter = Integer.parseInt(counterString.trim());
+				try {
+					Integer.parseInt(counterString);
+					proceed = true;
+				}catch(Exception e) {
+					
+				}
+			}
+			
+			EndorseMapping mapping = new EndorseMapping();
+			mapping.setEndorse_id(Integer.toString(lsje_id));
+			mapping.setCounter_identifier(Integer.toString(counter));
+			EndorseMapping m = services.selectMapEndorseForKey(mapping);
+			if(m != null) {
+				Boolean isHookAfter = m.getHook_after_value() > 0? true:false;
+
+				keyAndValue.setKey(m.getJson_key());
+				keyAndValue.setValue(value);
+				
+				if(isHookAfter) {
+					try {
+							String query = m.getQuery_after_value();
+							value = value.trim();
+							query = query.replaceAll("#VALUE#", "'"+value.trim()+"'");
+							String result = services.selectDynamicQuery(new SQLAdapter(query));
+							keyAndValue.setValue(result);
+					}catch(Exception e) {
+						keyAndValue.setValue(e.getMessage());
+					}
+				}
+				
+				
+				
+			}
+			
+			
+			
+			return keyAndValue;
+			
+		}
+			
 		public static PolicyAlterationKeyAndValue getKeyAndValue(String key, Integer lsje_id, String value, VegaServices services) {
 				//if(lsje_id )
 			PolicyAlterationKeyAndValue keyAndValue = new PolicyAlterationKeyAndValue();
@@ -535,7 +632,7 @@ public class PolicyAlterationUtility {
 		
 
 
-		public static String getSpesificIndexNew(String key) {
+		public static String getSpesificIndexNew(Integer ljse_id,String key) {
 		
 			String index = "msde_new1";
 			if(key == null) {
@@ -682,7 +779,7 @@ public class PolicyAlterationUtility {
 
 
 
-		public static String getSpesificIndexOld(String key) {
+		public static String getSpesificIndexOld(Integer ljse_id,String key) {
 			String index = "msde_old1";
 			if(key == null) {
 				return "";

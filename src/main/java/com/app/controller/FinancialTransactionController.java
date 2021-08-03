@@ -6329,11 +6329,24 @@ public class FinancialTransactionController {
 
 						customResourceLoader.uploadFileToStorage(path_claim, file_base64,
 								name_file, username, request.getServletPath(), mpc_id);
-						System.out.println("Upload Done: " + new Date());
-
+						
+						
+						
+						
+						
+						
+						
 						
 						if (uploadFile.equals(true)) {
-							String filePath = path_claim + File.separator + name_file + ".pdf";
+							String nameFileNew = null;
+							int lastIndexOf = name_file.lastIndexOf(".");
+					        if (lastIndexOf > -1) {
+					            nameFileNew = name_file.substring(0, lastIndexOf);
+					        }
+
+							
+							
+							String filePath = path_claim + File.separator + nameFileNew + ".pdf";
 							Boolean validateFilePdf = customResourceLoader.validateFilePdf(filePath, username, mpcc_id);
 							if (validateFilePdf.equals(true)) {
 								error = false;

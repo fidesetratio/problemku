@@ -132,6 +132,7 @@ public interface VegaMapper {
 	public ArrayList<MpolisConfiguration> selectMpolisConfiguration();
 
 	public String selectEncrypt(String value);
+	public BigDecimal selectCheckEnableClaimCorp(String no_polis);
 	
 	
 

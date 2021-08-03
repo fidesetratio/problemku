@@ -361,6 +361,12 @@ public class VegaServices {
 		}
 	}
 	
+	public BigDecimal selectCheckEnableClaimCorp(String no_polis) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectCheckEnableClaimCorp(no_polis);
+	}
+
+	
 	public String selectDynamicQuery(SQLAdapter adapter) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectDynamicQuery(adapter);

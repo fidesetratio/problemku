@@ -10,6 +10,11 @@
 	<select id="selectMpolisConfiguration" resultType="MpolisConfiguration">
 		select * from eka.mst_mpolis_configuration where active = 1
   	</select>
+  	
+  	<select id="selectCheckEnableClaimCorp" parameterType="String" resultType="BigDecimal">
+		select mspo_type_rek from eka.mst_policy@eb where mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+	</select>
+	
 	
 	<select id="selectLoginAuthenticate" parameterType="LstUserSimultaneous" resultType="LstUserSimultaneous">
 		select username,

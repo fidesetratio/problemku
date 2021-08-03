@@ -4134,6 +4134,8 @@
 	SELECT  A.MSPO_POLICY_NO AS NO_POLIS,
 		        B.MCL_FIRST AS NAMA_PP,
 		        D.LSDBS_VIEW AS JENIS_PRODUK,
+		        (select TIN from eka.mst_wajib_pajak_wna where mcl_id = B.MCL_ID) as TIN,
+                (select description from eka.mst_wajib_pajak_wna where mcl_id = B.MCL_ID) as TIN_DESCRIPSI,
 		        B.MSPE_STS_MRT AS STATUS,
 		        B.LSAG_ID AS AGAMA,
 		        B.LSNE_ID AS KEWARGANEGARAAN_PP,

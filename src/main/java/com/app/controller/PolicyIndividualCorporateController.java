@@ -1885,6 +1885,27 @@ public class PolicyIndividualCorporateController {
 				String pemilik_rekening_pp = policyHolder.getPemilik_rekening_pp();
 				String email = policyHolder.getEmail();
 				String tipe_usaha_pp = policyHolder.getTipe_usaha_pp();
+				String tin_pp = policyHolder.getTin();
+				String tin_pp_descripsi = policyHolder.getTin_descripsi();
+				
+
+				HashMap<String, Object> _tin_pp = new HashMap<>();
+				HashMap<String, Object> temp_tin_pp = new HashMap<>();
+				_tin_pp.put("value", tin_pp);
+				_tin_pp.put("id_endors",111);
+				_tin_pp.put ("flag_direct", 0);
+				temp_tin_pp.put("tin_pp", _tin_pp);
+				data_policyholder.putAll(temp_tin_pp);
+				
+				
+				HashMap<String, Object> _tin_descripsi_pp = new HashMap<>();
+				HashMap<String, Object> temp_tin_descripsi_pp = new HashMap<>();
+				_tin_descripsi_pp.put("value", tin_pp_descripsi);
+				_tin_descripsi_pp.put("id_endors", 112);
+				_tin_descripsi_pp.put ("flag_direct", 0);
+				temp_tin_descripsi_pp.put("tin_pp_descripsi", _tin_descripsi_pp);
+				data_policyholder.putAll(temp_tin_descripsi_pp);
+				
 				
 				HashMap<String, Object> _nama_pp = new HashMap<>();
 				HashMap<String, Object> temp_nama_pp = new HashMap<>();

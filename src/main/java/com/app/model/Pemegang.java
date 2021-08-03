@@ -9,6 +9,10 @@ public class Pemegang implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 7689007551827403805L;
+	
+	private String tin;
+	private String tin_descripsi;
+	
 
 	private String id;
 	private String no_polis;
@@ -784,5 +788,21 @@ public class Pemegang implements Serializable {
 
 	public void setMspo_ao(String mspo_ao) {
 		this.mspo_ao = mspo_ao;
+	}
+
+	public String getTin() {
+		return tin;
+	}
+
+	public void setTin(String tin) {
+		this.tin = tin;
+	}
+
+	public String getTin_descripsi() {
+		return tin_descripsi;
+	}
+
+	public void setTin_descripsi(String tin_descripsi) {
+		this.tin_descripsi = tin_descripsi;
 	}
 }

@@ -8,6 +8,9 @@ public class PolicyAlteration implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2356621085798776512L;	
+	private String tin;
+	private String tin_descripsi;
+	
 	private String cara_bayar;
 	private Integer nama_bank_payor;
 	private Integer cabang_bank_payor;
@@ -566,5 +569,17 @@ public class PolicyAlteration implements Serializable {
 	}
 	public void setNegara_kantor(Integer negara_kantor) {
 		this.negara_kantor = negara_kantor;
+	}
+	public String getTin() {
+		return tin;
+	}
+	public void setTin(String tin) {
+		this.tin = tin;
+	}
+	public String getTin_descripsi() {
+		return tin_descripsi;
+	}
+	public void setTin_descripsi(String tin_descripsi) {
+		this.tin_descripsi = tin_descripsi;
 	}
 }

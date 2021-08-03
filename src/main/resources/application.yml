@@ -216,7 +216,7 @@ path:
   reporthr: /mnt/storage/m-Policytest/Ekamedicare
   endorsehr: /mnt/storage/m-Policytest
  document:
-  claimcorporate: \\\\storage.sinarmasmsiglife.co.id\\ekamedicare\\m-Policytest\\
+  claimcorporate: /mnt/Ekamedicare/m-Policytest/
  ekamedicare:
   path: /mnt/Ekamedicare
 kubernetes:

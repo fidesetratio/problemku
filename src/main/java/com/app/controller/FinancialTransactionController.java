@@ -6844,7 +6844,13 @@ public class FinancialTransactionController {
 					services.insertEndorse(msen_endors_no, reg_spaj, msen_alasan, lspd_id);
 					
 					//INSERT DET ENDORSE
-					services.insertDetailEndorse(msen_endors_no, 108, null, null, null, null, null, null,null,null,null,null,null, null, null, null, null, null,null,null,null,null, tanggal_awal, tanggal_akhir, null, null, null, null,null,null,null,null,null, null, null, null, null, null,null,null,null,null);
+					services.insertDetailEndorse(msen_endors_no, 108, 
+							null, null, null, null, null, null,null,null,null,null,
+							null, null, null, null, null, null,null,null,null,null,
+							null,null,null,null,null,
+							tanggal_awal,tanggal_akhir, null, null, null, null,null,null,null,null,
+							null, null, null, null, null, null,null,null,null,null,
+							null,null,null,null,null);
 					
 					//UPDATE LSPD_ID IN MSPO_POLICY
 					services.updateLspdId(reg_spaj);

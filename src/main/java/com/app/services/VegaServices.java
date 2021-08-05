@@ -197,9 +197,12 @@ public class VegaServices {
 	}
 	
 	public void insertDetailEndorse(String msen_endors_no, Integer lsje_id, String msde_old1, String msde_old2, String msde_old3, String msde_old4, String msde_old5, String msde_old6,String msde_old7,String msde_old8,
-			String msde_old9,String msde_old10,String msde_old11,String msde_old12,String msde_old13,String msde_old14,String msde_old15,String msde_old16,String msde_old17,String msde_old18,String msde_old19,String msde_old20			
+			String msde_old9,String msde_old10,String msde_old11,String msde_old12,String msde_old13,String msde_old14,String msde_old15,String msde_old16,String msde_old17,String msde_old18,String msde_old19,String msde_old20
+			,String msde_old21,String msde_old22,String msde_old23,String msde_old24,String msde_old25
 			, String msde_new1, String msde_new2, String msde_new3, String msde_new4, String msde_new5, String msde_new6,String msde_new7,String msde_new8,String msde_new9,String msde_new10,String msde_new11
-			,String msde_new12,String msde_new13,String msde_new14,String msde_new15,String msde_new16,String msde_new17,String msde_new18,String msde_new19,String msde_new20) {
+			,String msde_new12,String msde_new13,String msde_new14,String msde_new15,String msde_new16,String msde_new17,String msde_new18,String msde_new19,String msde_new20
+			,String msde_new21,String msde_new22,String msde_new23,String msde_new24,String msde_new25
+			) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
 		hashMap.put("msen_endors_no", msen_endors_no);
@@ -224,7 +227,12 @@ public class VegaServices {
 		hashMap.put("msde_old18", msde_old18);
 		hashMap.put("msde_old19", msde_old19);
 		hashMap.put("msde_old20", msde_old20);
-		
+
+		hashMap.put("msde_old21", msde_old21);
+		hashMap.put("msde_old22", msde_old22);
+		hashMap.put("msde_old23", msde_old23);
+		hashMap.put("msde_old24", msde_old24);
+		hashMap.put("msde_old25", msde_old25);
 		
 		hashMap.put("msde_new1", msde_new1);
 		hashMap.put("msde_new2", msde_new2);
@@ -247,6 +255,11 @@ public class VegaServices {
 		hashMap.put("msde_new19", msde_new19);
 		hashMap.put("msde_new20", msde_new20);
 		
+		hashMap.put("msde_new21", msde_new21);
+		hashMap.put("msde_new22", msde_new22);
+		hashMap.put("msde_new23", msde_new23);
+		hashMap.put("msde_new24", msde_new24);
+		hashMap.put("msde_new25", msde_new25);
 		
 		
 		dao.insertDetailEndorse(hashMap);

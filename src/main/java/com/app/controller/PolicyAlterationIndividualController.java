@@ -616,6 +616,21 @@ public class PolicyAlterationIndividualController {
 								String msde_old20 = oldvalue.get("msde_old20")==null?null:oldvalue.get("msde_old20").toString();
 								String msde_new20 = newvalue.get("msde_new20")==null?null:newvalue.get("msde_new20").toString();
 
+								String msde_old21 = oldvalue.get("msde_old21")==null?null:oldvalue.get("msde_old21").toString();
+								String msde_new21 = newvalue.get("msde_new21")==null?null:newvalue.get("msde_new21").toString();
+
+								String msde_old22 = oldvalue.get("msde_old22")==null?null:oldvalue.get("msde_old22").toString();
+								String msde_new22 = newvalue.get("msde_new22")==null?null:newvalue.get("msde_new22").toString();
+
+								String msde_old23 = oldvalue.get("msde_old23")==null?null:oldvalue.get("msde_old23").toString();
+								String msde_new23 = newvalue.get("msde_new23")==null?null:newvalue.get("msde_new23").toString();
+
+								String msde_old24 = oldvalue.get("msde_old24")==null?null:oldvalue.get("msde_old24").toString();
+								String msde_new24 = newvalue.get("msde_new24")==null?null:newvalue.get("msde_new24").toString();
+
+								String msde_old25 = oldvalue.get("msde_old25")==null?null:oldvalue.get("msde_old25").toString();
+								String msde_new25 = newvalue.get("msde_new25")==null?null:newvalue.get("msde_new25").toString();
+
 								if(!inProgress.contains(d)) {
 											if(d == 68 || d == 62 || d == 90 || d==67 || d == 89 || d == 61 || d == 39) {
 												for(IndexPolicyAlteration g:t) {
@@ -646,8 +661,10 @@ public class PolicyAlterationIndividualController {
 											
 												customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,msde_old9,msde_old10,
 														msde_old11, msde_old12, msde_old13, msde_old14, msde_old15, msde_old16,msde_old17,msde_old18,msde_old19,msde_old20,
+														msde_old21,msde_old22,msde_old23,msde_old24,msde_old25,
 														msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,msde_new9,msde_new10,
-														msde_new11, msde_new12, msde_new13, msde_new14, msde_new15, msde_new16,msde_new17,msde_new18,msde_new19,msde_new20
+														msde_new11, msde_new12, msde_new13, msde_new14, msde_new15, msde_new16,msde_new17,msde_new18,msde_new19,msde_new20,
+														msde_new21,msde_new22,msde_new23,msde_new24,msde_new25
 														
 														, kolom,counter.getCounter());
 												counter.addOne();
@@ -656,8 +673,10 @@ public class PolicyAlterationIndividualController {
 											}else {
 											    customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,msde_old9,msde_old10,
 											    		msde_old11, msde_old12, msde_old13, msde_old14, msde_old15, msde_old16,msde_old17,msde_old18,msde_old19,msde_old20,
+											    		msde_old21,msde_old22,msde_old23,msde_old24,msde_old25,
 											    		msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,msde_new9,msde_new10,
-											    		msde_new11, msde_new12, msde_new13, msde_new14, msde_new15, msde_new16,msde_new17,msde_new18,msde_new19,msde_new20
+											    		msde_new11, msde_new12, msde_new13, msde_new14, msde_new15, msde_new16,msde_new17,msde_new18,msde_new19,msde_new20,
+											    		msde_new21,msde_new22,msde_new23,msde_new24,msde_new25
 
 											    		, kolom);
 											}

@@ -2223,7 +2223,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _email = new HashMap<>();
 				HashMap<String, Object> temp_email = new HashMap<>();
 				_email.put("value", email);
-				_email.put("id_endors", null);
+				_email.put("id_endors", 3);
 				_email.put ("flag_direct", 0);
 				temp_email.put("email", _email);
 				data_policyholder.putAll(temp_email);
@@ -2232,14 +2232,14 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> temp_area_code_rumah_pp = new HashMap<>();
 				_area_code_rumah_pp.put("value", area_code_rumah_pp);
 				_area_code_rumah_pp.put("id_endors", null);
-				_area_code_rumah_pp.put ("flag_direct", 0);
+				_area_code_rumah_pp.put ("flag_direct", 3);
 				temp_area_code_rumah_pp.put("area_code_rumah_pp", _area_code_rumah_pp);
 				data_policyholder.putAll(temp_area_code_rumah_pp);
 				
 				HashMap<String, Object> _telpon_rumah_pp = new HashMap<>();
 				HashMap<String, Object> temp_telpon_rumah_pp = new HashMap<>();
 				_telpon_rumah_pp.put("value", telpon_rumah_pp);
-				_telpon_rumah_pp.put("id_endors", null);
+				_telpon_rumah_pp.put("id_endors", 3);
 				_telpon_rumah_pp.put ("flag_direct", 0);
 				temp_telpon_rumah_pp.put("telpon_rumah_pp", _telpon_rumah_pp);
 				data_policyholder.putAll(temp_telpon_rumah_pp);
@@ -2247,7 +2247,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _npwp = new HashMap<>();
 				HashMap<String, Object> temp_npwp = new HashMap<>();
 				_npwp.put("value", npwp);
-				_npwp.put("id_endors", null);
+				_npwp.put("id_endors", 3);
 				_npwp.put ("flag_direct", 0);
 				temp_npwp.put("npwp", _npwp);
 				data_policyholder.putAll(temp_npwp);
@@ -2389,7 +2389,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _nama_perusahaan = new HashMap<>();
 				HashMap<String, Object> temp_nama_perusahaan = new HashMap<>();
 				_nama_perusahaan.put("value", nama_perusahaan);
-				_nama_perusahaan.put("id_endors", null);
+				_nama_perusahaan.put("id_endors", 96);
 				_nama_perusahaan.put ("flag_direct", 0);
 				temp_nama_perusahaan.put("nama_perusahaan", _nama_perusahaan);
 				data_payor.putAll(temp_nama_perusahaan);
@@ -2397,16 +2397,16 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _jabatan = new HashMap<>();
 				HashMap<String, Object> temp_jabatan = new HashMap<>();
 				_jabatan.put("value", jabatan);
-				_jabatan.put("id_endors", null);
-				_jabatan.put ("flag_direct", 3);
+				_jabatan.put("id_endors", 96);
+				_jabatan.put ("flag_direct", 0);
 				temp_jabatan.put("jabatan", _jabatan);
 				data_payor.putAll(temp_jabatan);
 				
 				HashMap<String, Object> _negara = new HashMap<>();
 				HashMap<String, Object> temp_negara = new HashMap<>();
 				_negara.put("value", negara);
-				_negara.put("id_endors", null);
-				_negara.put ("flag_direct", 3);
+				_negara.put("id_endors", 96);
+				_negara.put ("flag_direct", 1);
 				temp_negara.put("negara", _negara);
 				data_payor.putAll(temp_negara);
 				
@@ -2461,7 +2461,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _hubungan_payor = new HashMap<>();
 				HashMap<String, Object> temp_hubungan_payor = new HashMap<>();
 				_hubungan_payor.put("value", hubungan_payor);
-				_hubungan_payor.put("id_endors", null);
+				_hubungan_payor.put("id_endors", 96);
 				_hubungan_payor.put ("flag_direct", 0);
 				temp_hubungan_payor.put("hubungan_payor", _hubungan_payor);
 				data_payor.putAll(temp_hubungan_payor);
@@ -2469,7 +2469,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _nama_payor = new HashMap<>();
 				HashMap<String, Object> temp_nama_payor = new HashMap<>();
 				_nama_payor.put("value", nama_payor);
-				_nama_payor.put("id_endors", null);
+				_nama_payor.put("id_endors", 96);
 				_nama_payor.put ("flag_direct", 0);
 				temp_nama_payor.put("nama_payor", _nama_payor);
 				data_payor.putAll(temp_nama_payor);
@@ -2477,7 +2477,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _alamat_rumah = new HashMap<>();
 				HashMap<String, Object> temp_alamat_rumah = new HashMap<>();
 				_alamat_rumah.put("value", alamat_rumah);
-				_alamat_rumah.put("id_endors", null);
+				_alamat_rumah.put("id_endors", 96);
 				_alamat_rumah.put ("flag_direct", 0);
 				temp_alamat_rumah.put("alamat_rumah", _alamat_rumah);
 				data_payor.putAll(temp_alamat_rumah);
@@ -2485,7 +2485,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _propinsi = new HashMap<>();
 				HashMap<String, Object> temp_propinsi = new HashMap<>();
 				_propinsi.put("value", propinsi);
-				_propinsi.put("id_endors", null);
+				_propinsi.put("id_endors", 96);
 				_propinsi.put ("flag_direct", 0);
 				temp_propinsi.put("propinsi", _propinsi);
 				data_payor.putAll(temp_propinsi);
@@ -2493,7 +2493,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _kabupaten = new HashMap<>();
 				HashMap<String, Object> temp_kabupaten = new HashMap<>();
 				_kabupaten.put("value", kabupaten);
-				_kabupaten.put("id_endors", null);
+				_kabupaten.put("id_endors", 96);
 				_kabupaten.put ("flag_direct", 0);
 				temp_kabupaten.put("kabupaten", _kabupaten);
 				data_payor.putAll(temp_kabupaten);
@@ -2501,7 +2501,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _kecamatan = new HashMap<>();
 				HashMap<String, Object> temp_kecamatan = new HashMap<>();
 				_kecamatan.put("value", kecamatan);
-				_kecamatan.put("id_endors", null);
+				_kecamatan.put("id_endors", 96);
 				_kecamatan.put ("flag_direct", 0);
 				temp_kecamatan.put("kecamatan", _kecamatan);
 				data_payor.putAll(temp_kecamatan);
@@ -2509,7 +2509,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _kelurahan = new HashMap<>();
 				HashMap<String, Object> temp_kelurahan = new HashMap<>();
 				_kelurahan.put("value", kelurahan);
-				_kelurahan.put("id_endors", null);
+				_kelurahan.put("id_endors", 96);
 				_kelurahan.put ("flag_direct", 0);
 				temp_kelurahan.put("kelurahan", _kelurahan);
 				data_payor.putAll(temp_kelurahan);
@@ -2517,7 +2517,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _kodepos = new HashMap<>();
 				HashMap<String, Object> temp_kodepos = new HashMap<>();
 				_kodepos.put("value", kodepos);
-				_kodepos.put("id_endors", null);
+				_kodepos.put("id_endors", 96);
 				_kodepos.put ("flag_direct", 0);
 				temp_kodepos.put("kodepos", _kodepos);
 				data_payor.putAll(temp_kodepos);
@@ -2525,7 +2525,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _area_code_rumah = new HashMap<>();
 				HashMap<String, Object> temp_area_code_rumah = new HashMap<>();
 				_area_code_rumah.put("value", area_code_rumah);
-				_area_code_rumah.put("id_endors", null);
+				_area_code_rumah.put("id_endors", 96);
 				_area_code_rumah.put ("flag_direct", 0);
 				temp_area_code_rumah.put("area_code_rumah", _area_code_rumah);
 				data_payor.putAll(temp_area_code_rumah);
@@ -2533,7 +2533,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _telpon_rumah = new HashMap<>();
 				HashMap<String, Object> temp_telpon_rumah = new HashMap<>();
 				_telpon_rumah.put("value", telpon_rumah);
-				_telpon_rumah.put("id_endors", null);
+				_telpon_rumah.put("id_endors", 96);
 				_telpon_rumah.put ("flag_direct", 0);
 				temp_telpon_rumah.put("telpon_rumah", _telpon_rumah);
 				data_payor.putAll(temp_telpon_rumah);
@@ -2541,7 +2541,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _no_hp = new HashMap<>();
 				HashMap<String, Object> temp_no_hp = new HashMap<>();
 				_no_hp.put("value", no_hp);
-				_no_hp.put("id_endors", null);
+				_no_hp.put("id_endors", 96);
 				_no_hp.put ("flag_direct", 0);
 				temp_no_hp.put("no_hp", _no_hp);
 				data_payor.putAll(temp_no_hp);
@@ -2549,7 +2549,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _tujuan = new HashMap<>();
 				HashMap<String, Object> temp_tujuan = new HashMap<>();
 				_tujuan.put("value", tujuan);
-				_tujuan.put("id_endors", null);
+				_tujuan.put("id_endors", 96);
 				_tujuan.put ("flag_direct", 0);
 				temp_tujuan.put("tujuan", _tujuan);
 				data_payor.putAll(temp_tujuan);
@@ -2557,15 +2557,15 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _sumber_dana = new HashMap<>();
 				HashMap<String, Object> temp_sumber_dana = new HashMap<>();
 				_sumber_dana.put("value", sumber_dana);
-				_sumber_dana.put("id_endors", null);
+				_sumber_dana.put("id_endors", 96);
 				_sumber_dana.put ("flag_direct", 0);
 				temp_sumber_dana.put("sumber_dana", _sumber_dana);
 				data_payor.putAll(temp_sumber_dana);
 
 				HashMap<String, Object> _mkl_kerja = new HashMap<>();
 				HashMap<String, Object> temp_mkl_kerja = new HashMap<>();
-				_mkl_kerja.put("value", mkl_kerja);
-				_mkl_kerja.put("id_endors", null);
+				_mkl_kerja.put("value",mkl_kerja);
+				_mkl_kerja.put("id_endors", 96);
 				_mkl_kerja.put ("flag_direct", 0);
 				temp_mkl_kerja.put("mkl_kerja", _mkl_kerja);
 				data_payor.putAll(temp_mkl_kerja);
@@ -2573,7 +2573,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _mkl_penghasilan = new HashMap<>();
 				HashMap<String, Object> temp_mkl_penghasilan = new HashMap<>();
 				_mkl_penghasilan.put("value", mkl_penghasilan);
-				_mkl_penghasilan.put("id_endors", null);
+				_mkl_penghasilan.put("id_endors", 96);
 				_mkl_penghasilan.put ("flag_direct", 0);
 				temp_mkl_penghasilan.put("mkl_penghasilan", _mkl_penghasilan);
 				data_payor.putAll(temp_mkl_penghasilan);
@@ -2581,7 +2581,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _mkl_smbr_penghasilan = new HashMap<>();
 				HashMap<String, Object> temp_mkl_smbr_penghasilan = new HashMap<>();
 				_mkl_smbr_penghasilan.put("value", mkl_smbr_penghasilan);
-				_mkl_smbr_penghasilan.put("id_endors", null);
+				_mkl_smbr_penghasilan.put("id_endors", 96);
 				_mkl_smbr_penghasilan.put ("flag_direct", 0);
 				temp_mkl_smbr_penghasilan.put("mkl_smbr_penghasilan", _mkl_smbr_penghasilan);
 				data_payor.putAll(temp_mkl_smbr_penghasilan);

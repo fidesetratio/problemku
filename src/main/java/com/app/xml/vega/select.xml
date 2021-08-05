@@ -464,7 +464,7 @@
 		        j.mar_expired,
 		        d.mste_beg_date commencement_date,
 		        max(p.msbi_paid_date) last_premi,
-		        (select nvl(min(msbi_beg_date),c.mspo_next_bill)  from eka.mst_billing where msbi_paid = 0 and reg_spaj = RPAD(REPLACE(#{reg_spaj, jdbcType=VARCHAR}, '.'), 11, ' ')) as next_premi,
+		        (select nvl(min(msbi_beg_date),c.mspo_next_bill) from eka.mst_billing where msbi_paid = 0 and reg_spaj = RPAD(REPLACE(#{reg_spaj, jdbcType=VARCHAR}, '.'), 11, ' ')) as next_premi,
 		        n.lms_status_id status,
 		        k.lbn_nama as cabang_bank,
 		        l.lsbp_nama as nama_bank,

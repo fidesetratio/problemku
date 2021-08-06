@@ -2231,8 +2231,8 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _area_code_rumah_pp = new HashMap<>();
 				HashMap<String, Object> temp_area_code_rumah_pp = new HashMap<>();
 				_area_code_rumah_pp.put("value", area_code_rumah_pp);
-				_area_code_rumah_pp.put("id_endors", null);
-				_area_code_rumah_pp.put ("flag_direct", 3);
+				_area_code_rumah_pp.put("id_endors", 3);
+				_area_code_rumah_pp.put ("flag_direct",0 );
 				temp_area_code_rumah_pp.put("area_code_rumah_pp", _area_code_rumah_pp);
 				data_policyholder.putAll(temp_area_code_rumah_pp);
 				

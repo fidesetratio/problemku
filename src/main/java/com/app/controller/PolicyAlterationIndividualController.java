@@ -362,7 +362,7 @@ public class PolicyAlterationIndividualController {
 		// Update activity user table LST_USER_SIMULTANEOUS
 		customResourceLoader.updateActivity(username);
 		// Insert Log LST_HIST_ACTIVITY_WS
-		customResourceLoader.insertHistActivityWS(12, 83, new Date(), req, res, 1, resultErr, start, username);
+		customResourceLoader.insertHistActivityWS(15, 83, new Date(), req, res, 1, resultErr, start, username);
 		return result;
 	}
 

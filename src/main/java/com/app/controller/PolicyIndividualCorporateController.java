@@ -2255,7 +2255,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _nama_bank_pp = new HashMap<>();
 				HashMap<String, Object> temp_nama_bank_pp = new HashMap<>();
 				_nama_bank_pp.put("value", nama_bank_pp);
-				_nama_bank_pp.put("id_endors", 93);
+				_nama_bank_pp.put("id_endors", 119);
 				_nama_bank_pp.put ("flag_direct", 0);
 				temp_nama_bank_pp.put("nama_bank_pp", _nama_bank_pp);
 				data_policyholder.putAll(temp_nama_bank_pp);
@@ -2263,7 +2263,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _cabang_bank_pp = new HashMap<>();
 				HashMap<String, Object> temp_cabang_bank_pp = new HashMap<>();
 				_cabang_bank_pp.put("value", cabang_bank_pp);
-				_cabang_bank_pp.put("id_endors", 93);
+				_cabang_bank_pp.put("id_endors", 119);
 				_cabang_bank_pp.put ("flag_direct", 0);
 				temp_cabang_bank_pp.put("cabang_bank_pp", _cabang_bank_pp);
 				data_policyholder.putAll(temp_cabang_bank_pp);
@@ -2271,7 +2271,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _kota_bank_pp = new HashMap<>();
 				HashMap<String, Object> temp_kota_bank_pp = new HashMap<>();
 				_kota_bank_pp.put("value", kota_bank_pp);
-				_kota_bank_pp.put("id_endors", 93);
+				_kota_bank_pp.put("id_endors", 119);
 				_kota_bank_pp.put ("flag_direct", 0);
 				temp_kota_bank_pp.put("kota_bank_pp", _kota_bank_pp);
 				data_policyholder.putAll(temp_kota_bank_pp);
@@ -2279,7 +2279,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _no_rekening_pp = new HashMap<>();
 				HashMap<String, Object> temp_no_rekening_pp = new HashMap<>();
 				_no_rekening_pp.put("value", no_rekening_pp);
-				_no_rekening_pp.put("id_endors", 93);
+				_no_rekening_pp.put("id_endors", 119);
 				_no_rekening_pp.put ("flag_direct", 0);
 				temp_no_rekening_pp.put("no_rekening_pp", _no_rekening_pp);
 				data_policyholder.putAll(temp_no_rekening_pp);
@@ -2287,7 +2287,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _pemilik_rekening_pp = new HashMap<>();
 				HashMap<String, Object> temp_pemilik_rekening_pp = new HashMap<>();
 				_pemilik_rekening_pp.put("value", pemilik_rekening_pp);
-				_pemilik_rekening_pp.put("id_endors", 93);
+				_pemilik_rekening_pp.put("id_endors", 119);
 				_pemilik_rekening_pp.put ("flag_direct", 0);
 				temp_pemilik_rekening_pp.put("pemilik_rekening_pp", _pemilik_rekening_pp);
 				data_policyholder.putAll(temp_pemilik_rekening_pp);

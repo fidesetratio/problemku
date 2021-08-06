@@ -225,6 +225,8 @@ public class PolicyAlterationIndividualController {
 	@RequestMapping(value = "/previewsubmitalteration", produces = "application/json", method = RequestMethod.POST)
 	public String previewsubmitalteration(@RequestBody String requestViewPolicyAlteration,
 			HttpServletRequest request) {
+		
+		
 		String result = "";
 		Date start = new Date();
 		GsonBuilder builder = new GsonBuilder();
@@ -347,6 +349,7 @@ public class PolicyAlterationIndividualController {
 		
 		}
 
+		
 		map.put("error", error);
 		map.put("message", message);
 		map.put("result", mapresponse);
@@ -359,6 +362,8 @@ public class PolicyAlterationIndividualController {
 			output.put("result", modelUtility.toJSON());
 			result = output.toString();
 		}
+		
+		System.out.println("pre generate.");
 		// Update activity user table LST_USER_SIMULTANEOUS
 		customResourceLoader.updateActivity(username);
 		// Insert Log LST_HIST_ACTIVITY_WS

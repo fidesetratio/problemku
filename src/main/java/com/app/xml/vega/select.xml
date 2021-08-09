@@ -4247,7 +4247,7 @@
 		        END AS STATUS,
 		        D.LSJE_JENIS,
 		        CASE
-		            WHEN B.LSJE_ID IN (3, 34, 39, 61, 67, 89, 93)
+		            WHEN B.LSJE_ID IN (3, 34, 39, 61, 67, 89, 93,119)
 		                THEN 'DATA PEMEGANG POLIS'
 		            WHEN B.LSJE_ID IN (40, 62, 68, 90)
 		                THEN 'DATA TERTANGGUNG UTAMA'
@@ -4286,7 +4286,7 @@
 		        END AS STATUS,
 		        D.LSJE_JENIS,
 		        CASE
-		            WHEN B.LSJE_ID IN (3, 34, 39, 61, 67, 89, 93)
+		            WHEN B.LSJE_ID IN (3, 34, 39, 61, 67, 89, 93,119)
 		                THEN 'DATA PEMEGANG POLIS'
 		            WHEN B.LSJE_ID IN (40, 62, 68, 90)
 		                THEN 'DATA TERTANGGUNG UTAMA'
@@ -4324,7 +4324,7 @@
 		        END AS STATUS,
 		        D.LSJE_JENIS,
 		        CASE
-		            WHEN B.LSJE_ID IN (3, 34, 39, 61, 67, 89, 93)
+		            WHEN B.LSJE_ID IN (3, 34, 39, 61, 67, 89, 93,119)
 		                THEN 'DATA PEMEGANG POLIS'
 		            WHEN B.LSJE_ID IN (40, 62, 68, 90)
 		                THEN 'DATA TERTANGGUNG UTAMA'
@@ -4860,7 +4860,7 @@
 		    AND b.mspo_policy_holder = c.mcl_id
 	</select>
 	
-	<select id="selectTransactionHistory" parameterType="String" resultType="com.app.model.TransactionHistory">	 
+<!--  	<select id="selectTransactionHistory" parameterType="String" resultType="com.app.model.TransactionHistory">	 
 		SELECT * FROM (
 		    SELECT  REG_SPAJ,
 		            'PAS-01' AS KODE_TRANSAKSI,
@@ -4913,70 +4913,331 @@
 		            'PAS-10' AS KODE_TRANSAKSI,
 		            'Pembatalan dalam Masa Pemahaman Polis (Cancel Freelook)' AS TRANSACTION_TYPE,
 		            'belum ada' as PATH,
-		            TRUNC(cancel_when) TGL_TRANSAKSI,
-		    UNION ALL 
-		    SELECT A.REG_SPAJ,'COL-10' AS KODE_TRANSAKSI, 'BERAKHIRNYA MASA BERLAKU KARTU KREDIT' AS TRANSACTION_TYPE
-				, NULL AS FILE_PATH, TRUNC(C.MAR_EXPIRED)  as TGL_TRANSAKSI         
-  				FROM EKA.MST_POLICY A,
-       			EKA.MST_PRODUCT_INSURED B,
-       			EKA.MST_ACCOUNT_RECUR C,
-       			EKA.LST_BISNIS D
- 			    WHERE A.REG_SPAJ = B.REG_SPAJ 
-	       		AND A.REG_SPAJ = C.REG_SPAJ 
-	       		AND B.REG_SPAJ = C.REG_SPAJ
-	       		AND B.LSBS_ID = D.LSBS_ID 
-	       		AND C.MAR_JENIS = 1 --CC
-	       		AND C.MAR_EXPIRED IS NOT NULL
-	       		AND C.MAR_EXPIRED BETWEEN SYSDATE AND ADD_MONTHS(SYSDATE, 1)
-		  		AND A.LSSP_ID IN (1, 10)
-		  		AND EXISTS (SELECT 1
-	                  FROM EKA.MST_BILLING X
-                  WHERE A.REG_SPAJ = X.REG_SPAJ
-                  AND NVL(X.MSBI_PAID,0) = 0
-                  AND NVL(X.MSBI_FLAG_RECUR,0) = 0
-                  AND X.MSBI_BEG_DATE BETWEEN ADD_MONTHS(SYSDATE, -1) AND TRUNC(SYSDATE))
-					     		AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
-					     		UNION ALL
-					     		SELECT REG_SPAJ, 'COL-09' as KODE_TRANSAKSI, 'GAGAL DEBET PREMI' as TRANSACTION_TYPE, TRUNC(PREMIUM_BILLING_DATE) as TGL_TRANSAKSI FROM(
-					SELECT distinct (CASE
-					           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 4)
-					           ELSE EKA.PACPOLIS.GET_AGENT (A.REG_SPAJ, 4)
-					        END)
-					          AGENT_CODE,
-					       (CASE
-					           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 3)
-					           ELSE SUBSTR (EKA.PACPOLIS.GET_NAMA_PENUTUP (A.REG_SPAJ), 8)
-					        END)
-					          AGENT_NAME,
-					       A.MSPO_POLICY_NO AS POLICY_NO,
-					       EKA.PACPOLIS.GET_NAMA_PP (A.REG_SPAJ) AS POLICY_HOLDER,
-					       A.REG_SPAJ,
-					       BILL.JT_TMPO AS PREMIUM_BILLING_DATE,
-					       BILL.AMT AS PREMIUM_BILLING_AMOUNT
-					  FROM EKA.MST_POLICY A,
-					       EKA.MST_INSURED B,
-					       (  SELECT X.REG_SPAJ, X.MSBI_BEG_DATE JT_TMPO, SUM (X.MSBI_REMAIN) AMT
-					            FROM EKA.MST_BILLING X, EKA.MST_EKA_RECUR Y
-					           WHERE  X.REG_SPAJ = Y.SUBS_NUMBER
-					                    AND X.MSBI_TAHUN_KE = Y.KET1
-					                    AND X.MSBI_PREMI_KE = Y.KET2
-					                    AND X.MSBI_PAID = 0
-					                    AND Y.VAT = 0
-					                    AND Y.FLAG_LAST = 1
-					                    AND Y.TGL_TERIMA IS NOT NULL
-					                    AND Y.KET3 = (select max(Z.ket3) from eka.mst_eka_recur Z where Z.subs_number = Y.subs_number and Z.vat = 0 and Z.ket1 = Z.ket1  and Z.ket2 = Y.ket2 and Z.tgl_terima is not null)
-					                    AND TRUNC(Y.TGL_TAGIHAN) = TRUNC(SYSDATE)
-					                 AND NOT EXISTS
-					                        (SELECT 1
-					                           FROM EKA.MST_TAG_PAYMENT Z
-					                          WHERE     X.REG_SPAJ = Z.REG_SPAJ
-					                                AND X.MSBI_TAHUN_KE = Z.MSBI_TAHUN_KE
-					                                AND X.MSBI_PREMI_KE = Z.MSBI_PREMI_KE)
-					        GROUP BY X.REG_SPAJ,  X.MSBI_TAHUN_KE, X.MSBI_PREMI_KE, X.MSBI_BEG_DATE) BILL
-					 WHERE A.REG_SPAJ = B.REG_SPAJ
-					       AND B.MSTE_FLAG_CC in (1,2)
-					       AND A.REG_SPAJ = BILL.REG_SPAJ
-					   )  WHERE REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		            TRUNC(cancel_when) TGL_TRANSAKSI
+			from (
+		            select  distinct a.reg_spaj as spaj,
+		                    nvl(d.mspa_no_pre, e.msdp_no_pre) as pre_masuk,
+		                    nvl((select rtrim (xmlagg (xmlelement (e, y.no_jm || ',')).extract ('//text()'), ',') from eka.mst_ptc_tm x, eka.mst_ptc_jm y where x.no_jm = y.no_jm
+		                        and x.mtm_position != 0 and y.key_jurnal = a.reg_spaj and y.no_jurnal = 2 and y.mjm_cd = 'C' and y.keterangan like 'TITIPAN PREMI NO%'), '-') as jm_sa,
+		                    nvl(d.mspa_no_jm, '-') as jm,
+		                    nvl(b.no_pre, b.no_pre) as pre_keluar,
+		                    nvl(b.no_jm,'-') as jm_keluar,
+		                    b.cancel_when
+		            from    eka.mst_policy a,
+		                    eka.mst_refund b,
+		                    eka.mst_payment d,
+		                    eka.mst_deposit_premium e
+		            where   a.reg_spaj = b.reg_spaj
+		                and a.reg_spaj = d.reg_spaj (+)
+		                and a.reg_spaj = e.reg_spaj (+)
+		                and a.lku_id = '01'
+		                and b.tindakan_cd = 2
+		                and a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+		                and b.premi_refund != 0
+		            order by b.cancel_when
+		    )
+		    group by spaj, pre_masuk, jm_sa, jm, pre_keluar, jm_keluar, cancel_when
+		    )
+	    WHERE	REG_SPAJ IS NOT NULL
+	    <if test="jenis_transaksi != null">
+            AND KODE_TRANSAKSI = #{jenis_transaksi, jdbcType=VARCHAR}
+        </if>
+        <if test="startDate != null">
+            AND TGL_TRANSAKSI <![CDATA[ >= ]]> to_date(#{startDate}, 'YYYY-MM')
+        </if>
+        <if test="endDate != null">
+            AND TGL_TRANSAKSI <![CDATA[ <= ]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+        </if>
+		ORDER BY TGL_TRANSAKSI DESC
+	</select>
+	-->
+	
+	
+	<select id="selectTransactionHistory" parameterType="String" resultType="com.app.model.TransactionHistory">	 
+	
+	SELECT * FROM (
+		    SELECT  REG_SPAJ,
+		            'PAS-01' AS KODE_TRANSAKSI,
+		            'Penebusan Polis' AS TRANSACTION_TYPE,
+		            MI_URL AS FILE_PATH,
+		            TRUNC(TRANS_DATE) AS TGL_TRANSAKSI
+		    FROM    EKA.MST_INBOX
+		    WHERE   LJJ_ID in (2, 3)
+		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    UNION ALL
+		    SELECT  REG_SPAJ,
+		            'PAS-02' AS KODE_TRANSAKSI,
+		            'Penebusan Polis (Save Series)' AS TRANSACTION_TYPE,
+		            MI_URL AS FILE_PATH,
+		            TRUNC(TGL_BAYAR) AS TGL_TRANSAKSI
+		    FROM    EKA.MST_INBOX
+		    WHERE   LJJ_ID = 20
+		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    UNION ALL
+			
+			SELECT REG_SPAJ,'PAS-27' AS KODE_TRANSAKSI,
+			'Polis Tidak Aktif' AS TRANSACTION_TYPE, '' as FILE_PATH,TRUNC(Transaction_Submit_Date) AS TGL_TRANSAKSI FROM(
+select (CASE
+           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 4)
+           ELSE EKA.PACPOLIS.GET_AGENT (A.REG_SPAJ, 4)
+        END)
+          AGENT_CODE,
+       (CASE
+           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 3)
+           ELSE SUBSTR (EKA.PACPOLIS.GET_NAMA_PENUTUP (A.REG_SPAJ), 8)
+        END)
+          AGENT_NAME,
+        a.mspo_policy_no Policy_No,
+        a.reg_spaj,
+        EKA.PACPOLIS.GET_NAMA_PP (A.REG_SPAJ) AS POLICY_HOLDER,
+        '' as Transaction_No,
+        '' as Transaction_Type,
+        C.TGL_UPDATE as Transaction_Submit_Date,
+        '' as Decision_Date,
+        'LAPSE' as Status,
+        '' as Pending_Remark,
+        '' as Letter
+        
+from eka.mst_policy A,
+    eka.mst_product_insured B,
+    EKA.MST_HISTORY_STS_POLIS C,
+    EKA.LST_POLICY_STATUS D
+where  a.reg_spaj = b.reg_spaj 
+       and a.reg_spaj = c.reg_spaj 
+       and b.reg_spaj = c.reg_spaj
+       and C.LSSP_ID = 1
+       and D.LMS_ID = 2
+       and C.NEW_STATUS = D.LSSP_ID
+       and a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+order by tgl_update desc
+)
+			
+			UNION ALL
+			
+			SELECT REG_SPAJ,'PAS-14' AS KODE_TRANSAKSI,
+			'Pemulihan Polis Otomatis' AS TRANSACTION_TYPE, '' as FILE_PATH,TRUNC(Transaction_Submit_Date) AS TGL_TRANSAKSI FROM(
+select (CASE
+           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 4)
+           ELSE EKA.PACPOLIS.GET_AGENT (A.REG_SPAJ, 4)
+        END)
+          AGENT_CODE,
+       (CASE
+           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 3)
+           ELSE SUBSTR (EKA.PACPOLIS.GET_NAMA_PENUTUP (A.REG_SPAJ), 8)
+        END)
+          AGENT_NAME,
+        a.mspo_policy_no Policy_No,
+        a.reg_spaj,
+        EKA.PACPOLIS.GET_NAMA_PP (A.REG_SPAJ) AS POLICY_HOLDER,
+        '' as Transaction_No,
+        '' as Transaction_Type,
+        C.TGL_UPDATE as Transaction_Submit_Date,
+        '' as Decision_Date,
+        'INFORCE' as Status,
+        '' as Pending_Remark,
+        '' as Letter
+from eka.mst_policy A,
+    eka.mst_product_insured B,
+    EKA.MST_HISTORY_STS_POLIS C
+where  a.reg_spaj = b.reg_spaj 
+       and a.reg_spaj = c.reg_spaj 
+       and b.reg_spaj = c.reg_spaj
+       and C.LSSP_ID = 14  
+       and C.NEW_STATUS = 1
+       and exists (select 1
+                  from eka.mst_billing x
+                  where a.reg_spaj = x.reg_spaj
+                  and nvl(X.MSBI_PAID,0) = 0
+                  and nvl(x.msbi_flag_recur,0) = 0)
+                  and a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+order by tgl_update desc
+)
+			UNION ALL
+			SELECT REG_SPAJ,'COL-10' AS KODE_TRANSAKSI,
+			'Berakhirnya Masa Berlaku Kartu Kredit' AS TRANSACTION_TYPE, '' as FILE_PATH,TRUNC(CC_Expired_Date) AS TGL_TRANSAKSI FROM(
+
+select (CASE
+           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 4)
+           ELSE EKA.PACPOLIS.GET_AGENT (A.REG_SPAJ, 4)
+        END)
+          AGENT_CODE,
+       (CASE
+           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 3)
+           ELSE SUBSTR (EKA.PACPOLIS.GET_NAMA_PENUTUP (A.REG_SPAJ), 8)
+        END)
+          AGENT_NAME,
+        a.mspo_policy_no Policy_No,
+        c.mar_holder as Policy_Holder,
+        a.reg_spaj,
+        '' as Transaction_No,
+        '' as Transaction_Type,
+        c.mar_expired as CC_Expired_Date,  
+        '' as Letter          
+  from eka.mst_policy a,
+       eka.mst_product_insured b,
+       eka.mst_account_recur c,
+       eka.lst_bisnis d
+ where a.reg_spaj = b.reg_spaj 
+       and a.reg_spaj = c.reg_spaj 
+       and b.reg_spaj = c.reg_spaj
+       and b.lsbs_id = d.lsbs_id 
+       and c.mar_jenis = 1 --cc
+       and c.mar_expired is not null
+       and c.mar_expired between sysdate and add_months(sysdate, 1)
+	  and a.lssp_id in (1, 10)
+	  and exists (select 1
+                  from eka.mst_billing x
+                  where a.reg_spaj = x.reg_spaj
+                  and nvl(X.MSBI_PAID,0) = 0
+                  and nvl(x.msbi_flag_recur,0) = 0)
+      and a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+)
+			UNION ALL
+			SELECT REG_SPAJ,'COL-09' AS KODE_TRANSAKSI,
+			'Gagal Debet Premi' AS TRANSACTION_TYPE, '' as FILE_PATH,TRUNC(PREMIUM_BILLING_DATE) AS TGL_TRANSAKSI FROM(
+SELECT distinct (CASE
+           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 4)
+           ELSE EKA.PACPOLIS.GET_AGENT (A.REG_SPAJ, 4)
+        END)
+          AGENT_CODE,
+       (CASE
+           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 3)
+           ELSE SUBSTR (EKA.PACPOLIS.GET_NAMA_PENUTUP (A.REG_SPAJ), 8)
+        END)
+          AGENT_NAME,
+       A.MSPO_POLICY_NO AS POLICY_NO,
+       A.REG_SPAJ,
+       EKA.PACPOLIS.GET_NAMA_PP (A.REG_SPAJ) AS POLICY_HOLDER,
+       BILL.JT_TMPO AS PREMIUM_BILLING_DATE,
+       BILL.AMT AS PREMIUM_BILLING_AMOUNT
+  FROM EKA.MST_POLICY A,
+       EKA.MST_INSURED B,
+       (  SELECT X.REG_SPAJ, X.MSBI_BEG_DATE JT_TMPO, SUM (X.MSBI_REMAIN) AMT
+            FROM EKA.MST_BILLING X, EKA.MST_EKA_RECUR Y
+           WHERE  X.REG_SPAJ = Y.SUBS_NUMBER
+                    AND X.MSBI_TAHUN_KE = Y.KET1
+                    AND X.MSBI_PREMI_KE = Y.KET2
+                    AND X.MSBI_PAID = 0
+                    AND Y.VAT = 0
+                    AND Y.FLAG_LAST = 1
+                    AND Y.TGL_TERIMA IS NOT NULL
+                    AND Y.KET3 = (select max(Z.ket3) from eka.mst_eka_recur Z where Z.subs_number = Y.subs_number and Z.vat = 0 and Z.ket1 = Z.ket1  and Z.ket2 = Y.ket2 and Z.tgl_terima is not null)
+                    AND TRUNC(Y.TGL_TAGIHAN) = TRUNC(SYSDATE)
+                 AND NOT EXISTS
+                        (SELECT 1
+                           FROM EKA.MST_TAG_PAYMENT Z
+                          WHERE     X.REG_SPAJ = Z.REG_SPAJ
+                                AND X.MSBI_TAHUN_KE = Z.MSBI_TAHUN_KE
+                                AND X.MSBI_PREMI_KE = Z.MSBI_PREMI_KE)
+        GROUP BY X.REG_SPAJ,  X.MSBI_TAHUN_KE, X.MSBI_PREMI_KE, X.MSBI_BEG_DATE) BILL
+ WHERE A.REG_SPAJ = B.REG_SPAJ
+       AND B.MSTE_FLAG_CC in (1,2)
+       AND A.REG_SPAJ = BILL.REG_SPAJ
+       AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+)
+			UNION ALL
+			SELECT REG_SPAJ,'COL-03' AS KODE_TRANSAKSI,
+			'Jatuh Tempo Premi Non Autodebet Polis Individu' AS TRANSACTION_TYPE, '' as FILE_PATH,TRUNC(PREMIUM_BILLING_DATE) AS TGL_TRANSAKSI from(
+			SELECT (CASE
+			WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 4)
+			ELSE EKA.PACPOLIS.GET_AGENT (A.REG_SPAJ, 4)
+			END)
+			AGENT_CODE,
+			(CASE
+			WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 3)
+			ELSE SUBSTR (EKA.PACPOLIS.GET_NAMA_PENUTUP (A.REG_SPAJ), 8)
+			END)
+			AGENT_NAME,
+			A.MSPO_POLICY_NO AS POLICY_NO,
+			A.REG_SPAJ,
+			EKA.PACPOLIS.GET_NAMA_PP (A.REG_SPAJ) AS POLICY_HOLDER,
+			BILL.JT_TMPO AS PREMIUM_BILLING_DATE,
+			BILL.AMT AS PREMIUM_BILLING_AMOUNT
+			FROM EKA.MST_POLICY A,
+			EKA.MST_INSURED B,
+			(  SELECT X.REG_SPAJ, X.MSBI_BEG_DATE JT_TMPO, SUM (X.MSBI_REMAIN) AMT
+            FROM EKA.MST_BILLING X
+			WHERE     X.MSBI_PAID = 0
+                 AND NOT EXISTS
+                        (SELECT 1
+                           FROM EKA.MST_TAG_PAYMENT Y
+                          WHERE     X.REG_SPAJ = Y.REG_SPAJ
+                                AND X.MSBI_TAHUN_KE = Y.MSBI_TAHUN_KE
+                                AND X.MSBI_PREMI_KE = Y.MSBI_PREMI_KE)
+			GROUP BY X.REG_SPAJ, X.MSBI_BEG_DATE) BILL
+			WHERE     A.REG_SPAJ = B.REG_SPAJ
+			AND B.MSTE_FLAG_CC in (1,2)
+			AND A.REG_SPAJ = BILL.REG_SPAJ
+			AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR})
+			UNION ALL
+			SELECT REG_SPAJ,'COL-02' AS KODE_TRANSAKSI,
+			'Jatuh Tempo Premi Autodebet  Polis Individu' AS TRANSACTION_TYPE, '' as FILE_PATH,TRUNC(PREMIUM_BILLING_DATE) AS TGL_TRANSAKSI from(
+			SELECT (CASE
+			WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 4)
+			ELSE EKA.PACPOLIS.GET_AGENT (A.REG_SPAJ, 4)
+			END)
+           AGENT_CODE,
+          (CASE
+           WHEN A.LCA_ID = '09' THEN EKA.PACPOLIS.GET_DATA_BC (A.REG_SPAJ, 3)
+           ELSE SUBSTR (EKA.PACPOLIS.GET_NAMA_PENUTUP (A.REG_SPAJ), 8)
+           END)
+           AGENT_NAME,
+           A.MSPO_POLICY_NO AS POLICY_NO,
+		   A.REG_SPAJ,
+		   EKA.PACPOLIS.GET_NAMA_PP (A.REG_SPAJ) AS POLICY_HOLDER,
+           BILL.JT_TMPO AS PREMIUM_BILLING_DATE,
+           BILL.AMT AS PREMIUM_BILLING_AMOUNT
+           FROM EKA.MST_POLICY A,
+           EKA.MST_INSURED B,
+          (SELECT X.REG_SPAJ, X.MSBI_BEG_DATE JT_TMPO, SUM (X.MSBI_REMAIN) AMT
+            FROM EKA.MST_BILLING X
+           WHERE     X.MSBI_PAID = 0
+                 AND NOT EXISTS
+                        (SELECT 1
+                           FROM EKA.MST_TAG_PAYMENT Y
+                          WHERE     X.REG_SPAJ = Y.REG_SPAJ
+                                AND X.MSBI_TAHUN_KE = Y.MSBI_TAHUN_KE
+                                AND X.MSBI_PREMI_KE = Y.MSBI_PREMI_KE)
+			GROUP BY X.REG_SPAJ, X.MSBI_BEG_DATE) BILL
+			WHERE     A.REG_SPAJ = B.REG_SPAJ
+			AND B.MSTE_FLAG_CC = 0
+			AND A.REG_SPAJ = BILL.REG_SPAJ
+			AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR})
+			UNION ALL
+		    SELECT  REG_SPAJ,
+		            'PAS-11' AS KODE_TRANSAKSI,
+		            'Perubahan Polis' AS TRANSACTION_TYPE,
+		            MI_URL AS FILE_PATH,
+		            TRUNC(TGL_BAYAR) AS TGL_TRANSAKSI
+		    FROM    EKA.MST_INBOX
+		    WHERE   LJJ_ID = 22
+		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    UNION ALL
+		    SELECT  REG_SPAJ,
+		            'PAS-13' AS KODE_TRANSAKSI,
+		            'Pemulihan Polis' AS TRANSACTION_TYPE,
+		            MI_URL AS FILE_PATH,
+		            TRUNC(TRANS_DATE) AS TGL_TRANSAKSI
+		    FROM    EKA.MST_INBOX
+		    WHERE   LJJ_ID = 1
+		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		    UNION ALL
+            SELECT A.REG_SPAJ,DECODE(A.JENIS, 70,'PAS-04', 71,'PAS-05',A.JENIS,'PAS-TMP-'|| A.JENIS) as KODE_TRANSAKSI,
+                C.LT_TRANSKSI TRANSACTION_TYPE, 
+                A.URL FILE_PATH,
+                TRUNC(B.MU_TGL_TRANS) TGL_TRANSAKSI
+                FROM EKA.MST_SURAT_HISTORY A, EKA.MST_ULINK B, EKA.LST_TRANSAKSI C
+                WHERE A.REG_SPAJ = B.REG_SPAJ
+                AND A.TRX_KE = B.MU_KE 
+                AND A.JENIS IN (70, 71, 72)
+                AND B.LT_ID = C.LT_ID
+                AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}   
+		    UNION ALL
+		    select  DISTINCT(SPAJ) AS REG_SPAJ,
+		            'PAS-10' AS KODE_TRANSAKSI,
+		            'Pembatalan dalam Masa Pemahaman Polis (Cancel Freelook)' AS TRANSACTION_TYPE,
+		            'belum ada' as PATH,
+		            TRUNC(cancel_when) TGL_TRANSAKSI
 			from (
 		            select  distinct a.reg_spaj as spaj,
 		                    nvl(d.mspa_no_pre, e.msdp_no_pre) as pre_masuk,

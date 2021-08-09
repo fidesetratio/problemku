@@ -4954,7 +4954,6 @@
 	
 	
 	<select id="selectTransactionHistory" parameterType="String" resultType="com.app.model.TransactionHistory">	 
-	
 	SELECT * FROM (
 		    SELECT  REG_SPAJ,
 		            'PAS-01' AS KODE_TRANSAKSI,
@@ -5081,7 +5080,7 @@ select (CASE
        and a.reg_spaj = c.reg_spaj 
        and b.reg_spaj = c.reg_spaj
        and b.lsbs_id = d.lsbs_id 
-       and c.mar_jenis = 1 --cc
+       and c.mar_jenis = 1 
        and c.mar_expired is not null
        and c.mar_expired between sysdate and add_months(sysdate, 1)
 	  and a.lssp_id in (1, 10)
@@ -5208,7 +5207,7 @@ SELECT distinct (CASE
 		            'PAS-11' AS KODE_TRANSAKSI,
 		            'Perubahan Polis' AS TRANSACTION_TYPE,
 		            MI_URL AS FILE_PATH,
-		            TRUNC(TGL_BAYAR) AS TGL_TRANSAKSI
+		            TRUNC(nvl(TGL_BAYAR,CREATE_DATE)) AS TGL_TRANSAKSI
 		    FROM    EKA.MST_INBOX
 		    WHERE   LJJ_ID = 22
 		        AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}

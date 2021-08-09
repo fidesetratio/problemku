@@ -7606,10 +7606,17 @@ public class FinancialTransactionController {
 					for(int i=0; i<listTransactionHistory.size(); i++) {
 						String kode_transaksi = listTransactionHistory.get(i).getKode_transaksi();
 						String transaction_type = listTransactionHistory.get(i).getTransaction_type();
+						
 						String file_path = listTransactionHistory.get(i).getFile_path();
+						file_path = (file_path == null)?"":file_path;
 						String tgl_transaksi = df3.format(listTransactionHistory.get(i).getTgl_transaksi());
-						String file_name = file_path.substring(file_path.lastIndexOf('\\') + 1).trim();
+
+						String file_name = "";
+						if(!file_path.equals("")) {
+						 file_name = file_path.substring(file_path.lastIndexOf('\\') + 1).trim();
+						
 						file_name = file_name.substring(0, file_name.lastIndexOf('.'));
+						};
 						String file_type = file_path.substring(file_path.lastIndexOf('.') + 1).trim();
 						
 						HashMap<String, Object> hashMap = new HashMap<>();
@@ -7643,7 +7650,7 @@ public class FinancialTransactionController {
 		map.put("data", data);
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
-		//customResourceLoader.insertHistActivityWS(12, 78, new Date(), req, res, 1, resultErr, start, username);
+		customResourceLoader.insertHistActivityWS(12, 78, new Date(), req, res, 1, resultErr, start, username);
 
 		return res;
 	}

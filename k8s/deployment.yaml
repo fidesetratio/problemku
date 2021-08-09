@@ -51,6 +51,8 @@ spec:
               mountPath: /mnt/storage
             - name: medicare-mount
               mountPath: /mnt/Ekamedicare
+            - name: ebstorage-mount
+              mountPath: /mnt/ebstorage
             - name: springboot-log
               mountPath: /opt/logs
           ports:
@@ -88,6 +90,9 @@ spec:
         - name: medicare-mount
           hostPath:
            path: /mnt/Ekamedicare
+        - name: ebstorage-mount
+          hostPath:
+            path: /mnt/ebstorage
         - name: fluentd-monitoring-hook-conf
           configMap:
             name: fluentd-${PIPELINE_BUILD_IMAGE}-conf

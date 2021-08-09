@@ -316,7 +316,7 @@ path:
  document:
   claimcorporate: /mnt/Ekamedicare/m-policy/
  softcopy:
-  polis: \\\\ebserver\\Polis\\
+  polis: /mnt/ebserver/Polis
 kubernetes:
   platform: 1
 cosmos:

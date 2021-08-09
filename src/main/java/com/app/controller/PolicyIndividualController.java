@@ -254,7 +254,9 @@ public class PolicyIndividualController {
 							+ file_name;
 					String file_path = "\\\\storage\\pdfind\\Polis_Testing\\" + lca_id + "\\" + reg_spaj + "\\" + file_name;
 					file_path = softcopyPolisPath+File.separator+lca_id+File.separator+reg_spaj+File.separator+file_name;
-					System.out.println(file_path);
+					System.out.println("1."+file_path);
+					System.out.println("2."+file_path_check);
+					file_path_check=file_path;
 					File checkPolisAll = new File(file_path_check);
 					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) { 
 						data.put("file_path", file_path);

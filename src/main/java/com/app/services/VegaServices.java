@@ -1715,6 +1715,15 @@ public class VegaServices {
 		return dao.selectTransactionHistory(hashMap);
 	}
 
+	public ArrayList<TransactionHistory> selectTransactionHistoryDropDown(String reg_spaj, String startDate, String endDate, String jenis_transaksi) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("reg_spaj", reg_spaj);
+		hashMap.put("startDate", startDate);
+		hashMap.put("endDate", endDate);
+		hashMap.put("jenis_transaksi", jenis_transaksi);
+		return dao.selectTransactionHistoryDropDown(hashMap);
+	}
 	public String selectGetOnlyRegSpaj(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetOnlyRegSpaj(no_polis);

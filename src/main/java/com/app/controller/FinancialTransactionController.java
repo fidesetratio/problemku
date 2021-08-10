@@ -7689,7 +7689,7 @@ public class FinancialTransactionController {
 			if (customResourceLoader.validateCredential(username, key)) {
 				String reg_spaj = services.selectGetOnlyRegSpaj(no_polis);
 				
-				ArrayList <TransactionHistory> listTransactionHistory = services.selectTransactionHistory(reg_spaj, startDate, endDate, jenis_transaksi);
+				ArrayList <TransactionHistory> listTransactionHistory = services.selectTransactionHistoryDropDown(reg_spaj, startDate, endDate, jenis_transaksi);
 
 				if (listTransactionHistory == null) {
 					error = true;

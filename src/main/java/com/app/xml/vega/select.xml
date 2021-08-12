@@ -4028,8 +4028,8 @@
 		SELECT  *
 		FROM
 		    (SELECT A.MSEN_ENDORS_NO,
-		            TO_CHAR(B.MSDE_NEW1, 'DD/MM/YYYY') AS TGL_AWAL,
-		            TO_CHAR(B.MSDE_NEW2,'DD/MM/YYYY') AS TGL_AKHIR,
+		            B.MSDE_NEW1 AS TGL_AWAL,
+		            B.MSDE_NEW2 AS TGL_AKHIR,
 		            TO_CHAR(A.MSEN_INPUT_DATE, 'DD/MM/YYYY') AS INPUT_DATE,
 		            C.LSPD_ID
 		    FROM    EKA.MST_ENDORS A,

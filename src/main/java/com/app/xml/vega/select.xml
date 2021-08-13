@@ -2511,6 +2511,136 @@
         WHERE r__ <![CDATA[>=]]> (((#{pageNumber, jdbcType=INTEGER} - 1) * #{pageSize, jdbcType=INTEGER}) + 1)
 	</select>
 	
+	
+	
+	<select id="selectListWithdrawTotal" parameterType="HashMap" resultType="Integer">
+	    SELECT count(*) as total FROM
+        (
+        SELECT o.*, rownum r__
+        FROM
+        (
+        SELECT *
+          FROM (         
+          SELECT A.*,
+       (SELECT COUNT (MPT_ID)
+          FROM EKA.MST_MPOL_TRANS_DET
+         WHERE MPT_ID = A.MPT_ID)
+          AS COUNT_VALUE,
+       (SELECT MPT_JUMLAH
+          FROM EKA.MST_MPOL_TRANS_DET
+         WHERE MPT_ID = A.MPT_ID AND ROWNUM = 1)
+          AS MPT_JUMLAH_DETAIL,
+       (SELECT MPT_UNIT
+          FROM EKA.MST_MPOL_TRANS_DET
+         WHERE MPT_ID = A.MPT_ID AND ROWNUM = 1)
+          AS MPT_UNIT_DETAIL
+         FROM (SELECT A.MPT_ID,
+                 A.REQ_DATE,
+                 TO_CHAR(REQ_DATE, 'DD Mon YYYY') REQ_DATE_FORMAT,
+                 CASE
+                    WHEN A.MODIFIED_DATE IS NOT NULL THEN TO_DATE(MODIFIED_DATE, 'DD/MM/YYYY')
+                    ELSE TO_DATE(A.CREATED_DATE, 'DD/MM/YYYY')
+                 END
+                    DATE_STATUS,
+                 CASE
+                    WHEN A.MODIFIED_DATE IS NOT NULL THEN TO_CHAR(MODIFIED_DATE, 'DD Mon YYYY')
+                    ELSE TO_CHAR(A.CREATED_DATE, 'DD Mon YYYY')
+                 END
+                    DATE_STATUS_FORMAT,
+                 CASE
+                    WHEN A.MPT_STATUS IN (0,
+                                          1,
+                                          45,
+                                          46,
+                                          47)
+                    THEN
+                       'On progress'
+                    WHEN A.MPT_STATUS IN (7, 54)
+                    THEN
+                       'Accepted'
+                    WHEN A.MPT_STATUS = 8
+                    THEN
+                       'Canceled'
+                    WHEN A.MPT_STATUS = 9
+                    THEN
+                       'Canceled'
+                 END
+                    AS DESCRIPTION,
+                 CASE
+                    WHEN (A.MPT_JUMLAH = 0 OR A.MPT_JUMLAH IS NULL) THEN 'UNIT'
+                    WHEN (A.MPT_UNIT = 0 OR A.MPT_UNIT IS NULL) THEN 'NOMINAL'
+                 END
+                    AS TYPE_PENARIKAN,
+                 D.LKU_SYMBOL
+            FROM EKA.MST_MPOL_TRANS A
+                 INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
+                 INNER JOIN EKA.LST_TRANSAKSI C ON A.LT_ID = C.LT_ID
+                 INNER JOIN EKA.LST_KURS D ON B.LKU_ID = D.LKU_ID
+           WHERE B.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+           AND A.LT_ID IN (3)) A)     
+    UNION ALL
+    (SELECT NVL(A.NO_REGISTER, TO_CHAR(TO_CHAR (A.MU_TGL_TRANS, 'yyyymmdd') || A.MU_KE)) AS MPT_ID,
+        A.MU_TGL_TRANS REQ_DATE,
+        TO_CHAR(A.MU_TGL_TRANS, 'DD Mon YYYY') REQ_DATE_FORMAT,
+        TO_DATE(NVL(TRANS.TGL_FILLING, A.MU_TGL_TRANS), 'DD/MM/YYYY') DATE_STATUS,
+        TO_CHAR(NVL(TRANS.TGL_FILLING, A.MU_TGL_TRANS), 'DD Mon YYYY') DATE_STATUS_FORMAT,
+       (CASE
+           WHEN A.LT_ID IN (2, 4)
+           THEN
+              (CASE
+                  WHEN A.MU_LSPD_ID IN (46, 47) THEN 'On progress'
+                  ELSE 'Accepted'
+               END)
+           WHEN A.LT_ID IN (3, 11)
+           THEN
+              (CASE
+                  WHEN A.MU_LSPD_ID IN (46, 47, 54) THEN 'On progress'
+                  ELSE 'Accepted'
+               END)
+        END)
+          DESCRIPTION,
+       CASE
+          WHEN NVL (A.MU_JLH_PREMI, 0) > 0 THEN 'NOMINAL'
+          WHEN ABS (NVL (A.MU_JLH_UNIT, 0)) > 0 THEN 'UNIT'
+       END
+          TYPE_PENARIKAN,
+       F.LKU_SYMBOL,
+       (select count(*)
+        from eka.mst_trans_ulink x
+        where x.reg_spaj = a.reg_spaj
+        and x.mu_ke = a.mu_ke) COUNT_VALUE,
+       (A.MU_JLH_PREMI) MPT_JUMLAH_DETAIL,
+       abs(A.MU_JLH_UNIT) MPT_UNIT_DETAIL
+      FROM EKA.MST_ULINK A,
+       EKA.LST_TRANSAKSI C,
+       EKA.MST_POLICY E,
+       EKA.LST_KURS F,
+       (SELECT X.MTU_TGL_TRANS,
+               X.REG_SPAJ,
+               X.MU_KE,
+               (CASE
+                   WHEN X.LT_ID IN (2, 4) THEN TRUNC (X.MTU_TGL_PROSES)
+                   WHEN X.LT_ID IN (3, 11) THEN Y.MUB_TGL_TRANSFER
+                END)
+                  TGL_FILLING
+          FROM EKA.MST_TRANS_ULINK X, EKA.MST_ULINK_BAYAR Y
+         WHERE     X.REG_SPAJ = Y.REG_SPAJ(+)
+               AND X.MU_KE = Y.MU_KE(+)
+               AND X.MTU_KE = 1) TRANS
+         WHERE     
+       A.LT_ID = C.LT_ID
+       AND A.REG_SPAJ = E.REG_SPAJ
+       AND E.LKU_ID = F.LKU_ID
+       AND A.REG_SPAJ = TRANS.REG_SPAJ(+)
+       AND A.MU_KE = TRANS.MU_KE(+)
+       AND A.LT_ID IN (3, 11)
+       AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+       AND A.ID_MOBILE IS NULL  
+       )ORDER BY 2 DESC, 1 DESC
+            ) o
+            )
+    </select>
+	
 	<select id="selectViewSwitchingPaper" parameterType="HashMap" resultType="SwitchingRedirection">
 	   		SELECT ULINK.ID,
 				A.REG_SPAJ,

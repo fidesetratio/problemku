@@ -302,6 +302,9 @@ public interface VegaMapper {
 
 	public ArrayList<Withdraw> selectListWithdraw(HashMap<String, Object> hashMap);
 
+	public Integer selectListWithdrawTotal(HashMap<String, Object> hashMap);
+
+	
 	public Withdraw selectDataFormWithdraw(String reg_spaj);
 
 	public ArrayList<Withdraw> selectSaldoWithdraw(String reg_spaj);

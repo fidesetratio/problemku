@@ -974,6 +974,13 @@ public class VegaServices {
 		return dao.selectListWithdraw(hashMap);
 	}
 
+	
+	public Integer selectListWithdrawTotal(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("reg_spaj", reg_spaj);
+		return dao.selectListWithdrawTotal(hashMap);
+	}
 	public Withdraw selectViewWithdraw(String mpt_id, String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();

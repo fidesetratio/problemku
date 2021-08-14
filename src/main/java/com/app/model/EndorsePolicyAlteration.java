@@ -62,7 +62,28 @@ public class EndorsePolicyAlteration implements Serializable {
     private String msde_new6;
     private String msde_new7;
     private String msde_new8;
+   
     private String msde_new9;
+    private String msde_new10;
+    private String msde_new11;
+    private String msde_new12;
+    private String msde_new13;
+    private String msde_new14;
+    private String msde_new15;
+    private String msde_new16;
+    private String msde_new17;
+    private String msde_new18;
+    private String msde_new19;
+    private String msde_new20;
+    private String msde_new21;
+    private String msde_new22;
+    private String msde_new23;
+    private String msde_new24;
+    private String msde_new25;
+    
+    
+    
+    
     
     private String key;
     private String value;
@@ -98,6 +119,53 @@ public class EndorsePolicyAlteration implements Serializable {
     	if(msde_new8 != null) {
 			map.put("msde_new8", this.msde_new8);
 	}
+    	
+    	if(msde_new9 != null) {
+			map.put("msde_new9", this.msde_new9);
+	}
+    	if(msde_new10 != null) {
+			map.put("msde_new10", this.msde_new10);
+	}
+    	if(msde_new11 != null) {
+			map.put("msde_new11", this.msde_new11);
+	}
+    	if(msde_new12 != null) {
+			map.put("msde_new12", this.msde_new12);
+	}
+    	if(msde_new13 != null) {
+			map.put("msde_new13", this.msde_new13);
+	}
+    	if(msde_new14 != null) {
+			map.put("msde_new14", this.msde_new14);
+	}
+    	if(msde_new15 != null) {
+			map.put("msde_new15", this.msde_new15);
+	}
+    	if(msde_new16 != null) {
+			map.put("msde_new16", this.msde_new16);
+	}
+    	if(msde_new17 != null) {
+			map.put("msde_new17", this.msde_new17);
+	}
+    
+    	if(msde_new18 != null) {
+			map.put("msde_new18", this.msde_new18);
+	}	if(msde_new19 != null) {
+		map.put("msde_new19", this.msde_new19);
+}	if(msde_new20 != null) {
+	map.put("msde_new20", this.msde_new20);
+}	if(msde_new21 != null) {
+	map.put("msde_new21", this.msde_new21);
+}	if(msde_new22 != null) {
+	map.put("msde_new22", this.msde_new22);
+}
+if(msde_new23 != null) {
+	map.put("msde_new23", this.msde_new23);
+}if(msde_new24 != null) {
+	map.put("msde_new24", this.msde_new24);
+}if(msde_new25 != null) {
+	map.put("msde_new25", this.msde_new25);
+}
     	return map;
     }
     public static JSONObject toJSonObject(EndorsePolicyAlteration endorse) {
@@ -481,5 +549,101 @@ public class EndorsePolicyAlteration implements Serializable {
 	}
 	public void setMsde_new9(String msde_new9) {
 		this.msde_new9 = msde_new9;
+	}
+	public String getMsde_new10() {
+		return msde_new10;
+	}
+	public void setMsde_new10(String msde_new10) {
+		this.msde_new10 = msde_new10;
+	}
+	public String getMsde_new11() {
+		return msde_new11;
+	}
+	public void setMsde_new11(String msde_new11) {
+		this.msde_new11 = msde_new11;
+	}
+	public String getMsde_new12() {
+		return msde_new12;
+	}
+	public void setMsde_new12(String msde_new12) {
+		this.msde_new12 = msde_new12;
+	}
+	public String getMsde_new13() {
+		return msde_new13;
+	}
+	public void setMsde_new13(String msde_new13) {
+		this.msde_new13 = msde_new13;
+	}
+	public String getMsde_new14() {
+		return msde_new14;
+	}
+	public void setMsde_new14(String msde_new14) {
+		this.msde_new14 = msde_new14;
+	}
+	public String getMsde_new15() {
+		return msde_new15;
+	}
+	public void setMsde_new15(String msde_new15) {
+		this.msde_new15 = msde_new15;
+	}
+	public String getMsde_new16() {
+		return msde_new16;
+	}
+	public void setMsde_new16(String msde_new16) {
+		this.msde_new16 = msde_new16;
+	}
+	public String getMsde_new17() {
+		return msde_new17;
+	}
+	public void setMsde_new17(String msde_new17) {
+		this.msde_new17 = msde_new17;
+	}
+	public String getMsde_new18() {
+		return msde_new18;
+	}
+	public void setMsde_new18(String msde_new18) {
+		this.msde_new18 = msde_new18;
+	}
+	public String getMsde_new19() {
+		return msde_new19;
+	}
+	public void setMsde_new19(String msde_new19) {
+		this.msde_new19 = msde_new19;
+	}
+	public String getMsde_new20() {
+		return msde_new20;
+	}
+	public void setMsde_new20(String msde_new20) {
+		this.msde_new20 = msde_new20;
+	}
+	public String getMsde_new21() {
+		return msde_new21;
+	}
+	public void setMsde_new21(String msde_new21) {
+		this.msde_new21 = msde_new21;
+	}
+	public String getMsde_new22() {
+		return msde_new22;
+	}
+	public void setMsde_new22(String msde_new22) {
+		this.msde_new22 = msde_new22;
+	}
+	public String getMsde_new23() {
+		return msde_new23;
+	}
+	public void setMsde_new23(String msde_new23) {
+		this.msde_new23 = msde_new23;
+	}
+	public String getMsde_new24() {
+		return msde_new24;
+	}
+	public void setMsde_new24(String msde_new24) {
+		this.msde_new24 = msde_new24;
+	}
+	public String getMsde_new25() {
+		return msde_new25;
+	}
+	public void setMsde_new25(String msde_new25) {
+		this.msde_new25 = msde_new25;
 	}
 }

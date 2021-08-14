@@ -15,6 +15,9 @@ public class EndorseMapping {
 		private Integer hook_after_value;
 		private String query_after_value;
 		
+		private Integer flag_direct;
+		private String direct_query;
+		
 		
 		public String getEndorse_id() {
 			return endorse_id;
@@ -81,6 +84,18 @@ public class EndorseMapping {
 		}
 		public void setQuery_after_value(String query_after_value) {
 			this.query_after_value = query_after_value;
+		}
+		public Integer getFlag_direct() {
+			return flag_direct;
+		}
+		public void setFlag_direct(Integer flag_direct) {
+			this.flag_direct = flag_direct;
+		}
+		public String getDirect_query() {
+			return direct_query;
+		}
+		public void setDirect_query(String direct_query) {
+			this.direct_query = direct_query;
 		}
 
 }

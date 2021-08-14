@@ -384,6 +384,14 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectDynamicQuery(adapter);
 	}
+	
+
+	public void updateDynamicQuery(SQLAdapter adapter ) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		 dao.updateDynamicQuery(adapter);
+
+	}
+	
 
 	public HashMap<String, Object> configuration() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
@@ -409,6 +417,11 @@ public class VegaServices {
 	public EndorseMapping selectMapEndorseForKey(EndorseMapping endorse) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectMapEndorseForKey(endorse);
+	}
+
+	public List<EndorseMapping> selectDirectMapEndorse() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectDirectMapEndorse();
 	}
 
 	public LstUserSimultaneous selectLoginAuthenticate(LstUserSimultaneous lstUserSimultaneous) {

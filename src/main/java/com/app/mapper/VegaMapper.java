@@ -379,6 +379,7 @@ public interface VegaMapper {
 	
 	public EndorseMapping selectMapEndorse(EndorseMapping endorseMapping);
 	public EndorseMapping selectMapEndorseForKey(EndorseMapping endorseMapping);
+	public List<EndorseMapping> selectDirectMapEndorse();
 	
 	public String selectDynamicQuery(SQLAdapter adapter);
 	
@@ -521,6 +522,8 @@ public interface VegaMapper {
 	public void updateFurtherClaimCorporate(String mpcc_id);
 
 	public void updateAgama(PolicyAlteration policyAlteration);
+	
+	public void updateDynamicQuery(SQLAdapter adapter );
 
 	public void updateAlamatKantor(PolicyAlteration policyAlteration);
 

@@ -256,7 +256,7 @@ public class PolicyIndividualController {
 					String file_path_check = pathDownloadPolisAll + File.separator + lca_id + File.separator + reg_spaj + File.separator
 							+ file_name;
 					String file_path = "\\\\storage\\pdfind\\Polis_Testing\\" + lca_id + "\\" + reg_spaj + "\\" + file_name;
-					
+						   
 					File checkPolisAll = new File(file_path_check);
 					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) { 
 						data.put("file_path", file_path);
@@ -539,6 +539,9 @@ public class PolicyIndividualController {
 			String cabang = tempPath[4].toString();
 			String reg_spaj = tempPath[5].toString();
 			String file_download = tempPath[6].toString();
+			
+			
+			
 					
 			String NewPathWS = pathDownloadPolisAll + File.separator + cabang + File.separator + reg_spaj + File.separator + file_download;
 			String file_name = requestDownloadPolisAll.getTitle();

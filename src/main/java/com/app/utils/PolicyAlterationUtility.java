@@ -205,11 +205,6 @@ public class PolicyAlterationUtility {
 			
 			
 			EndorseMapping m = services.selectMapEndorse(mapping);
-			if(key.equals("alamat_rumah_pp")) {
-				System.out.println();
-				
-				//throw new IllegalArgumentException("test");
-			}
 			
 			if(m != null) {
 			
@@ -218,7 +213,9 @@ public class PolicyAlterationUtility {
 				endorseKeyAndValue.setHookBeforeValue(m.getHook_before_value()>0?true:false);
 				if(m.getHook_before_value()>0) {
 					endorseKeyAndValue.setHookBeforeValue(true);
-					
+					if(lsje_id == 3) {
+						System.out.println("ljse_id = 3");
+					}
 					try {
 							String query = m.getQuery_before_value();
 							String value = alteration.getNew_();

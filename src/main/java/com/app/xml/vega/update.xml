@@ -101,6 +101,12 @@
     <update id="updateAgama" parameterType="com.app.model.PolicyAlteration">
     	update eka.mst_client_new set lsag_id = #{lsag_id, jdbcType=INTEGER} where mcl_id = #{mcl_id, jdbcType=VARCHAR}
     </update>
+    <update id="updateDynamicQuery" parameterType="com.app.model.SQLAdapter">
+			${sql}
+	</update>
+	
+	
+    
     
     <update id="updateAlamatKantor" parameterType="com.app.model.PolicyAlteration">
     	update eka.mst_address_new set alamat_kantor = #{alamat_kantor, jdbcType=VARCHAR} where mcl_id = #{mcl_id, jdbcType=VARCHAR}

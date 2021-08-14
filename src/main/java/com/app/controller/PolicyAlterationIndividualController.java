@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,11 +25,13 @@ import com.app.feignclient.ServiceNotification;
 import com.app.model.DetailPolicyAlteration;
 import com.app.model.DropdownPolicyAlteration;
 import com.app.model.Endorse;
+import com.app.model.EndorseMapping;
 import com.app.model.EndorsePolicyAlteration;
 import com.app.model.IndexPolicyAlteration;
 import com.app.model.Pemegang;
 import com.app.model.PolicyAlteration;
 import com.app.model.PolicyAlterationKeyAndValue;
+import com.app.model.SQLAdapter;
 import com.app.model.Tertanggung;
 import com.app.services.VegaServices;
 import com.app.services.VegaServicesProd;
@@ -380,7 +384,7 @@ public class PolicyAlterationIndividualController {
 		
 	}
 	
-	
+	@Transactional
 	@RequestMapping(value = "/submitpolicyalteration", produces = "application/json", method = RequestMethod.POST)
 	public String submitpolicyalteration(@RequestBody String requestViewPolicyAlteration,
 			HttpServletRequest request) {
@@ -406,6 +410,15 @@ public class PolicyAlterationIndividualController {
 		PolicyAlterationCounter counter = new PolicyAlterationCounter();	
 		HashMap<Integer, ArrayList<IndexPolicyAlteration> > listtosubmit = new HashMap<Integer, ArrayList<IndexPolicyAlteration>>();
 		HashSet<Integer> inProgress = new HashSet<Integer>();
+		HashSet<Integer> direct = new HashSet<Integer>();
+		
+		List<EndorseMapping> endorseDirect = services.selectDirectMapEndorse();
+		for(EndorseMapping e:endorseDirect) {
+			direct.add(Integer.parseInt(e.getEndorse_id()));
+		}
+		
+		
+		
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang paramSelectSPAJ = new Pemegang();
@@ -548,7 +561,15 @@ public class PolicyAlterationIndividualController {
 						    	if(d > 0) {
 								Integer lsje_id = d;
 								Endorse endors = services.selectListJenisEndors(lsje_id);
-								String msen_alasan = endors.getLsje_jenis();
+
+								String msen_alasan = "new endorse ya";
+								if(endors != null) {
+									msen_alasan = endors.getLsje_jenis();
+								} 
+								
+								
+								
+								
 								String kolom = "";
 						    	String msde_old1 = oldvalue.get("msde_old1")==null?null:oldvalue.get("msde_old1").toString();
 								String msde_new1 = newvalue.get("msde_new1")==null?null:newvalue.get("msde_new1").toString();
@@ -637,8 +658,12 @@ public class PolicyAlterationIndividualController {
 								String msde_new25 = newvalue.get("msde_new25")==null?null:newvalue.get("msde_new25").toString();
 
 								if(!inProgress.contains(d)) {
-											if(d == 68 || d == 62 || d == 90 || d==67 || d == 89 || d == 61 || d == 39) {
-												for(IndexPolicyAlteration g:t) {
+								
+									
+									
+									
+												if(direct.contains(d)) {
+													for(IndexPolicyAlteration g:t) {
 													DetailPolicyAlteration detailPolicyAlteration = g.getDetailPolicyAlteration();
 										    		String jsonGroup = g.getJsonGroup();
 									    			Integer index = g.getIndex();
@@ -647,10 +672,10 @@ public class PolicyAlterationIndividualController {
 									    			String keyOld = g.getOldColumn();
 									    			String keyNew = g.getNewColumn();
 									    			String new_ = detailPolicyAlteration.getNew_();
-									    			
-										    		if(detailPolicyAlteration != null) {
-										    			boolean returnofsuccess = directProcess(d, new_,reg_spaj,no_polis,key);
-														if(returnofsuccess) {
+									    			String newData = g.getNewValue();
+									    			if(detailPolicyAlteration != null) {
+       								    				boolean returnofsuccess = directProcessFromDatabase(d, newData,reg_spaj,no_polis,keyt);
+										    			if(returnofsuccess) {
 															detailPolicyAlteration.setStatus("SUCCESS");
 														};
 												   };
@@ -741,6 +766,54 @@ public class PolicyAlterationIndividualController {
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 83, new Date(), req, res, 1, resultErr, start, username);
 		return result;
+	}
+	
+	
+	public boolean directProcessFromDatabase(Integer lsje_id, String value, String reg_spaj, String no_polis, String key) {
+		boolean success = false;
+		
+		EndorseMapping mapping = new EndorseMapping();
+		Tertanggung tertanggung = new Tertanggung();
+		tertanggung.setMspo_policy_no(no_polis);
+		tertanggung = services.selectTertanggung(tertanggung);
+	
+		Pemegang pemegang = new Pemegang();
+		pemegang.setMspo_policy_no(no_polis);
+		pemegang = services.selectPemegang(pemegang);
+		
+		String pp_mcl_id = pemegang.getMcl_id();
+
+		String tt_mcl_id = tertanggung.getMcl_id();
+		
+		
+		mapping.setEndorse_id(Integer.toString(lsje_id));
+		mapping.setJson_key(key);
+		EndorseMapping endorse = services.selectMapEndorse(mapping);
+		String valueThatNeedToModified = value;
+		
+
+		
+		String query = endorse.getDirect_query();
+		
+		if(!query.equals("") ||  !query.isEmpty() || !query.isEmpty())
+		{ 
+			 
+			query = query.replaceAll("#pp_mcl_id#", pp_mcl_id);
+			query = query.replaceAll("#tt_mcl_id#", tt_mcl_id);
+			query = query.replaceAll("#reg_spaj#", reg_spaj);
+			query = query.replaceAll("#VALUE#", valueThatNeedToModified.trim());
+			
+			try {
+			SQLAdapter adapter = new SQLAdapter(query);
+			services.updateDynamicQuery(adapter);
+			success = true;
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			 
+			
+		}
+		return success;
 	}
 	
 	

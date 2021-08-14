@@ -4377,13 +4377,13 @@
 		        END AS STATUS,
 		        D.LSJE_JENIS,
 		        CASE
-		            WHEN B.LSJE_ID IN (3, 34, 39, 61, 67, 89, 93,119)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA PEMEGANG POLIS')
 		                THEN 'DATA PEMEGANG POLIS'
-		            WHEN B.LSJE_ID IN (40, 62, 68, 90)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA TERTANGGUNG UTAMA')
 		                THEN 'DATA TERTANGGUNG UTAMA'
-		            WHEN B.LSJE_ID IN (8, 96)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA PEMBAYAR PREMI')
 		                THEN 'DATA PEMBAYAR PREMI'
-		            WHEN B.LSJE_ID IN (93)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA PENERIMA MANFAAT')
 		                THEN 'DATA PENERIMA MANFAAT'
 		            ELSE 'UNLISTED'
 		        END AS GROUPING
@@ -4416,13 +4416,13 @@
 		        END AS STATUS,
 		        D.LSJE_JENIS,
 		        CASE
-		            WHEN B.LSJE_ID IN (3, 34, 39, 61, 67, 89, 93,119)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA PEMEGANG POLIS')
 		                THEN 'DATA PEMEGANG POLIS'
-		            WHEN B.LSJE_ID IN (40, 62, 68, 90)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA TERTANGGUNG UTAMA')
 		                THEN 'DATA TERTANGGUNG UTAMA'
-		            WHEN B.LSJE_ID IN (8, 96)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA PEMBAYAR PREMI')
 		                THEN 'DATA PEMBAYAR PREMI'
-		            WHEN B.LSJE_ID IN (93)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA PENERIMA MANFAAT')
 		                THEN 'DATA PENERIMA MANFAAT'
 		            ELSE 'UNLISTED'
 		        END AS GROUPING
@@ -4454,13 +4454,13 @@
 		        END AS STATUS,
 		        D.LSJE_JENIS,
 		        CASE
-		            WHEN B.LSJE_ID IN (3, 34, 39, 61, 67, 89, 93,119)
+		           WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA PEMEGANG POLIS')
 		                THEN 'DATA PEMEGANG POLIS'
-		            WHEN B.LSJE_ID IN (40, 62, 68, 90)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA TERTANGGUNG UTAMA')
 		                THEN 'DATA TERTANGGUNG UTAMA'
-		            WHEN B.LSJE_ID IN (8, 96)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA PEMBAYAR PREMI')
 		                THEN 'DATA PEMBAYAR PREMI'
-		            WHEN B.LSJE_ID IN (93)
+		            WHEN B.LSJE_ID IN (select distinct(endorse_id) from mst_vega_endors_map where group_desc = 'DATA PENERIMA MANFAAT')
 		                THEN 'DATA PENERIMA MANFAAT'
 		            ELSE 'UNLISTED'
 		        END AS GROUPING
@@ -4547,6 +4547,8 @@
 		SELECT * FROM EKA.LST_RELATION WHERE LSRE_ID NOT IN(37)
 	</select>
 	
+	
+	
 	<select id="selectListJenisEndors" parameterType="Integer" resultType="com.app.model.Endorse">
 		SELECT  LSJE_ID,
 		        LSJE_JENIS
@@ -4562,6 +4564,14 @@
 	<select id="selectMapEndorseForKey" parameterType="com.app.model.EndorseMapping" resultType="com.app.model.EndorseMapping">
 		select * from eka.mst_vega_endors_map where endorse_id = #{endorse_id} and counter_identifier = #{counter_identifier}
 	</select>
+	
+	<select id="selectDirectMapEndorse"  resultType="com.app.model.EndorseMapping">
+		select distinct(endorse_id)  as endorse_id from mst_vega_endors_map where flag_direct  = 1
+	</select>
+	
+	
+	
+	
 	
 	
 	<select id="selectMclId_PP" parameterType="String" resultType="String">

@@ -672,6 +672,18 @@ public class PolicyAlterationIndividualController {
 									    			String keyNew = g.getNewColumn();
 									    			String new_ = detailPolicyAlteration.getNew_();
 									    			String newData = g.getNewValue();
+									    			
+									    			
+									    			
+									    			if(newData == null) {
+									    				newData = new_;
+									    			}
+									    			if(newData.isEmpty() || newData.equals("")) {
+									    				newData = new_;
+									    			}
+									    			
+									    			
+									    			
 									    			if(detailPolicyAlteration != null) {
        								    				boolean returnofsuccess = directProcessFromDatabase(d, newData,reg_spaj,no_polis,keyt);
 										    			if(returnofsuccess) {

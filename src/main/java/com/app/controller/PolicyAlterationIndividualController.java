@@ -384,7 +384,6 @@ public class PolicyAlterationIndividualController {
 		
 	}
 	
-	@Transactional
 	@RequestMapping(value = "/submitpolicyalteration", produces = "application/json", method = RequestMethod.POST)
 	public String submitpolicyalteration(@RequestBody String requestViewPolicyAlteration,
 			HttpServletRequest request) {

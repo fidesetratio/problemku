@@ -763,7 +763,7 @@
 	</select>
 	
 	<select id="selectSaldoWithdraw" parameterType="String" resultType="com.app.model.Withdraw">
-		SELECT SUM (NILAI_PP) AS PREMI_POKOK, SUM (NILAI_TU) AS PREMI_TOPUP
+		SELECT NVL(SUM (NILAI_PP),0) AS PREMI_POKOK, NVL(SUM (NILAI_TU),0) AS PREMI_TOPUP
   			FROM (SELECT A.REG_SPAJ,
                B.LJI_ID,
                B.LJI_INVEST,

@@ -2638,7 +2638,8 @@
        AND A.ID_MOBILE IS NULL  
        )ORDER BY 2 DESC, 1 DESC
             ) o
-            )
+            ) where description = 'On progress'
+            
     </select>
 	
 	<select id="selectViewSwitchingPaper" parameterType="HashMap" resultType="SwitchingRedirection">

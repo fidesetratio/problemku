@@ -229,16 +229,44 @@ public class FinancialTransactionController {
 						// Cek user apabila ingin switching/ redirection/ switching & redirection
 					} else if (menu_id_transaction.equals(4) 
 							|| menu_id_transaction.equals(19)) {
+						
+						
 						// Cek status transaksi terakhirnya
-						if (dataCheckStatus > 0) {
-							error = false;
-							message = "Successfully get data";
-							data.put("enable_button_submit", true);
-						} else {
-							error = false;
-							message = "Successfully get data";
-							data.put("enable_button_submit", false);
+						if(menu_id_transaction.equals(4)) {
+						
+							 Integer pageSize = 12;
+							Integer pageNumber = 1;
+ 
+							
+							ArrayList<SwitchingRedirection> arrayList = services
+									.selectListSwitching(dataSpaj.getReg_spaj(), pageNumber, pageSize);
+						
+							if(arrayList.size()>0) {
+								
+									error = false;
+									message = "Successfully get data";
+									data.put("enable_button_submit", false);
+							}else {
+								error = false;
+								message = "Successfully get data";
+								data.put("enable_button_submit", true);
+						
+							}
+							
+						}else {
+							
+							if (dataCheckStatus > 0) {
+								error = false;
+								message = "Successfully get data";
+								data.put("enable_button_submit", false);
+							} else {
+								error = false;
+								message = "Successfully get data";
+								data.put("enable_button_submit", true);
+							}
+							
 						}
+						
 					}else if( menu_id_transaction.equals(3)) {
 							Integer total = services.selectListWithdrawTotal(dataSpaj.getReg_spaj());
 							if(total > 0) {

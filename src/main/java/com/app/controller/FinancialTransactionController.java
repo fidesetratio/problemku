@@ -233,11 +233,11 @@ public class FinancialTransactionController {
 						if (dataCheckStatus > 0) {
 							error = false;
 							message = "Successfully get data";
-							data.put("enable_button_submit", false);
+							data.put("enable_button_submit", true);
 						} else {
 							error = false;
 							message = "Successfully get data";
-							data.put("enable_button_submit", true);
+							data.put("enable_button_submit", false);
 						}
 					}else if( menu_id_transaction.equals(3)) {
 							Integer total = services.selectListWithdrawTotal(dataSpaj.getReg_spaj());

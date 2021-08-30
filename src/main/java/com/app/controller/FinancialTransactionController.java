@@ -237,10 +237,11 @@ public class FinancialTransactionController {
 							 Integer pageSize = 12;
 							Integer pageNumber = 1;
  
-							
+
+							Integer totalw = services.selectListWithdrawTotal(dataSpaj.getReg_spaj());
 							Integer total = services.selectListSwitchingTotal(dataSpaj.getReg_spaj());
 						
-							if(total>0) {
+							if(total + totalw>0) {
 								
 									error = false;
 									message = "Successfully get data";

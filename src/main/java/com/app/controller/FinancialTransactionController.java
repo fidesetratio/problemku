@@ -238,10 +238,9 @@ public class FinancialTransactionController {
 							Integer pageNumber = 1;
  
 							
-							ArrayList<SwitchingRedirection> arrayList = services
-									.selectListSwitching(dataSpaj.getReg_spaj(), pageNumber, pageSize);
+							Integer total = services.selectListSwitchingTotal(dataSpaj.getReg_spaj());
 						
-							if(arrayList.size()>0) {
+							if(total>0) {
 								
 									error = false;
 									message = "Successfully get data";
@@ -269,7 +268,10 @@ public class FinancialTransactionController {
 						
 					}else if( menu_id_transaction.equals(3)) {
 							Integer total = services.selectListWithdrawTotal(dataSpaj.getReg_spaj());
-							if(total > 0) {
+
+							Integer totalswitching = services.selectListSwitchingTotal(dataSpaj.getReg_spaj());
+							
+							if((total + totalswitching) > 0) {
 								error = false;
 								message = "Successfully get data";
 								data.put("enable_button_submit", false);

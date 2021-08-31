@@ -9,6 +9,7 @@ public class ViewMclFirst implements Serializable {
 	private static final long serialVersionUID = -187876306811723871L;
 	private String no_polis;
 	private String nama;
+	private String nama_tt;
 	private Integer policy_status;
 	private Integer gprod_id;
 	
@@ -35,6 +36,12 @@ public class ViewMclFirst implements Serializable {
 	}
 	public void setNama(String nama) {
 		this.nama = nama;
+	}
+	public String getNama_tt() {
+		return nama_tt;
+	}
+	public void setNama_tt(String nama_tt) {
+		this.nama_tt = nama_tt;
 	}
 	
 }

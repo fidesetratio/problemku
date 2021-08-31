@@ -229,8 +229,6 @@ public class FinancialTransactionController {
 						// Cek user apabila ingin switching/ redirection/ switching & redirection
 					} else if (menu_id_transaction.equals(4) 
 							|| menu_id_transaction.equals(19)) {
-						
-						
 						// Cek status transaksi terakhirnya
 						if(menu_id_transaction.equals(4)) {
 						
@@ -7585,12 +7583,16 @@ public class FinancialTransactionController {
 					for(int i=0; i<viewMclFirst.size(); i++) {
 						String no_polis = viewMclFirst.get(i).getNo_polis();
 						String nama = viewMclFirst.get(i).getNama();
+						String nama_tt = viewMclFirst.get(i).getNama_tt();
+						
 						Integer policy_status = viewMclFirst.get(i).getPolicy_status();
 						Integer gprod_id = viewMclFirst.get(i).getGprod_id();
 						
 						HashMap<String, Object> hashMap = new HashMap<>();
 						hashMap.put("no_polis", no_polis);
 						hashMap.put("nama", nama);
+						hashMap.put("nama_tt", nama_tt);
+						
 						hashMap.put("policy_status", policy_status);
 						hashMap.put("policy_type", gprod_id);
 						

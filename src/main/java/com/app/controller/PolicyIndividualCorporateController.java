@@ -2005,8 +2005,10 @@ public class PolicyIndividualCorporateController {
 					
 					
 					PolicyAlteration korespondensi = services.selectKorespondensi(no_polis);
+					if(korespondensi == null) {
+						korespondensi = new PolicyAlteration();
+					}
 					
-					if(korespondensi != null) {
 					Integer propinsi_tinggal = korespondensi.getPropinsi_tinggal();
 					Integer kabupaten_tinggal = korespondensi.getKabupaten_tinggal();
 					Integer kecamatan_tinggal = korespondensi.getKecamatan_tinggal();
@@ -2061,7 +2063,6 @@ public class PolicyIndividualCorporateController {
 					_negara_tinggal.put ("flag_direct", 0);
 					temp_negara_tinggal.put("negara_tinggal", _negara_tinggal);
 					data_policyholder.putAll(temp_negara_tinggal);
-					};
 				} else {
 					HashMap<String, Object> _propinsi_tinggal = new HashMap<>();
 					HashMap<String, Object> temp_propinsi_tinggal = new HashMap<>();

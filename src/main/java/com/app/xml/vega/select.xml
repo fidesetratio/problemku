@@ -4476,7 +4476,7 @@
 		    AND A.MSPO_POLICY_NO = REPLACE(#{mspo_policy_no, jdbcType=VARCHAR}, '.')
 		</select>
 
-	<select id="SelectKorespondensi" parameterType="String" resultType="com.app.model.PolicyAlteration">
+	<select id="selectKorespondensi" parameterType="String" resultType="com.app.model.PolicyAlteration">
 		SELECT  '1' AS NEGARA_TINGGAL,
 		        V.PROPINSI AS PROPINSI_TINGGAL,
 		        V.KABUPATEN AS KABUPATEN_TINGGAL,

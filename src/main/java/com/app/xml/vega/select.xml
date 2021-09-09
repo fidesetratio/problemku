@@ -5050,6 +5050,7 @@
 		    connect by MST_AGENT.MST_LEADER = prior MST_AGENT.MSAG_ID
 		)
 		and EKA.LST_BISNIS.LSBS_ID <![CDATA[<]]> 300
+		
 		and EKA.LST_MASTER_STATUS.LMS_ID not in (5,6)
 		and (
 		<if test="mspo_policy_no != null">

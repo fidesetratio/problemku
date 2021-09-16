@@ -12,7 +12,7 @@
   	</select>
   	
   	<select id="selectCheckEnableClaimCorp" parameterType="String" resultType="BigDecimal">
-		select mspo_type_rek from eka.mst_policy@eb where mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+		select mspo_type_rek from eka.mst_policy@eb where mspo_policy_no = REPLACE (#{no_polis, jdbcType=VARCHAR},'.')
 	</select>
 	
 	

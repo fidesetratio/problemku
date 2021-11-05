@@ -552,4 +552,6 @@ public interface VegaMapper {
 	public void updateAttemptOtp(MstOTPSimultaneous paramUpdate);
 
 	public void updateStatusAttemptOtp(MstOTPSimultaneous paramUpdate);
+
+	public User selectFindBankAsOrAgency(String policy_number);
 }

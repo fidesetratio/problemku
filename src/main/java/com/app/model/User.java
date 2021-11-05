@@ -97,6 +97,7 @@ public class User implements Serializable {
 	private String nm_tt;
 	private String status;
 	private BigDecimal lms_id;
+	private String policy_type;
 
 	public String getIp() {
 		return ip;
@@ -436,6 +437,10 @@ public class User implements Serializable {
 
 	public BigDecimal getLms_id() {
 		return lms_id;
+	}
+
+	public String getPolicy_type() {
+		return policy_type;
 	}
 
 	public void setIp(String ip) {
@@ -784,5 +789,9 @@ public class User implements Serializable {
 
 	public void setEnable_cuti_premi(String enable_cuti_premi) {
 		this.enable_cuti_premi = enable_cuti_premi;
+	}
+
+	public void setPolicy_type(String policy_type){
+		this.policy_type = policy_type;
 	}
 }

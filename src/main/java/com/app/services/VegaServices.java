@@ -1788,4 +1788,9 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateStatusAttemptOtp(paramUpdate);
 	}
+
+	public User selectFindBankAsOrAgency(String policy_number){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectFindBankAsOrAgency(policy_number);
+	}
 }

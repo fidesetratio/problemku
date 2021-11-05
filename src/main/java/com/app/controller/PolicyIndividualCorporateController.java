@@ -209,6 +209,7 @@ public class PolicyIndividualCorporateController {
 				ArrayList<HashMap<String, Object>> individu = new ArrayList<>();
 				Boolean is_individual = true;
 				Boolean is_corporate = true;
+				Boolean is_bank_as = true;
 				Boolean policy_corporate_notinforce = false;
 
 				LstUserSimultaneous selectTypeUser = services.selectDataLstUserSimultaneous(username);
@@ -220,6 +221,10 @@ public class PolicyIndividualCorporateController {
 
 				if (reg_spaj_register != null) {
 					if (!listPolisIndividu.isEmpty()) {
+						String policy_type = listPolisIndividu.get(0).getPolicy_type();
+						if (policy_type != null && !policy_type.equals("")){
+							is_bank_as = policy_type.equals("BankAs");
+						}
 						for (Integer i = 0; i < listPolisIndividu.size(); i++) {
 							try {
 								HashMap<String, Object> mapper = new HashMap<>();
@@ -261,6 +266,7 @@ public class PolicyIndividualCorporateController {
 									
 									mapper.put("account_type", "individual");
 									mapper.put("reg_spaj", reg_spaj_register);
+									mapper.put("is_bank_as", is_bank_as);
 								}
 
 								individu.add(mapper);
@@ -2690,14 +2696,7 @@ public class PolicyIndividualCorporateController {
 
 		return res;
 	}
-	
-	
-	
-		
-	
-	
-	
-	
+
 	@RequestMapping(value = "/listpolicyalteration", produces = "application/json", method = RequestMethod.POST)
 	public String listPolicyAlteration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
 			HttpServletRequest request) {

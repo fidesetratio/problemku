@@ -221,10 +221,6 @@ public class PolicyIndividualCorporateController {
 
 				if (reg_spaj_register != null) {
 					if (!listPolisIndividu.isEmpty()) {
-						String policy_type = listPolisIndividu.get(0).getPolicy_type();
-						if (policy_type != null && !policy_type.equals("")){
-							is_bank_as = policy_type.equals("BankAs");
-						}
 						for (Integer i = 0; i < listPolisIndividu.size(); i++) {
 							try {
 								HashMap<String, Object> mapper = new HashMap<>();
@@ -235,6 +231,10 @@ public class PolicyIndividualCorporateController {
 								BigDecimal gproudId = dataTemp.getGprod_id() != null ? dataTemp.getGprod_id() : null;
 								BigDecimal isHealth = dataTemp.getIshealth() != null ? dataTemp.getIshealth() : null;
 								if (polis != null) {
+									String policy_type = services.selectFindBankAsOrAgency(polis);
+									if (policy_type != null && !policy_type.equals("")){
+										is_bank_as = policy_type.equals("BankAs");
+									}
 									if (isHealth.intValue() != 0) {
 										mapper.put("enable_claim_menu", true);
 									} else {

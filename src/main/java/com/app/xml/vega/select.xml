@@ -5953,7 +5953,7 @@ SELECT distinct (CASE
            	order by id_otp desc) 
         where rownum = 1
 	</select>
-	<select id="selectBankAsOrAgency" parameterType="String" resultType="com.app.model.User">
+	<select id="selectFindBankAsOrAgency" parameterType="String" resultType="com.app.model.User">
 		select CASE
 		WHEN lca_id IN (37,60,52)
 		then    'Agency'
@@ -5962,6 +5962,6 @@ SELECT distinct (CASE
 		else 'Others'
 		End as policy_type
 		from eka.mst_policy
-		where EKA.MST_POLICY.MSPO_POLICY_NO_FORMAT= #{username, jdbcType=VARCHAR})
+		where EKA.MST_POLICY.MSPO_POLICY_NO_FORMAT= #{policy_number, jdbcType=VARCHAR})
 	</select>
 </mapper>

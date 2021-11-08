@@ -3168,7 +3168,7 @@ public class PolicyIndividualCorporateController {
 		return res;
 	}
 
-	@RequestMapping(value = "/datapolis", produces = "application/json", method = RequestMethod.GET)
+	@RequestMapping(value = "/datapolis", produces = "application/json", method = RequestMethod.POST)
 	public String getPolis(@RequestBody RequestListPolis requestListPolis,
 						   HttpServletRequest request){
 		GsonBuilder builder = new GsonBuilder();

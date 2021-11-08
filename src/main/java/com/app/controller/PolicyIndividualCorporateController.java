@@ -209,7 +209,7 @@ public class PolicyIndividualCorporateController {
 				ArrayList<HashMap<String, Object>> individu = new ArrayList<>();
 				Boolean is_individual = true;
 				Boolean is_corporate = true;
-				Boolean is_bank_as = true;
+				Boolean is_bank_as = false;
 				Boolean policy_corporate_notinforce = false;
 
 				LstUserSimultaneous selectTypeUser = services.selectDataLstUserSimultaneous(username);

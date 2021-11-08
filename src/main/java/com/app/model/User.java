@@ -98,6 +98,15 @@ public class User implements Serializable {
 	private String status;
 	private BigDecimal lms_id;
 
+	private String tipe_polis;
+	private String kurs_id;
+	private String no_va;
+	private Integer premium_bill_va;
+	private Integer premium_bill_transfer;
+	private Integer premium_bill_online;
+	private Integer premium_bill_bankas_transfer;
+
+
 	public String getIp() {
 		return ip;
 	}
@@ -436,6 +445,10 @@ public class User implements Serializable {
 
 	public BigDecimal getLms_id() {
 		return lms_id;
+	}
+
+	public String getTipe_polis() {
+		return tipe_polis;
 	}
 
 	public void setIp(String ip) {
@@ -784,5 +797,58 @@ public class User implements Serializable {
 
 	public void setEnable_cuti_premi(String enable_cuti_premi) {
 		this.enable_cuti_premi = enable_cuti_premi;
+	}
+
+	public void setTipe_polis(String tipe_polis){
+		this.tipe_polis = tipe_polis;
+	}
+
+
+	public String getKurs_id() {
+		return kurs_id;
+	}
+
+	public void setKurs_id(String kurs_id) {
+		this.kurs_id = kurs_id;
+	}
+
+	public String getNo_va() {
+		return no_va;
+	}
+
+	public void setNo_va(String no_va) {
+		this.no_va = no_va;
+	}
+
+	public Integer getPremium_bill_va() {
+		return premium_bill_va;
+	}
+
+	public void setPremium_bill_va(Integer premium_bill_va) {
+		this.premium_bill_va = premium_bill_va;
+	}
+
+	public Integer getPremium_bill_transfer() {
+		return premium_bill_transfer;
+	}
+
+	public void setPremium_bill_transfer(Integer premium_bill_transfer) {
+		this.premium_bill_transfer = premium_bill_transfer;
+	}
+
+	public Integer getPremium_bill_online() {
+		return premium_bill_online;
+	}
+
+	public void setPremium_bill_online(Integer premium_bill_online) {
+		this.premium_bill_online = premium_bill_online;
+	}
+
+	public Integer getPremium_bill_bankas_transfer() {
+		return premium_bill_bankas_transfer;
+	}
+
+	public void setPremium_bill_bankas_transfer(Integer premium_bill_bankas_transfer) {
+		this.premium_bill_bankas_transfer = premium_bill_bankas_transfer;
 	}
 }

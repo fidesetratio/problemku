@@ -552,4 +552,6 @@ public interface VegaMapper {
 	public void updateAttemptOtp(MstOTPSimultaneous paramUpdate);
 
 	public void updateStatusAttemptOtp(MstOTPSimultaneous paramUpdate);
+
+	public User selectDataPolisByPolisNo(HashMap<String, Object> hashMap);
 }

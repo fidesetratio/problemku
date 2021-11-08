@@ -1788,4 +1788,12 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateStatusAttemptOtp(paramUpdate);
 	}
+
+	public User selectDataPolisByPolisNo(String policy_number, String username){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("policy_number", policy_number);
+		hashMap.put("username", username);
+		return dao.selectDataPolisByPolisNo(hashMap);
+	}
 }

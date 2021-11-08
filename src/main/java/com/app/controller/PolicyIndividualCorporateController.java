@@ -2690,14 +2690,7 @@ public class PolicyIndividualCorporateController {
 
 		return res;
 	}
-	
-	
-	
-		
-	
-	
-	
-	
+
 	@RequestMapping(value = "/listpolicyalteration", produces = "application/json", method = RequestMethod.POST)
 	public String listPolicyAlteration(@RequestBody RequestViewPolicyAlteration requestViewPolicyAlteration,
 			HttpServletRequest request) {
@@ -3174,4 +3167,64 @@ public class PolicyIndividualCorporateController {
 
 		return res;
 	}
+
+	@RequestMapping(value = "/datapolis", produces = "application/json", method = RequestMethod.GET)
+	public String getPolis(@RequestBody RequestListPolis requestListPolis,
+						   HttpServletRequest request){
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+
+		HashMap<String, Object> data = new HashMap<>();
+		HashMap<String, Object> map = new HashMap<>();
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = null;
+		String username = requestListPolis.getUsername();
+		String key = requestListPolis.getKey();
+		String policy_number = requestListPolis.getPolicy_no();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				User dataPolisIndividu = services.selectDataPolisByPolisNo(policy_number, username);
+				if(dataPolisIndividu != null){
+					data.put("policy_number", dataPolisIndividu.getMspo_policy_no_format());
+					data.put("tipe_polis", dataPolisIndividu.getTipe_polis());
+					data.put("kurs_id", dataPolisIndividu.getKurs_id());
+					data.put("no_va", dataPolisIndividu.getNo_va());
+					data.put("premium_bill_va", dataPolisIndividu.getPremium_bill_va() != null && dataPolisIndividu.getPremium_bill_va() == 1);
+					data.put("premium_bill_transfer", dataPolisIndividu.getPremium_bill_transfer() != null && dataPolisIndividu.getPremium_bill_transfer() == 1);
+					data.put("premium_bill_online", dataPolisIndividu.getPremium_bill_online() != null && dataPolisIndividu.getPremium_bill_online() == 1);
+					data.put("premium_bill_bankas_transfer", dataPolisIndividu.getPremium_bill_bankas_transfer() != null && dataPolisIndividu.getPremium_bill_bankas_transfer() == 1);
+
+					error = false;
+					message = "Successfully get data list polis";
+				} else {
+					error = true;
+					message = "Can't get data list polis";
+					resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+					logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				error = true;
+				message = "Can't get data list polis";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+
+		}catch (Exception e){
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+
+		return res;
+	}
+
 }

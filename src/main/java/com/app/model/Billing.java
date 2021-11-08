@@ -1,5 +1,7 @@
 package com.app.model;
 
+import io.swagger.models.auth.In;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -9,6 +11,9 @@ public class Billing implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 326080385768703168L;
+
+	private String reg_spaj;
+	private String lku_id;
 	private String paid;
 	private String lku_symbol;
 	private BigDecimal total_premi;
@@ -17,6 +22,8 @@ public class Billing implements Serializable {
 	private Date tgl_bayar;
 	private Date periode;
 	private Integer count;
+
+	private Integer flag_jt_tempo;
 	
 	public Integer getCount() {
 		return count;
@@ -81,4 +88,29 @@ public class Billing implements Serializable {
 	public void setPeriode(Date periode) {
 		this.periode = periode;
 	}
+
+	public String getReg_spaj() {
+		return reg_spaj;
+	}
+
+	public void setReg_spaj(String reg_spaj) {
+		this.reg_spaj = reg_spaj;
+	}
+
+	public String getLku_id() {
+		return lku_id;
+	}
+
+	public void setLku_id(String lku_id) {
+		this.lku_id = lku_id;
+	}
+
+	public Integer getFlag_jt_tempo() {
+		return flag_jt_tempo;
+	}
+
+	public void setFlag_jt_tempo(Integer flag_jt_tempo) {
+		this.flag_jt_tempo = flag_jt_tempo;
+	}
+
 }

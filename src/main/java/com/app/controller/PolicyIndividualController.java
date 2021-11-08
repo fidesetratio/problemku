@@ -11,17 +11,13 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.app.utils.PageUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -897,28 +893,38 @@ public class PolicyIndividualController {
 		Integer pageSize = requestBilling.getPageSize();
 		String startDate = requestBilling.getStartDate();
 		String endDate = requestBilling.getEndDate();
+		String status = requestBilling.getStatus();
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();
 				pemegang.setMspo_policy_no(no_polis);
 				pemegang = services.selectPemegang(pemegang);
 				if (pemegang != null) {
-					ArrayList<Billing> lisBill = services.selectBilling(pemegang.getReg_spaj(), pageNumber, pageSize,
-							startDate, endDate);
-					ArrayList<Object> lisPay = new ArrayList<>();
+					List<Billing> lisBill = services.selectBilling(pemegang.getReg_spaj(), pageNumber, pageSize, startDate, endDate);
+					List<Object> lisPay = new ArrayList<>();
 					if (lisBill != null) {
+						lisBill = PageUtils.getPage(lisBill, Optional.of(pageNumber).orElse(1), Optional.of(pageSize).orElse(20));
+						lisBill = lisBill.stream().filter(v -> v.getPaid().equals(status)).collect(Collectors.toList());
 						ListIterator<Billing> liter = lisBill.listIterator();
+						BigDecimal totalAmountTagihan = lisBill.stream()
+								.filter(v -> v.getFlag_jt_tempo() == 0)
+								.filter(v -> v.getPaid().equals("OutS"))
+								.map(Billing::getTotal_premi).reduce(BigDecimal.ZERO, BigDecimal::add);
 						while (liter.hasNext()) {
 							try {
 								Billing m = liter.next();
 								HashMap<String, Object> pay = new HashMap<>();
 								pay.put("paid", m.getPaid() != null ? m.getPaid() : null);
+								pay.put("lku_id", m.getLku_id() != null ? m.getLku_id() : null);
 								pay.put("kurs", m.getLku_symbol() != null ? m.getLku_symbol() : null);
 								pay.put("payment", m.getTotal_premi() != null ? m.getTotal_premi() : null);
 								pay.put("premi_ke", m.getPremi_ke() != null ? m.getPremi_ke() : null);
 								pay.put("tahun_ke", m.getTh_ke() != null ? m.getTh_ke() : null);
 								pay.put("paid_date", m.getTgl_bayar() != null ? df1.format(m.getTgl_bayar()) : null);
 								pay.put("period_date", m.getPeriode() != null ? df1.format(m.getPeriode()) : null);
+								pay.put("lku_symbol", m.getLku_symbol() != null ? m.getLku_symbol() : null);
+								pay.put("flag_jt_tempo", m.getFlag_jt_tempo() != null && m.getFlag_jt_tempo() == 1);
 
 								if (m.getPaid().equals("Paid")) {
 									pay.put("status_billing_id", 1);
@@ -932,15 +938,10 @@ public class PolicyIndividualController {
 										+ e);
 							}
 						}
-						
-						Integer total_data = services.selectCountListBilling(pemegang.getReg_spaj(), startDate, endDate);
-						
-						//Integer total_data = countBilling.getCount();
-						
-						map.put("total_data", total_data);
 
 						data.put("billing", lisPay);
 						data.put("totalResults", lisBill.size());
+						data.put("total_premi_tagihan", totalAmountTagihan);
 						error = false;
 						message = "Successfully get data billing";
 					} else {

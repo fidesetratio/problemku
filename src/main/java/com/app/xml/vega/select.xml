@@ -1064,46 +1064,76 @@
 		where mspo_policy_no = replace(#{no_polis, jdbcType=VARCHAR}, '.', '')
 	</select>
 
+	<!-- 	<select id="selectBilling" parameterType="HashMap" resultType="com.app.model.Billing">
+            SELECT * FROM
+                (SELECT z.*, rownum r__
+                FROM
+                (select a.*, DECODE(a.msbi_paid, 1, 'Paid', 'OutS') paid,
+                b.lku_symbol from
+                (
+                    select a.reg_spaj,
+                    a.lku_id,
+                    a.msbi_tahun_ke th_ke,
+                    a.msbi_beg_date periode,
+                    a.msbi_paid,
+                    a.msbi_paid_date tgl_bayar,
+                    sum(b.msdb_premium - nvl(b.msdb_discount,0)) total_premi,
+                    row_number() over ( partition by a.reg_spaj order by a.msbi_tahun_ke, a.msbi_beg_date asc) premi_ke
+                    from
+                        eka.mst_billing a,
+                        eka.mst_det_billing b
+                    where a.reg_spaj = b.reg_spaj
+                        and a.msbi_tahun_ke = b.msbi_tahun_ke
+                        and a.msbi_premi_ke = b.msbi_premi_ke
+                        and a.reg_spaj = #{spaj, jdbcType=VARCHAR}
+                        and nvl(a.msbi_flag_topup, 0) <![CDATA[<]]> 3
+                        <if test="startDate != null">
+                            AND a.msbi_beg_date <![CDATA[ >= ]]> to_date(#{startDate}, 'YYYY-MM')
+                        </if>
+                        <if test="endDate != null">
+                            AND a.msbi_beg_date <![CDATA[ <= ]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+                        </if>
+                    group by a.reg_spaj, a.lku_id, a.msbi_tahun_ke, a.msbi_beg_date, a.msbi_paid, a.msbi_paid_date) a,
+                        eka.lst_kurs b
+                where a.lku_id = b.lku_id
+                    order by 4 desc
+            ) z
+            WHERE rownum <![CDATA[ < ]]>
+            ((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1
+            )
+            ) WHERE r__ <![CDATA[ >= ]]>
+            (((#{pageNumber, jdbcType=INTEGER}-1) * #{pageSize, jdbcType=INTEGER})
+            + 1)
+        </select>
+        -->
+
 	<select id="selectBilling" parameterType="HashMap" resultType="com.app.model.Billing">
-		SELECT * FROM
-			(SELECT z.*, rownum r__
-			FROM
-			(select a.*, DECODE(a.msbi_paid, 1, 'Paid', 'OutS') paid, 
-			b.lku_symbol from
-			(
-				select a.reg_spaj,
-				a.lku_id, 
-				a.msbi_tahun_ke th_ke, 
-				a.msbi_beg_date periode,
-				a.msbi_paid,
-				a.msbi_paid_date tgl_bayar, 
-				sum(b.msdb_premium - nvl(b.msdb_discount,0)) total_premi,
-				row_number() over ( partition by a.reg_spaj order by a.msbi_tahun_ke, a.msbi_beg_date asc) premi_ke
-				from
-					eka.mst_billing a, 
-					eka.mst_det_billing b
-				where a.reg_spaj = b.reg_spaj
-					and a.msbi_tahun_ke = b.msbi_tahun_ke
-					and a.msbi_premi_ke = b.msbi_premi_ke
-					and a.reg_spaj = #{spaj, jdbcType=VARCHAR}
-					and nvl(a.msbi_flag_topup, 0) <![CDATA[<]]> 3
-					<if test="startDate != null">
-						AND a.msbi_beg_date <![CDATA[ >= ]]> to_date(#{startDate}, 'YYYY-MM')
-					</if>
-					<if test="endDate != null">
-						AND a.msbi_beg_date <![CDATA[ <= ]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
-					</if>
-				group by a.reg_spaj, a.lku_id, a.msbi_tahun_ke, a.msbi_beg_date, a.msbi_paid, a.msbi_paid_date) a, 
-					eka.lst_kurs b
-			where a.lku_id = b.lku_id
-				order by 4 desc
-		) z
-		WHERE rownum <![CDATA[ < ]]>
-		((#{pageNumber, jdbcType=INTEGER} * #{pageSize, jdbcType=INTEGER}) + 1
-		)
-		) WHERE r__ <![CDATA[ >= ]]>
-		(((#{pageNumber, jdbcType=INTEGER}-1) * #{pageSize, jdbcType=INTEGER})
-		+ 1)
+		select a.reg_spaj,
+		a.lku_id,
+		a.msbi_beg_date periode,
+		DECODE(a.msbi_paid, 1, 'Paid', 'OutS') paid,
+		a.msbi_paid_date tgl_bayar,
+		c.lku_symbol,
+		case when a.msbi_beg_date  <![CDATA[ <= ]]> trunc(sysdate) then 1 else 0 end flag_jt_tempo,
+		sum(b.msdb_premium - nvl(b.msdb_discount,0)) total_premi
+		from
+		eka.mst_billing a,
+		eka.mst_det_billing b,
+		eka.lst_kurs c
+		where a.reg_spaj = b.reg_spaj
+
+		and a.msbi_tahun_ke = b.msbi_tahun_ke
+		and a.msbi_premi_ke = b.msbi_premi_ke
+		and a.lku_id = c.lku_id
+		and a.reg_spaj = #{spaj, jdbcType=VARCHAR}
+		<if test="startDate != null">
+			AND a.msbi_beg_date <![CDATA[ >= ]]> to_date(#{startDate}, 'YYYY-MM')
+		</if>
+		<if test="endDate != null">
+			AND a.msbi_beg_date <![CDATA[ <= ]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
+		</if>
+		group by a.reg_spaj, a.lku_id, a.msbi_beg_date, DECODE(a.msbi_paid, 1, 'Paid', 'OutS'), a.msbi_paid_date, c.lku_symbol
+		order by 3 desc
 	</select>
 
 	<select id="selectCheckUsername" parameterType="String" resultType="Integer">

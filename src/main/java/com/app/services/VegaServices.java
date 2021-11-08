@@ -580,7 +580,7 @@ public class VegaServices {
 		return dao.getKodeCabang(no_polis);
 	}
 
-	public ArrayList<Billing> selectBilling(String reg_spaj, Integer pageNumber, Integer pageSize, String startDate,
+	public List<Billing> selectBilling(String reg_spaj, Integer pageNumber, Integer pageSize, String startDate,
 			String endDate) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();

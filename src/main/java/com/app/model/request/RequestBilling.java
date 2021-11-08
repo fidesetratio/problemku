@@ -21,6 +21,8 @@ public class RequestBilling implements Serializable {
 	private String startDate;
 	private String endDate;
 
+	private String status;
+
 	public String getUsername() {
 		return username;
 	}
@@ -76,4 +78,13 @@ public class RequestBilling implements Serializable {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 }

@@ -553,5 +553,5 @@ public interface VegaMapper {
 
 	public void updateStatusAttemptOtp(MstOTPSimultaneous paramUpdate);
 
-	public String selectFindBankAsOrAgency(String policy_number);
+	public User selectDataPolisByPolisNo(HashMap<String, Object> hashMap);
 }

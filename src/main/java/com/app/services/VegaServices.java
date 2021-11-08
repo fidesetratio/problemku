@@ -1789,8 +1789,11 @@ public class VegaServices {
 		dao.updateStatusAttemptOtp(paramUpdate);
 	}
 
-	public String selectFindBankAsOrAgency(String policy_number){
+	public User selectDataPolisByPolisNo(String policy_number, String username){
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		return dao.selectFindBankAsOrAgency(policy_number);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("policy_number", policy_number);
+		hashMap.put("username", username);
+		return dao.selectDataPolisByPolisNo(hashMap);
 	}
 }

@@ -209,7 +209,6 @@ public class PolicyIndividualCorporateController {
 				ArrayList<HashMap<String, Object>> individu = new ArrayList<>();
 				Boolean is_individual = true;
 				Boolean is_corporate = true;
-				Boolean is_bank_as = false;
 				Boolean policy_corporate_notinforce = false;
 
 				LstUserSimultaneous selectTypeUser = services.selectDataLstUserSimultaneous(username);
@@ -231,10 +230,6 @@ public class PolicyIndividualCorporateController {
 								BigDecimal gproudId = dataTemp.getGprod_id() != null ? dataTemp.getGprod_id() : null;
 								BigDecimal isHealth = dataTemp.getIshealth() != null ? dataTemp.getIshealth() : null;
 								if (polis != null) {
-									String policy_type = services.selectFindBankAsOrAgency(polis);
-									if (policy_type != null && !policy_type.equals("")){
-										is_bank_as = policy_type.equals("BankAs");
-									}
 									if (isHealth.intValue() != 0) {
 										mapper.put("enable_claim_menu", true);
 									} else {
@@ -266,7 +261,6 @@ public class PolicyIndividualCorporateController {
 									
 									mapper.put("account_type", "individual");
 									mapper.put("reg_spaj", reg_spaj_register);
-									mapper.put("is_bank_as", is_bank_as);
 								}
 
 								individu.add(mapper);
@@ -3173,4 +3167,64 @@ public class PolicyIndividualCorporateController {
 
 		return res;
 	}
+
+	@RequestMapping(value = "/datapolis", produces = "application/json", method = RequestMethod.GET)
+	public String getPolis(@RequestBody RequestListPolis requestListPolis,
+						   HttpServletRequest request){
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+
+		HashMap<String, Object> data = new HashMap<>();
+		HashMap<String, Object> map = new HashMap<>();
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = null;
+		String username = requestListPolis.getUsername();
+		String key = requestListPolis.getKey();
+		String policy_number = requestListPolis.getPolicy_no();
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				User dataPolisIndividu = services.selectDataPolisByPolisNo(policy_number, username);
+				if(dataPolisIndividu != null){
+					data.put("policy_number", dataPolisIndividu.getMspo_policy_no_format());
+					data.put("tipe_polis", dataPolisIndividu.getTipe_polis());
+					data.put("kurs_id", dataPolisIndividu.getKurs_id());
+					data.put("no_va", dataPolisIndividu.getNo_va());
+					data.put("premium_bill_va", dataPolisIndividu.getPremium_bill_va() != null && dataPolisIndividu.getPremium_bill_va() == 1);
+					data.put("premium_bill_transfer", dataPolisIndividu.getPremium_bill_transfer() != null && dataPolisIndividu.getPremium_bill_transfer() == 1);
+					data.put("premium_bill_online", dataPolisIndividu.getPremium_bill_online() != null && dataPolisIndividu.getPremium_bill_online() == 1);
+					data.put("premium_bill_bankas_transfer", dataPolisIndividu.getPremium_bill_bankas_transfer() != null && dataPolisIndividu.getPremium_bill_bankas_transfer() == 1);
+
+					error = false;
+					message = "Successfully get data list polis";
+				} else {
+					error = true;
+					message = "Can't get data list polis";
+					resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+					logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				error = true;
+				message = "Can't get data list polis";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+
+		}catch (Exception e){
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+
+		return res;
+	}
+
 }

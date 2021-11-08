@@ -5953,15 +5953,142 @@ SELECT distinct (CASE
            	order by id_otp desc) 
         where rownum = 1
 	</select>
-	<select id="selectFindBankAsOrAgency" parameterType="String" resultType="String">
-		select CASE
-		WHEN lca_id IN (37,60,52)
-		then    'Agency'
-		WHEN lca_id IN (09)
+	<select id="selectDataPolisByPolisNo" parameterType="HashMap" resultType="com.app.model.User">
+		SELECT /*+ first_rows */
+		mspo_policy_no_format,
+		CASE
+		WHEN a.lca_id IN (37, 60, 52)
+		then 'Agency'
+		WHEN a.lca_id IN (09)
 		then 'BankAs'
 		else 'Others'
-		End as policy_type
-		from eka.mst_policy
-		where EKA.MST_POLICY.MSPO_POLICY_NO_FORMAT= #{policy_number, jdbcType=VARCHAR}
+		End        as                              tipe_polis,
+		ks.lku_id      as                              kurs_id,
+		i.mste_no_vacc as                              no_va,
+		case
+		when a.lca_id IN (37, 60, 52) and i.mste_no_vacc is not null and ks.lku_id in ('01', '02')
+		then 1
+		else 0
+		end        as                              premium_bill_va,
+		case
+		when a.lca_id IN (37, 60, 52) and ks.lku_id in ('02')
+		then 1
+		else 0
+		end        as                              premium_bill_transfer,
+		case
+		when a.lca_id IN (37, 60, 52)
+		then 1
+		else 0
+		end        as                              premium_bill_online,
+		case
+		when a.lca_id IN (09)
+		then 1
+		else 0
+		end        as                              premium_bill_bankas_transfer,
+		b.lsbs_id,
+		b.lsdbs_number,
+		j.lms_id,
+		(CASE NVL(a.mspo_flag_new, 0)
+		WHEN 1
+		THEN
+		DECODE(NVL(a.mspo_syahriah, 0),
+		1, d.lsdbs_view_syariah,
+		d.lsdbs_view)
+		ELSE
+		DECODE(NVL(a.mspo_syahriah, 0),
+		1, d.lsdbs_view_syariah0,
+		d.lsdbs_view0)
+		END)                                       nm_prod,
+		f.mcl_first                                    nm_pp,
+		g.mcl_first                                    nm_tt,
+		j.lms_status_id                                status,
+		CASE
+		WHEN c.lsgp_id IN (0, 1, 2, 3, 4)
+		THEN
+		c.lsgp_id
+		ELSE
+		0
+		END
+		AS                              gprod_id,
+
+		NVL(e.lsgp_ket, 'N/A')                         group_prod,
+
+
+		eka.pac_mpolis.check_group_prod(a.reg_spaj, 5) ishealth,
+
+		CASE
+
+		WHEN k.premium_holiday_flag = 1
+		THEN 'true'
+
+		ELSE 'false'
+		END
+		AS                              ENABLE_CUTI_PREMI
+
+		FROM eka.mst_policy a,
+
+		eka.mst_insured i,
+
+		eka.mst_product_insured b,
+
+		eka.lst_det_bisnis d,
+
+		eka.lst_bisnis c,
+
+		eka.lst_group_product e,
+
+		eka.mst_client f,
+
+
+		eka.mst_client g,
+
+		eka.lst_policy_status h,
+
+		eka.lst_master_status j,
+
+		eka.lst_product_setup k,
+
+		eka.lst_kurs ks
+
+		WHERE a.reg_spaj = i.reg_spaj
+
+		AND i.reg_spaj = b.reg_spaj
+
+		AND ks.lku_id = a.lku_id
+
+		AND i.mste_insured_no = b.mste_insured_no
+
+		AND b.lsbs_id = d.lsbs_id
+
+		AND b.lsbs_id = k.product_code(+)
+
+		AND b.lsdbs_number = d.lsdbs_number
+
+		AND d.lsdbs_number = k.plan(+)
+
+		AND d.lsbs_id = c.lsbs_id
+
+		AND c.lsgp_id = e.lsgp_id(+)
+
+		AND a.mspo_policy_holder = f.mcl_id
+
+		AND i.mste_insured = g.mcl_id
+
+		AND a.lssp_id = h.lssp_id
+
+		AND h.lms_id = j.lms_id
+
+		AND c.lsbs_id <![CDATA[<]]> 300
+
+		AND j.lms_id NOT IN (5, 6)
+		AND EXISTS
+		(SELECT 1
+		FROM eka.mst_simultaneous g, eka.lst_user_simultaneous h
+		WHERE     g.id_simultan = h.id_simultan
+		AND a.reg_spaj = g.reg_spaj
+		AND g.mssm_pemegang = 1
+		AND  a.mspo_policy_no_format = #{policy_number, jdbcType=VARCHAR}
+		AND h.username = #{username, jdbcType=VARCHAR})
+		ORDER BY j.lms_id, a.mspo_policy_no_format
 	</select>
 </mapper>

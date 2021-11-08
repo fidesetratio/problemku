@@ -188,7 +188,7 @@ public interface VegaMapper {
 
 	public String getKodeCabang(String no_polis);
 
-	public ArrayList<Billing> selectBilling(HashMap<String, Object> hashMap);
+	public List<Billing> selectBilling(HashMap<String, Object> hashMap);
 
 	public Integer selectCheckUsername(String username);
 

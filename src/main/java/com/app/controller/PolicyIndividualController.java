@@ -908,7 +908,7 @@ public class PolicyIndividualController {
 						lisBill = lisBill.stream().filter(v -> v.getPaid().equals(status)).collect(Collectors.toList());
 						ListIterator<Billing> liter = lisBill.listIterator();
 						BigDecimal totalAmountTagihan = lisBill.stream()
-								.filter(v -> v.getFlag_jt_tempo() == 0)
+								.filter(v -> v.getFlag_jt_tempo() != null && v.getFlag_jt_tempo() == 0)
 								.filter(v -> v.getPaid().equals("OutS"))
 								.map(Billing::getTotal_premi).reduce(BigDecimal.ZERO, BigDecimal::add);
 						while (liter.hasNext()) {

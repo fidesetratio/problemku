@@ -172,6 +172,13 @@
 	<select id="selectDetailedPolis" parameterType="String" resultType="com.app.model.User">
 		SELECT /*+ first_rows */
 		mspo_policy_no_format,
+		CASE
+		WHEN a.lca_id IN (37, 60, 52)
+		then 'Agency'
+		WHEN a.lca_id IN (09)
+		then 'BankAs'
+		else 'Others'
+		End        as                              tipe_polis,
 		 b.lsbs_id,
 		 b.lsdbs_number,
 		 j.lms_id,
@@ -1701,69 +1708,95 @@
 
 	<select id="selectRekeningForTopup" parameterType="String" resultType="Rekening">
 		SELECT a.reg_spaj,
-       C.LSDBS_NAME nama_prod,
-       f.lsbp_id,
-       (CASE
-           WHEN f.lsbp_id IN (161,
-                              156,
-                              251,
-                              231,
-                              162,
-                              312,
-                              250)
-           THEN
-              F.LSBP_NAMA
-           ELSE
-              'BANK SINARMAS'
-        END)
-          bank,
-       (CASE
-           WHEN    f.lsbp_id NOT IN (251,
-                                     231,
-                                     162,
-                                     312,
-                                     250)
-                OR I.GRUP_REPORT LIKE '%AGENCY%'
-           THEN
-              g.mste_no_vacc
-           ELSE
-              bank.norek
-        END)
-          rekening
-  		FROM eka.mst_policy a,
-       EKA.MST_PRODUCT_INSURED b,
-       EKA.LST_DET_BISNIS c,
-       EKA.LST_BISNIS d,
-       EKA.LST_JN_BANK e,
-       EKA.LST_BANK_PUSAT f,
-       EKA.MST_INSURED g,
-       (SELECT Z.LSBP_ID, X.LRE_ACC_NO norek
-          FROM EKA.LST_REK_EKALIFE x, EKA.LST_BANK y, EKA.LST_BANK_PUSAT z
-         WHERE     X.LBN_ID = Y.LBN_ID
-               AND Y.LSBP_ID = Z.LSBP_ID
-               AND z.lsbp_id || y.lbn_id || X.LSREK_ID IN (1614354424,
-                                                           156896264,
-                                                           251103420,
-                                                           2314217414,
-                                                           1624462440,
-                                                           3125621434,
-                                                           2503353432)) bank,
-       eka.lst_cabang h,
-       EKA.LST_JALUR_DIST i
- 		WHERE     a.reg_spaj = b.reg_spaj
-       AND b.lsbs_id <![CDATA[<]]> 300
-       AND a.lssp_id = 1
-       AND b.lsbs_id = c.lsbs_id
-       AND B.LSDBS_NUMBER = C.LSDBS_NUMBER
-       AND c.lsbs_id = d.lsbs_id
-       AND d.lsgb_id = 17
-       AND C.JN_BANK = E.JN_BANK(+)
-       AND E.LSBP_ID = F.LSBP_ID(+)
-       AND F.LSBP_ID = BANK.LSBP_ID(+)
-       AND a.reg_spaj = g.reg_spaj
-       AND A.LCA_ID = H.LCA_ID
-       AND H.JALURDIS = I.ID_DIST
-       AND a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
+		C.LSDBS_NAME nama_prod,
+		f.lsbp_id,
+		(CASE
+		WHEN f.lsbp_id IN (161,
+		156,
+		251,
+		231,
+		162,
+		312,
+		250)
+		THEN
+		F.LSBP_NAMA
+		ELSE
+		'BANK SINARMAS'
+		END)
+		bank,
+		(CASE
+		WHEN    f.lsbp_id NOT IN (251,
+		231,
+		162,
+		312,
+		250)
+		OR I.GRUP_REPORT LIKE '%AGENCY%'
+		THEN
+		g.mste_no_vacc
+		ELSE
+		bank.norek
+		END)
+		rekening,
+		ks.lku_symbol lku_symbol,
+		a.mspo_policy_no_format,
+		g.mste_no_vacc as no_va,
+		case
+		when a.lca_id IN (37, 60, 52) and g.mste_no_vacc is not null and ks.lku_id in ('01', '02')
+		then 1
+		else 0
+		end        as                              premium_bill_va,
+		case
+		when a.lca_id IN (37, 60, 52) and ks.lku_id in ('02')
+		then 1
+		else 0
+		end        as                              premium_bill_transfer,
+		case
+		when a.lca_id IN (37, 60, 52)
+		then 1
+		else 0
+		end        as                              premium_bill_online,
+		case
+		when a.lca_id IN (09)
+		then 1
+		else 0
+		end        as                              premium_bill_bankas_transfer
+		FROM eka.mst_policy a,
+		EKA.MST_PRODUCT_INSURED b,
+		EKA.LST_DET_BISNIS c,
+		EKA.LST_BISNIS d,
+		EKA.LST_JN_BANK e,
+		EKA.LST_BANK_PUSAT f,
+		EKA.MST_INSURED g,
+		EKA.lst_kurs ks,
+
+		(SELECT Z.LSBP_ID, X.LRE_ACC_NO norek
+		FROM EKA.LST_REK_EKALIFE x, EKA.LST_BANK y, EKA.LST_BANK_PUSAT z
+		WHERE     X.LBN_ID = Y.LBN_ID
+		AND Y.LSBP_ID = Z.LSBP_ID
+		AND z.lsbp_id || y.lbn_id || X.LSREK_ID IN (1614354424,
+		156896264,
+		251103420,
+		2314217414,
+		1624462440,
+		3125621434,
+		2503353432)) bank,
+		eka.lst_cabang h,
+		EKA.LST_JALUR_DIST i
+		WHERE     a.reg_spaj = b.reg_spaj
+		AND b.lsbs_id <![CDATA[<]]> 300
+		AND a.lssp_id = 1
+		AND b.lsbs_id = c.lsbs_id
+		AND B.LSDBS_NUMBER = C.LSDBS_NUMBER
+		AND c.lsbs_id = d.lsbs_id
+		AND d.lsgb_id = 17
+		AND C.JN_BANK = E.JN_BANK(+)
+		AND E.LSBP_ID = F.LSBP_ID(+)
+		AND F.LSBP_ID = BANK.LSBP_ID(+)
+		AND a.reg_spaj = g.reg_spaj
+		AND A.LCA_ID = H.LCA_ID
+		AND H.JALURDIS = I.ID_DIST
+		AND ks.lku_id = a.lku_id
+		AND a.reg_spaj = #{reg_spaj, jdbcType=VARCHAR}
 	</select>
 
 	<select id="selectGetMptId" resultType="BigInteger">

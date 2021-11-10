@@ -133,11 +133,7 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 		paramSelectDecryptPassword.setKey(key);
 		User keyDecrypt = services.decryptPassword(paramSelectDecryptPassword);
 
-		if (username.equals(keyDecrypt.getKey())) {
-			return true;
-		} else {
-			return false;
-		}
+		return username.equals(keyDecrypt.getKey());
 	}
 
 	// show list all files in directory

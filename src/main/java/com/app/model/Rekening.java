@@ -1,5 +1,7 @@
 package com.app.model;
 
+import io.swagger.models.auth.In;
+
 import java.io.Serializable;
 
 public class Rekening implements Serializable {
@@ -22,6 +24,14 @@ public class Rekening implements Serializable {
 	// Corporate
 	private String msbc_bank;
 	private String msbc_acc_no;
+
+	private String no_va;
+	private String lku_symbol;
+	private String mspo_policy_no_format;
+	private Integer premium_bill_va;
+	private Integer premium_bill_transfer;
+	private Integer premium_bill_online;
+	private Integer premium_bill_bankas_transfer;
 
 	public String getSpaj() {
 		return spaj;
@@ -102,4 +112,61 @@ public class Rekening implements Serializable {
 	public void setMsbc_acc_no(String msbc_acc_no) {
 		this.msbc_acc_no = msbc_acc_no;
 	}
+
+	public String getNo_va() {
+		return no_va;
+	}
+
+	public void setNo_va(String no_va) {
+		this.no_va = no_va;
+	}
+
+	public String getLku_symbol() {
+		return lku_symbol;
+	}
+
+	public void setLku_symbol(String lku_symbol) {
+		this.lku_symbol = lku_symbol;
+	}
+
+	public String getMspo_policy_no_format() {
+		return mspo_policy_no_format;
+	}
+
+	public void setMspo_policy_no_format(String mspo_policy_no_format) {
+		this.mspo_policy_no_format = mspo_policy_no_format;
+	}
+
+	public Integer getPremium_bill_va() {
+		return premium_bill_va;
+	}
+
+	public void setPremium_bill_va(Integer premium_bill_va) {
+		this.premium_bill_va = premium_bill_va;
+	}
+
+	public Integer getPremium_bill_transfer() {
+		return premium_bill_transfer;
+	}
+
+	public void setPremium_bill_transfer(Integer premium_bill_transfer) {
+		this.premium_bill_transfer = premium_bill_transfer;
+	}
+
+	public Integer getPremium_bill_online() {
+		return premium_bill_online;
+	}
+
+	public void setPremium_bill_online(Integer premium_bill_online) {
+		this.premium_bill_online = premium_bill_online;
+	}
+
+	public Integer getPremium_bill_bankas_transfer() {
+		return premium_bill_bankas_transfer;
+	}
+
+	public void setPremium_bill_bankas_transfer(Integer premium_bill_bankas_transfer) {
+		this.premium_bill_bankas_transfer = premium_bill_bankas_transfer;
+	}
+
 }

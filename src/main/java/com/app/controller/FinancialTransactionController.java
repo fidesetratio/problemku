@@ -339,7 +339,12 @@ public class FinancialTransactionController {
 					if (dataRekening != null) {
 						data.put("bank", dataRekening.getBank());
 						data.put("rekening", dataRekening.getRekening());
-
+						data.put("policy_number", dataRekening.getMspo_policy_no_format());
+						data.put("no_va", dataRekening.getNo_va());
+						data.put("premium_bill_va", dataRekening.getPremium_bill_va() != null && dataRekening.getPremium_bill_va() == 1);
+						data.put("premium_bill_transfer", dataRekening.getPremium_bill_transfer() != null && dataRekening.getPremium_bill_transfer() == 1);
+						data.put("premium_bill_online", dataRekening.getPremium_bill_online() != null && dataRekening.getPremium_bill_online() == 1);
+						data.put("premium_bill_bankas_transfer", dataRekening.getPremium_bill_bankas_transfer() != null && dataRekening.getPremium_bill_bankas_transfer() == 1);
 						if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas")) {
 							data.put("transfer_type ", 0);
 						} else {

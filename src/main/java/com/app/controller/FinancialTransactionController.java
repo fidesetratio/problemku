@@ -345,6 +345,7 @@ public class FinancialTransactionController {
 						data.put("premium_bill_transfer", dataRekening.getPremium_bill_transfer() != null && dataRekening.getPremium_bill_transfer() == 1);
 						data.put("premium_bill_online", dataRekening.getPremium_bill_online() != null && dataRekening.getPremium_bill_online() == 1);
 						data.put("premium_bill_bankas_transfer", dataRekening.getPremium_bill_bankas_transfer() != null && dataRekening.getPremium_bill_bankas_transfer() == 1);
+						data.put("lku_symbol", dataRekening.getLku_symbol());
 						if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas")) {
 							data.put("transfer_type ", 0);
 						} else {

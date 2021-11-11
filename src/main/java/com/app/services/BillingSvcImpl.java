@@ -152,7 +152,7 @@ public class BillingSvcImpl implements BillingSvc {
                 if (billing.getFlag_jt_tempo() != null && billing.getFlag_jt_tempo() == 1) {
                     status = Billing.BILLING_STATUS_OUTSTANDING;
                 } else {
-                    status = billing.getPaid();
+                    status = Billing.BILLING_STATUS_ACTIVE_BILLING;
                 }
                 break;
             default:

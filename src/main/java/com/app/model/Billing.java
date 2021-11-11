@@ -14,6 +14,7 @@ public class Billing implements Serializable {
 
 	public static final String BILLING_STATUS_PAID = "Paid";
 	public static final String BILLING_STATUS_OUTSTANDING = "OutS";
+	public static final String BILLING_STATUS_ACTIVE_BILLING = "Active";
 
 	private String reg_spaj;
 	private String lku_id;

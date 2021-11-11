@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -27,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.app.services.TransactionSubscriptionSvc;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -110,9 +110,6 @@ import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.pdf.PdfWriter;
 
 @RestController
 public class FinancialTransactionController {
@@ -176,9 +173,10 @@ public class FinancialTransactionController {
 
 	@Autowired
 	private VegaServices services;
-
 	@Autowired
 	private VegaCustomResourceLoader customResourceLoader;
+	@Autowired
+	private TransactionSubscriptionSvc transactionSubscriptionSvc;
 
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1090,192 +1088,8 @@ public class FinancialTransactionController {
 
 	@SuppressWarnings("resource")
 	@RequestMapping(value = "/submitdatatransaction", produces = "application/json", method = RequestMethod.POST)
-	public String uploadProofOfTransaction(@RequestBody RequestTopup requestTopup, HttpServletRequest request)
-			throws Exception {
-		Date start = new Date();
-		GsonBuilder builder = new GsonBuilder();
-		builder.serializeNulls();
-		Gson gson = new Gson();
-		gson = builder.create();
-		String req = gson.toJson(requestTopup);
-		String res = null;
-		String message = null;
-		String resultErr = null;
-		Boolean error = false;
-		HashMap<String, Object> map = new HashMap<>();
-
-		String username = requestTopup.getUsername();
-		String key = requestTopup.getKey();
-		String no_polis = requestTopup.getNo_polis();
-		Integer language_id = requestTopup.getLanguage_id();
-		try {
-			if (customResourceLoader.validateCredential(username, key)) {
-				// Get MPT_ID
-				BigInteger mptId = services.selectGetMptId();
-
-				// Get SPAJ
-				Pemegang paramSelectSPAJ = new Pemegang();
-				paramSelectSPAJ.setMspo_policy_no(no_polis);
-				Pemegang dataSPAJ = services.selectGetSPAJ(paramSelectSPAJ);
-
-				String kodeCabang = services.getKodeCabang(no_polis);
-
-				// Check jumlah fund yang dimasukkan (jumlah fund harus 100)
-				List<Float> sumPercentageFund = new ArrayList<>();
-				JSONArray fundsCheck = new JSONArray(requestTopup.getFunds());
-				float sum = 0;
-				for (int i = 0; i < fundsCheck.length(); i++) {
-					try {
-						Float percentage = fundsCheck.getJSONObject(i).getFloat("percentage");
-						sumPercentageFund.add(percentage);
-						sum += sumPercentageFund.get(i);
-					} catch (Exception e) {
-						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
-					}
-				}
-
-				Integer sumInt = (int) sum;
-				if (sumInt.equals(100)) {
-					String mataUang = null;
-					if (requestTopup.getLku_id().equals("01")) {
-						mataUang = "IDR";
-					} else if (requestTopup.getLku_id().equals("02")) {
-						mataUang = "USD";
-					}
-
-					String payMethod = null;
-					if (requestTopup.getTransfer_type().equals(0)) {
-						payMethod = "VA";
-					} else if (requestTopup.getTransfer_type().equals(1)) {
-						payMethod = "Transfer";
-					}
-
-					// Insert MPOL_TRANS
-					Topup paramInsert1 = new Topup();
-					paramInsert1.setMpt_id(mptId.toString());
-					paramInsert1.setDate_created_java1(customResourceLoader.getDatetimeJava1());
-					paramInsert1.setReg_spaj(dataSPAJ.getReg_spaj());
-					paramInsert1.setLt_id(requestTopup.getLt_id());
-					paramInsert1.setLku_id(requestTopup.getLku_id());
-					paramInsert1.setMpt_jumlah(requestTopup.getMpt_jumlah());
-					paramInsert1.setDate_created_java2(customResourceLoader.getDatetimeJava());
-					paramInsert1.setMpt_unit(null);
-					paramInsert1.setLus_id(null);
-					paramInsert1.setPayor_name(requestTopup.getPayor_name());
-					paramInsert1.setPayor_occupation(requestTopup.getPayor_occupation());
-					paramInsert1.setPayor_income(requestTopup.getPayor_income());
-					paramInsert1.setPayor_source_income(requestTopup.getPayor_source_income());
-					paramInsert1.setPath_bsb(storageMpolicy + File.separator + kodeCabang + File.separator + dataSPAJ.getReg_spaj() + File.separator
-							+ "Bukti_Transaksi" + File.separator + mptId + ".pdf");
-					paramInsert1.setUnique_code(requestTopup.getUnique_code());
-					services.insertMstMpolTrans(paramInsert1);
-
-					// Insert MPOL_TRANS_DET
-					JSONArray funds = new JSONArray(requestTopup.getFunds());
-					for (int i = 0; i < funds.length(); i++) {
-						try {
-							String lji_id = funds.getJSONObject(i).getString("lji_id");
-							Float percentage = funds.getJSONObject(i).getFloat("percentage");
-
-							Float percenVal = percentage / 100;
-							BigDecimal newPercelVal = new BigDecimal(percenVal).add(BigDecimal.ZERO);
-							BigDecimal mpt_jumlah = requestTopup.getMpt_jumlah().multiply(newPercelVal);
-
-							Topup paramInsert2 = new Topup();
-							paramInsert2.setMpt_id(mptId.toString());
-							paramInsert2.setLji_id(lji_id);
-							paramInsert2.setMpt_persen(percentage);
-							paramInsert2.setMpt_jumlah_det(mpt_jumlah);
-							paramInsert2.setMpt_unit(null);
-							services.insertMstMpolTransDet(paramInsert2);
-						} catch (Exception e) {
-							logger.error(
-									"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
-						}
-					}
-
-					// Upload Proof Transaction
-					String basePath = storageMpolicy;
-					File folder = new File(
-							basePath + File.separator + kodeCabang + File.separator + dataSPAJ.getReg_spaj() + File.separator + "Bukti_Transaksi");
-					if (!folder.exists()) {
-						folder.mkdirs();
-					}
-
-					byte[] imageByte = Base64.getDecoder().decode(requestTopup.getBsb());
-					String directory = folder + File.separator + mptId.toString() + ".pdf";
-					new FileOutputStream(directory).write(imageByte);
-
-					try {
-						Document document = new Document();
-
-						PdfWriter.getInstance(document, new FileOutputStream(directory));
-						document.open();
-						byte[] decoded = Base64.getDecoder().decode(requestTopup.getBsb().getBytes());
-						Image image1 = Image.getInstance(decoded);
-
-						int indentation = 0;
-						float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
-								- document.rightMargin() - indentation) / image1.getWidth()) * 100;
-
-						image1.scalePercent(scaler);
-						document.add(image1);
-						document.close();
-					} catch (Exception e) {
-						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
-					}
-
-					// Push Notification
-					String messagePushNotif = null;
-
-					if (language_id.equals(1)) {
-						messagePushNotif = "Nasabah Yth, Bukti Pembayaran Premi Top Up Single sebesar " + mataUang + " "
-								+ nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " melalui " + payMethod
-								+ " telah diterima";
-					} else {
-						messagePushNotif = "Dear Customer, Single Top Up Premium Payment Slip of " + mataUang + " "
-								+ nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " via " + payMethod
-								+ " has been received";
-					}
-
-					customResourceLoader.pushNotif(username, messagePushNotif, no_polis, dataSPAJ.getReg_spaj(), 5, 0);
-
-					error = false;
-					message = "Top up submitted successfully";
-				} else {
-					// Handle total fund tidak 100%
-					error = true;
-					message = "Top up submitted failed";
-					resultErr = "Total fund tidak 100%, tetapi yang diinput user adalah: " + sumInt;
-					logger.error(
-							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
-				}
-			} else {
-				// Handle username & key tidak cocok
-				error = true;
-				message = "Top up submitted failed";
-				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
-				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
-			}
-		} catch (Exception e) {
-			// Push Notification Telegram
-			customResourceLoader.pushTelegram("@mfajarsep_bot",
-					"Path: " + request.getServletPath() + " username: " + username + "," + " Error: " + e);
-
-			error = true;
-			message = ResponseMessage.ERROR_SYSTEM;
-			resultErr = "bad exception " + e;
-			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
-		}
-		map.put("error", error);
-		map.put("message", message);
-		res = gson.toJson(map);
-		// Update activity user table LST_USER_SIMULTANEOUS
-		customResourceLoader.updateActivity(username);
-		// Insert Log LST_HIST_ACTIVITY_WS
-		customResourceLoader.insertHistActivityWS(12, 37, new Date(), req, res, 1, resultErr, start, username);
-
-		return res;
+	public String uploadProofOfTransaction(@RequestBody RequestTopup requestTopup, HttpServletRequest request) {
+		return transactionSubscriptionSvc.submitDataTransaction(requestTopup, request);
 	}
 
 	@RequestMapping(value = "/downloadprooftransaction", produces = "application/json", method = RequestMethod.POST)

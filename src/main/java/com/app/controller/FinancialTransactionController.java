@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.app.services.TransactionSubscriptionSvc;
+import com.app.services.TransactionProcessSvc;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -177,6 +178,8 @@ public class FinancialTransactionController {
 	private VegaCustomResourceLoader customResourceLoader;
 	@Autowired
 	private TransactionSubscriptionSvc transactionSubscriptionSvc;
+	@Autowired
+	private TransactionProcessSvc transactionProcessSvc;
 
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");

@@ -11,6 +11,12 @@ public class Billing implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 326080385768703168L;
+	public static final String BILLING_PAID = "Paid";
+	public static final String BILLING_OUTSTANDING = "OutS";
+
+	public static final String BILLING_STATUS_PAID = "Paid";
+	public static final String BILLING_STATUS_OUTSTANDING = "OutS";
+	public static final String BILLING_STATUS_ACTIVE_BILLING = "Active";
 
 	private String reg_spaj;
 	private String lku_id;

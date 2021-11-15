@@ -53,6 +53,7 @@ public class Topup implements Serializable {
 	private BigDecimal mtu_jumlah;
 	private Float mdu_persen;
 	private String topup_payor;
+	private Integer lsjb_id;
 
 	public String getTopup_payor() {
 		return topup_payor;
@@ -388,5 +389,13 @@ public class Topup implements Serializable {
 
 	public void setMdu_persen(Float mdu_persen) {
 		this.mdu_persen = mdu_persen;
+	}
+
+	public Integer getLsjb_id() {
+		return lsjb_id;
+	}
+
+	public void setLsjb_id(Integer lsjb_id) {
+		this.lsjb_id = lsjb_id;
 	}
 }

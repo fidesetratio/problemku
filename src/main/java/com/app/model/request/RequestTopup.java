@@ -27,7 +27,7 @@ public class RequestTopup implements Serializable {
 	private List funds;
 	private String bsb;
 	private Integer unique_code;
-	private Integer transfer_type;
+	private String transfer_type;
 	private Integer language_id = 1;
 
 	public String getKey() {
@@ -94,7 +94,7 @@ public class RequestTopup implements Serializable {
 		return unique_code;
 	}
 
-	public Integer getTransfer_type() {
+	public String getTransfer_type() {
 		return transfer_type;
 	}
 
@@ -166,7 +166,7 @@ public class RequestTopup implements Serializable {
 		this.unique_code = unique_code;
 	}
 
-	public void setTransfer_type(Integer transfer_type) {
+	public void setTransfer_type(String transfer_type) {
 		this.transfer_type = transfer_type;
 	}
 

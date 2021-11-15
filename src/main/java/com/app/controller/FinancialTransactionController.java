@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,10 +28,13 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.app.model.*;
 import org.apache.commons.io.FileUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -39,29 +43,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.model.ClaimCorporate;
-import com.app.model.ClaimLimit;
-import com.app.model.ClaimSubmission;
-import com.app.model.ClaimSubmissionCorporate;
-import com.app.model.CostFinancialTransaction;
-import com.app.model.DetailClaimCorporate;
-import com.app.model.DetailRedirection;
-import com.app.model.DetailSwitching;
-import com.app.model.DetailWithdraw;
-import com.app.model.DropdownPolicyAlteration;
-import com.app.model.Endorse;
-import com.app.model.Fund;
-import com.app.model.Pemegang;
-import com.app.model.ProductUtama;
-import com.app.model.Rekening;
-import com.app.model.SwitchingRedirection;
-import com.app.model.Topup;
-import com.app.model.TransactionHistory;
-import com.app.model.UnitLink;
-import com.app.model.User;
-import com.app.model.UserCorporate;
-import com.app.model.ViewMclFirst;
-import com.app.model.Withdraw;
 import com.app.model.request.RequestCheckPhoneNumberNasabah;
 import com.app.model.request.RequestCheckRekeningNasabah;
 import com.app.model.request.RequestCheckStatusTransaction;
@@ -346,11 +327,6 @@ public class FinancialTransactionController {
 						data.put("premium_bill_online", dataRekening.getPremium_bill_online() != null && dataRekening.getPremium_bill_online() == 1);
 						data.put("premium_bill_bankas_transfer", dataRekening.getPremium_bill_bankas_transfer() != null && dataRekening.getPremium_bill_bankas_transfer() == 1);
 						data.put("lku_symbol", dataRekening.getLku_symbol());
-						if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas")) {
-							data.put("transfer_type ", 0);
-						} else {
-							data.put("transfer_type", 1);
-						}
 
 						if (language_id == 1) {
 							Integer checkPercentage = services.selectPersentaseBiayaTopup(dataSpaj.getReg_spaj());
@@ -377,82 +353,84 @@ public class FinancialTransactionController {
 						String folder_name = pathLogoBankMpolicy;
 						File folder = new File(folder_name);
 						File files[] = folder.listFiles();
-						for (File f : files) {
-							if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas")) {
-								if (f.getName().equalsIgnoreCase("sinarmas.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
+						if (files != null) {
+							for (File f : files) {
+								if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas")) {
+									if (f.getName().equalsIgnoreCase("sinarmas.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas syariah")) {
+									if (f.getName().equalsIgnoreCase("sinarmassyariah.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank bukopin")) {
+									if (f.getName().equalsIgnoreCase("bukopin.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank bukopin syariah")) {
+									if (f.getName().equalsIgnoreCase("bukopinsyariah.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank jatim")) {
+									if (f.getName().equalsIgnoreCase("jatim.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank btn syariah")) {
+									if (f.getName().equalsIgnoreCase("jatimsyariah.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank bjb")) {
+									if (f.getName().equalsIgnoreCase("bjb.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank jatim syariah")) {
+									if (f.getName().equalsIgnoreCase("jatimsyariah.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else {
+									data.put("image", "");
+									data.put("wording", "");
 								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas syariah")) {
-								if (f.getName().equalsIgnoreCase("sinarmassyariah.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank bukopin")) {
-								if (f.getName().equalsIgnoreCase("bukopin.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank bukopin syariah")) {
-								if (f.getName().equalsIgnoreCase("bukopinsyariah.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank jatim")) {
-								if (f.getName().equalsIgnoreCase("jatim.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank btn syariah")) {
-								if (f.getName().equalsIgnoreCase("jatimsyariah.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank bjb")) {
-								if (f.getName().equalsIgnoreCase("bjb.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank jatim syariah")) {
-								if (f.getName().equalsIgnoreCase("jatimsyariah.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else {
-								data.put("image", "");
-								data.put("wording", "");
 							}
 						}
 
@@ -1145,10 +1123,13 @@ public class FinancialTransactionController {
 					}
 
 					String payMethod = null;
-					if (requestTopup.getTransfer_type().equals(0)) {
+					Integer lsjb_id = null;
+					if (requestTopup.getTransfer_type().equals("Bank Transfer")) {
+						payMethod = "Bank Transfer";
+						lsjb_id = 5;
+					} else if (requestTopup.getTransfer_type().equals("VA")) {
 						payMethod = "VA";
-					} else if (requestTopup.getTransfer_type().equals(1)) {
-						payMethod = "Transfer";
+						lsjb_id = 32;
 					}
 
 					// Insert MPOL_TRANS
@@ -1169,6 +1150,7 @@ public class FinancialTransactionController {
 					paramInsert1.setPath_bsb(storageMpolicy + File.separator + kodeCabang + File.separator + dataSPAJ.getReg_spaj() + File.separator
 							+ "Bukti_Transaksi" + File.separator + mptId + ".pdf");
 					paramInsert1.setUnique_code(requestTopup.getUnique_code());
+					paramInsert1.setLsjb_id(lsjb_id);
 					services.insertMstMpolTrans(paramInsert1);
 
 					// Insert MPOL_TRANS_DET
@@ -7856,4 +7838,5 @@ public class FinancialTransactionController {
 
 		return res;
 	}
+
 }

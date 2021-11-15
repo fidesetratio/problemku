@@ -1,33 +1,14 @@
 package com.app.controller;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.app.services.TransactionSubscriptionSvc;
+import com.app.model.*;
+import com.app.model.request.*;
 import com.app.services.TransactionProcessSvc;
+import com.app.services.TransactionSubscriptionSvc;
+import com.app.services.VegaServices;
+import com.app.utils.ResponseMessage;
+import com.app.utils.VegaCustomResourceLoader;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,77 +21,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.model.ClaimCorporate;
-import com.app.model.ClaimLimit;
-import com.app.model.ClaimSubmission;
-import com.app.model.ClaimSubmissionCorporate;
-import com.app.model.CostFinancialTransaction;
-import com.app.model.DetailClaimCorporate;
-import com.app.model.DetailRedirection;
-import com.app.model.DetailSwitching;
-import com.app.model.DetailWithdraw;
-import com.app.model.DropdownPolicyAlteration;
-import com.app.model.Endorse;
-import com.app.model.Fund;
-import com.app.model.Pemegang;
-import com.app.model.ProductUtama;
-import com.app.model.Rekening;
-import com.app.model.SwitchingRedirection;
-import com.app.model.Topup;
-import com.app.model.TransactionHistory;
-import com.app.model.UnitLink;
-import com.app.model.User;
-import com.app.model.UserCorporate;
-import com.app.model.ViewMclFirst;
-import com.app.model.Withdraw;
-import com.app.model.request.RequestCheckPhoneNumberNasabah;
-import com.app.model.request.RequestCheckRekeningNasabah;
-import com.app.model.request.RequestCheckStatusTransaction;
-import com.app.model.request.RequestClaimLimit;
-import com.app.model.request.RequestClaimSubmission;
-import com.app.model.request.RequestClaimSubmissionCorporate;
-import com.app.model.request.RequestCostWithdraw;
-import com.app.model.request.RequestDetailClaimCorporate;
-import com.app.model.request.RequestDocumentClaimSubmissionCorporate;
-import com.app.model.request.RequestDownloadFileClaimSubmission;
-import com.app.model.request.RequestDownloadProofTransaction;
-import com.app.model.request.RequestDownloadTransactionHistory;
-import com.app.model.request.RequestDropdownClaimsubmission;
-import com.app.model.request.RequestDropdownPolicyAlteration;
-import com.app.model.request.RequestFurtherClaimSubmission;
-import com.app.model.request.RequestGetInfoTopup;
-import com.app.model.request.RequestGetTopupList;
-import com.app.model.request.RequestListClaimCorporate;
-import com.app.model.request.RequestListClaimSubmission;
-import com.app.model.request.RequestListClaimSubmissionCorporate;
-import com.app.model.request.RequestListSwitching;
-import com.app.model.request.RequestListSwitchingRedirection;
-import com.app.model.request.RequestListWithdraw;
-import com.app.model.request.RequestRekening;
-import com.app.model.request.RequestSubmitClaimSubmission;
-import com.app.model.request.RequestSubmitClaimSubmissionCorporate;
-import com.app.model.request.RequestSubmitSwitching;
-import com.app.model.request.RequestSubmitSwitchingRedirection;
-import com.app.model.request.RequestSubmitWithdraw;
-import com.app.model.request.RequestSwitchingRedirection;
-import com.app.model.request.RequestTopup;
-import com.app.model.request.RequestTransactionHistory;
-import com.app.model.request.RequestUploadDeleteFileClaimSub;
-import com.app.model.request.RequestUploadDeleteFileClaimSubCorp;
-import com.app.model.request.RequestViewClaimSubmission;
-import com.app.model.request.RequestViewClaimSubmissionCorporate;
-import com.app.model.request.RequestViewMclFirst;
-import com.app.model.request.RequestViewPolicyAlteration;
-import com.app.model.request.RequestViewSwitching;
-import com.app.model.request.RequestViewSwitchingRedirection;
-import com.app.model.request.RequestViewUserInputTopup;
-import com.app.model.request.RequestViewWithdraw;
-import com.app.model.request.RequestWithdraw;
-import com.app.services.VegaServices;
-import com.app.utils.ResponseMessage;
-import com.app.utils.VegaCustomResourceLoader;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class FinancialTransactionController {
@@ -346,11 +270,7 @@ public class FinancialTransactionController {
 						data.put("premium_bill_transfer", dataRekening.getPremium_bill_transfer() != null && dataRekening.getPremium_bill_transfer() == 1);
 						data.put("premium_bill_online", dataRekening.getPremium_bill_online() != null && dataRekening.getPremium_bill_online() == 1);
 						data.put("premium_bill_bankas_transfer", dataRekening.getPremium_bill_bankas_transfer() != null && dataRekening.getPremium_bill_bankas_transfer() == 1);
-						if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas")) {
-							data.put("transfer_type ", 0);
-						} else {
-							data.put("transfer_type", 1);
-						}
+						data.put("lku_symbol", dataRekening.getLku_symbol());
 
 						if (language_id == 1) {
 							Integer checkPercentage = services.selectPersentaseBiayaTopup(dataSpaj.getReg_spaj());
@@ -377,82 +297,84 @@ public class FinancialTransactionController {
 						String folder_name = pathLogoBankMpolicy;
 						File folder = new File(folder_name);
 						File files[] = folder.listFiles();
-						for (File f : files) {
-							if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas")) {
-								if (f.getName().equalsIgnoreCase("sinarmas.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
+						if (files != null) {
+							for (File f : files) {
+								if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas")) {
+									if (f.getName().equalsIgnoreCase("sinarmas.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas syariah")) {
+									if (f.getName().equalsIgnoreCase("sinarmassyariah.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank bukopin")) {
+									if (f.getName().equalsIgnoreCase("bukopin.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank bukopin syariah")) {
+									if (f.getName().equalsIgnoreCase("bukopinsyariah.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank jatim")) {
+									if (f.getName().equalsIgnoreCase("jatim.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank btn syariah")) {
+									if (f.getName().equalsIgnoreCase("jatimsyariah.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank bjb")) {
+									if (f.getName().equalsIgnoreCase("bjb.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else if (dataRekening.getBank().equalsIgnoreCase("bank jatim syariah")) {
+									if (f.getName().equalsIgnoreCase("jatimsyariah.png")) {
+										String dir3 = folder + File.separator + f.getName();
+										byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
+										String strImg = Base64.getEncoder().encodeToString(fileContent);
+										data.put("image", strImg);
+										data.put("wording", customResourceLoader.getStepTransaction(language_id,
+												dataRekening.getBank()));
+									}
+								} else {
+									data.put("image", "");
+									data.put("wording", "");
 								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank sinarmas syariah")) {
-								if (f.getName().equalsIgnoreCase("sinarmassyariah.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank bukopin")) {
-								if (f.getName().equalsIgnoreCase("bukopin.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank bukopin syariah")) {
-								if (f.getName().equalsIgnoreCase("bukopinsyariah.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank jatim")) {
-								if (f.getName().equalsIgnoreCase("jatim.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank btn syariah")) {
-								if (f.getName().equalsIgnoreCase("jatimsyariah.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank bjb")) {
-								if (f.getName().equalsIgnoreCase("bjb.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else if (dataRekening.getBank().equalsIgnoreCase("bank jatim syariah")) {
-								if (f.getName().equalsIgnoreCase("jatimsyariah.png")) {
-									String dir3 = folder + File.separator + f.getName();
-									byte[] fileContent = FileUtils.readFileToByteArray(new File(dir3));
-									String strImg = Base64.getEncoder().encodeToString(fileContent);
-									data.put("image", strImg);
-									data.put("wording", customResourceLoader.getStepTransaction(language_id,
-											dataRekening.getBank()));
-								}
-							} else {
-								data.put("image", "");
-								data.put("wording", "");
 							}
 						}
 
@@ -7672,4 +7594,5 @@ public class FinancialTransactionController {
 
 		return res;
 	}
+
 }

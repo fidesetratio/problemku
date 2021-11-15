@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfWriter;
+import io.swagger.models.auth.In;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
@@ -53,6 +54,8 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         String req = gson.toJson(requestTopup);
         String res = null;
         String message = null;
+        String mpt_id = null;
+        HashMap<String, Object> data = new HashMap<>();
         String resultErr = null;
         Boolean error = false;
         HashMap<String, Object> map = new HashMap<>();
@@ -105,19 +108,16 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                                 mataUang = "USD";
                             }
 
-                            String payMethod = null;
-                            if (requestTopup.getTransfer_type().equals(0)) {
-                                payMethod = "VA";
-                            } else if (requestTopup.getTransfer_type().equals(1)) {
-                                payMethod = "Transfer";
-                            }
+                            String payMethod = (String) getMapPaymentType(requestTopup).get("payment_type");
+                            Integer lsjb_id = (Integer) getMapPaymentType(requestTopup).get("lsjb_id");
+
                             String nameFile = String.format("%s_%s_%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Top Up Tunggal", mptId, ".pdf");
                             String path = String.format("%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Top Up Tunggal");
 
                             createNewFile(path, requestTopup, mptId, request, username);
 
                             // Insert MPOL_TRANS
-                            Topup topup = getData(mptId, dataSPAJ, requestTopup, nameFile);
+                            Topup topup = getData(mptId, dataSPAJ, requestTopup, nameFile, lsjb_id);
                             services.insertMstMpolTrans(topup);
 
                             // Insert MPOL_TRANS_DET
@@ -161,6 +161,7 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
 
                             error = false;
                             message = "Top up submitted successfully";
+                            data.put("mpt_id", mptId.toString());
                         }
 
                     } else {
@@ -180,19 +181,16 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                         mataUang = "USD";
                     }
 
-                    String payMethod = null;
-                    if (requestTopup.getTransfer_type().equals(0)) {
-                        payMethod = "VA";
-                    } else if (requestTopup.getTransfer_type().equals(1)) {
-                        payMethod = "Transfer";
-                    }
+                    String payMethod = (String) getMapPaymentType(requestTopup).get("payment_type");
+                    Integer lsjb_id = (Integer) getMapPaymentType(requestTopup).get("lsjb_id");
+
                     String nameFile = String.format("%s_%s_%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Premium Billing", mptId, ".pdf");
                     String path = String.format("%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Premium Billing");
 
                     createNewFile(path, requestTopup, mptId, request, username);
 
                     // Insert MPOL_TRANS
-                    Topup topup = getData(mptId, dataSPAJ, requestTopup, nameFile);
+                    Topup topup = getData(mptId, dataSPAJ, requestTopup, nameFile, lsjb_id);
                     services.insertMstMpolTrans(topup);
 
                     // Push Notification
@@ -212,6 +210,7 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
 
                     error = false;
                     message = "Premium billing submitted successfully";
+                    data.put("mpt_id", mptId.toString());
                 } else {
                     error = true;
                     message = "Error not available choice transaction";
@@ -236,6 +235,7 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
             logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
         }
         map.put("error", error);
+        map.put("data", data);
         map.put("message", message);
         res = gson.toJson(map);
         // Update activity user table LST_USER_SIMULTANEOUS
@@ -246,7 +246,7 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         return res;
     }
 
-    private Topup getData(BigInteger mptId, Pemegang dataSPAJ, RequestTopup requestTopup, String nameFile) {
+    private Topup getData(BigInteger mptId, Pemegang dataSPAJ, RequestTopup requestTopup, String nameFile, Integer lsjb_id) {
         Topup topup = new Topup();
         topup.setMpt_id(mptId.toString());
         topup.setDate_created_java1(customResourceLoader.getDatetimeJava1());
@@ -263,6 +263,7 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         topup.setPayor_source_income(requestTopup.getPayor_source_income());
         topup.setPath_bsb(nameFile);
         topup.setUnique_code(requestTopup.getUnique_code());
+        topup.setLsjb_id(lsjb_id);
         return topup;
     }
 
@@ -296,5 +297,24 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         } catch (Exception e) {
             logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
         }
+    }
+
+    private HashMap<String, Object> getMapPaymentType(RequestTopup requestTopup){
+        HashMap<String, Object> map = new HashMap<>();
+        if (requestTopup.getTransfer_type() != null){
+            String payMethod = null;
+            Integer lsjb_id = null;
+            if (requestTopup.getTransfer_type().equals("Bank Transfer")) {
+                payMethod = "Bank Transfer";
+                lsjb_id = 5;
+            } else if (requestTopup.getTransfer_type().equals("VA")) {
+                payMethod = "VA";
+                lsjb_id = 32;
+            }
+
+            map.put("payment_type", payMethod);
+            map.put("lsjb_id", lsjb_id);
+        }
+        return map;
     }
 }

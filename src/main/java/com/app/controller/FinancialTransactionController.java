@@ -680,7 +680,7 @@ public class FinancialTransactionController {
 								Float percentage = m.getMpt_persen();
 								listFund.put("name", name);
 								listFund.put("percentage", percentage.intValue());
-								listFund.put("mpt_jumlah", 0);
+								listFund.put("mpt_jumlah", m.getMpt_jumlah());
 								fund.add(listFund);
 								data.put("fund", fund);
 							} catch (Exception e) {

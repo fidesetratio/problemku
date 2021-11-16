@@ -1429,11 +1429,12 @@
 
 	<select id="selectListInvestasiTopup" parameterType="String" resultType="com.app.model.Topup">
 		select c.lji_invest, 
-			b.mpt_persen
+			b.mpt_persen,
+			b.mpt_jumlah
 		from EKA.MST_MPOL_TRANS a
 			inner join eka.mst_mpol_trans_det b on a.mpt_id = b.mpt_id
 			inner join eka.lst_jenis_invest c on b.lji_id = c.lji_id
-		where a.mpt_id = #{mpt_id, jdbcType=DOUBLE}
+		where a.mpt_id = #{mpt_id, jdbcType=VARCHAR}
 	</select>
 	
 	<select id="selectListInvestasi" parameterType="String" resultType="com.app.model.Topup">

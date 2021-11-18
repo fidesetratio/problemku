@@ -6,67 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.app.model.Article;
-import com.app.model.Beneficiary;
-import com.app.model.BenefitCorporate;
-import com.app.model.Billing;
-import com.app.model.ClaimCorporate;
-import com.app.model.ClaimLimit;
-import com.app.model.ClaimSubmission;
-import com.app.model.ClaimSubmissionCorporate;
-import com.app.model.CostFinancialTransaction;
-import com.app.model.DataUsulan;
-import com.app.model.DetailClaimCorporate;
-import com.app.model.DetailWithdraw;
-import com.app.model.DownloadReportHr;
-import com.app.model.DropdownPolicyAlteration;
-import com.app.model.Endorse;
-import com.app.model.EndorseHr;
-import com.app.model.EndorseMapping;
-import com.app.model.EndorsePolicyAlteration;
-import com.app.model.Fund;
-import com.app.model.Inbox;
-import com.app.model.KlaimKesehatan;
-import com.app.model.LstHistActivityWS;
-import com.app.model.LstUserSimultaneous;
-import com.app.model.MpolisConfiguration;
-import com.app.model.MstInbox;
-import com.app.model.MstOTPSimultaneous;
-import com.app.model.MstOTPSimultaneousDet;
-import com.app.model.Nav;
-import com.app.model.NotifToken;
-import com.app.model.PembayarPremi;
-import com.app.model.Pemegang;
-import com.app.model.PenerimaManfaat;
-import com.app.model.PolicyAlteration;
-import com.app.model.PowerSave;
-import com.app.model.ProductRider;
-import com.app.model.ProductUtama;
-import com.app.model.Provider;
-import com.app.model.Provinsi;
-import com.app.model.PushNotif;
-import com.app.model.Rekening;
-import com.app.model.ReportHr;
-import com.app.model.SQLAdapter;
-import com.app.model.Sales;
-import com.app.model.SavedProvider;
-import com.app.model.SmsServerOut;
-import com.app.model.StableLink;
-import com.app.model.StableSave;
-import com.app.model.SwitchingRedirection;
-import com.app.model.Tertanggung;
-import com.app.model.TertanggungTambahan;
-import com.app.model.Topup;
-import com.app.model.TrackingPolis;
-import com.app.model.TransactionHistory;
-import com.app.model.UnitLink;
-import com.app.model.User;
-import com.app.model.UserCorporate;
-import com.app.model.UserHR;
-import com.app.model.VersionCode;
-import com.app.model.ViewClaim;
-import com.app.model.ViewMclFirst;
-import com.app.model.Withdraw;
+import com.app.model.*;
 import com.app.model.request.RequestTrackingPolis;
 
 public interface VegaMapper {
@@ -90,6 +30,8 @@ public interface VegaMapper {
 	public void insertNewuser(LstUserSimultaneous lstUserSimultaneous);
 
 	public void insertMstMpolTrans(Topup topup);
+
+	public void insertMstMpolTransBill(DetailBillingRequest topup);
 
 	public void insertMstMpolTransDet(Topup topup);
 

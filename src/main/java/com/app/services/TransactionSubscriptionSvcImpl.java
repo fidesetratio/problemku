@@ -1,5 +1,6 @@
 package com.app.services;
 
+import com.app.model.DetailBillingRequest;
 import com.app.model.Pemegang;
 import com.app.model.Topup;
 import com.app.model.request.RequestTopup;
@@ -174,43 +175,63 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                     }
                 } else if (requestTopup.getLt_id() != null && requestTopup.getLt_id().equals(22)) {
                     // this is request premium billing base on lt id
-                    String mataUang = null;
-                    if (requestTopup.getLku_id().equals("01")) {
-                        mataUang = "IDR";
-                    } else if (requestTopup.getLku_id().equals("02")) {
-                        mataUang = "USD";
-                    }
+                    if (requestTopup.getBillings() != null && requestTopup.getBillings().size() > 0){
+                        String mataUang = null;
+                        if (requestTopup.getLku_id().equals("01")) {
+                            mataUang = "IDR";
+                        } else if (requestTopup.getLku_id().equals("02")) {
+                            mataUang = "USD";
+                        }
 
-                    String payMethod = (String) getMapPaymentType(requestTopup).get("payment_type");
-                    Integer lsjb_id = (Integer) getMapPaymentType(requestTopup).get("lsjb_id");
+                        String payMethod = (String) getMapPaymentType(requestTopup).get("payment_type");
+                        Integer lsjb_id = (Integer) getMapPaymentType(requestTopup).get("lsjb_id");
 
-                    String nameFile = String.format("%s_%s_%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Premium Billing", mptId, ".pdf");
-                    String path = String.format("%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Premium Billing");
+                        String nameFile = String.format("%s_%s_%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Premium Billing", mptId, ".pdf");
+                        String path = String.format("%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Premium Billing");
 
-                    createNewFile(path, requestTopup, mptId, request, username);
+                        createNewFile(path, requestTopup, mptId, request, username);
+                        Topup topup = getData(mptId, dataSPAJ, requestTopup, nameFile, lsjb_id);
 
-                    // Insert MPOL_TRANS
-                    Topup topup = getData(mptId, dataSPAJ, requestTopup, nameFile, lsjb_id);
-                    services.insertMstMpolTrans(topup);
+                        services.insertMstMpolTrans(topup); // Insert MPOL_TRANS
+                        JSONArray billings = new JSONArray(requestTopup.getBillings());
 
-                    // Push Notification
-                    String messagePushNotif;
+                        for (int i = 0; i < billings.length(); i++) {
+                            Integer tahun_ke = billings.getJSONObject(i).getInt("tahun_ke");
+                            Integer premi_ke = billings.getJSONObject(i).getInt("premi_ke");
+                            BigDecimal amount = billings.getJSONObject(i).getBigDecimal("amount");
+                            Integer flag_bill = billings.getJSONObject(i).getInt("flag_bill");
+                            DetailBillingRequest billingRequest = new DetailBillingRequest();
+                            billingRequest.setMpt_id(topup.getMpt_id());
+                            billingRequest.setReg_spaj(dataSPAJ.getReg_spaj());
+                            billingRequest.setPremi_ke(premi_ke);
+                            billingRequest.setTahun_ke(tahun_ke);
+                            billingRequest.setAmount(amount);
+                            billingRequest.setFlag_bill(flag_bill);
+                            services.insertMstMpolTransBill(billingRequest);
+                        }
 
-                    if (language_id.equals(1)) {
-                        messagePushNotif = "Nasabah Yth, Bukti Pembayaran Premi Premium Billing sebesar " + mataUang + " "
-                                + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " melalui " + payMethod
-                                + " telah diterima";
+                        // Push Notification
+                        String messagePushNotif;
+
+                        if (language_id.equals(1)) {
+                            messagePushNotif = "Nasabah Yth, Bukti Pembayaran Premi Premium Billing sebesar " + mataUang + " "
+                                    + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " melalui " + payMethod
+                                    + " telah diterima";
+                        } else {
+                            messagePushNotif = "Dear Customer, Premium Billing Payment Slip of " + mataUang + " "
+                                    + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " via " + payMethod
+                                    + " has been received";
+                        }
+
+                        customResourceLoader.pushNotif(username, messagePushNotif, no_polis, dataSPAJ.getReg_spaj(), 5, 0);
+
+                        error = false;
+                        message = "Premium billing submitted successfully";
+                        data.put("mpt_id", mptId.toString());
                     } else {
-                        messagePushNotif = "Dear Customer, Premium Billing Payment Slip of " + mataUang + " "
-                                + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " via " + payMethod
-                                + " has been received";
+                        error = true;
+                        message = "Premium billing fail submit, detail billing not found";
                     }
-
-                    customResourceLoader.pushNotif(username, messagePushNotif, no_polis, dataSPAJ.getReg_spaj(), 5, 0);
-
-                    error = false;
-                    message = "Premium billing submitted successfully";
-                    data.put("mpt_id", mptId.toString());
                 } else {
                     error = true;
                     message = "Error not available choice transaction";

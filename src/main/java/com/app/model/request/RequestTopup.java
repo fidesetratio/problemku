@@ -25,6 +25,7 @@ public class RequestTopup implements Serializable {
 	private String payor_income;
 	private String payor_source_income;
 	private List funds;
+	private List billings;
 	private String bsb;
 	private Integer unique_code;
 	private String transfer_type;
@@ -174,4 +175,11 @@ public class RequestTopup implements Serializable {
 		this.language_id = language_id;
 	}
 
+	public List getBillings() {
+		return billings;
+	}
+
+	public void setBillings(List billings) {
+		this.billings = billings;
+	}
 }

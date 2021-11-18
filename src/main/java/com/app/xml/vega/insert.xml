@@ -109,6 +109,13 @@
 		#{payor_source_income, jdbcType=VARCHAR}, 0, null, #{path_bsb, jdbcType=VARCHAR}, null, null, 
 		#{unique_code, jdbcType=INTEGER}, #{lsjb_id, jdbcType=INTEGER})
 	</insert>
+
+	<insert id="insertMstMpolTransBill" parameterType="com.app.model.DetailBillingRequest">
+		INSERT INTO EKA.MST_MPOL_TRANS_BILL (MPT_ID, REG_SPAJ, TAHUN_KE, PREMI_KE, AMOUNT, FLAG_BILL)
+		VALUES
+		(#{mpt_id, jdbcType=VARCHAR}, #{reg_spaj, jdbcType=VARCHAR}, #{premi_ke, jdbcType=INTEGER}, #{tahun_ke, jdbcType=INTEGER}, #{amount, jdbcType=DOUBLE},
+		 #{flag_bill, jdbcType=INTEGER})
+	</insert>
 	
 	<insert id="insertMstMpolTransDet" parameterType="Topup">
 		insert into eka.mst_mpol_trans_det (mpt_id, lji_id, mpt_persen, mpt_jumlah, mpt_unit)

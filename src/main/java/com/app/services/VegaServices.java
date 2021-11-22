@@ -1260,7 +1260,13 @@ public class VegaServices {
 	// Update
 	public void updateUserKeyName(LstUserSimultaneous user) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		dao.updateUserKeyName(user);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("UPDATE_DATE_TIME", user.getUPDATE_DATE_TIME());
+		data.put("LAST_LOGIN_DATE_TIME", user.getLAST_LOGIN_DATE_TIME());
+		data.put("FLAG_ACTIVE", user.getFLAG_ACTIVE());
+		data.put("LAST_LOGIN_DEVICE", user.getLAST_LOGIN_DEVICE());
+		data.put("USERNAME", user.getUSERNAME());
+		dao.updateUserKeyName(data);
 	}
 	
 	public void updateLspdId(String reg_spaj) {

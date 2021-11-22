@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN'
   'http://mybatis.org/dtd/mybatis-3-mapper.dtd'>
 <mapper namespace='com.app.mapper.VegaMapper'>
-    <update id="updateUserKeyName" parameterType="User">
+    <update id="updateUserKeyName" parameterType="HashMap">
         UPDATE eka.LST_USER_SIMULTANEOUS
         <trim prefix="SET" suffixOverrides=",">
         	<if test="UPDATE_DATE_TIME !=null"> update_date = to_date(#{UPDATE_DATE_TIME,jdbcType=DATE}, 'YYYY/MM/DD hh24:mi:ss'),</if>

@@ -438,7 +438,7 @@ public interface VegaMapper {
 	public EndorseHr selectPrepareEndorseHr(String no_polis);
 
 	// Update
-	public void updateUserKeyName(LstUserSimultaneous user);
+	public void updateUserKeyName(HashMap<String, Object> data);
 	
 	public void updateLspdId(String reg_spaj);
 

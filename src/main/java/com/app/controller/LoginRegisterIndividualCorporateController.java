@@ -158,21 +158,23 @@ public class LoginRegisterIndividualCorporateController {
 					hr_user= false;
 
 					ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
-					for (int x = 0; x < 1; x++) {
-						Date endDate = listPolisCorporate.get(x).getMspo_end_date();
-						BigDecimal flagActiveUserCorporate = listPolisCorporate.get(x).getMste_active();
-						LocalDate now = LocalDate.now();
-						LocalDate endDateParse = LocalDate.parse(df1.format(endDate));
-						// Check no polis corporate active or not
-						if (endDateParse.compareTo(now) < 0) {
-							policy_corporate_notinforce = true;
-						} else {
-							policy_corporate_notinforce = false;
-						}
+					if (listPolisCorporate != null && listPolisCorporate.size() > 0){
+						for (int x = 0; x < 1; x++) {
+							Date endDate = listPolisCorporate.get(x).getMspo_end_date();
+							BigDecimal flagActiveUserCorporate = listPolisCorporate.get(x).getMste_active();
+							LocalDate now = LocalDate.now();
+							LocalDate endDateParse = LocalDate.parse(df1.format(endDate));
+							// Check no polis corporate active or not
+							if (endDateParse.compareTo(now) < 0) {
+								policy_corporate_notinforce = true;
+							} else {
+								policy_corporate_notinforce = false;
+							}
 
-						// Check user corporate active or not
-						if (flagActiveUserCorporate.intValue() == 0) {
-							user_corporate_notactive = true;
+							// Check user corporate active or not
+							if (flagActiveUserCorporate.intValue() == 0) {
+								user_corporate_notactive = true;
+							}
 						}
 					}
 				}

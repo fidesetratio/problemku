@@ -2,7 +2,6 @@ package com.app.controller;
 
 import com.app.model.*;
 import com.app.model.request.*;
-import com.app.services.TransactionProcessSvc;
 import com.app.services.TransactionSubscriptionSvc;
 import com.app.services.VegaServices;
 import com.app.utils.ResponseMessage;
@@ -102,8 +101,6 @@ public class FinancialTransactionController {
 	private VegaCustomResourceLoader customResourceLoader;
 	@Autowired
 	private TransactionSubscriptionSvc transactionSubscriptionSvc;
-	@Autowired
-	private TransactionProcessSvc transactionProcessSvc;
 
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");

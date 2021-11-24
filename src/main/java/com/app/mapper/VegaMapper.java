@@ -84,9 +84,9 @@ public interface VegaMapper {
 
 	public Pemegang selectNomorPolis(Pemegang pemegang);
 
-	public Pemegang selectNomorPolisNotRegister(Pemegang pemegang);
+	public Pemegang selectNomorPolisNotRegister(HashMap<String, Object> hashMap);
 
-	public Pemegang selectKtp(String mspe_no_identity);
+	public Pemegang selectKtp(HashMap<String, Object> hashMap);
 
 	public Pemegang selectPemegang(Pemegang pemegang);
 
@@ -496,4 +496,12 @@ public interface VegaMapper {
 	public void updateStatusAttemptOtp(MstOTPSimultaneous paramUpdate);
 
 	public User selectDataPolisByPolisNo(HashMap<String, Object> hashMap);
+
+	public List<Pemegang> filterIndividuAndMri(HashMap<String, Object> hashMap);
+
+	public List<Pemegang> filterByIdSimultanRegSpajNoPolis(HashMap<String, Object> hashMap);
+
+	public MRIdataPolis selectDataMri(String no_polis);
+
+	public MRIdataPolis selectDataMriBrosure(String no_polis);
 }

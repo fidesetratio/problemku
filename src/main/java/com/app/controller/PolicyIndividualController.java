@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -17,14 +20,19 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.app.model.*;
+import com.app.model.request.*;
 import com.app.services.BillingSvc;
+import com.app.services.RegistrationIndividuSvc;
 import com.app.utils.PageUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,45 +43,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.services.VegaServices;
-import com.app.model.Article;
-import com.app.model.Billing;
-import com.app.model.DataUsulan;
-import com.app.model.KlaimKesehatan;
-import com.app.model.PembayarPremi;
-import com.app.model.Pemegang;
-import com.app.model.PenerimaManfaat;
-import com.app.model.PowerSave;
-import com.app.model.ProductRider;
-import com.app.model.Provinsi;
-import com.app.model.Sales;
-import com.app.model.StableLink;
-import com.app.model.StableSave;
-import com.app.model.Tertanggung;
-import com.app.model.TertanggungTambahan;
-import com.app.model.Topup;
-import com.app.model.TrackingPolis;
-import com.app.model.UnitLink;
-import com.app.model.User;
-import com.app.model.request.RequestBilling;
-import com.app.model.request.RequestCurrentInvestasiTransaksi;
-import com.app.model.request.RequestDataAsuransi;
-import com.app.model.request.RequestDataAsuransiDownload;
-import com.app.model.request.RequestDetailInvestasiTransaksi;
-import com.app.model.request.RequestDetailStableLink;
-import com.app.model.request.RequestDownloadPolisAll;
-import com.app.model.request.RequestEmailCSMergeSimultan;
-import com.app.model.request.RequestPembayarPremi;
-import com.app.model.request.RequestPemegangPolis;
-import com.app.model.request.RequestPenerimaManfaat;
-import com.app.model.request.RequestProvinsi;
-import com.app.model.request.RequestStatement;
-import com.app.model.request.RequestStatementDownload;
-import com.app.model.request.RequestStatusEmailCS;
-import com.app.model.request.RequestTertanggung;
-import com.app.model.request.RequestTrackingPolis;
-import com.app.model.request.RequestUpdatePemegangPolis;
-import com.app.model.request.RequestViewBeneficiary;
-import com.app.model.request.RequestViewClaim;
 import com.app.utils.VegaCustomResourceLoader;
 import com.app.utils.ResponseMessage;
 import com.google.gson.Gson;
@@ -86,7 +55,7 @@ public class PolicyIndividualController {
 
 	@Value("${path.storage.mpolicy}")
 	private String storageMpolicy;
-	
+
 	@Value("${path.download.polisall}")
 	private String pathDownloadPolisAll;
 
@@ -113,6 +82,8 @@ public class PolicyIndividualController {
 
 	@Autowired
 	private VegaServices services;
+	@Autowired
+	private RegistrationIndividuSvc registrationIndividuSvc;
 
 	@Autowired
 	private VegaCustomResourceLoader customResourceLoader;
@@ -143,12 +114,12 @@ public class PolicyIndividualController {
 		String username = requestPemegangPolis.getUsername();
 		String key = requestPemegangPolis.getKey();
 		String no_polis = requestPemegangPolis.getNo_polis();
-		
+
 		String key_orion = key;
 		if(key_orion.equalsIgnoreCase("orion")) {
 			key = services.selectEncrypt(username);
 		}
-		
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();
@@ -211,7 +182,7 @@ public class PolicyIndividualController {
 
 		return res;
 	}
-	
+
 	@RequestMapping(value = "/checksoftcopypolis", produces = "application/json", method = RequestMethod.POST)
 	public String checkSoftCopyPolis(@RequestBody RequestDataAsuransi requestDataAsuransi, HttpServletRequest request)
 			throws Exception {
@@ -236,7 +207,7 @@ public class PolicyIndividualController {
 		if(key_orion.equalsIgnoreCase("orion")) {
 			key = services.selectEncrypt(username);
 		}
-		
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();
@@ -246,24 +217,24 @@ public class PolicyIndividualController {
 					DataUsulan dataUsulan = new DataUsulan();
 					dataUsulan.setReg_spaj(pemegang.getReg_spaj());
 					dataUsulan = services.selectDataUsulan(dataUsulan);
-					
+
 					String lca_id = dataUsulan.getLca_id();
 					String reg_spaj = dataUsulan.getReg_spaj();
-					
+
 					String title = "softcopy";
 					String file_type = "pdf";
 					String file_name = title + "." + file_type;
 					String file_path_check = pathDownloadPolisAll + File.separator + lca_id + File.separator + reg_spaj + File.separator
 							+ file_name;
 					String file_path = "\\\\storage\\pdfind\\Polis_Testing\\" + lca_id + "\\" + reg_spaj + "\\" + file_name;
-						   
+
 					File checkPolisAll = new File(file_path_check);
-					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) { 
+					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) {
 						data.put("file_path", file_path);
 						data.put("title", title);
 						data.put("file_type", file_type);
 						data.put("is_softcopy_enable", true);
-						
+
 						error = false;
 						message = "Successfully get soft copy polis info";
 					} else {
@@ -271,7 +242,7 @@ public class PolicyIndividualController {
 						data.put("title", null);
 						data.put("file_type", null);
 						data.put("is_softcopy_enable", false);
-						
+
 						error = false;
 						message = "Successfully get soft copy polis info";
 					}
@@ -326,12 +297,12 @@ public class PolicyIndividualController {
 		String username = requestDataAsuransi.getUsername();
 		String key = requestDataAsuransi.getKey();
 		String no_polis = requestDataAsuransi.getNo_polis();
-		
+
 		String key_orion = key;
 		if(key_orion.equalsIgnoreCase("orion")) {
 			key = services.selectEncrypt(username);
 		}
-		
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();
@@ -344,16 +315,16 @@ public class PolicyIndividualController {
 					String mspo_ao = null;
 					Sales sales = new Sales();
 					ArrayList<Object> fund = new ArrayList<>();
-					
+
 					if(key_orion.equalsIgnoreCase("orion")) {
 						mspo_ao = username;
 					} else {
 						mspo_ao = dataUsulan.getMspo_ao();
 					}
-					
+
 					String lca_id = dataUsulan.getLca_id();
 					String reg_spaj = dataUsulan.getReg_spaj();
-					
+
 					String title = "polis_all";
 					String file_type = "pdf";
 					String file_name = title + "." + file_type;
@@ -365,7 +336,7 @@ public class PolicyIndividualController {
 					if (mspo_ao != null) {
 						String msag_id = mspo_ao;
 						sales = services.selectSales(msag_id);
-						
+
 						dataSales.put("nama_sales", sales.getMcl_first());
 						dataSales.put("no_hp_sales", sales.getMsag_smart_no());
 						dataSales.put("email_sales", sales.getMspe_email());
@@ -376,9 +347,9 @@ public class PolicyIndividualController {
 					} else {
 						sales = null;
 					}
-					
+
 					BigDecimal BD_uang_pertanggungan = new BigDecimal(dataUsulan.getMspr_tsi(), MathContext.DECIMAL64);
-					
+
 					data.put("produk", dataUsulan.getNewname());
 					data.put("masa_berlaku_awal",
 							dataUsulan.getMste_beg_date() == null ? null : df3.format(dataUsulan.getMste_beg_date()));
@@ -414,9 +385,9 @@ public class PolicyIndividualController {
 					data.put("product_rider", product_rider);
 					data.put("alokasi_dana", fund);
 					data.put("data_sales", dataSales);
-					
+
 					File checkPolisAll = new File(file_path_check);
-					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) { 
+					if(checkPolisAll.exists() && !checkPolisAll.isDirectory()) {
 						data.put("file_path", file_path);
 						data.put("title", title);
 						data.put("file_type", file_type);
@@ -425,7 +396,7 @@ public class PolicyIndividualController {
 						data.put("title", null);
 						data.put("file_type", null);
 					}
-					
+
 					String spaj = dataUsulan.getReg_spaj();
 					ArrayList<ProductRider> dataRider = services.selectProductRider(spaj);
 					ListIterator<ProductRider> liter = dataRider.listIterator();
@@ -440,7 +411,7 @@ public class PolicyIndividualController {
 							String mata_uang = m.getLku_symbol() != null ? m.getLku_symbol() : null;
 							Integer lsbs_id = m.getLsbs_id() != null ? m.getLsbs_id() : null;
 							String tertanggung = m.getTertanggung() != null ? m.getTertanggung() : null;
-							
+
 							if(lsbs_id == 804) {
 								nama_rider = nama_rider.replaceAll("\\s+","");
 							}
@@ -457,7 +428,7 @@ public class PolicyIndividualController {
 									"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
 						}
 					}
-					
+
 					ArrayList<Topup> list = services.selectListInvestasi(no_polis);
 
 					ListIterator<Topup> liter2 = list.listIterator();
@@ -465,11 +436,11 @@ public class PolicyIndividualController {
 						try {
 							Topup m = liter2.next();
 							HashMap<String, Object> listFund = new HashMap<>();
-							
+
 							String lji_id = m.getLji_id();
 							String name = m.getLji_invest();
 							Float percentage = m.getMdu_persen();
-							
+
 							if (percentage != 0) {
 								listFund.put("lji_id", lji_id);
 								listFund.put("name", name);
@@ -481,10 +452,10 @@ public class PolicyIndividualController {
 									+ e);
 						}
 					}
-					
+
 					error = false;
 					message = "Successfully get data asuransi details";
-					
+
 				} else {
 					error = true;
 					message = "Policy is not active";
@@ -492,7 +463,7 @@ public class PolicyIndividualController {
 					logger.error(
 							"Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
 				}
-				
+
 			} else {
 				error = true;
 				message = "Username not register";
@@ -516,9 +487,9 @@ public class PolicyIndividualController {
 
 		return res;
 	}
-	
+
 	@RequestMapping(value = "/downloadpolisall", produces = "application/json", method = RequestMethod.POST)
-	public String downloadPolisAll(@RequestBody RequestDownloadPolisAll requestDownloadPolisAll, 
+	public String downloadPolisAll(@RequestBody RequestDownloadPolisAll requestDownloadPolisAll,
 			HttpServletRequest request, HttpServletResponse response) throws Exception {
 		GsonBuilder builder = new GsonBuilder();
 		builder.serializeNulls();
@@ -535,14 +506,14 @@ public class PolicyIndividualController {
 			String tempPathWS = pathWS.replace("\\", "/");
 			tempPathWS = tempPathWS.replace("//", "/");
 			String tempPath[] = tempPathWS.split("/");
-			
+
 			String cabang = tempPath[4].toString();
 			String reg_spaj = tempPath[5].toString();
 			String file_download = tempPath[6].toString();
-			
-			
-			
-					
+
+
+
+
 			String NewPathWS = pathDownloadPolisAll + File.separator + cabang + File.separator + reg_spaj + File.separator + file_download;
 			String file_name = requestDownloadPolisAll.getTitle();
 			String file_type = requestDownloadPolisAll.getFile_type();
@@ -614,7 +585,7 @@ public class PolicyIndividualController {
 		if(key_orion.equalsIgnoreCase("orion")) {
 			key = services.selectEncrypt(username);
 		}
-		
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Tertanggung tertanggung = new Tertanggung();
@@ -698,7 +669,7 @@ public class PolicyIndividualController {
 
 		return res;
 	}
-	
+
 	@RequestMapping(value = "/pembayarpremi", produces = "application/json", method = RequestMethod.POST)
 	public String pembayarPremi(@RequestBody RequestPembayarPremi requestPembayarPremi, HttpServletRequest request)
 			throws Exception {
@@ -724,11 +695,11 @@ public class PolicyIndividualController {
 		if(key_orion.equalsIgnoreCase("orion")) {
 			key = services.selectEncrypt(username);
 		}
-		
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				PembayarPremi pembayarPremi = services.selectPembayarPremi(no_polis);
-				
+
 				if (pembayarPremi!=null) {
 					try {
 						String nama = pembayarPremi.getNama() != null ? pembayarPremi.getNama() : null;
@@ -790,7 +761,7 @@ public class PolicyIndividualController {
 
 		return res;
 	}
-	
+
 	@RequestMapping(value = "/penerimamanfaat", produces = "application/json", method = RequestMethod.POST)
 	public String penerimaManfaat(@RequestBody RequestPenerimaManfaat requestPenerimaManfaat, HttpServletRequest request)
 			throws Exception {
@@ -816,7 +787,7 @@ public class PolicyIndividualController {
 		if(key_orion.equalsIgnoreCase("orion")) {
 			key = services.selectEncrypt(username);
 		}
-		
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				ArrayList<PenerimaManfaat> dataBenef = services.selectPenerimaManfaat(no_polis);
@@ -905,7 +876,7 @@ public class PolicyIndividualController {
 		if(key_orion.equalsIgnoreCase("orion")) {
 			key = services.selectEncrypt(username);
 		}
-		
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();
@@ -931,8 +902,8 @@ public class PolicyIndividualController {
 									tempData.put("unit_price", nfZeroFour.format(m.getHarga_Unit()));
 									tempData.put("total_unit", nfZeroFour.format(m.getTotal_Unit()));
 									tempData.put("policy_value", nfZeroTwo.format(m.getNilai_polis()));
-									
-									
+
+
 									investment.add(tempData);
 									unit_link.put("investment", investment);
 								} catch (Exception e) {
@@ -959,9 +930,9 @@ public class PolicyIndividualController {
 								}
 								results.add(sum);
 								unit_link.put("total", nfZeroTwo.format(results.get(0)));
-								
+
 							}
-							
+
 							Double totalTungakanUnitLink = services.selectTotalTunggakanUnitLink(reg_spaj);
 							unit_link.put("total_tunggakan", nfZeroTwo.format(totalTungakanUnitLink) );
 							data.put("unit_link", unit_link);
@@ -1207,12 +1178,12 @@ public class PolicyIndividualController {
 		Integer pageSize = requestDetailInvestasiTransaksi.getPageSize();
 		String startDate = requestDetailInvestasiTransaksi.getStartDate();
 		String endDate = requestDetailInvestasiTransaksi.getEndDate();
-		
+
 		String key_orion = key;
 		if(key_orion.equalsIgnoreCase("orion")) {
 			key = services.selectEncrypt(username);
 		}
-		
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang pemegang = new Pemegang();
@@ -1303,12 +1274,12 @@ public class PolicyIndividualController {
 		String username = requestDetailStableLink.getUsername();
 		String key = requestDetailStableLink.getKey();
 		String no_polis = requestDetailStableLink.getNo_polis();
-		
+
 		String key_orion = key;
 		if(key_orion.equalsIgnoreCase("orion")) {
 			key = services.selectEncrypt(username);
 		}
-		
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang paramGetSPAJ = new Pemegang();
@@ -1457,19 +1428,19 @@ public class PolicyIndividualController {
 									"Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
 						}
 					}
-					
+
 					KlaimKesehatan countKlaim = services.selectCountKlaimkesehatan(dataSpaj.getReg_spaj());
-							
+
 					Integer total_data = countKlaim.getCount();
 					Integer page_size = 10;
 					Integer total_page;
-					
+
 					if (total_data % page_size == 0) {
 						total_page = total_data / page_size;
 					} else {
 						total_page = total_data / page_size + 1;
 					}
-					
+
 					map.put("total_page", total_page);
 				} else {
 					error = false;
@@ -2431,7 +2402,7 @@ public class PolicyIndividualController {
 			}
 			outStream.flush();
 			inStream.close();
-			
+
 		} catch (Exception e) {
 			error = true;
 			message = ResponseMessage.ERROR_SYSTEM;
@@ -2794,6 +2765,116 @@ public class PolicyIndividualController {
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 48, new Date(), req, res, 1, resultErr, start, username);
 
+		return res;
+	}
+
+	@RequestMapping(value = "/datamri", produces = "application/json", method = RequestMethod.POST)
+	public String dataMri(@RequestBody RequestListPolis requestListPolis, HttpServletRequest request){
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		new Gson();
+		Gson gson;
+		gson = builder.create();
+		String res;
+		String message;
+		String resultErr;
+		boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+        String username = requestListPolis.getUsername();
+        String key = requestListPolis.getKey();
+		try {
+			User dataActivityUser = services.selectUserIndividual(username);
+            if (customResourceLoader.validateCredential(username, key)){
+                MRIdataPolis mri = services.getDataMri(dataActivityUser.getMspo_policy_no());
+                if (mri != null){
+                    data.put("nama_pemegang_polis", mri.getNama_pemegang_polis());
+                    data.put("no_polis", mri.getNo_polis());
+                    data.put("peserta", mri.getPeserta());
+                    data.put("premi_dasar", mri.getPremi_dasar());
+                    data.put("premi_extra", mri.getPremi_extra());
+                    data.put("total_premi", mri.getTotal_premi());
+                    data.put("masa_berlaku", mri.getMasa_berlaku_polis());
+                    data.put("mata_uang", mri.getMata_uang());
+                    data.put("cara_pembayaran", mri.getCara_pembayaran());
+
+					Path pathBaru = Paths.get(mri.getEsert_baru() != null ? mri.getEsert_baru() : "");
+					Path pathLama = Paths.get(mri.getEsert_lama() != null ? mri.getEsert_lama() : "");
+
+					data.put("esert_baru", registrationIndividuSvc.esertMri(pathBaru, request, username));
+                    data.put("esert_lama", registrationIndividuSvc.esertMri(pathLama, request, username));
+                    message = "Successfully get data list polis";
+                } else {
+                    error = true;
+                    message = "Can't get data list polis mri";
+                    resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+                    logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+                }
+            } else {
+                error = true;
+                message = "Can't get data list polis";
+                resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+                logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+            }
+		}catch (Exception e){
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			logger.error("Path: " + request.getServletPath() + " Username: " + requestListPolis.getUsername() + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+		return res;
+	}
+
+	@RequestMapping(value = "/datamribrochure", produces = "application/json", method = RequestMethod.POST)
+	public String dataMriBrochure(@RequestBody RequestListPolis requestListPolis, HttpServletRequest request){
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		new Gson();
+		Gson gson;
+		gson = builder.create();
+		String res;
+		String message;
+		String resultErr;
+		boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+		String username = requestListPolis.getUsername();
+		String key = requestListPolis.getKey();
+		try {
+			User dataActivityUser = services.selectUserIndividual(username);
+			if (customResourceLoader.validateCredential(username, key)){
+				MRIdataPolis mri = services.getDataMriBrosure(dataActivityUser.getMspo_policy_no());
+				if (mri != null){
+					data.put("nama_pemegang_polis", mri.getNama_pemegang_polis());
+					data.put("no_polis", mri.getNo_polis());
+					data.put("peserta", mri.getPeserta());
+					data.put("no_mou", mri.getNo_mou());
+
+					message = "Successfully get data list polis";
+				} else {
+					error = true;
+					message = "Can't get data list polis mri";
+					resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+					logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				error = true;
+				message = "Can't get data list polis";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		}catch (Exception e){
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			logger.error("Path: " + request.getServletPath() + " Username: " + requestListPolis.getUsername() + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
 		return res;
 	}
 	

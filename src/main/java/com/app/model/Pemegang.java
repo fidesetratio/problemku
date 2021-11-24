@@ -101,7 +101,13 @@ public class Pemegang implements Serializable {
 	private String kabupaten;
 	private String kecamatan;
 	private String kelurahan;
-	
+
+	private Integer lstb_id;
+	private String type_individu;
+	private Integer mssm_pemegang;
+	private String msap_phone1;
+	private String msap_phone2;
+
 	public String getId() {
 		return id;
 	}
@@ -804,5 +810,45 @@ public class Pemegang implements Serializable {
 
 	public void setTin_descripsi(String tin_descripsi) {
 		this.tin_descripsi = tin_descripsi;
+	}
+
+	public Integer getLstb_id() {
+		return lstb_id;
+	}
+
+	public void setLstb_id(Integer lstb_id) {
+		this.lstb_id = lstb_id;
+	}
+
+	public String getType_individu() {
+		return type_individu;
+	}
+
+	public void setType_individu(String type_individu) {
+		this.type_individu = type_individu;
+	}
+
+	public Integer getMssm_pemegang() {
+		return mssm_pemegang;
+	}
+
+	public void setMssm_pemegang(Integer mssm_pemegang) {
+		this.mssm_pemegang = mssm_pemegang;
+	}
+
+	public String getMsap_phone1() {
+		return msap_phone1;
+	}
+
+	public void setMsap_phone1(String msap_phone1) {
+		this.msap_phone1 = msap_phone1;
+	}
+
+	public String getMsap_phone2() {
+		return msap_phone2;
+	}
+
+	public void setMsap_phone2(String msap_phone2) {
+		this.msap_phone2 = msap_phone2;
 	}
 }

@@ -111,7 +111,7 @@
   			and b.lstb_id = 1
 	</select>
 
-	<select id="selectNomorPolisNotRegister" parameterType="Pemegang" resultType="Pemegang">
+	<select id="selectNomorPolisNotRegister" parameterType="HashMap" resultType="com.app.model.Pemegang">
 		SELECT DISTINCT c.mspo_policy_no,
            	b.mspe_no_identity,
             c.reg_spaj,
@@ -119,20 +119,22 @@
             a.id_simultan,
             d.no_hp,
             d.no_hp2,
-            a.mcl_id
+            a.mcl_id,
+			d.msap_phone1,
+			d.msap_phone2
   		FROM eka.mst_simultaneous a
        		INNER JOIN eka.mst_client_new b ON a.mcl_id = b.mcl_id
        		INNER JOIN eka.mst_policy c ON a.reg_spaj = c.reg_spaj
        		INNER JOIN eka.mst_address_billing d ON c.reg_spaj = d.reg_spaj
        		INNER JOIN eka.lst_policy_status e ON c.lssp_id = e.lssp_id
- 		WHERE     a.mssm_pemegang = 1
-       		AND c.lstb_id = 1
+ 		WHERE     a.mssm_pemegang =#{mssm_pemegang, jdbcType=INTEGER}
+       		AND c.lstb_id = #{lstb_id, jdbcType=INTEGER}
        		AND e.lssp_id = 1
        		AND c.mspo_policy_no = REPLACE (#{mspo_policy_no, jdbcType=VARCHAR},'.')
   			AND rownum = 1
 	</select>
 
-	<select id="selectKtp" parameterType="String" resultType="Pemegang">
+	<select id="selectKtp" parameterType="HashMap" resultType="com.app.model.Pemegang">
 		SELECT *
   			FROM (SELECT DISTINCT c.mspo_policy_no,
              	b.mspe_no_identity,
@@ -142,13 +144,17 @@
                 a.id_simultan,
                 d.no_hp,
                 d.no_hp2,
+				d.msap_phone1,
+				d.msap_phone2,
                 a.mcl_id
             FROM eka.mst_simultaneous a
                  INNER JOIN eka.mst_client_new b ON a.mcl_id = b.mcl_id
                  INNER JOIN eka.mst_policy c ON a.reg_spaj = c.reg_spaj
                  INNER JOIN eka.mst_address_billing d
                     ON c.reg_spaj = d.reg_spaj
-           WHERE a.mssm_pemegang = 1 AND c.lstb_id = 1 AND c.lssp_id = 1
+           WHERE  a.mssm_pemegang =#{mssm_pemegang, jdbcType=INTEGER}
+			AND c.lstb_id = #{lstb_id, jdbcType=INTEGER}
+		    AND c.lssp_id = 1
             AND b.mspe_no_identity = #{mspe_no_identity, jdbcType=VARCHAR}
         ORDER BY c.mspo_beg_date DESC)
  		WHERE ROWNUM = 1
@@ -1826,7 +1832,9 @@
 		SELECT A.*,
 			B.MSPO_POLICY_NO,
        		C.NO_HP,
-       		C.NO_HP2
+       		C.NO_HP2,
+			C.MSAP_PHONE1,
+			C.MSAP_PHONE2
   		FROM EKA.LST_USER_SIMULTANEOUS A
        		INNER JOIN EKA.MST_POLICY B ON A.REG_SPAJ = B.REG_SPAJ
        		INNER JOIN EKA.MST_ADDRESS_BILLING C ON B.REG_SPAJ = C.REG_SPAJ
@@ -6156,5 +6164,119 @@ SELECT distinct (CASE
 		AND  a.mspo_policy_no_format = #{policy_number, jdbcType=VARCHAR}
 		AND h.username = #{username, jdbcType=VARCHAR})
 		ORDER BY j.lms_id, a.mspo_policy_no_format
+	</select>
+	<select id="filterIndividuAndMri" parameterType="HashMap" resultType="com.app.model.Pemegang">
+		select  distinct b.mspe_no_identity,
+		a.mcl_id,
+		a.MSSM_PEMEGANG,
+		c.LSTB_ID,
+		a.ID_SIMULTAN,
+		e.LSSP_ID,
+		case
+		when a.MSSM_PEMEGANG = 1 and c.LSTB_ID=1
+		then 'INDIVIDU'
+		when a.MSSM_PEMEGANG = 0 and c.LSTB_ID=2
+		then 'INDIVIDU_MRI'
+		end as TYPE_INDIVIDU
+		FROM eka.mst_simultaneous a
+		INNER JOIN eka.mst_client_new b ON a.mcl_id = b.mcl_id
+		INNER JOIN eka.mst_policy c ON a.reg_spaj = c.reg_spaj
+		INNER JOIN eka.mst_address_billing d ON c.reg_spaj = d.reg_spaj
+		INNER JOIN eka.lst_policy_status e ON c.lssp_id = e.lssp_id
+		where C.MSPO_POLICY_NO = #{policy_number, jdbcType=VARCHAR} OR b.MSPE_NO_IDENTITY=#{no_ktp, jdbcType=VARCHAR} and c.LSSP_ID=1
+	</select>
+	<select id="filterByIdSimultanRegSpajNoPolis" parameterType="HashMap" resultType="com.app.model.Pemegang">
+		select  distinct b.mspe_no_identity,
+		d.mcl_id,
+		d.MSSM_PEMEGANG,
+		c.LSTB_ID,
+		c.MSPO_POLICY_NO,
+		a.ID_SIMULTAN,
+		e.LSSP_ID,
+		case
+		when d.MSSM_PEMEGANG = 1 and c.LSTB_ID=1
+		then 'INDIVIDU'
+		when d.MSSM_PEMEGANG = 0 and c.LSTB_ID=2
+		then 'INDIVIDU_MRI'
+		end as TYPE_INDIVIDU
+		FROM EKA.LST_USER_SIMULTANEOUS a
+		INNER JOIN  eka.mst_simultaneous d on a.ID_SIMULTAN = d.ID_SIMULTAN
+		INNER JOIN eka.mst_client_new b ON d.mcl_id = b.mcl_id
+		INNER JOIN eka.mst_policy c ON a.reg_spaj = c.reg_spaj
+		INNER JOIN eka.lst_policy_status e ON c.lssp_id = e.lssp_id
+		where a.ID_SIMULTAN= #{id_simultan, jdbcType=VARCHAR} and a.REG_SPAJ=#{reg_spaj, jdbcType=VARCHAR} and c.MSPO_POLICY_NO=#{mspa_policy_number, jdbcType=VARCHAR}
+	</select>
+	<select id="selectDataMri" parameterType="String" resultType="com.app.model.MRIdataPolis">
+		select d.mcl_first                                                                                 as nama_pemegang_polis,
+		a.mspo_policy_no                                                                            as no_polis,
+		utl_i18n.unescape_reference(RTRIM(XMLAGG(XMLELEMENT(E, C.MCL_FIRST
+		|| ' dan ')).EXTRACT('//text()'), ' dan '))                                             as peserta,
+		e.mspr_Premium - e.mspr_discount                                                            as premi_dasar,
+		nvl((select ex.mspr_Premium - ex.mspr_discount
+		from eka.mst_product_insured ex
+		where ex.reg_spaj = b.reg_spaj
+		and ex.mste_insured_no = 1
+		and ex.lsbs_id >= 900), 0)                                                           as premi_extra,
+		(e.mspr_Premium - e.mspr_discount) + nvl((select ex1.mspr_Premium - ex1.mspr_discount
+		from eka.mst_product_insured ex1
+		where ex1.reg_spaj = b.reg_spaj
+		and ex1.mste_insured_no = 1
+		and ex1.lsbs_id >= 900), 0)                     as total_premi,
+		to_char(a.mspo_beg_date, 'dd/mm/yyyy') || ' s/d ' ||
+		to_char(a.mspo_end_date, 'dd/mm/yyyy')                                                      as masa_berlaku_polis,
+		f.lku_symbol                                                                                as mata_uang,
+		g.lscb_pay_mode                                                                             as cara_pembayaran,
+		TRIM('\\storage.sinarmasmsiglife.co.id\pdfmri\Sertifikat\' || Trim(h.mcl_first) || '\' ||
+		trim(a.mspo_policy_No) || ' SERT.pdf')                                                 as esert_baru,
+		TRIM('\\storage.sinarmasmsiglife.co.id\pdfmri\Sertifikat\' || Trim(h.mcl_first) || '\SERT ' ||
+		trim(a.mspo_policy_No) || '.pdf')                                                      as esert_lama
+		from eka.mst_policy a
+		inner join eka.mst_insured b
+		on a.reg_spaj = b.reg_Spaj
+		inner join eka.mst_client_new c
+		on b.mste_insured = c.mcl_id
+		inner join eka.mst_client_new d
+		on a.mspo_policy_Holder = d.mcl_id
+		inner join eka.mst_product_insured e
+		on b.reg_spaj = e.reg_spaj
+		and e.mste_insured_no = 1
+		inner join eka.lst_kurs f
+		on a.lku_id = f.lku_id
+		inner join eka.lst_pay_mode g
+		on a.lscb_id = g.lscb_id
+		inner join eka.mst_client_new h
+		on a.mspo_customer = h.mcl_id
+		where a.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+		and a.lstb_id = 2
+		and e.lsbs_id <![CDATA[<]]> 900
+		group by d.mcl_first,
+		a.mspo_policy_no,
+		e.mspr_Premium,
+		e.mspr_discount,
+		a.mspo_beg_date,
+		a.mspo_end_date,
+		f.lku_symbol,
+		g.lscb_pay_mode,
+		h.mcl_first,
+		b.reg_spaj
+	</select>
+	<select id="selectDataMriBrosure" parameterType="String" resultType="com.app.model.MRIdataPolis">
+		select d.mcl_first as nama_pemegang_polis,
+		a.mpi_mou as no_mou,
+		a.mspo_policy_no as no_polis,
+		utl_i18n.unescape_reference(RTRIM(XMLAGG (XMLELEMENT (E, C.MCL_FIRST
+		|| ' dan ')).EXTRACT  ( '//text()' ), ' dan ' )) as peserta
+		from eka.mst_policy a
+		inner join eka.mst_insured b
+		on a.reg_spaj = b.reg_Spaj
+		inner join eka.mst_client_new c
+		on b.mste_insured = c.mcl_id
+		inner join eka.mst_client_new d
+		on a.mspo_policy_Holder = d.mcl_id
+		where a.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+		and a.lstb_id = 2
+		group by d.mcl_first,
+		a.mpi_mou,
+		a.mspo_policy_no
 	</select>
 </mapper>

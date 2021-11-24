@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.app.services.RegistrationIndividuSvc;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -72,6 +73,8 @@ public class LoginRegisterIndividualCorporateController {
 	
 	@Autowired
 	CommonUtils utils;
+	@Autowired
+	private RegistrationIndividuSvc registrationIndividuSvc;
 
 	@Value("${link.fcm.google}")
 	private String linkFcmGoogle;
@@ -114,10 +117,12 @@ public class LoginRegisterIndividualCorporateController {
 				String reg_spaj = checkIndividuOrCorporate.getREG_SPAJ();
 				String mcl_id_employee = checkIndividuOrCorporate.getMCL_ID_EMPLOYEE();
 				String eb_hr_username = checkIndividuOrCorporate.getEB_HR_USERNAME();
+				String id_simultan = checkIndividuOrCorporate.getID_SIMULTAN();
 
 				Boolean individu = false;
 				Boolean corporate = false;
 				Boolean hr_user = false;
+				Boolean individu_mri;
 				Boolean policy_corporate_notinforce = false;
 				Boolean user_corporate_notactive = false;
 
@@ -125,10 +130,12 @@ public class LoginRegisterIndividualCorporateController {
 					individu = true;
 					corporate = false;
 					hr_user = false;
+					individu_mri = registrationIndividuSvc.isIndividuMri(id_simultan, username);
 				} else if ((reg_spaj == null) && (mcl_id_employee != null) && (eb_hr_username == null)) {
 					individu = false;
 					corporate = true;
 					hr_user = false;
+					individu_mri = registrationIndividuSvc.isIndividuMri(id_simultan, username);
 
 					ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
 					for (int x = 0; x < 1; x++) {
@@ -137,11 +144,7 @@ public class LoginRegisterIndividualCorporateController {
 						LocalDate now = LocalDate.now();
 						LocalDate endDateParse = LocalDate.parse(df1.format(endDate));
 						// Check no polis corporate active or not
-						if (endDateParse.compareTo(now) < 0) {
-							policy_corporate_notinforce = true;
-						} else {
-							policy_corporate_notinforce = false;
-						}
+						policy_corporate_notinforce = endDateParse.compareTo(now) < 0;
 
 						// Check user corporate active or not
 						if (flagActiveUserCorporate.intValue() == 0) {
@@ -152,10 +155,12 @@ public class LoginRegisterIndividualCorporateController {
 					individu = false;
 					corporate = false;
 					hr_user = true;
+					individu_mri = registrationIndividuSvc.isIndividuMri(id_simultan, username);
 				} else {
 					individu = true;
 					corporate = true;
 					hr_user= false;
+					individu_mri = registrationIndividuSvc.isIndividuMri(id_simultan, username);
 
 					ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
 					if (listPolisCorporate != null && listPolisCorporate.size() > 0){
@@ -165,11 +170,7 @@ public class LoginRegisterIndividualCorporateController {
 							LocalDate now = LocalDate.now();
 							LocalDate endDateParse = LocalDate.parse(df1.format(endDate));
 							// Check no polis corporate active or not
-							if (endDateParse.compareTo(now) < 0) {
-								policy_corporate_notinforce = true;
-							} else {
-								policy_corporate_notinforce = false;
-							}
+							policy_corporate_notinforce = endDateParse.compareTo(now) < 0;
 
 							// Check user corporate active or not
 							if (flagActiveUserCorporate.intValue() == 0) {
@@ -195,32 +196,33 @@ public class LoginRegisterIndividualCorporateController {
 									if (user1.getPASSWORD().equals(password)) {
 										ArrayList<User> list = services.selectDetailedPolis(username);
 										// Check apakah username tersebut punya list polis/ tidak
-										if (list.size() > 0) {
-											String today = df.format(new Date());
-											lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
-											lstUserSimultaneous.setUPDATE_DATE_TIME(today);
-											services.updateUserKeyName(lstUserSimultaneous);
-											key = user1.getKEY();
+											if (list.size() > 0 || individu_mri) {
+												String today = df.format(new Date());
+												lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+												lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+												services.updateUserKeyName(lstUserSimultaneous);
+												key = user1.getKEY();
 
-											error = false;
-											message = "Login success";
-											data.put("individual", individu);
-											data.put("corporate", corporate);
-											data.put("hr_user", hr_user);
-											data.put("policy_corporate_status", policy_corporate_notinforce);
-											data.put("user_corporate_notactive", user_corporate_notactive);
-											data.put("key", key);
-											data.put("no_hp",
-													dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
-															: dataActivityUser.getNo_hp2());
-										} else {
-											// Error list polis kosong
-											error = true;
-											message = "List policy is empty";
-											resultErr = "List Polis Kosong";
-											logger.error("Path: " + request.getServletPath() + " Username: " + username
-													+ " Error: " + resultErr);
-										}
+												error = false;
+												message = "Login success";
+												data.put("individual", individu);
+												data.put("corporate", corporate);
+												data.put("hr_user", hr_user);
+												data.put("individu_mri", individu_mri);
+												data.put("policy_corporate_status", policy_corporate_notinforce);
+												data.put("user_corporate_notactive", user_corporate_notactive);
+												data.put("key", key);
+												data.put("no_hp",
+														dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
+																: dataActivityUser.getNo_hp2());
+											} else {
+												// Error list polis kosong
+												error = true;
+												message = "List policy is empty";
+												resultErr = "List Polis Kosong";
+												logger.error("Path: " + request.getServletPath() + " Username: " + username
+														+ " Error: " + resultErr);
+											}
 									} else {
 										// Error password yang dimasukkan salah
 										error = true;
@@ -238,12 +240,11 @@ public class LoginRegisterIndividualCorporateController {
 									// Check apakah lama perbedaan waktu token sudah melebihi 15 menit/ belum
 									if (diffSeconds >= time_idle) {
 										// Check apabila lebih dari 15 menit, password yang dimasukkan kosong/ ""
-										if (user1.getPASSWORD() != null || user1.getPASSWORD() != "") {
-											// Check password yang dimasukkan sama/ tidak dengan yang didb
+										// Check password yang dimasukkan sama/ tidak dengan yang didb
 											if (user1.getPASSWORD().equals(password)) {
 												ArrayList<User> list = services.selectDetailedPolis(username);
 												// Check apakah username tersebut memiliki list polis atau tidak
-												if (list.size() > 0) {
+												if (list.size() > 0 || individu_mri) {
 													try {
 														customResourceLoader.postGoogle(linkFcmGoogle, username,
 																dataActivityUser.getLast_login_device());
@@ -259,6 +260,7 @@ public class LoginRegisterIndividualCorporateController {
 														data.put("individual", individu);
 														data.put("corporate", corporate);
 														data.put("hr_user", hr_user);
+														data.put("individu_mri", individu_mri);
 														data.put("policy_corporate_status",
 																policy_corporate_notinforce);
 														data.put("user_corporate_notactive", user_corporate_notactive);
@@ -287,14 +289,6 @@ public class LoginRegisterIndividualCorporateController {
 												logger.error("Path: " + request.getServletPath() + " Username: "
 														+ username + " Error: " + resultErr);
 											}
-										} else {
-											// Error password kosong
-											error = true;
-											message = "Login failed";
-											resultErr = "Format password incorect";
-											logger.error("Path: " + request.getServletPath() + " Username: " + username
-													+ " Error: " + resultErr);
-										}
 									} else {
 										// Error perbedaan lama waktu token belum lebih dari 15 menit
 										error = true;
@@ -307,12 +301,11 @@ public class LoginRegisterIndividualCorporateController {
 							} else {
 								// Kondisi token pada database tidak ada bisa kerena logout/ user baru
 								// Check apabila lebih dari 15 menit, password yang dimasukkan kosong/ ""
-								if (user1.getPASSWORD() != null || user1.getPASSWORD() != "") {
-									// Check password yang dimasukkan sama/ tidak dengan yang didb
-									if (user1.getPASSWORD().equals(password)) {
-										ArrayList<User> list = services.selectDetailedPolis(username);
-										// Check apakah username tersebut memiliki list polis atau tidak
-										if (list.size() > 0) {
+								// Check password yang dimasukkan sama/ tidak dengan yang didb
+								if (user1.getPASSWORD().equals(password)) {
+									ArrayList<User> list = services.selectDetailedPolis(username);
+									// Check apakah username tersebut memiliki list polis atau tidak
+										if (list.size() > 0 || individu_mri) {
 											String today = df.format(new Date());
 											lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
 											lstUserSimultaneous.setUPDATE_DATE_TIME(today);
@@ -324,6 +317,7 @@ public class LoginRegisterIndividualCorporateController {
 											data.put("individual", individu);
 											data.put("corporate", corporate);
 											data.put("hr_user", hr_user);
+											data.put("individu_mri", individu_mri);
 											data.put("policy_corporate_status", policy_corporate_notinforce);
 											data.put("user_corporate_notactive", user_corporate_notactive);
 											data.put("key", key);
@@ -338,19 +332,11 @@ public class LoginRegisterIndividualCorporateController {
 											logger.error("Path: " + request.getServletPath() + " Username: " + username
 													+ " Error: " + resultErr);
 										}
-									} else {
-										// Error password yang dimasukkan user salah
-										error = true;
-										message = "Login failed";
-										resultErr = "Password yang dimasukkan salah";
-										logger.error("Path: " + request.getServletPath() + " Username: " + username
-												+ " Error: " + resultErr);
-									}
 								} else {
-									// Error password kosong
+									// Error password yang dimasukkan user salah
 									error = true;
 									message = "Login failed";
-									resultErr = "Format password incorect";
+									resultErr = "Password yang dimasukkan salah";
 									logger.error("Path: " + request.getServletPath() + " Username: " + username
 											+ " Error: " + resultErr);
 								}
@@ -384,6 +370,7 @@ public class LoginRegisterIndividualCorporateController {
 							data.put("individual", individu);
 							data.put("corporate", corporate);
 							data.put("hr_user", hr_user);
+							data.put("individu_mri", false);
 							data.put("policy_corporate_status", policy_corporate_notinforce);
 							data.put("user_corporate_notactive", user_corporate_notactive);
 							data.put("key", key);
@@ -423,6 +410,7 @@ public class LoginRegisterIndividualCorporateController {
 										data.put("individual", individu);
 										data.put("corporate", corporate);
 										data.put("hr_user", hr_user);
+										data.put("individu_mri", false);
 										data.put("policy_corporate_status", policy_corporate_notinforce);
 										data.put("user_corporate_notactive", user_corporate_notactive);
 										data.put("key", key);
@@ -625,7 +613,7 @@ public class LoginRegisterIndividualCorporateController {
 			LstUserSimultaneous user1 = services.selectLoginAuthenticate(lstUserSimultaneous);
 
 			HashMap<String, Object> dataConfiguration = services.configuration();
-			Integer time_idle = Integer.parseInt((String) dataConfiguration.get("TIME_IDLE"));
+			int time_idle = Integer.parseInt((String) dataConfiguration.get("TIME_IDLE"));
 
 			LstUserSimultaneous checkIndividuOrCorporate = services.selectDataLstUserSimultaneous(username);
 
@@ -633,10 +621,12 @@ public class LoginRegisterIndividualCorporateController {
 				String reg_spaj = checkIndividuOrCorporate.getREG_SPAJ();
 				String mcl_id_employee = checkIndividuOrCorporate.getMCL_ID_EMPLOYEE();
 				String eb_hr_username = checkIndividuOrCorporate.getEB_HR_USERNAME();
+				String id_simultan = checkIndividuOrCorporate.getID_SIMULTAN();
 
 				Boolean individu = false;
 				Boolean corporate = false;
 				Boolean hr_user = false;
+				boolean individu_mri = false;
 				Boolean policy_corporate_notinforce = false;
 				Boolean user_corporate_notactive = false;
 
@@ -644,11 +634,13 @@ public class LoginRegisterIndividualCorporateController {
 					individu = true;
 					corporate = false;
 					hr_user = false;
-					
+					individu_mri = registrationIndividuSvc.isIndividuMri(id_simultan, username);
+
 				} else if ((reg_spaj == null) && (mcl_id_employee != null) && (eb_hr_username == null)) {
 					individu = false;
 					corporate = true;
 					hr_user = false;
+					individu_mri = registrationIndividuSvc.isIndividuMri(id_simultan, username);
 
 					ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
 					for (int x = 0; x < 1; x++) {
@@ -672,9 +664,12 @@ public class LoginRegisterIndividualCorporateController {
 					individu = false;
 					corporate = false;
 					hr_user = true;
+					individu_mri = registrationIndividuSvc.isIndividuMri(id_simultan, username);
+
 				} else {
 					individu = true;
 					corporate = true;
+					individu_mri = registrationIndividuSvc.isIndividuMri(id_simultan, username);
 
 					ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
 					for (int x = 0; x < 1; x++) {
@@ -683,11 +678,7 @@ public class LoginRegisterIndividualCorporateController {
 						LocalDate now = LocalDate.now();
 						LocalDate endDateParse = LocalDate.parse(df1.format(endDate));
 						// Check no polis corporate active or not
-						if (endDateParse.compareTo(now) < 0) {
-							policy_corporate_notinforce = true;
-						} else {
-							policy_corporate_notinforce = false;
-						}
+						policy_corporate_notinforce = endDateParse.compareTo(now) < 0;
 
 						// Check user corporate active or not
 						if (flagActiveUserCorporate.intValue() == 0) {
@@ -710,7 +701,7 @@ public class LoginRegisterIndividualCorporateController {
 								if (dataActivityUser.getLast_login_device().equals(lastLoginDevice)) {
 									ArrayList<User> list = services.selectDetailedPolis(username);
 									// Check apakah polis pada username ini ada atau tidak
-									if (list.size() > 0) {
+									if (list.size() > 0 || individu_mri) {
 										String today = df.format(new Date());
 										lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
 										lstUserSimultaneous.setUPDATE_DATE_TIME(today);
@@ -723,6 +714,7 @@ public class LoginRegisterIndividualCorporateController {
 										data.put("individual", individu);
 										data.put("corporate", corporate);
 										data.put("hr_user", hr_user);
+										data.put("individu_mri", individu_mri);
 										data.put("policy_corporate_status", policy_corporate_notinforce);
 										data.put("user_corporate_notactive", user_corporate_notactive);
 										data.put("key", key);
@@ -748,7 +740,7 @@ public class LoginRegisterIndividualCorporateController {
 									if (diffSeconds >= time_idle) {
 										ArrayList<User> list = services.selectDetailedPolis(username);
 										// Check apakah pada username tersebut memiliki list polis/ tidak
-										if (list.size() > 0) {
+										if (list.size() > 0 || individu_mri) {
 											try {
 												// Send notif via FCM google
 												customResourceLoader.postGoogle(linkFcmGoogle, username,
@@ -765,6 +757,7 @@ public class LoginRegisterIndividualCorporateController {
 												data.put("individual", individu);
 												data.put("corporate", corporate);
 												data.put("hr_user", hr_user);
+												data.put("individu_mri", individu_mri);
 												data.put("policy_corporate_status", policy_corporate_notinforce);
 												data.put("user_corporate_notactive", user_corporate_notactive);
 												data.put("key", key);
@@ -797,7 +790,7 @@ public class LoginRegisterIndividualCorporateController {
 								// Kondisi token pada database tidak ada bisa kerena logout/ user baru
 								ArrayList<User> list = services.selectDetailedPolis(username);
 								// Check list polis pada username tersebut
-								if (list.size() > 0) {
+								if (list.size() > 0 || individu_mri) {
 									String today = df.format(new Date());
 									lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
 									lstUserSimultaneous.setUPDATE_DATE_TIME(today);
@@ -809,6 +802,7 @@ public class LoginRegisterIndividualCorporateController {
 									data.put("individual", individu);
 									data.put("corporate", corporate);
 									data.put("hr_user", hr_user);
+									data.put("individu_mri", individu_mri);
 									data.put("policy_corporate_status", policy_corporate_notinforce);
 									data.put("user_corporate_notactive", user_corporate_notactive);
 									data.put("key", key);
@@ -851,6 +845,7 @@ public class LoginRegisterIndividualCorporateController {
 					data.put("individual", individu);
 					data.put("corporate", corporate);
 					data.put("hr_user", hr_user);
+					data.put("individu_mri", individu_mri);
 					data.put("policy_corporate_status", policy_corporate_notinforce);
 					data.put("user_corporate_notactive", user_corporate_notactive);
 					data.put("key", key);
@@ -878,6 +873,7 @@ public class LoginRegisterIndividualCorporateController {
 									data.put("individual", individu);
 									data.put("corporate", corporate);
 									data.put("hr_user", hr_user);
+									data.put("individu_mri", individu_mri);
 									data.put("policy_corporate_status", policy_corporate_notinforce);
 									data.put("user_corporate_notactive", user_corporate_notactive);
 									data.put("key", key);
@@ -918,6 +914,7 @@ public class LoginRegisterIndividualCorporateController {
 											data.put("individual", individu);
 											data.put("corporate", corporate);
 											data.put("hr_user", hr_user);
+											data.put("individu_mri", individu_mri);
 											data.put("policy_corporate_status", policy_corporate_notinforce);
 											data.put("user_corporate_notactive", user_corporate_notactive);
 											data.put("key", key);
@@ -959,6 +956,7 @@ public class LoginRegisterIndividualCorporateController {
 								data.put("individual", individu);
 								data.put("corporate", corporate);
 								data.put("hr_user", hr_user);
+								data.put("individu_mri", individu_mri);
 								data.put("policy_corporate_status", policy_corporate_notinforce);
 								data.put("user_corporate_notactive", user_corporate_notactive);
 								data.put("key", key);

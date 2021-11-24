@@ -106,6 +106,8 @@ public class User implements Serializable {
 	private Integer premium_bill_online;
 	private Integer premium_bill_bankas_transfer;
 
+	private String msap_phone1;
+	private String msap_phone2;
 
 	public String getIp() {
 		return ip;
@@ -850,5 +852,21 @@ public class User implements Serializable {
 
 	public void setPremium_bill_bankas_transfer(Integer premium_bill_bankas_transfer) {
 		this.premium_bill_bankas_transfer = premium_bill_bankas_transfer;
+	}
+
+	public String getMsap_phone1() {
+		return msap_phone1;
+	}
+
+	public void setMsap_phone1(String msap_phone1) {
+		this.msap_phone1 = msap_phone1;
+	}
+
+	public String getMsap_phone2() {
+		return msap_phone2;
+	}
+
+	public void setMsap_phone2(String msap_phone2) {
+		this.msap_phone2 = msap_phone2;
 	}
 }

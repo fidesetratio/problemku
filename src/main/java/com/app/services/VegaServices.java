@@ -19,7 +19,7 @@ public class VegaServices {
 	@Autowired
 	private SqlSession sqlSession;
 	//VegaMapper
-	
+
 	// Stored Procedure
 	public void storedProcedureGetBiaya(String reg_spaj, String kode_regis, Integer kode_trans, BigDecimal amount,
 			Integer proses, Integer flag_insert) {
@@ -97,7 +97,7 @@ public class VegaServices {
 		dao.insertSwitching(hashMap);
 //			return (Integer) hashMap.get("MPT_ID");
 	}
-	
+
 	public void insertEndorse(String msen_endors_no, String reg_spaj, String msen_alasan, Integer lspd_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -140,7 +140,7 @@ public class VegaServices {
 		hashMap.put("unit_ke", unit_ke);
 		dao.insertDetailSwitching(hashMap);
 	}
-	
+
 	public void insertDetailEndorse(String msen_endors_no, Integer lsje_id, String msde_old1, String msde_old2, String msde_old3, String msde_old4, String msde_old5, String msde_old6,String msde_old7,String msde_old8,
 			String msde_old9,String msde_old10,String msde_old11,String msde_old12,String msde_old13,String msde_old14,String msde_old15,String msde_old16,String msde_old17,String msde_old18,String msde_old19,String msde_old20
 			,String msde_old21,String msde_old22,String msde_old23,String msde_old24,String msde_old25
@@ -178,7 +178,7 @@ public class VegaServices {
 		hashMap.put("msde_old23", msde_old23);
 		hashMap.put("msde_old24", msde_old24);
 		hashMap.put("msde_old25", msde_old25);
-		
+
 		hashMap.put("msde_new1", msde_new1);
 		hashMap.put("msde_new2", msde_new2);
 		hashMap.put("msde_new3", msde_new3);
@@ -199,14 +199,14 @@ public class VegaServices {
 		hashMap.put("msde_new18", msde_new18);
 		hashMap.put("msde_new19", msde_new19);
 		hashMap.put("msde_new20", msde_new20);
-		
+
 		hashMap.put("msde_new21", msde_new21);
 		hashMap.put("msde_new22", msde_new22);
 		hashMap.put("msde_new23", msde_new23);
 		hashMap.put("msde_new24", msde_new24);
 		hashMap.put("msde_new25", msde_new25);
-		
-		
+
+
 		dao.insertDetailEndorse(hashMap);
 	}
 
@@ -318,25 +318,25 @@ public class VegaServices {
 			return null;
 		}
 	}
-	
+
 	public BigDecimal selectCheckEnableClaimCorp(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectCheckEnableClaimCorp(no_polis);
 	}
 
-	
+
 	public String selectDynamicQuery(SQLAdapter adapter) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectDynamicQuery(adapter);
 	}
-	
+
 
 	public void updateDynamicQuery(SQLAdapter adapter ) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		 dao.updateDynamicQuery(adapter);
 
 	}
-	
+
 
 	public HashMap<String, Object> configuration() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
@@ -353,7 +353,7 @@ public class VegaServices {
 		return dao.selectEncrypt(value);
 	}
 
-	
+
 	public EndorseMapping selectMapEndorse(EndorseMapping endorse) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectMapEndorse(endorse);
@@ -381,12 +381,20 @@ public class VegaServices {
 
 	public Pemegang selectNomorPolisNotRegister(Pemegang pemegang) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		return dao.selectNomorPolisNotRegister(pemegang);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("mssm_pemegang", pemegang.getMssm_pemegang());
+		hashMap.put("lstb_id", pemegang.getLstb_id());
+		hashMap.put("mspo_policy_no", pemegang.getMspo_policy_no());
+		return dao.selectNomorPolisNotRegister(hashMap);
 	}
 
-	public Pemegang selectKtp(String mspe_no_identity) {
+	public Pemegang selectKtp(Pemegang pemegang) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		return dao.selectKtp(mspe_no_identity);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("mssm_pemegang", pemegang.getMssm_pemegang());
+		hashMap.put("lstb_id", pemegang.getLstb_id());
+		hashMap.put("mspe_no_identity", pemegang.getMspo_policy_no());
+		return dao.selectKtp(hashMap);
 	}
 
 	public User decryptPassword(User user) {
@@ -398,7 +406,7 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectPemegang(pemegang);
 	}
-	
+
 	public ArrayList<PenerimaManfaat> selectPenerimaManfaat(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectPenerimaManfaat(no_polis);
@@ -408,7 +416,7 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectDataUsulan(dataUsulan);
 	}
-	
+
 	public Sales selectSales(String msag_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectSales(msag_id);
@@ -439,7 +447,7 @@ public class VegaServices {
 		return dao.selectUnitLink(reg_spaj);
 	}
 
-	
+
 	public Double selectTotalTunggakanUnitLink(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectTotalTunggakanUnitLink(reg_spaj);
@@ -569,12 +577,12 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListKecamatanById(lskc_id);
 	}
-	
+
 	public String selectListKabupatenById(String lska_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListKabupatenById(lska_id);
 	}
-	
+
 	public ArrayList<Provinsi> selectListKelurahan(Integer lspr_id, Integer lska_id, Integer lskc_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -620,7 +628,7 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListInvestasiTopup(mpt_id);
 	}
-	
+
 	public ArrayList<Topup> selectListInvestasi(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListInvestasi(no_polis);
@@ -686,18 +694,18 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetMptId();
 	}
-	
+
 	public Integer selectGetLspdId(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetLspdId(reg_spaj);
 	}
-	
+
 	public String selectGetNoEndors() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetNoEndors();
 	}
 
-	
+
 	public String getInboxId() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.getInboxId();
@@ -816,7 +824,7 @@ public class VegaServices {
 		hashMap.put("pageSize", pageSize);
 		return dao.selectListSwitchingAndRedirection(hashMap);
 	}
-	
+
 	public ArrayList<SwitchingRedirection> selectListSwitching(String reg_spaj, Integer pageNumber,
 			Integer pageSize) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
@@ -826,7 +834,7 @@ public class VegaServices {
 		hashMap.put("pageSize", pageSize);
 		return dao.selectListSwitching(hashMap);
 	}
-	
+
 	public Integer selectListSwitchingTotal(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -842,7 +850,7 @@ public class VegaServices {
 		hashMap.put("pageSize", pageSize);
 		return dao.selectListRedirection(hashMap);
 	}
-	
+
 	public String selectFlagTrans(String mpt_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectFlagTrans(mpt_id);
@@ -855,7 +863,7 @@ public class VegaServices {
 		hashMap.put("arrayData", mpt_id);
 		return dao.selectViewSwitchingPaper(hashMap);
 	}
-	
+
 	public SwitchingRedirection selectViewSwitchingPaper_1(ArrayList<String> arrayData, String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -879,7 +887,7 @@ public class VegaServices {
 		hashMap.put("no_polis", no_polis);
 		return dao.selectViewSwitchingRedirection1(hashMap);
 	}
-	
+
 	public SwitchingRedirection selectViewSwitchingRedirection1_1(ArrayList<String> arrayData, String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -938,7 +946,7 @@ public class VegaServices {
 		return dao.selectListWithdraw(hashMap);
 	}
 
-	
+
 	public Integer selectListWithdrawTotal(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -1016,7 +1024,7 @@ public class VegaServices {
 		hashMap.put("pageSize", pageSize);
 		return dao.selectListClaimSubmission(hashMap);
 	}
-	
+
 	public ArrayList<ClaimLimit> selectClaimLimit(String no_polis) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -1243,7 +1251,7 @@ public class VegaServices {
 		hashMap.put("mcl_id", mcl_id);
 		return dao.selectCheckRekeningNasabahCorporate(hashMap);
 	}
-	
+
 	public User selectCheckPhoneNumberIndividu(String mspo_policy_no) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectCheckPhoneNumberIndividu(mspo_policy_no);
@@ -1268,7 +1276,7 @@ public class VegaServices {
 		data.put("USERNAME", user.getUSERNAME());
 		dao.updateUserKeyName(data);
 	}
-	
+
 	public void updateLspdId(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateLspdId(reg_spaj);
@@ -1306,9 +1314,9 @@ public class VegaServices {
 		params.put("positiony", positiony);
 		dao.deleteSavedProvider(params);
 	}
-	
 
-	
+
+
 	public void updateInboxStatus(User user) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateInboxStatus(user);
@@ -1335,17 +1343,17 @@ public class VegaServices {
 		userCorporate.setUsername(username);
 		dao.updateUnlinkAccountCorporate(userCorporate);
 	}
-	
+
 	public void updateFurtherClaimIndividu(String mpc_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateFurtherClaimIndividu(mpc_id);
 	}
-	
+
 	public void updateFurtherClaimCorporate(String mpcc_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.updateFurtherClaimCorporate(mpcc_id);
 	}
-	
+
 	public String selectCheckOTP(String no_hp, Integer jenis_id, Integer menu_id) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -1354,7 +1362,7 @@ public class VegaServices {
 		hashMap.put("menu_id", menu_id);
 		return dao.selectCheckOTP(hashMap);
 	}
-	
+
 	public Endorse selectGetPremiumHolidayDate(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetPremiumHolidayDate(reg_spaj);
@@ -1407,12 +1415,12 @@ public class VegaServices {
 		params.put("grouping", grouping);
 		params.put("ljse_id", lsje_id);
 		params.put("status", status);
-		
-		
+
+
 		return dao.selectListPolicyAlterationByendorseId(params);
 	}
 
-	
+
 	public ArrayList<DropdownPolicyAlteration> selectListPernikahan() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListPernikahan();
@@ -1422,7 +1430,7 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListPernikahanById(lsst_id);
 	}
-	
+
 	public ArrayList<DropdownPolicyAlteration> selectListAgama() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListAgama();
@@ -1431,22 +1439,22 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListAgamaById(lsag_id);
 	}
-	
+
 	public ArrayList<DropdownPolicyAlteration> selectListNegara() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListNegara();
 	}
-	
+
 	public ArrayList<DropdownPolicyAlteration> selectListJenisUsaha() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListJenisUsaha();
 	}
-	
+
 	public ArrayList<DropdownPolicyAlteration> selectListPekerjaan() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListPekerjaan();
 	}
-	
+
 	public ArrayList<DropdownPolicyAlteration> selectListBank() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListBank();
@@ -1463,7 +1471,7 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListNegaraById(lbn_id);
 	}
-	
+
 	public ArrayList<DropdownPolicyAlteration> selectListRelation() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectListRelation();
@@ -1479,10 +1487,10 @@ public class VegaServices {
 		dao.updateAgama(policyAlteration);
 	}
 
-	
-	
-	
-	
+
+
+
+
 	public void insertLstUlangan(String reg_spaj, String msen_alasan, Integer counter) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -1492,23 +1500,23 @@ public class VegaServices {
 			dao.insertLstUlangan(hashMap);
 	}
 
-	
+
 	public void insertMstInbox(MstInbox mstInbox) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.insertMstInbox(mstInbox);
 	}
-	
-	
+
+
 	public void insertSavedProvider(SavedProvider savedProvider) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		dao.insertSavedProvider(savedProvider);
 	}
-	
+
 	public List<SavedProvider> selectproviderbyusername(String username){
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectproviderbyusername(username);
 	}
-	
+
 	public String selectMclId_PP(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectMclId_PP(reg_spaj);
@@ -1588,7 +1596,7 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectCountListArticle();
 	}
-	
+
 	public KlaimKesehatan selectCountKlaimkesehatan(String spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		ViewClaim viewClaim = new ViewClaim();
@@ -1714,7 +1722,7 @@ public class VegaServices {
 		hashMap.put("endDate", endDate);
 		return dao.selectCountListBilling(hashMap);
 	}
-	
+
 	public MstOTPSimultaneousDet selectDetailOTP(MstOTPSimultaneousDet mstOTPSimultaneousDet) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectDetailOTP(mstOTPSimultaneousDet);
@@ -1746,5 +1754,32 @@ public class VegaServices {
 		hashMap.put("policy_number", policy_number);
 		hashMap.put("username", username);
 		return dao.selectDataPolisByPolisNo(hashMap);
+	}
+
+	public List<Pemegang> filterIndividuAndMri(String policy_number, String ktp){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("policy_number", policy_number);
+		hashMap.put("no_ktp", ktp);
+		return dao.filterIndividuAndMri(hashMap);
+	}
+
+	public List<Pemegang> filterByIdSimultanRegSpajNoPolis(String id_simultan, String policy_number, String reg_spaj){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("mspa_policy_number", policy_number);
+		hashMap.put("id_simultan", id_simultan);
+		hashMap.put("reg_spaj", reg_spaj);
+		return dao.filterByIdSimultanRegSpajNoPolis(hashMap);
+	}
+
+	public MRIdataPolis getDataMri(String no_polis){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectDataMri(no_polis);
+	}
+
+	public MRIdataPolis getDataMriBrosure(String no_polis){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectDataMriBrosure(no_polis);
 	}
 }

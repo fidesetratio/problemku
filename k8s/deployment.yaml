@@ -27,6 +27,8 @@ spec:
               mountPath: /etc/localtime
             - name: ekamedicare-mount
               mountPath: /mnt/Ekamedicare
+            - name: mri-mount
+              mountPath: /mnt/mri
           ports:
             - containerPort: 9092
       volumes:

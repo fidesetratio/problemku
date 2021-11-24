@@ -1121,6 +1121,7 @@
 		DECODE(a.msbi_paid, 1, 'Paid', 'OutS') paid,
 		a.msbi_paid_date tgl_bayar,
 		c.lku_symbol,
+		a.msbi_tahun_ke th_ke,
 		a.msbi_premi_ke premi_ke,
 		case when a.msbi_beg_date  <![CDATA[ <= ]]> trunc(sysdate) then 1 else 0 end flag_jt_tempo,
 		sum(b.msdb_premium - nvl(b.msdb_discount,0)) total_premi
@@ -1140,7 +1141,7 @@
 			AND a.msbi_beg_date <![CDATA[ <= ]]> to_date(#{endDate}, 'YYYY-MM') + interval '1' MONTH
 		</if>
 		group by a.reg_spaj, a.lku_id, a.msbi_beg_date, DECODE(a.msbi_paid, 1, 'Paid', 'OutS'), a.msbi_paid_date, c.lku_symbol,
-		a.MSBI_PREMI_KE,
+		a.MSBI_PREMI_KE, a.MSBI_TAHUN_KE,
 		case when a.msbi_beg_date <![CDATA[ <= ]]> trunc(sysdate) then 1 else 0 end
 		order by 3 desc
 	</select>

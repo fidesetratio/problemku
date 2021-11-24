@@ -143,9 +143,31 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                                     logger.error(
                                             "Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
                                 }
+
+                            }
+                            for (int i = 0; i < funds.length(); i++) {
+                                try {
+                                    Float percentage = funds.getJSONObject(i).getFloat("percentage");
+
+                                    Float percenVal = percentage / 100;
+                                    BigDecimal newPercelVal = new BigDecimal(percenVal).add(BigDecimal.ZERO);
+                                    BigDecimal mpt_jumlah = requestTopup.getMpt_jumlah().multiply(newPercelVal);
+
+                                    DetailBillingRequest billingRequest = new DetailBillingRequest();
+                                    billingRequest.setMpt_id(mptId.toString());
+                                    billingRequest.setReg_spaj(dataSPAJ.getReg_spaj());
+                                    billingRequest.setPremi_ke(0);
+                                    billingRequest.setTahun_ke(0);
+                                    billingRequest.setAmount(mpt_jumlah);
+                                    billingRequest.setFlag_bill(1);
+                                    services.insertMstMpolTransBill(billingRequest);
+                                } catch (Exception e){
+                                    logger.error(
+                                            "Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+                                }
                             }
 
-                            // Push Notification
+                                // Push Notification
                             String messagePushNotif;
 
                             if (language_id.equals(1)) {

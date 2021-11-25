@@ -54,6 +54,7 @@ public class Topup implements Serializable {
 	private Float mdu_persen;
 	private String topup_payor;
 	private Integer lsjb_id;
+	private Integer flag_source;
 
 	public String getTopup_payor() {
 		return topup_payor;
@@ -397,5 +398,13 @@ public class Topup implements Serializable {
 
 	public void setLsjb_id(Integer lsjb_id) {
 		this.lsjb_id = lsjb_id;
+	}
+
+	public Integer getFlag_source() {
+		return flag_source;
+	}
+
+	public void setFlag_source(Integer flag_source) {
+		this.flag_source = flag_source;
 	}
 }

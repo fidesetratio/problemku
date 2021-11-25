@@ -293,6 +293,7 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         topup.setPath_bsb(nameFile);
         topup.setUnique_code(requestTopup.getUnique_code());
         topup.setLsjb_id(lsjb_id);
+        topup.setFlag_source(93);
         return topup;
     }
 

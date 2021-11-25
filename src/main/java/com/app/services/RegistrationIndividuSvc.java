@@ -1,5 +1,6 @@
 package com.app.services;
 
+import com.app.model.User;
 import com.app.model.request.RequestFindAccount;
 import com.app.model.request.RequestRegisterQR;
 import com.app.model.request.RequestValidatePolicy;
@@ -20,4 +21,6 @@ public interface RegistrationIndividuSvc {
     boolean isIndividuMri(String id_simultan, String username);
 
     String esertMri(Path path, HttpServletRequest request, String username);
+
+    String noHpIndividuAndMri(User dataUserIndividual);
 }

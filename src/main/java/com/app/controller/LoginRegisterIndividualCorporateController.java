@@ -1575,8 +1575,7 @@ public class LoginRegisterIndividualCorporateController {
 				if ((individu.equals(true) && corporate.equals(false))
 						|| (individu.equals(true) && corporate.equals(true))) { // Forgot Password Individual
 					User dataUserIndividual = services.selectUserIndividual(username);
-					String no_hp = dataUserIndividual.getNo_hp() != null ? dataUserIndividual.getNo_hp()
-							: dataUserIndividual.getNo_hp2();
+					String no_hp = registrationIndividuSvc.noHpIndividuAndMri(dataUserIndividual);
 
 					if (no_hp == null) { // Check No HP empty or not
 						error = true;
@@ -1819,8 +1818,7 @@ public class LoginRegisterIndividualCorporateController {
 					logger.error("Path: " + request.getServletPath() + ", No. Polis/ KTP: " + ktp_or_nopolis
 							+ " Error: " + resultErr);
 				} else {
-					String no_hp = dataForgotUsername.getNo_hp() != null ? dataForgotUsername.getNo_hp()
-							: dataForgotUsername.getNo_hp2();
+					String no_hp = registrationIndividuSvc.noHpIndividuAndMri(dataForgotUsername);
 
 					if (no_hp == null) {
 						error = true;

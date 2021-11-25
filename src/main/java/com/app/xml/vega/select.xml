@@ -1042,26 +1042,28 @@
 	<select id="selectForgotUsernameIndividual" parameterType="HashMap" resultType="User">
 		select * from (
 			select distinct a.username,
-				b.mspo_policy_no,
-				b.reg_spaj,
-				b.mspo_beg_date,
-				d.mspe_no_identity,
-				d.mspe_date_birth, 
-				c.no_hp, 
-				c.no_hp2
+					b.mspo_policy_no,
+					b.reg_spaj,
+					b.mspo_beg_date,
+					d.mspe_no_identity,
+					d.mspe_date_birth,
+					c.no_hp,
+					c.no_hp2,
+					c.MSAP_PHONE1,
+					c.MSAP_PHONE2,
+					a.ID_SIMULTAN
 			from eka.lst_user_simultaneous a
-				inner join eka.mst_simultaneous e on a.id_simultan = e.id_simultan
-				inner join eka.mst_policy b on e.reg_spaj = b.reg_spaj
-				inner join eka.mst_address_billing c on b.reg_spaj = c.reg_spaj
-				inner join eka.mst_client_new d on d.mcl_id = b.mspo_policy_holder
-			where (b.mspo_policy_no = REPLACE(#{ktp_or_nopolis, jdbcType=VARCHAR}, '.')
-				or d.mspe_no_identity = REPLACE(#{ktp_or_nopolis, jdbcType=VARCHAR}, '.'))
-				and to_char(d.mspe_date_birth, 'DDMMYYYY') = #{dob, jdbcType=VARCHAR}
-				and a.flag_active = 1
-				and b.lstb_id = 1
+					inner join eka.mst_simultaneous e on a.id_simultan = e.id_simultan
+					inner join eka.mst_policy b on e.reg_spaj = b.reg_spaj
+					inner join eka.mst_address_billing c on b.reg_spaj = c.reg_spaj
+					inner join eka.mst_client_new d on d.mcl_id = e.MCL_ID
+			where
+				a.flag_active = 1
 				and b.lssp_id = 1
-				and e.mssm_pemegang = 1
-			order by b.mspo_beg_date desc)
+				and to_char(d.mspe_date_birth, 'DDMMYYYY') = #{dob, jdbcType=VARCHAR}
+				and b.mspo_policy_no = REPLACE(#{ktp_or_nopolis, jdbcType=VARCHAR}, '.') or
+			      d.mspe_no_identity = REPLACE(#{ktp_or_nopolis, jdbcType=VARCHAR}, '.')
+		 order by b.mspo_beg_date desc)
 		where rownum = 1
 	</select>
 

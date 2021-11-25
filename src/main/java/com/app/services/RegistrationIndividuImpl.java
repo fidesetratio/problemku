@@ -562,4 +562,15 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
         }
         return encode;
     }
+
+    @Override
+    public String noHpIndividuAndMri(User dataUserIndividual) {
+        String no_hp = "";
+        if (dataUserIndividual.getNo_hp() != null || dataUserIndividual.getNo_hp2() != null){
+            no_hp = dataUserIndividual.getNo_hp() != null ? dataUserIndividual.getNo_hp() : dataUserIndividual.getNo_hp2();
+        } else {
+            no_hp = dataUserIndividual.getMsap_phone1() != null ? dataUserIndividual.getMsap_phone1() : dataUserIndividual.getMsap_phone2();
+        }
+        return no_hp;
+    }
 }

@@ -250,7 +250,7 @@
 		           FROM eka.mst_simultaneous g, eka.lst_user_simultaneous h
 		          WHERE     g.id_simultan = h.id_simultan
 		                AND a.reg_spaj = g.reg_spaj
-		                AND g.mssm_pemegang = 1
+		                AND g.mssm_pemegang = g.MSSM_PEMEGANG
 		                AND  h.username = #{username, jdbcType=VARCHAR})
 		ORDER BY j.lms_id, a.mspo_policy_no_format
 	</select>

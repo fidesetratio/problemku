@@ -53,12 +53,11 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         Gson gson = new Gson();
         gson = builder.create();
         String req = gson.toJson(requestTopup);
-        String res = null;
+        String res;
         String message = null;
-        String mpt_id = null;
         HashMap<String, Object> data = new HashMap<>();
         String resultErr = null;
-        Boolean error = false;
+        Boolean error;
         HashMap<String, Object> map = new HashMap<>();
 
         String username = requestTopup.getUsername();
@@ -143,31 +142,18 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                                     logger.error(
                                             "Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
                                 }
-
-                            }
-                            for (int i = 0; i < funds.length(); i++) {
-                                try {
-                                    Float percentage = funds.getJSONObject(i).getFloat("percentage");
-
-                                    Float percenVal = percentage / 100;
-                                    BigDecimal newPercelVal = new BigDecimal(percenVal).add(BigDecimal.ZERO);
-                                    BigDecimal mpt_jumlah = requestTopup.getMpt_jumlah().multiply(newPercelVal);
-
-                                    DetailBillingRequest billingRequest = new DetailBillingRequest();
-                                    billingRequest.setMpt_id(mptId.toString());
-                                    billingRequest.setReg_spaj(dataSPAJ.getReg_spaj());
-                                    billingRequest.setPremi_ke(0);
-                                    billingRequest.setTahun_ke(0);
-                                    billingRequest.setAmount(mpt_jumlah);
-                                    billingRequest.setFlag_bill(1);
-                                    services.insertMstMpolTransBill(billingRequest);
-                                } catch (Exception e){
-                                    logger.error(
-                                            "Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
-                                }
                             }
 
-                                // Push Notification
+                            DetailBillingRequest billingRequest = new DetailBillingRequest();
+                            billingRequest.setMpt_id(mptId.toString());
+                            billingRequest.setReg_spaj(dataSPAJ.getReg_spaj());
+                            billingRequest.setPremi_ke(0);
+                            billingRequest.setTahun_ke(0);
+                            billingRequest.setAmount(requestTopup.getMpt_jumlah());
+                            billingRequest.setFlag_bill(1);
+                            services.insertMstMpolTransBill(billingRequest);
+
+                            // Push Notification
                             String messagePushNotif;
 
                             if (language_id.equals(1)) {

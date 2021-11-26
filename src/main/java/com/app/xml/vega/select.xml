@@ -6214,6 +6214,7 @@ SELECT distinct (CASE
 		a.mspo_policy_no                                                                            as no_polis,
 		utl_i18n.unescape_reference(RTRIM(XMLAGG(XMLELEMENT(E, C.MCL_FIRST
 		|| ' dan ')).EXTRACT('//text()'), ' dan '))                                             as peserta,
+		e.mspr_tsi 																			as uang_pertanggungan,
 		e.mspr_Premium - e.mspr_discount                                                            as premi_dasar,
 		nvl((select ex.mspr_Premium - ex.mspr_discount
 		from eka.mst_product_insured ex
@@ -6261,7 +6262,8 @@ SELECT distinct (CASE
 		f.lku_symbol,
 		g.lscb_pay_mode,
 		h.mcl_first,
-		b.reg_spaj
+		b.reg_spaj,
+		e.mspr_tsi
 	</select>
 	<select id="selectDataMriBrosure" parameterType="String" resultType="com.app.model.MRIdataPolis">
 		select d.mcl_first as nama_pemegang_polis,

@@ -442,6 +442,13 @@ public class VegaServices {
 		return dao.selectDetailedPolis(username);
 	}
 
+	public ArrayList<PolisMri> getListPolisMri(String username) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("username", username);
+		return dao.getListPolisMri(map);
+	}
+
 	public ArrayList<UnitLink> selectUnitLink(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectUnitLink(reg_spaj);

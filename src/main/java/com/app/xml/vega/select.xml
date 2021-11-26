@@ -250,7 +250,7 @@
 		           FROM eka.mst_simultaneous g, eka.lst_user_simultaneous h
 		          WHERE     g.id_simultan = h.id_simultan
 		                AND a.reg_spaj = g.reg_spaj
-		                AND g.mssm_pemegang = g.MSSM_PEMEGANG
+		                AND g.mssm_pemegang = 1
 		                AND  h.username = #{username, jdbcType=VARCHAR})
 		ORDER BY j.lms_id, a.mspo_policy_no_format
 	</select>
@@ -6281,5 +6281,32 @@ SELECT distinct (CASE
 		group by d.mcl_first,
 		a.mpi_mou,
 		a.mspo_policy_no
+	</select>
+
+	<select id="getListPolisMri" parameterType="HashMap" resultType="com.app.model.PolisMri">
+		SELECT	a.mspo_policy_no_format,
+		b.mcl_first nm_pp,
+		d.MCL_FIRST nm_tt,
+		f.LMS_STATUS_ID status
+		FROM eka.mst_policy a,
+		eka.mst_client b,
+		eka.MST_INSURED c,
+		eka.MST_CLIENT d,
+		eka.lst_policy_status e,
+		eka.lst_master_status f
+		WHERE
+		a.MSPO_POLICY_HOLDER = b.MCL_ID
+		and c.REG_SPAJ = a.REG_SPAJ
+		and d.MCL_ID = c.MSTE_INSURED
+		and f.LMS_ID = e.LMS_ID
+		and a.LSSP_ID = e.LSSP_ID
+		and
+		EXISTS
+		(SELECT 1
+		FROM eka.mst_simultaneous g, eka.lst_user_simultaneous h
+		WHERE     g.id_simultan = h.id_simultan
+		AND a.reg_spaj = g.reg_spaj
+		AND g.mssm_pemegang = 0
+		AND  h.username =  #{username, jdbcType=VARCHAR})
 	</select>
 </mapper>

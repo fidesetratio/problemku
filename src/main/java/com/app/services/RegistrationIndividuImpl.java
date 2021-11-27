@@ -540,6 +540,9 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
 
     @Override
     public boolean isIndividuMri(String id_simultan, String username) {
+        if (id_simultan == null || username == null){
+            return false;
+        }
         User user = services.selectUserIndividual(username);
         List<Pemegang> lst = services.filterByIdSimultanRegSpajNoPolis(id_simultan, user.getMspo_policy_no(), user.getReg_spaj());
         Optional<Pemegang> optionalPemegang = lst.stream().filter(v -> v.getType_individu() != null).findFirst();

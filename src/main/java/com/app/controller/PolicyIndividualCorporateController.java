@@ -2993,7 +2993,10 @@ public class PolicyIndividualCorporateController {
 					         public boolean accept (File dir, String name) { 
 					            return name.startsWith(group_claim);
 					         } 
-					      }; 
+					      };
+						  if (!dir.exists()){
+							  dir.mkdirs();
+						  }
 					      String[] children = dir.list(filter);
 					      if (children == null) {
 					         filename = null;					         

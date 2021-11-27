@@ -4929,9 +4929,10 @@
 		WHERE   SUBSTR(POLIS.NO_POLIS, 1, 1) = '0'
 	 </select>
 
+	
+
 	 <select id="selectListPesertaHR" parameterType="HashMap" resultType="com.app.model.UserHR">
-		 SELECT * FROM (
-		 SELECT  b.mspo_policy_no no_polis,
+		SELECT * FROM(SELECT  b.mspo_policy_no no_polis,
 		        b.reg_spaj,
 		        ins.mste_insured,
 		        c.mcl_first,
@@ -4951,7 +4952,7 @@
 		    and ins.reg_spaj = prod.reg_spaj
 		    AND b.mspo_policy_no = b.mspo_policy_no
 		    AND ins.mste_insured = c.mcl_id
-		    AND b.reg_spaj = e.reg_spaj
+		    AND b.reg_spaj = e.reg_spaj 
 		    AND d.lus_id = e.lus_id
 		    AND prod.mspr_active = 1
 		    AND b.mspo_policy_no = #{policy_no, jdbcType=VARCHAR}
@@ -4987,15 +4988,18 @@
 		            AND d.lus_id = e.lus_id
 		        GROUP BY b.mspo_policy_no, f.mcl_first, ins.mste_insured, ins.mste_no_reg, b.mspo_beg_date) gg
 		WHERE   b.mspo_oldpol_eb = gg.mspo_policy_no
-			AND b.mspo_policy_no = #{policy_no, jdbcType=VARCHAR}) where 1=1
+			AND b.mspo_policy_no = #{policy_no, jdbcType=VARCHAR}
+		    AND b.mspo_policy_holder = c.mcl_id
+		    AND b.mspo_policy_no IS NOT NULL
+			) WHERE 1=1
 		<if test="search_type == 1">
-		    AND mcl_first like '%'|| #{search_policy} ||'%'
+		    AND UPPER(mcl_first) like UPPER('%'|| #{search_policy} ||'%')
 		</if>
 		<if test="search_type == 0">
 		    AND UPPER(kode_reg) like UPPER('%'|| #{search_policy} ||'%')
 		</if>
 	</select>
-	
+
 	<select id="selectListReportHr" parameterType="HashMap" resultType="com.app.model.ReportHr">	 
 		SELECT *
 		FROM (SELECT ROWNUM rn,

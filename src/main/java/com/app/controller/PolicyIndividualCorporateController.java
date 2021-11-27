@@ -565,6 +565,7 @@ public class PolicyIndividualCorporateController {
 						hr_user.add(dataDetailsPolis);
 					}
 					map.put("data", hr_user);
+					map.put("size", listPesertaHRUser.size());
 					error = false;
 					message = "Successfully get data list polis";
 				} else {

@@ -5163,7 +5163,7 @@
 		            WHEN ID_STATUS IN (7)
 		                THEN 'Done'
 		        END AS status
-		FROM    HRD.HD_TICKETS@EBMUAT
+		FROM    HRD.HD_TICKETS@EB
 		WHERE   nik_req = REPLACE(#{no_polis, jdbcType=VARCHAR}, '.')
 		ORDER BY id_ticket desc
 	</select>

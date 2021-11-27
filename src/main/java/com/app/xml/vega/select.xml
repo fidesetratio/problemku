@@ -4987,15 +4987,13 @@
 		            AND d.lus_id = e.lus_id
 		        GROUP BY b.mspo_policy_no, f.mcl_first, ins.mste_insured, ins.mste_no_reg, b.mspo_beg_date) gg
 		WHERE   b.mspo_oldpol_eb = gg.mspo_policy_no
-			AND b.mspo_policy_no = #{policy_no, jdbcType=VARCHAR}
+			AND b.mspo_policy_no = #{policy_no, jdbcType=VARCHAR}) where 1=1
 		<if test="search_type == 1">
-		    AND c.mcl_first like '%'|| #{search_policy} ||'%'
+		    AND mcl_first like '%'|| #{search_policy} ||'%'
 		</if>
 		<if test="search_type == 0">
-		    AND UPPER(gg.mste_no_reg) like UPPER('%'|| #{search_policy} ||'%')
+		    AND UPPER(kode_reg) like UPPER('%'|| #{search_policy} ||'%')
 		</if>
-		    AND b.mspo_policy_holder = c.mcl_id
-		    AND b.mspo_policy_no IS NOT NULL) where 1=1
 	</select>
 	
 	<select id="selectListReportHr" parameterType="HashMap" resultType="com.app.model.ReportHr">	 

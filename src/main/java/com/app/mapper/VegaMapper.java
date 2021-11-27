@@ -102,6 +102,8 @@ public interface VegaMapper {
 
 	public ArrayList<User> selectDetailedPolis(String username);
 
+	public ArrayList<PolisMri> getListPolisMri(HashMap<String, Object> hashMap);
+
 	public Integer selectCountPhoneNumber(String phone_no);
 
 	public User selectForgotUsernameIndividual(HashMap<String, Object> hashMap);

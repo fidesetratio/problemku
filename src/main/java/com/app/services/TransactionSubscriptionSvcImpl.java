@@ -53,12 +53,11 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         Gson gson = new Gson();
         gson = builder.create();
         String req = gson.toJson(requestTopup);
-        String res = null;
+        String res;
         String message = null;
-        String mpt_id = null;
         HashMap<String, Object> data = new HashMap<>();
         String resultErr = null;
-        Boolean error = false;
+        Boolean error;
         HashMap<String, Object> map = new HashMap<>();
 
         String username = requestTopup.getUsername();
@@ -144,6 +143,15 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                                             "Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
                                 }
                             }
+
+                            DetailBillingRequest billingRequest = new DetailBillingRequest();
+                            billingRequest.setMpt_id(mptId.toString());
+                            billingRequest.setReg_spaj(dataSPAJ.getReg_spaj());
+                            billingRequest.setPremi_ke(0);
+                            billingRequest.setTahun_ke(0);
+                            billingRequest.setAmount(requestTopup.getMpt_jumlah());
+                            billingRequest.setFlag_bill(1);
+                            services.insertMstMpolTransBill(billingRequest);
 
                             // Push Notification
                             String messagePushNotif;
@@ -285,6 +293,7 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         topup.setPath_bsb(nameFile);
         topup.setUnique_code(requestTopup.getUnique_code());
         topup.setLsjb_id(lsjb_id);
+        topup.setFlag_source(93);
         return topup;
     }
 

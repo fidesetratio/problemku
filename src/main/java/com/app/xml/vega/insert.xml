@@ -99,7 +99,7 @@
 	<insert id="insertMstMpolTrans" parameterType="Topup">
 		insert into eka.mst_mpol_trans (mpt_id, req_date, reg_spaj, lt_id, lku_id, mpt_jumlah, mpt_unit, mpt_status, created_date, 
     	modified_date, lus_id, payor_name, payor_occupation, payor_income, payor_source_income, 
-    	flag_paid, tgl_coll_proses, path_bsb, reason_fu, mpt_jumlah_process, unique_code, lsjb_id)
+    	flag_paid, tgl_coll_proses, path_bsb, reason_fu, mpt_jumlah_process, unique_code, flag_source, lsjb_id)
 		values 
 		(#{mpt_id, jdbcType=BIGINT}, to_date(#{date_created_java1, jdbcType=VARCHAR}, 'DD/MM/YYYY'),
 		#{reg_spaj, jdbcType=VARCHAR}, #{lt_id, jdbcType=INTEGER}, #{lku_id, jdbcType=VARCHAR}, 
@@ -107,7 +107,7 @@
 		to_date(#{date_created_java2, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS'), null, #{lus_id, jdbcType=INTEGER}, 
 		#{payor_name, jdbcType=VARCHAR}, #{payor_occupation, jdbcType=VARCHAR}, #{payor_income, jdbcType=VARCHAR},
 		#{payor_source_income, jdbcType=VARCHAR}, 0, null, #{path_bsb, jdbcType=VARCHAR}, null, null, 
-		#{unique_code, jdbcType=INTEGER}, #{lsjb_id, jdbcType=INTEGER})
+		#{unique_code, jdbcType=INTEGER}, #{flag_source, jdbcType=INTEGER}, #{lsjb_id, jdbcType=INTEGER})
 	</insert>
 
 	<insert id="insertMstMpolTransBill" parameterType="com.app.model.DetailBillingRequest">

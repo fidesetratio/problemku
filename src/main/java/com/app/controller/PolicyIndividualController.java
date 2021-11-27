@@ -2797,6 +2797,8 @@ public class PolicyIndividualController {
                     data.put("masa_berlaku", mri.getMasa_berlaku_polis());
                     data.put("mata_uang", mri.getMata_uang());
                     data.put("cara_pembayaran", mri.getCara_pembayaran());
+                    data.put("uang_pertanggungan", mri.getUang_pertanggungan());
+                    data.put("pembayaran_premi", null);
 
 					Path pathBaru = Paths.get(mri.getEsert_baru() != null ? mri.getEsert_baru() : "");
 					Path pathLama = Paths.get(mri.getEsert_lama() != null ? mri.getEsert_lama() : "");
@@ -2812,7 +2814,7 @@ public class PolicyIndividualController {
                 }
             } else {
                 error = true;
-                message = "Can't get data list polis";
+                message = "Can't get data polis detail";
                 resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
                 logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
             }

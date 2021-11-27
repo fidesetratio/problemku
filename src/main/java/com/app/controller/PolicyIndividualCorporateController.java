@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.app.model.*;
+import com.app.services.RegistrationIndividuSvc;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -39,23 +41,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.feignclient.ServiceNotification;
-import com.app.model.Article;
-import com.app.model.Beneficiary;
-import com.app.model.Data;
-import com.app.model.Endorse;
-import com.app.model.Inbox;
-import com.app.model.LstUserSimultaneous;
-import com.app.model.Nav;
-import com.app.model.NotifToken;
-import com.app.model.Pemegang;
-import com.app.model.PolicyAlteration;
-import com.app.model.Provider;
-import com.app.model.PushNotif;
-import com.app.model.ReportHr;
-import com.app.model.User;
-import com.app.model.UserCorporate;
-import com.app.model.UserHR;
-import com.app.model.VersionCode;
 import com.app.model.request.RequestBanner;
 import com.app.model.request.RequestCountInboxUnread;
 import com.app.model.request.RequestDeleteAllInbox;
@@ -115,6 +100,9 @@ public class PolicyIndividualCorporateController {
 	
 	@Autowired
 	ServiceNotification serviceNotification;
+
+	@Autowired
+	private RegistrationIndividuSvc registrationIndividuSvc;
 
 	@Autowired
 	private VegaCustomResourceLoader customResourceLoader;
@@ -207,7 +195,9 @@ public class PolicyIndividualCorporateController {
 			if (customResourceLoader.validateCredential(username, key)) {
 				ArrayList<HashMap<String, Object>> corporate = new ArrayList<>();
 				ArrayList<HashMap<String, Object>> individu = new ArrayList<>();
+				ArrayList<HashMap<String, Object>> individuMri = new ArrayList<>();
 				Boolean is_individual = true;
+				Boolean is_individu_mri = true;
 				Boolean is_corporate = true;
 				Boolean policy_corporate_notinforce = false;
 
@@ -217,6 +207,7 @@ public class PolicyIndividualCorporateController {
 
 				// Individual
 				ArrayList<User> listPolisIndividu = services.selectDetailedPolis(username);
+				ArrayList<PolisMri> listPolisMri = services.getListPolisMri(username);
 
 				if (reg_spaj_register != null) {
 					if (!listPolisIndividu.isEmpty()) {
@@ -271,13 +262,30 @@ public class PolicyIndividualCorporateController {
 							}
 						}
 						is_individual = true;
+					} else if (!listPolisMri.isEmpty()){
+						for (PolisMri polis : listPolisMri){
+							HashMap<String, Object> mapper = new HashMap<>();
+							String no_polis = polis.getMspo_policy_no_format() != null
+									? polis.getMspo_policy_no_format()
+									: null;
+							mapper.put("policy_number", no_polis);
+							mapper.put("policy_holder",
+									polis.getNm_pp() != null ? polis.getNm_pp() : null);
+							mapper.put("insured", polis.getNm_tt() != null ? polis.getNm_tt() : null);
+							mapper.put("policy_status_label",
+									polis.getStatus() != null ? polis.getStatus() : null);
+							individuMri.add(mapper);
+						}
+						is_individu_mri = true;
 					} else {
 						is_individual = false;
+						is_individu_mri = false;
 						individu = null;
 					}
 				} else {
 					is_individual = false;
 					individu = null;
+					individuMri = null;
 				}
 
 				// Corporate
@@ -383,11 +391,12 @@ public class PolicyIndividualCorporateController {
 					corporate = null;
 				}
 
-				if ((individu == null) && (corporate == null)) {
+				if ((individu == null) && (corporate == null) && (individuMri == null)) {
 					error = true;
 					message = "Can't get data list polis";
 					data.put("corporate", corporate);
 					data.put("individual", individu);
+					data.put("individu_mri", is_individu_mri);
 					data.put("is_individual", false);
 					data.put("is_corporate", false);
 					data.put("policy_corporate_notinforce", false);
@@ -400,6 +409,8 @@ public class PolicyIndividualCorporateController {
 					data.put("corporate", corporate);
 					data.put("individual", individu);
 					data.put("is_individual", is_individual);
+					data.put("data_mri", individuMri);
+					data.put("individu_mri", is_individu_mri);
 					data.put("is_corporate", is_corporate);
 					data.put("policy_corporate_notinforce", policy_corporate_notinforce);
 				}

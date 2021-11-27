@@ -540,6 +540,9 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
 
     @Override
     public boolean isIndividuMri(String id_simultan, String username) {
+        if (id_simultan == null || username == null){
+            return false;
+        }
         User user = services.selectUserIndividual(username);
         List<Pemegang> lst = services.filterByIdSimultanRegSpajNoPolis(id_simultan, user.getMspo_policy_no(), user.getReg_spaj());
         Optional<Pemegang> optionalPemegang = lst.stream().filter(v -> v.getType_individu() != null).findFirst();
@@ -561,5 +564,16 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
             logger.error("Path: " + request.getServletPath() + " Username: " +username + " Error: " + e);
         }
         return encode;
+    }
+
+    @Override
+    public String noHpIndividuAndMri(User dataUserIndividual) {
+        String no_hp = "";
+        if (dataUserIndividual.getNo_hp() != null || dataUserIndividual.getNo_hp2() != null){
+            no_hp = dataUserIndividual.getNo_hp() != null ? dataUserIndividual.getNo_hp() : dataUserIndividual.getNo_hp2();
+        } else {
+            no_hp = dataUserIndividual.getMsap_phone1() != null ? dataUserIndividual.getMsap_phone1() : dataUserIndividual.getMsap_phone2();
+        }
+        return no_hp;
     }
 }

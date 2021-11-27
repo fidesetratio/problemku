@@ -27,5 +27,6 @@ public class MRIdataPolis implements Serializable {
     private String esert_baru;
     private String esert_lama;
     private String no_mou;
+    private BigDecimal uang_pertanggungan;
 
 }

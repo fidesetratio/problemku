@@ -3783,13 +3783,13 @@
 	<select id="selectCutoffTransactionLink" resultType="String">
 		select name
     	from eka.mst_config 
-    	where mc_id = 788
+    	where mc_id = '788'
 	</select>
 	
 	<select id="selectCutoffTransactionMagnaAndPrimeLink" resultType="String">
 		select name2
     	from eka.mst_config 
-    	where mc_id = 788
+    	where mc_id = '788'
 	</select>
 	
 	<select id="selectCheckDate" parameterType="String" resultType="Integer">

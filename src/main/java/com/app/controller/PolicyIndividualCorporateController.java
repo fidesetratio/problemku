@@ -3139,9 +3139,14 @@ public class PolicyIndividualCorporateController {
 			String tgl_input = tempPath[5].toString();
 			String no_batch = tempPath[6].toString();
 			String file_name = tempPath[8].toString();
-			String NewPathWS = pathDownloadReportHr + File.separator + tgl_input + File.separator + no_batch + File.separator + "Kwitansi" + File.separator + file_name;
+			String cek_path = pathDownloadReportHr + File.separator + tgl_input + File.separator + no_batch + File.separator + "Kwitansi";
+			String NewPathWS = cek_path + File.separator + file_name;
 			String file_type = "pdf";
 
+			File folder = new File(cek_path);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
 			// path file yang mau di download
 			File file = new File(NewPathWS);
 

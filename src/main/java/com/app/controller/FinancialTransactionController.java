@@ -1041,12 +1041,23 @@ public class FinancialTransactionController {
 				Pemegang paramGetSPAJ = new Pemegang();
 				paramGetSPAJ.setMspo_policy_no(no_polis);
 				Pemegang dataSPAJ = services.selectGetSPAJ(paramGetSPAJ);
-				File folder = new File(
-						pathFolder + File.separator + kodeCabang + File.separator + dataSPAJ.getReg_spaj() + File.separator + "Bukti_Transaksi");
 
+				MpolTransData mpolTransData = services.getMpolTransByMptId(requestDownloadProofTransaction.getMpt_id());
+				String type="";
+				if (mpolTransData != null){
+					if (mpolTransData.getLt_id().equals(2)){
+						type = "Top_Up_Tunggal";
+					} else if (mpolTransData.getLt_id().equals(22)){
+						type = "Premium_Billing";
+					}
+				}
+				File folder = new File(
+						pathFolder + File.separator + kodeCabang + File.separator + dataSPAJ.getReg_spaj() + File.separator + "Bukti_Transaksi" + (!type.equals("") ? String.format("%s%s", File.separator, type) : ""));
+				if (!folder.exists()){
+					folder.mkdirs();
+				}
 				// Path file
 				String pathWS = folder.toString() + File.separator + requestDownloadProofTransaction.getMpt_id() + ".pdf";
-
 				// Path file yang mau di download
 				File file = new File(pathWS);
 

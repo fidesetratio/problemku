@@ -1789,4 +1789,10 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectDataMriBrosure(no_polis);
 	}
+
+	public MpolTransData getMpolTransByMptId(String mpt_id){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectMpolTransByMptId(mpt_id);
+	}
+
 }

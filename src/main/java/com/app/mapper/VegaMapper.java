@@ -506,4 +506,6 @@ public interface VegaMapper {
 	public MRIdataPolis selectDataMri(String no_polis);
 
 	public MRIdataPolis selectDataMriBrosure(String no_polis);
+
+	public MpolTransData selectMpolTransByMptId(String mpt_id);
 }

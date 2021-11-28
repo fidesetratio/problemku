@@ -111,66 +111,74 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                             String payMethod = (String) getMapPaymentType(requestTopup).get("payment_type");
                             Integer lsjb_id = (Integer) getMapPaymentType(requestTopup).get("lsjb_id");
 
-                            String nameFile = String.format("%s_%s_%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Top Up Tunggal", mptId, ".pdf");
-                            String path = String.format("%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Top Up Tunggal");
+                            String nameFile = String.format("%s/%s/%s/%s/%s/%s%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi", "Top_Up_Tunggal", mptId, ".pdf");
+                            String path = String.format("%s/%s/%s/%s/%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi", "Top_Up_Tunggal");
 
-                            createNewFile(path, requestTopup, mptId, request, username);
+                            Boolean uploadFile = customResourceLoader.uploadFileToStorage(path, requestTopup.getBsb(),
+                                    String.format("%s.pdf", mptId), username, request.getServletPath(), null);
+                            if (uploadFile.equals(true)) {
+                                // Insert MPOL_TRANS
+                                Topup topup = getData(mptId, dataSPAJ, requestTopup, nameFile, lsjb_id);
+                                services.insertMstMpolTrans(topup);
 
-                            // Insert MPOL_TRANS
-                            Topup topup = getData(mptId, dataSPAJ, requestTopup, nameFile, lsjb_id);
-                            services.insertMstMpolTrans(topup);
+                                // Insert MPOL_TRANS_DET
+                                JSONArray funds = new JSONArray(requestTopup.getFunds());
+                                for (int i = 0; i < funds.length(); i++) {
+                                    try {
+                                        String lji_id = funds.getJSONObject(i).getString("lji_id");
+                                        Float percentage = funds.getJSONObject(i).getFloat("percentage");
 
-                            // Insert MPOL_TRANS_DET
-                            JSONArray funds = new JSONArray(requestTopup.getFunds());
-                            for (int i = 0; i < funds.length(); i++) {
-                                try {
-                                    String lji_id = funds.getJSONObject(i).getString("lji_id");
-                                    Float percentage = funds.getJSONObject(i).getFloat("percentage");
+                                        Float percenVal = percentage / 100;
+                                        BigDecimal newPercelVal = new BigDecimal(percenVal).add(BigDecimal.ZERO);
+                                        BigDecimal mpt_jumlah = requestTopup.getMpt_jumlah().multiply(newPercelVal);
 
-                                    Float percenVal = percentage / 100;
-                                    BigDecimal newPercelVal = new BigDecimal(percenVal).add(BigDecimal.ZERO);
-                                    BigDecimal mpt_jumlah = requestTopup.getMpt_jumlah().multiply(newPercelVal);
-
-                                    Topup topUpDetails = new Topup();
-                                    topUpDetails.setMpt_id(mptId.toString());
-                                    topUpDetails.setLji_id(lji_id);
-                                    topUpDetails.setMpt_persen(percentage);
-                                    topUpDetails.setMpt_jumlah_det(mpt_jumlah);
-                                    topUpDetails.setMpt_unit(null);
-                                    services.insertMstMpolTransDet(topUpDetails);
-                                } catch (Exception e) {
-                                    logger.error(
-                                            "Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+                                        Topup topUpDetails = new Topup();
+                                        topUpDetails.setMpt_id(mptId.toString());
+                                        topUpDetails.setLji_id(lji_id);
+                                        topUpDetails.setMpt_persen(percentage);
+                                        topUpDetails.setMpt_jumlah_det(mpt_jumlah);
+                                        topUpDetails.setMpt_unit(null);
+                                        services.insertMstMpolTransDet(topUpDetails);
+                                    } catch (Exception e) {
+                                        logger.error(
+                                                "Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+                                    }
                                 }
-                            }
 
-                            DetailBillingRequest billingRequest = new DetailBillingRequest();
-                            billingRequest.setMpt_id(mptId.toString());
-                            billingRequest.setReg_spaj(dataSPAJ.getReg_spaj());
-                            billingRequest.setPremi_ke(0);
-                            billingRequest.setTahun_ke(0);
-                            billingRequest.setAmount(requestTopup.getMpt_jumlah());
-                            billingRequest.setFlag_bill(1);
-                            services.insertMstMpolTransBill(billingRequest);
+                                DetailBillingRequest billingRequest = new DetailBillingRequest();
+                                billingRequest.setMpt_id(mptId.toString());
+                                billingRequest.setReg_spaj(dataSPAJ.getReg_spaj());
+                                billingRequest.setPremi_ke(0);
+                                billingRequest.setTahun_ke(0);
+                                billingRequest.setAmount(requestTopup.getMpt_jumlah());
+                                billingRequest.setFlag_bill(1);
+                                services.insertMstMpolTransBill(billingRequest);
 
-                            // Push Notification
-                            String messagePushNotif;
+                                // Push Notification
+                                String messagePushNotif;
 
-                            if (language_id.equals(1)) {
-                                messagePushNotif = "Nasabah Yth, Bukti Pembayaran Premi Top Up Single sebesar " + mataUang + " "
-                                        + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " melalui " + payMethod
-                                        + " telah diterima";
+                                if (language_id.equals(1)) {
+                                    messagePushNotif = "Nasabah Yth, Bukti Pembayaran Premi Top Up Single sebesar " + mataUang + " "
+                                            + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " melalui " + payMethod
+                                            + " telah diterima";
+                                } else {
+                                    messagePushNotif = "Dear Customer, Single Top Up Premium Payment Slip of " + mataUang + " "
+                                            + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " via " + payMethod
+                                            + " has been received";
+                                }
+
+                                customResourceLoader.pushNotif(username, messagePushNotif, no_polis, dataSPAJ.getReg_spaj(), 5, 0);
+
+                                error = false;
+                                message = "Top up submitted successfully";
+                                data.put("mpt_id", mptId.toString());
                             } else {
-                                messagePushNotif = "Dear Customer, Single Top Up Premium Payment Slip of " + mataUang + " "
-                                        + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " via " + payMethod
-                                        + " has been received";
+                                data = null;
+                                error = true;
+                                message = "Failed upload file";
+                                logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+                                        + resultErr);
                             }
-
-                            customResourceLoader.pushNotif(username, messagePushNotif, no_polis, dataSPAJ.getReg_spaj(), 5, 0);
-
-                            error = false;
-                            message = "Top up submitted successfully";
-                            data.put("mpt_id", mptId.toString());
                         }
 
                     } else {
@@ -194,48 +202,57 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                         String payMethod = (String) getMapPaymentType(requestTopup).get("payment_type");
                         Integer lsjb_id = (Integer) getMapPaymentType(requestTopup).get("lsjb_id");
 
-                        String nameFile = String.format("%s_%s_%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Premium Billing", mptId, ".pdf");
-                        String path = String.format("%s_%s_%s_%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi - Premium Billing");
+                        String nameFile = String.format("%s/%s/%s/%s/%s/%s%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi", "Premium_Billing", mptId, ".pdf");
+                        String path = String.format("%s/%s/%s/%s/%s", storageMpolicy, kodeCabang, dataSPAJ.getReg_spaj(), "Bukti_Transaksi", "Premium_Billing");
+                        Boolean uploadFile = customResourceLoader.uploadFileToStorage(path, requestTopup.getBsb(),
+                                String.format("%s.pdf", mptId), username, request.getServletPath(), null);
 
-                        createNewFile(path, requestTopup, mptId, request, username);
-                        Topup topup = getData(mptId, dataSPAJ, requestTopup, nameFile, lsjb_id);
+                        if (uploadFile.equals(true)) {
+                            Topup topup = getData(mptId, dataSPAJ, requestTopup, nameFile, lsjb_id);
+                            services.insertMstMpolTrans(topup); // Insert MPOL_TRANS
+                            JSONArray billings = new JSONArray(requestTopup.getBillings());
 
-                        services.insertMstMpolTrans(topup); // Insert MPOL_TRANS
-                        JSONArray billings = new JSONArray(requestTopup.getBillings());
+                            for (int i = 0; i < billings.length(); i++) {
+                                Integer tahun_ke = billings.getJSONObject(i).getInt("tahun_ke");
+                                Integer premi_ke = billings.getJSONObject(i).getInt("premi_ke");
+                                BigDecimal amount = billings.getJSONObject(i).getBigDecimal("amount");
+                                Integer flag_bill = billings.getJSONObject(i).getInt("flag_bill");
+                                DetailBillingRequest billingRequest = new DetailBillingRequest();
+                                billingRequest.setMpt_id(topup.getMpt_id());
+                                billingRequest.setReg_spaj(dataSPAJ.getReg_spaj());
+                                billingRequest.setPremi_ke(premi_ke);
+                                billingRequest.setTahun_ke(tahun_ke);
+                                billingRequest.setAmount(amount);
+                                billingRequest.setFlag_bill(flag_bill);
+                                services.insertMstMpolTransBill(billingRequest);
+                            }
 
-                        for (int i = 0; i < billings.length(); i++) {
-                            Integer tahun_ke = billings.getJSONObject(i).getInt("tahun_ke");
-                            Integer premi_ke = billings.getJSONObject(i).getInt("premi_ke");
-                            BigDecimal amount = billings.getJSONObject(i).getBigDecimal("amount");
-                            Integer flag_bill = billings.getJSONObject(i).getInt("flag_bill");
-                            DetailBillingRequest billingRequest = new DetailBillingRequest();
-                            billingRequest.setMpt_id(topup.getMpt_id());
-                            billingRequest.setReg_spaj(dataSPAJ.getReg_spaj());
-                            billingRequest.setPremi_ke(premi_ke);
-                            billingRequest.setTahun_ke(tahun_ke);
-                            billingRequest.setAmount(amount);
-                            billingRequest.setFlag_bill(flag_bill);
-                            services.insertMstMpolTransBill(billingRequest);
-                        }
+                            // Push Notification
+                            String messagePushNotif;
 
-                        // Push Notification
-                        String messagePushNotif;
+                            if (language_id.equals(1)) {
+                                messagePushNotif = "Nasabah Yth, Bukti Pembayaran Premi Premium Billing sebesar " + mataUang + " "
+                                        + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " melalui " + payMethod
+                                        + " telah diterima";
+                            } else {
+                                messagePushNotif = "Dear Customer, Premium Billing Payment Slip of " + mataUang + " "
+                                        + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " via " + payMethod
+                                        + " has been received";
+                            }
 
-                        if (language_id.equals(1)) {
-                            messagePushNotif = "Nasabah Yth, Bukti Pembayaran Premi Premium Billing sebesar " + mataUang + " "
-                                    + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " melalui " + payMethod
-                                    + " telah diterima";
+                            customResourceLoader.pushNotif(username, messagePushNotif, no_polis, dataSPAJ.getReg_spaj(), 5, 0);
+
+                            error = false;
+                            message = "Premium billing submitted successfully";
+                            data.put("mpt_id", mptId.toString());
                         } else {
-                            messagePushNotif = "Dear Customer, Premium Billing Payment Slip of " + mataUang + " "
-                                    + nfZeroTwo.format(requestTopup.getMpt_jumlah()) + " via " + payMethod
-                                    + " has been received";
+                            data = null;
+                            error = true;
+                            message = "Failed upload file";
+                            resultErr = "File PDF Corrupt, MPT_ID: " + mptId + ", Name File: " +  String.format("%s.pdf", mptId);
+                            logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+                                    + resultErr);
                         }
-
-                        customResourceLoader.pushNotif(username, messagePushNotif, no_polis, dataSPAJ.getReg_spaj(), 5, 0);
-
-                        error = false;
-                        message = "Premium billing submitted successfully";
-                        data.put("mpt_id", mptId.toString());
                     } else {
                         error = true;
                         message = "Premium billing fail submit, detail billing not found";
@@ -300,15 +317,15 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
     private void createNewFile(String path, RequestTopup requestTopup, BigInteger mptId, HttpServletRequest request,
                                String username) throws IOException {
         // Upload Proof Transaction
+
         File folder = new File(path);
         if (!folder.exists()) {
             folder.mkdirs();
         }
 
         byte[] imageByte = Base64.getDecoder().decode(requestTopup.getBsb());
-        String directory = path + File.separator + mptId + ".pdf";
+        String directory = path + File.separator + String.format("%s.pdf", mptId);
         new FileOutputStream(directory).write(imageByte);
-
         try {
             Document document = new Document();
 

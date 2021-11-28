@@ -6308,4 +6308,7 @@ SELECT distinct (CASE
 		AND g.mssm_pemegang = 0
 		AND  h.username =  #{username, jdbcType=VARCHAR})
 	</select>
+	<select id="selectMpolTransByMptId" resultType="com.app.model.MpolTransData" parameterType="String">
+		SELECT * FROM EKA.MST_MPOL_TRANS WHERE MPT_ID =#{mpt_id, jdbcType=VARCHAR}
+	</select>
 </mapper>

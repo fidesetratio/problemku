@@ -2997,7 +2997,7 @@ public class PolicyIndividualCorporateController {
 						  if (!dir.exists()){
 							  dir.mkdirs();
 						  }
-					      String[] children = dir.list(filter);
+					      String[] children = dir.list();
 					      if (children == null) {
 					         filename = null;					         
 					      } else { 

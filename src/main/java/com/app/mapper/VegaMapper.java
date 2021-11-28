@@ -177,6 +177,8 @@ public interface VegaMapper {
 
 	public Rekening selectRekeningForTopup(String reg_spaj);
 
+	public Rekening selectRekeningForBillingPrem(String reg_spaj);
+
 	public ArrayList<StableLink> selectDetailStableLink(User user);
 
 	public BigInteger selectGetMptId();

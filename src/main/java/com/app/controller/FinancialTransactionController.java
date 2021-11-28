@@ -251,13 +251,19 @@ public class FinancialTransactionController {
 		String key = requestRekening.getKey();
 		String no_polis = requestRekening.getNo_polis();
 		Integer language_id = requestRekening.getLanguage_id();
+		Integer keyId = requestRekening.getKeyId();
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Pemegang paramCheckSpaj = new Pemegang();
 				paramCheckSpaj.setMspo_policy_no(no_polis);
 				Pemegang dataSpaj = services.selectGetSPAJ(paramCheckSpaj);
-				if (dataSpaj != null) {
+				if (dataSpaj != null && keyId !=null) {
 					Rekening dataRekening = services.selectRekeningForTopup(dataSpaj.getReg_spaj());
+					if (keyId > 0){
+						dataRekening = services.selectRekeningForBillingPrem(dataSpaj.getReg_spaj());
+					}
+
 					if (dataRekening != null) {
 						data.put("bank", dataRekening.getBank());
 						data.put("rekening", dataRekening.getRekening());

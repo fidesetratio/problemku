@@ -12,6 +12,7 @@ public class RequestRekening implements Serializable {
 	private String key;
 	private String no_polis;
 	private Integer language_id;
+	private Integer keyId = 0;
 
 	public String getUsername() {
 		return username;
@@ -43,5 +44,13 @@ public class RequestRekening implements Serializable {
 
 	public void setLanguage_id(Integer language_id) {
 		this.language_id = language_id;
+	}
+
+	public Integer getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(Integer keyId) {
+		this.keyId = keyId;
 	}
 }

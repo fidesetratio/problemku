@@ -692,6 +692,11 @@ public class VegaServices {
 		return dao.selectRekeningForTopup(reg_spaj);
 	}
 
+	public Rekening selectRekeningForBillingPrem(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectRekeningForBillingPrem(reg_spaj);
+	}
+
 	public ArrayList<StableLink> selectDetailStableLink(User user) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectDetailStableLink(user);

@@ -6323,10 +6323,8 @@ SELECT distinct (CASE
 		to_char(a.mspo_end_date, 'dd/mm/yyyy')                                                      as masa_berlaku_polis,
 		f.lku_symbol                                                                                as mata_uang,
 		g.lscb_pay_mode                                                                             as cara_pembayaran,
-		TRIM('\\storage.sinarmasmsiglife.co.id\pdfmri\Sertifikat\' || Trim(h.mcl_first) || '\' ||
-		trim(a.mspo_policy_No) || ' SERT.pdf')                                                 as esert_baru,
-		TRIM('\\storage.sinarmasmsiglife.co.id\pdfmri\Sertifikat\' || Trim(h.mcl_first) || '\SERT ' ||
-		trim(a.mspo_policy_No) || '.pdf')                                                      as esert_lama
+		Trim(h.mcl_first) as esert_baru,
+		Trim(h.mcl_first) as esert_lama
 		from eka.mst_policy a
 		inner join eka.mst_insured b
 		on a.reg_spaj = b.reg_Spaj

@@ -218,7 +218,8 @@
 		        THEN 'true'
 		    ELSE 'false'
 		 END
-		    AS ENABLE_CUTI_PREMI
+		    AS ENABLE_CUTI_PREMI,
+		a.REG_SPAJ
 		FROM eka.mst_policy a,
 		 eka.mst_insured i,
 		 eka.mst_product_insured b,

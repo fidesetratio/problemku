@@ -251,7 +251,7 @@ public class PolicyIndividualCorporateController {
 									}
 									
 									mapper.put("account_type", "individual");
-									mapper.put("reg_spaj", reg_spaj_register);
+									mapper.put("reg_spaj", dataTemp.getReg_spaj());
 									mapper.put("tipe_polis", dataTemp.getTipe_polis());
 								}
 

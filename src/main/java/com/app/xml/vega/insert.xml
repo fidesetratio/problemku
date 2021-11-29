@@ -509,7 +509,7 @@
 	</insert>
 	
 	<insert id="insertSubmitEndorseHr" parameterType="HashMap">
-		insert into hrd.hd_tickets@EBMUAT (
+		insert into hrd.hd_tickets@EB (
 		id_ticket, create_date, id_group, nik_req, phone, subject, description, id_status, nik_pic, id_kriteria, 
 		id_rag, last_update, update_by, nik_uat, cc_email, id_priority, msth_sts_info, system)
 		values (
@@ -518,7 +518,7 @@
 	</insert>
 	
 	<insert id="insertSubmitHistoryEndorse" parameterType="HashMap">
-		insert into hrd.hd_history@EBMUAT (
+		insert into hrd.hd_history@EB (
 		id_ticket, tgl_update, history, update_by) 
 		values (
 		#{id_ticket, jdbcType=VARCHAR}, SYSDATE, #{history, jdbcType=VARCHAR}, #{update_by, jdbcType=VARCHAR})

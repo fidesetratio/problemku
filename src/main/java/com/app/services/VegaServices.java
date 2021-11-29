@@ -692,6 +692,11 @@ public class VegaServices {
 		return dao.selectRekeningForTopup(reg_spaj);
 	}
 
+	public Rekening selectRekeningForBillingPrem(String reg_spaj) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectRekeningForBillingPrem(reg_spaj);
+	}
+
 	public ArrayList<StableLink> selectDetailStableLink(User user) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectDetailStableLink(user);
@@ -1789,4 +1794,10 @@ public class VegaServices {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectDataMriBrosure(no_polis);
 	}
+
+	public MpolTransData getMpolTransByMptId(String mpt_id){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectMpolTransByMptId(mpt_id);
+	}
+
 }

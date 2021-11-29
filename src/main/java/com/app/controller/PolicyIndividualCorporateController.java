@@ -565,6 +565,7 @@ public class PolicyIndividualCorporateController {
 						hr_user.add(dataDetailsPolis);
 					}
 					map.put("data", hr_user);
+					map.put("size", listPesertaHRUser.size());
 					error = false;
 					message = "Successfully get data list polis";
 				} else {
@@ -2992,8 +2993,11 @@ public class PolicyIndividualCorporateController {
 					         public boolean accept (File dir, String name) { 
 					            return name.startsWith(group_claim);
 					         } 
-					      }; 
-					      String[] children = dir.list(filter);
+					      };
+						  if (!dir.exists()){
+							  dir.mkdirs();
+						  }
+					      String[] children = dir.list();
 					      if (children == null) {
 					         filename = null;					         
 					      } else { 
@@ -3135,9 +3139,14 @@ public class PolicyIndividualCorporateController {
 			String tgl_input = tempPath[5].toString();
 			String no_batch = tempPath[6].toString();
 			String file_name = tempPath[8].toString();
-			String NewPathWS = pathDownloadReportHr + File.separator + tgl_input + File.separator + no_batch + File.separator + "Kwitansi" + File.separator + file_name;
+			String cek_path = pathDownloadReportHr + File.separator + tgl_input + File.separator + no_batch + File.separator + "Kwitansi";
+			String NewPathWS = cek_path + File.separator + file_name;
 			String file_type = "pdf";
 
+			File folder = new File(cek_path);
+			if (!folder.exists()) {
+				folder.mkdirs();
+			}
 			// path file yang mau di download
 			File file = new File(NewPathWS);
 

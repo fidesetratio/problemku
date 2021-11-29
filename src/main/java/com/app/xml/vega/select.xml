@@ -3540,6 +3540,10 @@
 	<select id="selectCheckOTP" parameterType="HashMap" resultType="String">
 		select otp_no from eka.mst_otp_simultaneous where username = #{no_hp, jdbcType=VARCHAR} and menu_id = #{menu_id, jdbcType=INTEGER} order by id_otp desc fetch first row only
 	</select>
+
+	<select id="selectTopActiveOtp" resultType="com.app.model.OtpTest">
+		select username, OTP_NO from eka.mst_otp_simultaneous where STATUS='ACTIVE' order by id_otp desc fetch first row only
+	</select>
 	
 	<select id="selectCountTransId" parameterType="String" resultType="Integer">
 		select count(*) from (

@@ -495,7 +495,7 @@
 		        where count_terhutang = 1) as periode_premi_terhutang,
 		        j.mar_acc_no as nomor_rekening,
         		c.mspo_pay_period as lama_pembayaran,
-        		c.mspo_ao
+				nvl(c.mspo_ao,select msag_id from eka.mst_agent_prod where reg_spaj = c.reg_spaj and lsle_id=4) as mspo_ao
 		FROM    eka.mst_product_insured a,
 		        eka.lst_det_bisnis b,
 		        eka.mst_policy c,

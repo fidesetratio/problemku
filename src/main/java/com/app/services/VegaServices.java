@@ -1805,4 +1805,9 @@ public class VegaServices {
 		return dao.selectMpolTransByMptId(mpt_id);
 	}
 
+	public String getConfigAdmedika(){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectConfigAdmedika();
+	}
+
 }

@@ -6406,4 +6406,7 @@ SELECT distinct (CASE
 	<select id="selectMpolTransByMptId" resultType="com.app.model.MpolTransData" parameterType="String">
 		SELECT * FROM EKA.MST_MPOL_TRANS WHERE MPT_ID =#{mpt_id, jdbcType=VARCHAR}
 	</select>
+	<select id="selectConfigAdmedika" resultType="String">
+		select name from EKA.MST_CONFIG where APP_ID=93 and MC_ID = 'V01'
+	</select>
 </mapper>

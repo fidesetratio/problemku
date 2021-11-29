@@ -71,6 +71,9 @@ public class PolicyIndividualController {
 	@Value("${path.direct.notification}")
 	private String pathDirectNotification;
 
+	@Value("${path.storage.mri}")
+	private String storagePdfMri;
+
 	@Value("${link.update.activity}")
 	private String linkUpdateActivity;
 
@@ -2783,6 +2786,8 @@ public class PolicyIndividualController {
 		HashMap<String, Object> data = new HashMap<>();
         String username = requestListPolis.getUsername();
         String key = requestListPolis.getKey();
+		String basePath = storagePdfMri;
+
 		try {
 			User dataActivityUser = services.selectUserIndividual(username);
             if (customResourceLoader.validateCredential(username, key)){
@@ -2800,11 +2805,17 @@ public class PolicyIndividualController {
                     data.put("uang_pertanggungan", mri.getUang_pertanggungan());
                     data.put("pembayaran_premi", null);
 
-					Path pathBaru = Paths.get(mri.getEsert_baru() != null ? mri.getEsert_baru() : "");
-					Path pathLama = Paths.get(mri.getEsert_lama() != null ? mri.getEsert_lama() : "");
+					String pathBaru = String.format("%s/%s", basePath, mri.getEsert_baru() != null ? mri.getEsert_baru() : "");
+					String pathLama = String.format("%s/%s", basePath, mri.getEsert_lama() != null ? mri.getEsert_lama() : "");
 
-					data.put("esert_baru", registrationIndividuSvc.esertMri(pathBaru, request, username));
-                    data.put("esert_lama", registrationIndividuSvc.esertMri(pathLama, request, username));
+					File folderBaru = new File(pathBaru);
+					File folderLama = new File(pathLama);
+					if (!folderBaru.exists() || !folderLama.exists() ) {
+						folderBaru.mkdirs();
+						folderLama.mkdirs();
+					}
+					data.put("esert_baru", String.format("%s/%s", pathBaru, mri.getNo_polis() + " SERT.pdf"));
+                    data.put("esert_lama", String.format("%s/%s", pathLama, "SERT " + mri.getNo_polis() + ".pdf"));
                     message = "Successfully get data list polis";
                 } else {
                     error = true;
@@ -2823,10 +2834,120 @@ public class PolicyIndividualController {
 			message = ResponseMessage.ERROR_SYSTEM;
 			logger.error("Path: " + request.getServletPath() + " Username: " + requestListPolis.getUsername() + " Error: " + e);
 		}
+
+		customResourceLoader.updateActivity(username);
+
 		map.put("error", error);
 		map.put("message", message);
 		map.put("data", data);
 		res = gson.toJson(map);
+		return res;
+	}
+
+	@RequestMapping(value = "/downloadesert", produces = "application/json", method = RequestMethod.POST)
+	public String downloadEsertMri(@RequestBody PolisMri polisMri, HttpServletRequest request, HttpServletResponse response){
+		String username = polisMri.getUsername();
+		String key = polisMri.getKey();
+		String pathEsertBaru = polisMri.getPathEsertBaru();
+		String pathEsertLama = polisMri.getPathEsertLama();
+		String pathFolder = storagePdfMri;
+
+		GsonBuilder builder = new GsonBuilder();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String res = null;
+		String message = null;
+		String resultErr;
+		boolean error = false;
+		
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+
+		try {
+			User dataActivityUser = services.selectUserIndividual(username);
+			if (customResourceLoader.validateCredential(username, key)){
+				MRIdataPolis mri = services.getDataMri(dataActivityUser.getMspo_policy_no());
+				if (mri != null){
+					String pathBaru = String.format("%s/%s/%s", pathFolder, mri.getEsert_baru() != null ? mri.getEsert_baru() : "", mri.getNo_polis() + " SERT.pdf");
+					String pathLama = String.format("%s/%s/%s", pathFolder, mri.getEsert_lama() != null ? mri.getEsert_lama() : "", "SERT " + mri.getNo_polis() + ".pdf");
+					if (pathEsertBaru != null && !pathEsertBaru.equals("")) {
+						if (pathBaru.equals(pathEsertBaru)){
+							File file = new File(pathBaru);
+							// Content-Disposition
+							response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
+
+							// Content-Length
+							response.setContentLength((int) file.length());
+
+							BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+							BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+							byte[] buffer = new byte[1024];
+							int bytesRead = 0;
+							while ((bytesRead = inStream.read(buffer)) != -1) {
+								outStream.write(buffer, 0, bytesRead);
+							}
+							outStream.flush();
+							inStream.close();
+							error = false;
+							message = "Download Success";
+						} else {
+							error = true;
+							message = "Can't Download File";
+							resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+						}
+					} else if (pathEsertLama != null && !pathEsertLama.equals("")){
+						if (pathEsertLama.equals(pathLama)){
+							File file = new File(pathEsertLama);
+							// Content-Disposition
+							response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
+
+							// Content-Length
+							response.setContentLength((int) file.length());
+
+							BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+							BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+							byte[] buffer = new byte[1024];
+							int bytesRead = 0;
+							while ((bytesRead = inStream.read(buffer)) != -1) {
+								outStream.write(buffer, 0, bytesRead);
+							}
+							outStream.flush();
+							inStream.close();
+
+							error = false;
+							message = "Download Success";
+						} else {
+							error = true;
+							message = "Can't Download File";
+							resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+						}
+					}
+				} else {
+					error = true;
+					message = "Can't Download File";
+					resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+					logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			} else {
+				error = true;
+				message = "Can't Download File";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		}catch (Exception e){
+
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
+
+		customResourceLoader.updateActivity(username);
+
 		return res;
 	}
 

@@ -87,6 +87,7 @@ path:
   withdraw: \\\\storage.sinarmasmsiglife.co.id\\pdfind\\m-Policytest\\
   withdrawdb: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\
   reporthr: /mnt/storage/m-Policytest/Ekamedicare
+  mri: /mnt/mri/Sertifikat
  manfaatpdf:
   mpolicy: \\\\ebserver\\pdfind\\Polis\\
  logoBank:
@@ -194,6 +195,7 @@ path:
   withdraw: /mnt/storage/m-Policytest
   withdrawdb: \\storage.sinarmasmsiglife.co.id\pdfind\m-Policytest\
   reporthr: /mnt/storage/m-Policytest
+  mri: /mnt/mri/Sertifikat
  manfaatpdf:
   mpolicy: \\\\ebserver\\pdfind\\Polis\\
  logoBank:

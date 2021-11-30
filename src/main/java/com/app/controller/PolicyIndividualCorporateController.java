@@ -197,7 +197,7 @@ public class PolicyIndividualCorporateController {
 				ArrayList<HashMap<String, Object>> individu = new ArrayList<>();
 				ArrayList<HashMap<String, Object>> individuMri = new ArrayList<>();
 				Boolean is_individual = true;
-				Boolean is_individu_mri = true;
+				Boolean is_individu_mri = false;
 				Boolean is_corporate = true;
 				Boolean policy_corporate_notinforce = false;
 
@@ -262,6 +262,8 @@ public class PolicyIndividualCorporateController {
 							}
 						}
 						is_individual = true;
+						is_individu_mri = false;
+						individuMri = null;
 					} else if (!listPolisMri.isEmpty()){
 						for (PolisMri polis : listPolisMri){
 							HashMap<String, Object> mapper = new HashMap<>();
@@ -281,6 +283,7 @@ public class PolicyIndividualCorporateController {
 						is_individual = false;
 						is_individu_mri = false;
 						individu = null;
+						individuMri = null;
 					}
 				} else {
 					is_individual = false;

@@ -2810,8 +2810,10 @@ public class PolicyIndividualController {
 
 					File folderBaru = new File(pathBaru);
 					File folderLama = new File(pathLama);
-					if (!folderBaru.exists() || !folderLama.exists() ) {
+					if (!folderBaru.exists()) {
 						folderBaru.mkdirs();
+					}
+					if (!folderLama.exists()){
 						folderLama.mkdirs();
 					}
 					data.put("esert_baru", String.format("%s/%s", pathBaru, mri.getNo_polis() + " SERT.pdf"));
@@ -2873,6 +2875,10 @@ public class PolicyIndividualController {
 					if (pathEsertBaru != null && !pathEsertBaru.equals("")) {
 						if (pathBaru.equals(pathEsertBaru)){
 							File file = new File(pathBaru);
+							if (!file.exists()) {
+								logger.debug("Path: " + request.getServletPath() + " Path Mri: " + file.getPath());
+								file.mkdirs();
+							}
 							// Content-Disposition
 							response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
 
@@ -2900,6 +2906,10 @@ public class PolicyIndividualController {
 					} else if (pathEsertLama != null && !pathEsertLama.equals("")){
 						if (pathEsertLama.equals(pathLama)){
 							File file = new File(pathEsertLama);
+							if (!file.exists()) {
+								logger.debug("Path: " + request.getServletPath() + " Path Mri: " + file.getPath());
+								file.mkdirs();
+							}
 							// Content-Disposition
 							response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
 

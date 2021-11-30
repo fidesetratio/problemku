@@ -338,7 +338,7 @@ public class PolicyIndividualController {
 					HashMap<String, Object> dataSales = new HashMap<>();
 					if (mspo_ao != null) {
 						String msag_id = mspo_ao;
-						sales = services.selectSales(msag_id);
+						sales = services.selectSales(pemegang.getReg_spaj());
 
 						dataSales.put("nama_sales", sales.getMcl_first());
 						dataSales.put("no_hp_sales", sales.getMsag_smart_no());

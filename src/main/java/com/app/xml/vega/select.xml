@@ -568,28 +568,30 @@
 	
 	<select id="selectSales" parameterType="String" resultType="com.app.model.Sales">
 		SELECT  b.msag_id as agent_code,
-				c.mcl_first,
-		        b.msag_smart_no,
-		        c.mspe_email,
-		        CASE
-                    WHEN b.mst_leader is not null
-                        THEN (select mcl_first from eka.mst_client_new where mcl_id = b.mcl_id)
-                    ELSE ''
-                END as mcl_first_leader,
-                CASE
-                    WHEN b.mst_leader is not null
-                        THEN (select msag_smart_no from eka.mst_agent where msag_id = b.mst_leader)
-                    ELSE ''
-                END as msag_smart_no_leader,
-                CASE
-                    WHEN b.mst_leader is not null
-                        THEN (select mspe_email from eka.mst_client_new where mcl_id = b.mcl_id)
-                    ELSE ''
-                END as mspe_email_leader
+		c.mcl_first,
+		b.msag_smart_no,
+		c.mspe_email,
+		CASE
+		WHEN b.mst_leader is not null
+		THEN (select mcl_first from eka.mst_client_new where mcl_id = b.mcl_id)
+		ELSE ''
+		END as mcl_first_leader,
+		CASE
+		WHEN b.mst_leader is not null
+		THEN (select msag_smart_no from eka.mst_agent where msag_id = b.mst_leader)
+		ELSE ''
+		END as msag_smart_no_leader,
+		CASE
+		WHEN b.mst_leader is not null
+		THEN (select mspe_email from eka.mst_client_new where mcl_id = b.mcl_id)
+		ELSE ''
+		END as mspe_email_leader
 		FROM    eka.mst_agent b,
-		        eka.mst_client_new c
+		eka.mst_client_new c
 		WHERE   b.mcl_id = c.mcl_id
-		    AND b.msag_id = #{msag_id, jdbcType=VARCHAR}
+		AND msag_id in (select case  when mspo_ao is null then (select msag_id from eka.mst_agent_prod where reg_spaj = x.reg_spaj
+		and lsle_id = (select max(lsle_id) from eka.mst_agent_prod where reg_spaj = X.reg_spaj)) else mspo_ao end as mspo_ao  from eka.mst_policy x
+		where x.reg_spaj = #{reg_spaj, jdbcType=VARCHAR})
 	</select>
 
 	<select id="selectListNav" resultType="com.app.model.Nav">

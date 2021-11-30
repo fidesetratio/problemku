@@ -92,7 +92,7 @@ public interface VegaMapper {
 
 	public DataUsulan selectDataUsulan(DataUsulan dataUsulan);
 	
-	public Sales selectSales(String msag_id);
+	public Sales selectSales(String reg_spaj);
 
 	public ArrayList<TertanggungTambahan> selectTertanggungTambahan(String spaj);
 

@@ -417,9 +417,9 @@ public class VegaServices {
 		return dao.selectDataUsulan(dataUsulan);
 	}
 
-	public Sales selectSales(String msag_id) {
+	public Sales selectSales(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		return dao.selectSales(msag_id);
+		return dao.selectSales(reg_spaj);
 	}
 
 	public ArrayList<TertanggungTambahan> selectTertanggungTambahan(String spaj) {

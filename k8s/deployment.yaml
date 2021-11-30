@@ -42,8 +42,8 @@ spec:
           hostPath:
            path: /mnt/Ekamedicare
         - name: mri-mount
-            hostPath:
-              path: /mnt/mri
+          hostPath:
+           path: /mnt/mri
 ---
 kind: Service
 apiVersion: v1

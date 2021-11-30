@@ -2938,8 +2938,11 @@ public class PolicyIndividualController {
 				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
 				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
 			}
-		}catch (Exception e){
-
+		} catch (Exception e){
+			error = true;
+			message = e.getMessage();
+			resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
 		}
 		map.put("error", error);
 		map.put("message", message);

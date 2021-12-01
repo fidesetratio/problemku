@@ -20,7 +20,5 @@ public interface RegistrationIndividuSvc {
 
     boolean isIndividuMri(String id_simultan, String username);
 
-    String esertMri(Path path, HttpServletRequest request, String username);
-
     String noHpIndividuAndMri(User dataUserIndividual);
 }

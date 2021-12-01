@@ -1,5 +1,6 @@
 package com.app.services;
 
+import com.app.exception.HandleSuccessOrNot;
 import com.app.feignclient.ServiceOTP;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.Pemegang;
@@ -59,8 +60,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
         String req = gson.toJson(requestFindAccount);
         String res;
         String resultErr = null;
-        String message;
-        boolean error = true;
+        HandleSuccessOrNot handleSuccessOrNot;
         HashMap<String, Object> map = new HashMap<>();
         HashMap<String, Object> data = new HashMap<>();
 
@@ -120,12 +120,11 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
 
                                 // Check kondisi yang didapatkan setelah HIT API OTP
                                 if (!errorPost) {
-                                    error = false;
-                                    message = "ktp/policy found in database";
+                                    handleSuccessOrNot = new HandleSuccessOrNot(false, "ktp/policy found in database");
                                     data.put("phone_no", no_hp_polis);
                                     data.put("no_polis", pemegang.getMspo_policy_no());
                                 } else {
-                                    message = "Phone number is blacklisted";
+                                    handleSuccessOrNot = new HandleSuccessOrNot(true,  "Phone number is blacklisted");
                                     data.put("phone_no", no_hp_polis);
                                     data.put("no_polis", pemegang.getMspo_policy_no());
                                     resultErr = messagePost;
@@ -134,7 +133,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                                 }
                             } else {
                                 // Error no handphone sudah digunakan polis lain
-                                message = "The mobile number has already been used on another policy";
+                                handleSuccessOrNot = new HandleSuccessOrNot(true,  "The mobile number has already been used on another policy");
                                 data.put("phone_no", no_hp_polis);
                                 data.put("no_polis", pemegang.getMspo_policy_no());
                                 resultErr = "Nomor telepon sudah pernah digunakan pada polis lain (" + no_hp_polis
@@ -144,7 +143,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                             }
                         } else {
                             // Error apabila ada salah satu polisnya mengandung death claim
-                            message = "Policy number exists containing death claims";
+                            handleSuccessOrNot = new HandleSuccessOrNot(true,  "Policy number exists containing death claims");
                             data.put("phone_no", no_hp_polis);
                             data.put("no_polis", pemegang.getMspo_policy_no());
                             resultErr = "No polis ada yang mengandung death claim";
@@ -153,7 +152,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                         }
                     } else {
                         // Error no handphone kosong/ tidak sesuai format
-                        message = "Phone number is not valid";
+                        handleSuccessOrNot = new HandleSuccessOrNot(true,  "Phone number is not valid");
                         data.put("phone_no", null);
                         data.put("no_polis", null);
                         resultErr = "Nomor telepon tidak ada/ format nomor telepon salah";
@@ -162,7 +161,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                     }
                 } else {
                     // Error hasil id_simultan ada pada tabel lst_user_simultaneous
-                    message = "Already has an account that associated with this policy";
+                    handleSuccessOrNot = new HandleSuccessOrNot(true,  "Already has an account that associated with this policy");
                     data.put("phone_no", null);
                     data.put("no_polis", null);
                     resultErr = "User sudah pernah register menggunakan no polis tersebut/ no polis lain";
@@ -212,12 +211,11 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
 
                                     // Check kondisi yang didapatkan setelah HIT API OTP
                                     if (!errorPost) {
-                                        error = false;
-                                        message = "ktp/policy found in database";
+                                        handleSuccessOrNot = new HandleSuccessOrNot(false,"ktp/policy found in database");
                                         data.put("phone_no", no_hp_ktp);
                                         data.put("no_polis", resultKTP.getMspo_policy_no());
                                     } else {
-                                        message = "Phone number is blacklisted";
+                                        handleSuccessOrNot = new HandleSuccessOrNot(true,"Phone number is blacklisted");
                                         data.put("phone_no", no_hp_ktp);
                                         data.put("no_polis", resultKTP.getMspo_policy_no());
                                         resultErr = messagePost;
@@ -226,7 +224,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                                     }
                                 } else {
                                     // Error no handphone sudah digunakan polis lain
-                                    message = "The mobile number has already been used on another policy";
+                                    handleSuccessOrNot = new HandleSuccessOrNot(true,"The mobile number has already been used on another policy");
                                     data.put("phone_no", no_hp_ktp);
                                     data.put("no_polis", resultKTP.getMspo_policy_no());
                                     resultErr = "Nomor telepon sudah pernah digunakan pada polis lain (" + no_hp_ktp
@@ -236,7 +234,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                                 }
                             } else {
                                 // Error apabila ada salah satu polisnya mengandung death claim
-                                message = "Policy number exists containing death claims";
+                                handleSuccessOrNot = new HandleSuccessOrNot(true,"Policy number exists containing death claims");
                                 data.put("phone_no", no_hp_ktp);
                                 data.put("no_polis", resultKTP.getMspo_policy_no());
                                 resultErr = "No polis ada yang mengandung death claim";
@@ -245,7 +243,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                             }
                         } else {
                             // Error no handphone kosong/ tidak sesuai format
-                            message = "Phone number is not valid";
+                            handleSuccessOrNot = new HandleSuccessOrNot(true,"Phone number is not valid");
                             data.put("phone_no", null);
                             data.put("no_polis", null);
                             resultErr = "Nomor telepon tidak ada/ format nomor telepon salah";
@@ -254,7 +252,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                         }
                     } else {
                         // Error hasil id_simultan ada pada tabel lst_user_simultaneous
-                        message = "Already has an account that associated with this policy";
+                        handleSuccessOrNot = new HandleSuccessOrNot(true,"Already has an account that associated with this policy");
                         data.put("phone_no", null);
                         data.put("no_polis", null);
                         resultErr = "User sudah pernah register menggunakan no polis tersebut/ no polis lain";
@@ -263,7 +261,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                     }
                 } else {
                     // Error No polis/ KTP & DOB yang diinput tidak ada didatabase
-                    message = "ktp/policy not found in database";
+                    handleSuccessOrNot = new HandleSuccessOrNot(true,"ktp/policy not found in database");
                     data.put("phone_no", null);
                     data.put("no_polis", null);
                     resultErr = "ktp/ policy not found in database";
@@ -272,13 +270,12 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                 }
             }
         } catch (Exception e) {
-            error = true;
-            message = ResponseMessage.ERROR_SYSTEM;
+            handleSuccessOrNot  = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
             resultErr = "bad exception " + e;
             logger.error("Path: " + request.getServletPath() + " No. Polis/ KTP: " + ktp_or_nopolis + " Error: " + e);
         }
-        map.put("error", error);
-        map.put("message", message);
+        map.put("error", handleSuccessOrNot.isError());
+        map.put("message", handleSuccessOrNot.getMessage());
         map.put("data", data);
         res = gson.toJson(map);
         // Insert Log LST_HIST_ACTIVITY_WS
@@ -298,8 +295,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
         String req = gson.toJson(policy);
         String res;
         String resultErr = null;
-        String message;
-        boolean error;
+        HandleSuccessOrNot handleSuccessOrNot;
         HashMap<String, Object> map = new HashMap<>();
         HashMap<String, Object> data = new HashMap<>();
 
@@ -359,12 +355,10 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
 
                                 // Check kondisi yang didapatkan setelah HIT API OTP
                                 if (!errorPost) {
-                                    error = false;
-                                    message = "Policy found in database";
+                                    handleSuccessOrNot = new HandleSuccessOrNot(false, "Policy found in database");
                                     data.put("phone_number", no_hp);
                                 } else {
-                                    error = true;
-                                    message = "Phone number is blacklisted";
+                                    handleSuccessOrNot = new HandleSuccessOrNot(true,"Phone number is blacklisted");
                                     data.put("phone_number", no_hp);
                                     resultErr = messagePost;
                                     logger.error("Path: " + request.getServletPath() + ", No. Polis: " + no_polis
@@ -372,8 +366,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                                 }
                             } else {
                                 // Error no handphone sudah digunakan polis lain
-                                error = true;
-                                message = "The mobile number has already been used on another policy (" + no_hp + ")";
+                                handleSuccessOrNot = new HandleSuccessOrNot(true,"The mobile number has already been used on another policy (" + no_hp + ")");
                                 data.put("phone_no", no_hp);
                                 data.put("no_polis", pemegang.getMspo_policy_no());
                                 resultErr = "Nomor telepon sudah pernah digunakan pada polis lain (" + no_hp + ")";
@@ -382,8 +375,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                             }
                         } else {
                             // Error apabila ada salah satu polisnya mengandung death claim
-                            error = true;
-                            message = "Policy number exists containing death claims";
+                            handleSuccessOrNot = new HandleSuccessOrNot(true,"Policy number exists containing death claims");
                             data.put("phone_number", no_hp);
                             resultErr = "No polis ada yang mengandung death claim";
                             logger.error("Path: " + request.getServletPath() + ", No. Polis: " + no_polis + ", Error: "
@@ -391,8 +383,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                         }
                     } else {
                         // Error no handphone kosong/ tidak sesuai format
-                        error = true;
-                        message = "Phone number is not valid";
+                        handleSuccessOrNot = new HandleSuccessOrNot(true,"Phone number is not valid");
                         data.put("phone_number", null);
                         resultErr = "Nomor telepon tidak ada/ format nomor telepon salah";
                         logger.error("Path: " + request.getServletPath() + ", No. Polis: " + no_polis + ", Error: "
@@ -400,8 +391,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                     }
                 } else {
                     // Error hasil id_simultan ada pada tabel lst_user_simultaneous
-                    error = true;
-                    message = "Already has an account that associated with this policy";
+                    handleSuccessOrNot = new HandleSuccessOrNot(true,"Already has an account that associated with this policy");
                     data.put("phone_number", null);
                     resultErr = "User sudah pernah daftar menggunakan no polis lain";
                     logger.error(
@@ -409,22 +399,20 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                 }
             } else {
                 // Error No polis tidak ditemukan pada database
-                error = true;
-                message = "Policy not found in database";
+                handleSuccessOrNot = new HandleSuccessOrNot(true,"Policy not found in database");
                 data.put("phone_number", null);
                 resultErr = "No polis yang dimasukkan tidak ada didatabase";
                 logger.error(
                         "Path: " + request.getServletPath() + ", No. Polis: " + no_polis + ", Error: " + resultErr);
             }
         } catch (Exception e) {
-            error = true;
-            message = ResponseMessage.ERROR_SYSTEM;
+            handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
             resultErr = "bad exception " + e;
             logger.error("Path: " + request.getServletPath() + ", No. Polis: " + no_polis + ", Error: " + e);
 
         }
-        map.put("error", error);
-        map.put("message", message);
+        map.put("error", handleSuccessOrNot.isError());
+        map.put("message", handleSuccessOrNot.getMessage());
         map.put("data", data);
         res = gson.toJson(map);
         // Insert Log LST_HIST_ACTIVITY_WS
@@ -445,6 +433,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
         String resultErr = null;
         String message;
         boolean error;
+        HandleSuccessOrNot handleSuccessOrNot;
         HashMap<String, Object> map = new HashMap<>();
 
         String username = requestRegisterQR.getUsername();
@@ -491,47 +480,41 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                         try {
                             // Insert new user
                             services.insertNewuser(lstUserSimultaneous);
-                            error = false;
-                            message = "Register succes";
+                            handleSuccessOrNot = new HandleSuccessOrNot(false,"Register succes");
                         } catch (Exception e) {
                             // Error username sudah ada didatabase
-                            error = true;
-                            message = "Username already exist in database. Please choose another username";
+                            handleSuccessOrNot = new HandleSuccessOrNot(true,"Username already exist in database. Please choose another username");
                             resultErr = "bad exception " + e;
                             logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
                                     + resultErr);
                         }
                     } else {
                         // Error username sudah ada didatabase
-                        error = true;
-                        message = "Username already exist in database. Please choose another username";
+                        handleSuccessOrNot = new HandleSuccessOrNot(true,"Username already exist in database. Please choose another username");
                         resultErr = "Username telah digunakan";
                         logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
                                 + resultErr);
                     }
                 } else {
                     // Error No Polis lainnya sudah pernah digunakan untuk mendaftar
-                    error = true;
-                    message = "No polis already exist in database. Please choose another polis";
+                    handleSuccessOrNot = new HandleSuccessOrNot(true,"No polis already exist in database. Please choose another polis");
                     resultErr = "No. Polis lain sudah terdaftar dengan id simultannya";
                     logger.error(
                             "Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
                 }
             } else {
                 // Error No Polis sesuai kondisi tidak ada didatabase
-                error = true;
-                message = "No polis not found. Please choose another polis";
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "No polis not found. Please choose another polis");
                 resultErr = "No. Polis tidak ditemukan dengan kondisi query";
                 logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
             }
         } catch (Exception e) {
-            error = true;
-            message = ResponseMessage.ERROR_SYSTEM;
+            handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
             resultErr = "bad exception " + e;
             logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
         }
-        map.put("error", error);
-        map.put("message", message);
+        map.put("error", handleSuccessOrNot.isError());
+        map.put("message", handleSuccessOrNot.getMessage());
         res = gson.toJson(map);
         // Insert Log LST_HIST_ACTIVITY_WS
         customResourceLoader.insertHistActivityWS(12, 2, new Date(), req, res, 1, resultErr, start, username);
@@ -552,18 +535,6 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
         } else {
             return false;
         }
-    }
-
-    @Override
-    public String esertMri(Path path, HttpServletRequest request, String username) {
-        String encode = null;
-        try {
-            ByteArrayResource byteArrayResource = new ByteArrayResource(Files.readAllBytes(path));
-            encode = Base64.getEncoder().encodeToString(byteArrayResource.getByteArray());
-        }catch (Exception e){
-            logger.error("Path: " + request.getServletPath() + " Username: " +username + " Error: " + e);
-        }
-        return encode;
     }
 
     @Override

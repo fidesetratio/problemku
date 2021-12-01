@@ -12,7 +12,17 @@ public class RequestListPolis implements Serializable {
 	private String search_policy;
 	private Integer search_type;
 	private String policy_no;
-	
+	private String mste_insured;
+	private String reg_spaj;
+
+	public String getReg_spaj() {
+		return reg_spaj;
+	}
+
+	public void setReg_spaj(String reg_spaj) {
+		this.reg_spaj = reg_spaj;
+	}
+
 	public String getPolicy_no() {
 		return policy_no;
 	}
@@ -51,5 +61,13 @@ public class RequestListPolis implements Serializable {
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+
+	public String getMste_insured() {
+		return mste_insured;
+	}
+
+	public void setMste_insured(String mste_insured) {
+		this.mste_insured = mste_insured;
 	}
 }

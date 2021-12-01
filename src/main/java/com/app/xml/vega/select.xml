@@ -6408,4 +6408,29 @@ SELECT distinct (CASE
 	<select id="selectMpolTransByMptId" resultType="com.app.model.MpolTransData" parameterType="String">
 		SELECT * FROM EKA.MST_MPOL_TRANS WHERE MPT_ID =#{mpt_id, jdbcType=VARCHAR}
 	</select>
+	
+	<select id="detailPesertaCorporate" resultType="com.app.model.DetailPesertaCorporate" parameterType="HashMap">
+		SELECT A.REG_SPAJ,
+		A.MSPO_POLICY_NO AS NO_POLIS,
+		A.MSPO_END_DATE,
+		A.MSPO_BEG_DATE,
+		C.MSPE_MOBILE AS NO_HP,
+		D.MST_MCL_ID AS MCL_ID_EMPLOYEE,
+		B.MSTE_NO_REG,
+		B.MSTE_INSURED_NO,
+		B.MSTE_INSURED,
+		C.MSPE_DATE_BIRTH,
+		E.MCL_FIRST as NAME
+		FROM EKA.MST_POLICY@EB A
+		INNER JOIN EKA.MST_INSURED@EB B ON A.REG_SPAJ = B.REG_SPAJ
+		INNER JOIN EKA.MST_PERSON@EB C ON B.MSTE_INSURED = C.MCL_ID
+		INNER JOIN EKA.MST_PERSON_RELATION@EB D ON C.MCL_ID = D.MCL_ID
+		INNER JOIN EKA.MST_CLIENT@EB E ON E.MCL_ID = B.MSTE_INSURED
+		WHERE A.LSTB_ID = 3
+		AND A.LSSP_ID = 1
+		AND A. MSPO_END_DATE > SYSDATE
+		AND b.mste_active = 1
+		AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		AND B.MSTE_INSURED = #{mste_insured, jdbcType=VARCHAR}
+	</select>
 </mapper>

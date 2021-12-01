@@ -88,6 +88,7 @@ public class BillingSvcImpl implements BillingSvc {
                                 pay.put("period_date", m.getPeriode() != null ? df1.format(m.getPeriode()) : null);
                                 pay.put("lku_symbol", m.getLku_symbol() != null ? m.getLku_symbol() : null);
                                 pay.put("flag_jt_tempo", m.getFlag_jt_tempo() != null && m.getFlag_jt_tempo() == 1);
+                                pay.put("flag_bill", m.getFlag_topup());
 
                                 if (m.getPaid().equals("Paid")) {
                                     pay.put("status_billing_id", 1);
@@ -150,7 +151,7 @@ public class BillingSvcImpl implements BillingSvc {
                 break;
             case Billing.BILLING_STATUS_OUTSTANDING:
                 if (billing.getFlag_jt_tempo() != null && billing.getFlag_jt_tempo() == 1) {
-                    status = Billing.BILLING_STATUS_OUTSTANDING;
+                    status = Billing.LABEL_STATUS_OUTSTANDING;
                 } else {
                     status = Billing.BILLING_STATUS_ACTIVE_BILLING;
                 }

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.app.exception.HandleSuccessOrNot;
 import com.app.model.*;
 import com.app.services.RegistrationIndividuSvc;
 import com.app.utils.DateUtils;
@@ -3269,6 +3270,7 @@ public class PolicyIndividualCorporateController {
 		String message = null;
 		String resultErr;
 		Boolean error = null;
+		HandleSuccessOrNot handleSuccessOrNot = null;
 		String username = requestListPolis.getUsername();
 		String key = requestListPolis.getKey();
 		String reg_spaj = requestListPolis.getReg_spaj();
@@ -3289,23 +3291,20 @@ public class PolicyIndividualCorporateController {
 					data.put("mste_insured", detailPesertaCorporate.getMste_insured());
 					data.put("dob", dateUtils.getFormatterFormat(detailPesertaCorporate.getMspe_date_birth(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
 					data.put("name", detailPesertaCorporate.getName());
-					error = false;
-					message = "Successfully get data detail";
+					handleSuccessOrNot = new HandleSuccessOrNot(false, "Successfully get data detail");
 				} else {
-					error = true;
-					message = "Can't get data detail";
-					resultErr = message + "(Username: " + username + " & Key: " + key + ")";
+					handleSuccessOrNot = new HandleSuccessOrNot(true, "Can't get data detail");
+					resultErr = handleSuccessOrNot.getMessage() + "(Username: " + username + " & Key: " + key + ")";
 					logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
 				}
 			}
 		} catch (Exception e){
-			error = true;
-			message = ResponseMessage.ERROR_SYSTEM;
 			resultErr = e.getMessage() + "(Username: " + username + " & Key: " + key + ")";
+			handleSuccessOrNot = new HandleSuccessOrNot(true, "Can't get data detail");
 			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
 		}
-		map.put("error", error);
-		map.put("message", message);
+		map.put("error", handleSuccessOrNot.isError());
+		map.put("message", handleSuccessOrNot.getMessage());
 		map.put("data", data);
 		res = gson.toJson(map);
 		return res;

@@ -113,7 +113,7 @@
 	<insert id="insertMstMpolTransBill" parameterType="com.app.model.DetailBillingRequest">
 		INSERT INTO EKA.MST_MPOL_TRANS_BILL (MPT_ID, REG_SPAJ, TAHUN_KE, PREMI_KE, AMOUNT, FLAG_BILL)
 		VALUES
-		(#{mpt_id, jdbcType=VARCHAR}, #{reg_spaj, jdbcType=VARCHAR}, #{premi_ke, jdbcType=INTEGER}, #{tahun_ke, jdbcType=INTEGER}, #{amount, jdbcType=DOUBLE},
+		(#{mpt_id, jdbcType=VARCHAR}, #{reg_spaj, jdbcType=VARCHAR}, #{tahun_ke, jdbcType=INTEGER},  #{premi_ke, jdbcType=INTEGER}, #{amount, jdbcType=DOUBLE},
 		 #{flag_bill, jdbcType=INTEGER})
 	</insert>
 	

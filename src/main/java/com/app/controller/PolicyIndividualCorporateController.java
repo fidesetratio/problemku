@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.app.model.*;
 import com.app.services.RegistrationIndividuSvc;
+import com.app.utils.DateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -106,6 +107,9 @@ public class PolicyIndividualCorporateController {
 
 	@Autowired
 	private VegaCustomResourceLoader customResourceLoader;
+
+	@Autowired
+	private DateUtils dateUtils;
 
 	private DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -3248,6 +3252,62 @@ public class PolicyIndividualCorporateController {
 		map.put("data", data);
 		res = gson.toJson(map);
 
+		return res;
+	}
+
+	@RequestMapping(value = "/detailpeserta", produces = "application/json", method = RequestMethod.POST)
+	public String getDetailInfoPeserta(@RequestBody RequestListPolis requestListPolis, HttpServletRequest request){
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		new Gson();
+		Gson gson;
+		gson = builder.create();
+
+		HashMap<String, Object> data = new HashMap<>();
+		HashMap<String, Object> map = new HashMap<>();
+		String res;
+		String message = null;
+		String resultErr;
+		Boolean error = null;
+		String username = requestListPolis.getUsername();
+		String key = requestListPolis.getKey();
+		String reg_spaj = requestListPolis.getReg_spaj();
+		String mste_insured = requestListPolis.getMste_insured();
+
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				DetailPesertaCorporate detailPesertaCorporate = services.getDetailPesertaCorporate(mste_insured, reg_spaj);
+				if (detailPesertaCorporate != null){
+					data.put("reg_spaj", detailPesertaCorporate.getReg_spaj());
+					data.put("no_polis", detailPesertaCorporate.getNo_polis());
+					data.put("mspo_end_date", dateUtils.getFormatterFormat(detailPesertaCorporate.getMspo_end_date(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
+					data.put("mspo_beg_date", dateUtils.getFormatterFormat(detailPesertaCorporate.getMspo_beg_date(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
+					data.put("no_hp", detailPesertaCorporate.getNo_hp());
+					data.put("mcl_id_employee", detailPesertaCorporate.getMcl_id_employee());
+					data.put("mste_no_reg", detailPesertaCorporate.getMste_no_reg());
+					data.put("mste_insured_no", detailPesertaCorporate.getMste_insured_no());
+					data.put("mste_insured", detailPesertaCorporate.getMste_insured());
+					data.put("dob", dateUtils.getFormatterFormat(detailPesertaCorporate.getMspe_date_birth(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
+					data.put("name", detailPesertaCorporate.getName());
+					error = false;
+					message = "Successfully get data detail";
+				} else {
+					error = true;
+					message = "Can't get data detail";
+					resultErr = message + "(Username: " + username + " & Key: " + key + ")";
+					logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+				}
+			}
+		} catch (Exception e){
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = e.getMessage() + "(Username: " + username + " & Key: " + key + ")";
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
 		return res;
 	}
 

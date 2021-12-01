@@ -1805,4 +1805,12 @@ public class VegaServices {
 		return dao.selectMpolTransByMptId(mpt_id);
 	}
 
+	public DetailPesertaCorporate getDetailPesertaCorporate(String mste_insured, String regSpaj){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("reg_spaj", regSpaj);
+		map.put("mste_insured", mste_insured);
+		return dao.detailPesertaCorporate(map);
+	}
+
 }

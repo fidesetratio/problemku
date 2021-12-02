@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
@@ -126,11 +127,10 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                                 for (int i = 0; i < funds.length(); i++) {
                                     try {
                                         String lji_id = funds.getJSONObject(i).getString("lji_id");
-                                        Float percentage = funds.getJSONObject(i).getFloat("percentage");
+                                        float percentage = funds.getJSONObject(i).getFloat("percentage");
 
-                                        Float percenVal = percentage / 100;
-                                        BigDecimal newPercelVal = new BigDecimal(percenVal).add(BigDecimal.ZERO);
-                                        BigDecimal mpt_jumlah = requestTopup.getMpt_jumlah().multiply(newPercelVal);
+                                        BigDecimal newPercentVal = new BigDecimal(percentage).divide(BigDecimal.valueOf(100),2, RoundingMode.HALF_UP);
+                                        BigDecimal mpt_jumlah = requestTopup.getMpt_jumlah().multiply(newPercentVal);
 
                                         Topup topUpDetails = new Topup();
                                         topUpDetails.setMpt_id(mptId.toString());

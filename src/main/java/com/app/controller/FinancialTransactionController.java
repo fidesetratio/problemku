@@ -852,9 +852,12 @@ public class FinancialTransactionController {
 			if (customResourceLoader.validateCredential(username, key)) {
 				Topup dataProduct = services.selectProductforTopup(no_polis);
 				if (dataProduct != null) {
+					BigInteger mptId = services.selectGetMptId();
+
 					error = false;
 					message = "Get data success";
 					data.put("product_name", dataProduct.getNewname());
+					data.put("mpt_id", mptId);
 					data.put("policy_holder", dataProduct.getMcl_first());
 					data.put("currency", dataProduct.getMata_uang());
 					data.put("currency_symbol", dataProduct.getLku_symbol());

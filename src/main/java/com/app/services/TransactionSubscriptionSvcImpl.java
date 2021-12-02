@@ -67,9 +67,6 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         Integer language_id = requestTopup.getLanguage_id();
         try {
             if (customResourceLoader.validateCredential(username, key)) {
-                // Get MPT_ID
-                BigInteger mptId = services.selectGetMptId();
-
                 // Get SPAJ
                 Pemegang paramSelectSPAJ = new Pemegang();
                 paramSelectSPAJ.setMspo_policy_no(no_polis);
@@ -78,6 +75,7 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                 String kodeCabang = services.getKodeCabang(no_polis);
 
                 if (requestTopup.getLt_id() != null && requestTopup.getLt_id().equals(2)) {
+                    BigInteger mptId = requestTopup.getMpt_id();
                     // this is request top up tunggal base on lt id
                     JSONArray fundsCheck = new JSONArray(requestTopup.getFunds());
                     if (fundsCheck.length() > 0) {
@@ -190,6 +188,8 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                                 "Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
                     }
                 } else if (requestTopup.getLt_id() != null && requestTopup.getLt_id().equals(22)) {
+                    BigInteger mptId = services.selectGetMptId();
+
                     // this is request premium billing base on lt id
                     if (requestTopup.getBillings() != null && requestTopup.getBillings().size() > 0){
                         String mataUang = null;

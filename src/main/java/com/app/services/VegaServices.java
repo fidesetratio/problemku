@@ -1813,4 +1813,22 @@ public class VegaServices {
 		return dao.detailPesertaCorporate(map);
 	}
 
+	public SummaryPayment getByMptId(String mpt_id){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.findByMptId(mpt_id);
+	}
+
+	public SummaryPayment getMspaTrxId(String mpt_id){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.findByMstrxId(mpt_id);
+	}
+
+	public void updatePathSummaryDetail(String mpt_id, String path){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("mpt_id", mpt_id);
+		map.put("path", path);
+		dao.updatePathSummary(map);
+	}
+
 }

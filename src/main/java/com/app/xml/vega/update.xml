@@ -169,4 +169,8 @@
   		and jenis_id = #{jenis_id, jdbcType=INTEGER}
   		and flag_active = 1 
     </update>
+
+	<update id="updatePathSummary" parameterType="HashMap">
+		update EKA.MST_MPOL_TRANS set path_sum_payment= #{path, jdbcType=VARCHAR} where mpt_id=#{mpt_id, jdbcType=VARCHAR}
+	</update>
 </mapper>

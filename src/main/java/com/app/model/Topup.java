@@ -31,6 +31,7 @@ public class Topup implements Serializable {
 	private String reason_fu;
 	private BigDecimal mpt_jumlah_process;
 	private Integer unique_code;
+	private String path_sum_payment;
 
 	private Date date_status;
 	private String lku_symbol;
@@ -406,5 +407,13 @@ public class Topup implements Serializable {
 
 	public void setFlag_source(Integer flag_source) {
 		this.flag_source = flag_source;
+	}
+
+	public String getPath_sum_payment() {
+		return path_sum_payment;
+	}
+
+	public void setPath_sum_payment(String path_sum_payment) {
+		this.path_sum_payment = path_sum_payment;
 	}
 }

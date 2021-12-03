@@ -663,6 +663,7 @@ public class FinancialTransactionController {
 						transaction.put("reason_fu", dataTopup.getReason_fu());
 						transaction.put("topup_date", df2.format(dataTopup.getDate_status()));
 						transaction.put("enable_button_download", true);
+						transaction.put("path_sum_payment", dataTopup.getPath_sum_payment());
 						data.put("transaction", transaction);
 
 						HashMap<String, Object> payor_info = new HashMap<>();
@@ -1023,6 +1024,17 @@ public class FinancialTransactionController {
 	public String uploadProofOfTransaction(@RequestBody RequestTopup requestTopup, HttpServletRequest request) {
 		return transactionSubscriptionSvc.submitDataTransaction(requestTopup, request);
 	}
+
+	@RequestMapping(value = "/uploadsummarydetail", produces = "application/json", method = RequestMethod.POST)
+	public String saveSummaryDetail(@RequestBody SummaryPayment summaryPayment, HttpServletRequest request) {
+		return transactionSubscriptionSvc.saveBuktiPembayaran(summaryPayment, request);
+	}
+
+	@RequestMapping(value = "/downloadattachhistory", produces = "application/json", method = RequestMethod.POST)
+	public String downloadAttachHistory(@RequestBody DownloadAttachment downloadAttachment, HttpServletRequest request, HttpServletResponse response) {
+		return transactionSubscriptionSvc.downloadAttachmentHistory(downloadAttachment, request, response);
+	}
+
 
 	@RequestMapping(value = "/downloadprooftransaction", produces = "application/json", method = RequestMethod.POST)
 	public String downloadProofOfTransaction(

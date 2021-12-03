@@ -1353,7 +1353,8 @@
        reason_fu,
        		NVL (mpt_jumlah_process, 0) AS mpt_jumlah_process,
        		EKA.F_LSDBS_VIEW (g.reg_spaj, g.lsbs_id, g.lsdbs_number) AS newname,
-       a.unique_code
+       a.unique_code,
+		a.path_sum_payment
   		FROM eka.mst_mpol_trans a
        		INNER JOIN eka.lst_kurs c ON a.lku_id = c.lku_id
        		INNER JOIN eka.mst_policy d ON a.reg_spaj = d.reg_spaj
@@ -6433,5 +6434,35 @@ SELECT distinct (CASE
 		AND b.mste_active = 1
 		AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
 		AND B.MSTE_INSURED = #{mste_insured, jdbcType=VARCHAR}
+	</select>
+
+	<select id="findByMptId" resultType="com.app.model.SummaryPayment" parameterType="String">
+		select
+		A.MPT_ID                  MPT_ID,
+		A.REG_SPAJ                  SPAJ_ETC,
+		A.MPT_JUMLAH                AMOUNT,
+		(CASE
+		WHEN A.MPT_STATUS IN (0, 1, 45, 46, 47)
+		THEN
+		'On progress'
+		WHEN A.MPT_STATUS in (7, 54)
+		THEN
+		'Accepted'
+		WHEN A.MPT_STATUS = 8
+		THEN
+		'Canceled'
+		WHEN A.MPT_STATUS = 9
+		THEN
+		'Canceled' END) AS STATUS,
+		A.REQ_DATE                  PAID_AT,
+		A.REKENING,
+		A.BANK_NAME,
+		PAY_TYPE.LSJB_TYPE          PAYMENT_METHOD
+		from EKA.MST_MPOL_TRANS A
+		JOIN EKA.LST_PAYMENT_TYPE PAY_TYPE ON A.LSJB_ID = PAY_TYPE.LSJB_ID WHERE A.MPT_ID = #{mpt_id, jdbcType=VARCHAR}
+	</select>
+
+	<select id="findByMstrxId" resultType="com.app.model.SummaryPayment" parameterType="String">
+		SELECT  MSPA_TRX, SPAJ_ETC, AMOUNT, STATUS, PAYMENT_METHOD, BANK_CODE AS BANK_NAME, DESCRIPTION_REQUEST, PAYMENT_CHANNEL, PAID_AT, LT_ID, OBJC_ID, FUNDS_TOPUP FROM EKA.MST_PAYMENT_AGGREGATOR WHERE MSPA_TRX=  #{mspa_trx, jdbcType=VARCHAR}
 	</select>
 </mapper>

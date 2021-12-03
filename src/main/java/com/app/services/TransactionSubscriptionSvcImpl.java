@@ -1,8 +1,7 @@
 package com.app.services;
 
-import com.app.model.DetailBillingRequest;
-import com.app.model.Pemegang;
-import com.app.model.Topup;
+import com.app.exception.HandleSuccessOrNot;
+import com.app.model.*;
 import com.app.model.request.RequestTopup;
 import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
@@ -17,12 +16,12 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -292,6 +291,124 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         return res;
     }
 
+    @Override
+    public String saveBuktiPembayaran(SummaryPayment requestBody, HttpServletRequest request) {
+        GsonBuilder builder = new GsonBuilder();
+        builder.serializeNulls();
+        Gson gson = new Gson();
+        gson = builder.create();
+        String res;
+        HandleSuccessOrNot handleSuccessOrNot=null;
+        String resultErr;
+        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
+
+        try {
+            if (customResourceLoader.validateCredential(requestBody.getUsername(), requestBody.getKey())) {
+                //idpayment if payment online is mspa_trx else if va and others is mpt_id
+                SummaryPayment mpolTrans = services.getByMptId(requestBody.getId_payment());
+                SummaryPayment paymentAggregator = services.getMspaTrxId(requestBody.getId_payment());
+                if (mpolTrans != null) {
+                    String path = String.format("%s/%s/%s/%s", storageMpolicy, mpolTrans.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail");
+                    Boolean uploadFile = customResourceLoader.uploadFileToStorage(path, requestBody.getPath(),
+                            String.format("%s.pdf", mpolTrans.getMpt_id()), requestBody.getUsername(), request.getServletPath(), null);
+                    if (uploadFile.equals(true)) {
+                        String nameFile = String.format("%s/%s/%s/%s/%s%s", storageMpolicy, mpolTrans.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail", mpolTrans.getMpt_id(), ".pdf");
+                        services.updatePathSummaryDetail(mpolTrans.getMpt_id(), nameFile);
+                        handleSuccessOrNot = new HandleSuccessOrNot(false, "Success Upload File");
+                    } else {
+                        handleSuccessOrNot = new HandleSuccessOrNot(true, "Failed upload file");
+                        resultErr = "File PDF Corrupt, MPT_ID: " + mpolTrans.getMpt_id() + ", Name File: " + String.format("%s.pdf", mpolTrans.getMpt_id());
+                        logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: "
+                                + resultErr);
+                    }
+                } else if (paymentAggregator != null) {
+                    String path = String.format("%s/%s/%s/%s", storageMpolicy, paymentAggregator.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail");
+                    Boolean uploadFile = customResourceLoader.uploadFileToStorage(path, requestBody.getPath(),
+                            String.format("%s.pdf", paymentAggregator.getObjc_id()), requestBody.getUsername(), request.getServletPath(), null);
+                    if (uploadFile.equals(true)) {
+                        String nameFile = String.format("%s/%s/%s/%s/%s%s", storageMpolicy, paymentAggregator.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail", paymentAggregator.getObjc_id(), ".pdf");
+                        services.updatePathSummaryDetail(paymentAggregator.getObjc_id(), nameFile);
+                        handleSuccessOrNot = new HandleSuccessOrNot(false, "Success Upload File");
+                    } else {
+                        handleSuccessOrNot = new HandleSuccessOrNot(true, "Failed upload file");
+                        resultErr = "File PDF Corrupt, MPT_ID: " + paymentAggregator.getObjc_id() + ", Name File: " + String.format("%s.pdf", paymentAggregator.getObjc_id());
+                        logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: "
+                                + resultErr);
+                    }
+                }
+            } else {
+                // Handle username & key tidak cocok
+                resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + requestBody.getUsername() + " & Key: " + requestBody.getKey() + ")";
+                handleSuccessOrNot = new HandleSuccessOrNot(true, resultErr);
+                logger.error("Path: " + request.getServletPath() + " Username: " +  requestBody.getUsername() + " Error: " + resultErr);
+            }
+        } catch (Exception e){
+            resultErr = e.getMessage();
+            handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
+            logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + resultErr);
+        }
+
+        map.put("error", handleSuccessOrNot != null && handleSuccessOrNot.isError());
+        map.put("data", data);
+        map.put("message", handleSuccessOrNot != null ? handleSuccessOrNot.getMessage() : null);
+        res = gson.toJson(map);
+        return res;
+    }
+
+    @Override
+    public String downloadAttachmentHistory(DownloadAttachment requestBody, HttpServletRequest request, HttpServletResponse response) {
+        GsonBuilder builder = new GsonBuilder();
+        builder.serializeNulls();
+        Gson gson = new Gson();
+        gson = builder.create();
+        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
+        HandleSuccessOrNot handleSuccessOrNot;
+        String res;
+        try {
+            if (customResourceLoader.validateCredential(requestBody.getUsername(), requestBody.getKey())) {
+                // Path file yang mau di download
+                File file = new File(requestBody.getPath());
+                try {
+                    // Content-Disposition
+                    response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
+
+                    // Content-Length
+                    response.setContentLength((int) file.length());
+
+                    BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+                    BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = 0;
+                    while ((bytesRead = inStream.read(buffer)) != -1) {
+                        outStream.write(buffer, 0, bytesRead);
+                    }
+                    outStream.flush();
+                    inStream.close();
+
+                    handleSuccessOrNot = new HandleSuccessOrNot(false, "Success Download");
+                } catch (Exception e) {
+                    handleSuccessOrNot = new HandleSuccessOrNot(true, "Download Failed file not found");
+                    logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + e);
+                }
+            } else {
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Download Failed file not found");
+                logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + "Download Failed file not found");
+            }
+        } catch (Exception e) {
+            handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
+            String resultErr = "bad exception " + e;
+            logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + resultErr);
+        }
+        map.put("error", handleSuccessOrNot.isError());
+        map.put("data", data);
+        map.put("message", handleSuccessOrNot.getMessage());
+        res = gson.toJson(map);
+        return res;
+    }
+
     private Topup getData(BigInteger mptId, Pemegang dataSPAJ, RequestTopup requestTopup, String nameFile, Integer lsjb_id) {
         Topup topup = new Topup();
         topup.setMpt_id(mptId.toString());
@@ -312,38 +429,6 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         topup.setLsjb_id(lsjb_id);
         topup.setFlag_source(93);
         return topup;
-    }
-
-    private void createNewFile(String path, RequestTopup requestTopup, BigInteger mptId, HttpServletRequest request,
-                               String username) throws IOException {
-        // Upload Proof Transaction
-
-        File folder = new File(path);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-
-        byte[] imageByte = Base64.getDecoder().decode(requestTopup.getBsb());
-        String directory = path + File.separator + String.format("%s.pdf", mptId);
-        new FileOutputStream(directory).write(imageByte);
-        try {
-            Document document = new Document();
-
-            PdfWriter.getInstance(document, new FileOutputStream(directory));
-            document.open();
-            byte[] decoded = Base64.getDecoder().decode(requestTopup.getBsb().getBytes());
-            Image image1 = Image.getInstance(decoded);
-
-            int indentation = 0;
-            float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
-                    - document.rightMargin() - indentation) / image1.getWidth()) * 100;
-
-            image1.scalePercent(scaler);
-            document.add(image1);
-            document.close();
-        } catch (Exception e) {
-            logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
-        }
     }
 
     private HashMap<String, Object> getMapPaymentType(RequestTopup requestTopup){

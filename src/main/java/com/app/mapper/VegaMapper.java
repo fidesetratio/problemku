@@ -514,4 +514,10 @@ public interface VegaMapper {
 	public MpolTransData selectMpolTransByMptId(String mpt_id);
 
 	public DetailPesertaCorporate detailPesertaCorporate(HashMap<String, Object> hashMap);
+
+	public SummaryPayment findByMptId(String mpt_id);
+
+	public SummaryPayment findByMstrxId(String mspa_trx);
+
+	public void updatePathSummary(HashMap<String, Object> hashMap);
 }

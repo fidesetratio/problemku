@@ -83,7 +83,7 @@
 	</insert>
 	
 	<insert id="insertNewuser" parameterType="LstUserSimultaneous">
-	    INSERT INTO EKA.LST_USER_SIMULTANEOUS (username, password, id_simultan, flag_active, create_date, reg_spaj, mcl_id_employee)
+	    INSERT INTO EKA.LST_USER_SIMULTANEOUS (username, password, id_simultan, flag_active, create_date, reg_spaj, mcl_id_employee, account_no_dplk)
 	    VALUES
 	    (
 	    	#{USERNAME, jdbcType=VARCHAR}, 
@@ -92,7 +92,8 @@
 	    	#{FLAG_ACTIVE, jdbcType=INTEGER},
 	    	to_date(#{DATE_CREATED_JAVA, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS'),
 	    	#{REG_SPAJ, jdbcType=VARCHAR}, 
-	    	#{MCL_ID_EMPLOYEE, jdbcType=VARCHAR} 
+	    	#{MCL_ID_EMPLOYEE, jdbcType=VARCHAR},
+	    	#{account_no_dplk, jdbcType=VARCHAR}
 	    )
 	</insert>
 	

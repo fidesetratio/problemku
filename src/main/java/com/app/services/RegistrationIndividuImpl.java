@@ -17,17 +17,16 @@ import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
@@ -527,6 +526,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
             return false;
         }
         User user = services.selectUserIndividual(username);
+        if (user == null) return  false;
         List<Pemegang> lst = services.filterByIdSimultanRegSpajNoPolis(id_simultan, user.getMspo_policy_no(), user.getReg_spaj());
         Optional<Pemegang> optionalPemegang = lst.stream().filter(v -> v.getType_individu() != null).findFirst();
         if (optionalPemegang.isPresent()){
@@ -539,7 +539,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
 
     @Override
     public String noHpIndividuAndMri(User dataUserIndividual) {
-        String no_hp = "";
+        String no_hp;
         if (dataUserIndividual.getNo_hp() != null || dataUserIndividual.getNo_hp2() != null){
             no_hp = dataUserIndividual.getNo_hp() != null ? dataUserIndividual.getNo_hp() : dataUserIndividual.getNo_hp2();
         } else {

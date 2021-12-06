@@ -25,6 +25,7 @@ public class LstUserSimultaneous implements Serializable {
 	private String DATE_CREATED_JAVA;
 	private String MCL_ID_EMPLOYEE;
 	private String EB_HR_USERNAME;
+	private String account_no_dplk;
 
 	public String getEB_HR_USERNAME() {
 		return EB_HR_USERNAME;
@@ -147,5 +148,13 @@ public class LstUserSimultaneous implements Serializable {
 
 	public void setMCL_ID_EMPLOYEE(String mCL_ID_EMPLOYEE) {
 		MCL_ID_EMPLOYEE = mCL_ID_EMPLOYEE;
+	}
+
+	public String getAccount_no_dplk() {
+		return account_no_dplk;
+	}
+
+	public void setAccount_no_dplk(String account_no_dplk) {
+		this.account_no_dplk = account_no_dplk;
 	}
 }

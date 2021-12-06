@@ -6465,4 +6465,32 @@ SELECT distinct (CASE
 	<select id="findByMstrxId" resultType="com.app.model.SummaryPayment" parameterType="String">
 		SELECT  MSPA_TRX, SPAJ_ETC, AMOUNT, STATUS, PAYMENT_METHOD, BANK_CODE AS BANK_NAME, DESCRIPTION_REQUEST, PAYMENT_CHANNEL, PAID_AT, LT_ID, OBJC_ID, FUNDS_TOPUP FROM EKA.MST_PAYMENT_AGGREGATOR WHERE MSPA_TRX=  #{mspa_trx, jdbcType=VARCHAR}
 	</select>
+
+	<select id="findAccountDplk" resultType="com.app.model.DPLKAccountModel" parameterType="HashMap">
+		select a.acc_no, b.mspe_date_birth, c.no_hp
+		from dplk.mst_peserta@eb a, dplk.mst_client_new@eb b, dplk.mst_address_new@eb c
+		where a.mcl_id = b.mcl_id(+) and b.mcl_id = c.mcl_id(+)
+		and a.acc_no = #{account_no, jdbcType=VARCHAR}
+		and b.mspe_date_birth = TO_DATE(#{birth_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+	</select>
+
+	<select id="findByUsernameDplk" parameterType="String" resultType="com.app.model.User">
+		select a.acc_no, b.mspe_date_birth, c.no_hp, d.*
+		from dplk.mst_peserta@eb a, dplk.mst_client_new@eb b, dplk.mst_address_new@eb c, eka.LST_USER_SIMULTANEOUS d
+		where a.mcl_id = b.mcl_id(+) and b.mcl_id = c.mcl_id(+) and d.username=#{username, jdbcType=VARCHAR} and d.ACCOUNT_NO_DPLK = a.acc_no AND d.FLAG_ACTIVE=1
+	</select>
+	
+	<select id="getInfoDplkByAccNo" resultType="com.app.model.DPLKAccountModel" parameterType="String">
+		select decode(b.flag_dplk, 1, 'PPIP', 2, 'PPUKP') jenis_dplk, a.mpt_nama nama_perusahaan,
+		c.acc_no no_peserta, c.msp_beg_date tgl_mulai_dplk, decode(b.pperiod, 1, '1 bulan', 6, '6 bulan', 12, '12 bulan') periode_pembayaran,
+		g.lji_invest, c.usia_pn usia_pensiun, d.mcl_first nama_peserta, alamat_rumah alamat,
+		e.no_hp, d.mspe_no_identity no_id
+		from dplk.mst_pt@eb a, dplk.mst_dplk@eb b, dplk.mst_peserta@eb c,
+		dplk.mst_client_new@eb d, dplk.mst_address_new@eb e, dplk.mst_peserta_det@eb f,
+		dplk.lst_jenis_invest@eb g
+		where b.mcl_pt = a.mcl_pt and c.nopol = b.nopol
+		and c.mcl_id = d.mcl_id(+) and d.mcl_id = e.mcl_id(+)
+		and f.acc_no = c.acc_no and (unit_pt + unit_peserta) > 0
+		and g.lji_id = f.lji_id AND f.acc_no=#{acc_no, jdbcType=VARCHAR}
+	</select>
 </mapper>

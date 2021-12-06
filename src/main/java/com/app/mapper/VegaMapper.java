@@ -520,4 +520,10 @@ public interface VegaMapper {
 	public SummaryPayment findByMstrxId(String mspa_trx);
 
 	public void updatePathSummary(HashMap<String, Object> hashMap);
+
+	public DPLKAccountModel findAccountDplk(HashMap<String, Object> hashMap);
+
+	public User findByUsernameDplk(String username);
+
+	public DPLKAccountModel getInfoDplkByAccNo(String acc_no);
 }

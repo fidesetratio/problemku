@@ -1831,4 +1831,28 @@ public class VegaServices {
 		dao.updatePathSummary(map);
 	}
 
+	public DPLKAccountModel findAccountDplk(String account_no, String dob){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("account_no", account_no);
+		hashMap.put("birth_date", dob);
+		return dao.findAccountDplk(hashMap);
+	}
+
+	public boolean isExistUsername(String username){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		User isExist = findByUsernameDplk(username);
+		return isExist != null;
+	}
+
+	public DPLKAccountModel getInfoDplkByAccNo(String acc_no){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.getInfoDplkByAccNo(acc_no);
+	}
+
+	public User findByUsernameDplk(String username){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.findByUsernameDplk(username);
+	}
+
 }

@@ -525,5 +525,7 @@ public interface VegaMapper {
 
 	public User findByUsernameDplk(String username);
 
+	public User findByAccountNoDplk(String account_no);
+
 	public DPLKAccountModel getInfoDplkByAccNo(String acc_no);
 }

@@ -1840,8 +1840,12 @@ public class VegaServices {
 	}
 
 	public boolean isExistUsername(String username){
-		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		User isExist = findByUsernameDplk(username);
+		return isExist != null;
+	}
+
+	public boolean isExistAccount(String account_no){
+		User isExist = findByAccountNoDplk(account_no);
 		return isExist != null;
 	}
 
@@ -1853,6 +1857,11 @@ public class VegaServices {
 	public User findByUsernameDplk(String username){
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.findByUsernameDplk(username);
+	}
+
+	public User findByAccountNoDplk(String account_no){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.findByAccountNoDplk(account_no);
 	}
 
 }

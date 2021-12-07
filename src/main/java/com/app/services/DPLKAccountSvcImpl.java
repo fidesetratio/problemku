@@ -89,8 +89,9 @@ public class DPLKAccountSvcImpl implements DPLKAccountSvc {
         HashMap<String, Object> data = new HashMap<>();
         try {
             boolean isExistUsername = services.isExistUsername(requestBody.getUsername());
-            if (isExistUsername) {
-                handleSuccessOrNot = new HandleSuccessOrNot(true, "username is exists");
+            boolean isExistAccount = services.isExistAccount(requestBody.getAcc_no());
+            if (isExistUsername || isExistAccount) {
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "username or account is exists");
             } else {
                 LstUserSimultaneous lstUserSimultaneous = new LstUserSimultaneous();
                 Date date = new Date();

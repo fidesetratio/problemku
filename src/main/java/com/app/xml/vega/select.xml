@@ -6499,4 +6499,31 @@ SELECT distinct (CASE
 		and f.acc_no = c.acc_no and (unit_pt + unit_peserta) > 0
 		and g.lji_id = f.lji_id AND f.acc_no=#{acc_no, jdbcType=VARCHAR}
 	</select>
+
+	<select id="selectLstTransaksi" resultType="com.app.model.LstTransaksi">
+		SELECT * FROM LST_TRANSAKSI where LT_ID in(1, 22, 19, 4, 20, 3, 2)
+	</select>
+
+	<select id="selectHistoryTransaksi" resultType="com.app.model.TransactionHistory" parameterType="HashMap">
+		select a.mpt_id as kode_transaksi, b.LT_ID, a.reg_spaj, b.LT_TRANSKSI as transaction_type, case
+		when a.MPT_STATUS IN (7, 54)
+		THEN
+		'Accepted' end as status,
+		a.req_date as tgl_transaksi, a.mpt_jumlah_process as amount, a.path_sum_payment as file_path
+		from EKA.MST_MPOL_TRANS a, EKA.LST_TRANSAKSI b
+		where B.LT_ID = A.LT_ID and a.reg_spaj=#{reg_spaj, jdbcType=VARCHAR} and A.MPT_STATUS IN (7, 54)
+		<if test="LT_ID != null">
+			and A.LT_ID = #{lt_id,jdbcType=INTEGER}
+		</if>
+		<if test="LT_ID != null">
+			and A.LT_ID = #{lt_id,jdbcType=INTEGER}
+		</if>
+		<if test="start_date != null">
+			AND A.REQ_DATE <![CDATA[ >= ]]> to_date(#{start_date}, 'dd-MM-yyyy')
+		</if>
+		<if test="end_date != null">
+			AND A.REQ_DATE <![CDATA[ <= ]]> to_date(#{end_date}, 'dd-MM-yyyy')
+		</if>
+		and a.REQ_DATE >= trunc(sysdate, 'YEAR') and a.REQ_DATE <![CDATA[ < ]]> sysdate
+	</select>
 </mapper>

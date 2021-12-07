@@ -1,0 +1,114 @@
+package com.app.services;
+
+import com.app.exception.HandleSuccessOrNot;
+import com.app.model.DownloadAttachment;
+import com.app.model.LstTransaksi;
+import com.app.model.TransactionHistory;
+import com.app.utils.ResponseMessage;
+import com.app.utils.VegaCustomResourceLoader;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class TransactionHistorySvcImpl implements TransactionHistorySvc {
+
+    private static final Logger logger = LogManager.getLogger(TransactionHistorySvcImpl.class);
+
+    @Autowired
+    private VegaServices vegaServices;
+    @Autowired
+    private VegaCustomResourceLoader customResourceLoader;
+
+    @Override
+    public List<LstTransaksi> dropDownListTransaksi() {
+        return vegaServices.getListTransaksi();
+    }
+
+    @Override
+    public List<TransactionHistory> getTransactionHistory(String reg_spaj, Integer lt_id, String start_date, String end_date) {
+        if (lt_id == null){
+            return vegaServices.selectHistoryTransaksi(null, reg_spaj, start_date, end_date);
+        }
+        return  vegaServices.selectHistoryTransaksi(lt_id, reg_spaj, start_date, end_date);
+    }
+
+    @Override
+    public TransactionHistory getDetailTransactionHistory(String kode_transaksi, String reg_spaj) {
+        List<TransactionHistory> historyList = getTransactionHistory(reg_spaj, null, null, null);
+        if (historyList != null && historyList.size() > 0){
+            Optional<TransactionHistory> optionalTransactionHistory = historyList.stream().filter(v -> v.getKode_transaksi().equals(kode_transaksi)).findFirst();
+            if (optionalTransactionHistory.isPresent()){
+                return optionalTransactionHistory.get();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String downloadAttachmentHistory(DownloadAttachment requestBody, HttpServletRequest request, HttpServletResponse response) {
+        GsonBuilder builder = new GsonBuilder();
+        builder.serializeNulls();
+        Gson gson = new Gson();
+        gson = builder.create();
+        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
+        HandleSuccessOrNot handleSuccessOrNot;
+        String res;
+        try {
+            if (customResourceLoader.validateCredential(requestBody.getUsername(), requestBody.getKey())) {
+                // Path file yang mau di download
+                File file = new File(requestBody.getPath());
+                try {
+                    // Content-Disposition
+                    response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
+
+                    // Content-Length
+                    response.setContentLength((int) file.length());
+
+                    BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+                    BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = 0;
+                    while ((bytesRead = inStream.read(buffer)) != -1) {
+                        outStream.write(buffer, 0, bytesRead);
+                    }
+                    outStream.flush();
+                    inStream.close();
+
+                    handleSuccessOrNot = new HandleSuccessOrNot(false, "Success Download");
+                } catch (Exception e) {
+                    handleSuccessOrNot = new HandleSuccessOrNot(true, "Download Failed file not found");
+                    logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + e);
+                }
+            } else {
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Download Failed file not found");
+                logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + "Download Failed file not found");
+            }
+        } catch (Exception e) {
+            handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
+            String resultErr = "bad exception " + e;
+            logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + resultErr);
+        }
+        map.put("error", handleSuccessOrNot.isError());
+        map.put("data", data);
+        map.put("message", handleSuccessOrNot.getMessage());
+        res = gson.toJson(map);
+        return res;
+    }
+}

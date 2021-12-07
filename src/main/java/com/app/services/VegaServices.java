@@ -1864,4 +1864,20 @@ public class VegaServices {
 		return dao.findByAccountNoDplk(account_no);
 	}
 
+	public List<LstTransaksi> getListTransaksi(){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectLstTransaksi();
+	}
+
+	public List<TransactionHistory> selectHistoryTransaksi(Integer lt_id, String reg_spaj,
+														   String start_date, String end_date){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("lt_id", lt_id);
+		data.put("reg_spaj", reg_spaj);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.selectHistoryTransaksi(data);
+	}
+
 }

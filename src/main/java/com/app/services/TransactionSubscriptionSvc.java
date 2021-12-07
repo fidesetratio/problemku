@@ -13,5 +13,4 @@ public interface TransactionSubscriptionSvc {
 
     String saveBuktiPembayaran(SummaryPayment requestBody, HttpServletRequest request);
 
-    String downloadAttachmentHistory(DownloadAttachment requestBody, HttpServletRequest request, HttpServletResponse response);
 }

@@ -1,5 +1,7 @@
 package com.app.model.request;
 
+import io.swagger.models.auth.In;
+
 import java.io.Serializable;
 
 public class RequestTransactionHistory implements Serializable {
@@ -14,7 +16,43 @@ public class RequestTransactionHistory implements Serializable {
 	private String startDate;
 	private String endDate;
 	private String jenis_transaksi;
-	
+	private Integer lt_id;
+	private Integer page;
+	private Integer size;
+	private String kode_transaksi;
+
+	public String getKode_transaksi() {
+		return kode_transaksi;
+	}
+
+	public void setKode_transaksi(String kode_transaksi) {
+		this.kode_transaksi = kode_transaksi;
+	}
+
+	public Integer getPage() {
+		return page;
+	}
+
+	public void setPage(Integer page) {
+		this.page = page;
+	}
+
+	public Integer getSize() {
+		return size;
+	}
+
+	public void setSize(Integer size) {
+		this.size = size;
+	}
+
+	public Integer getLt_id() {
+		return lt_id;
+	}
+
+	public void setLt_id(Integer lt_id) {
+		this.lt_id = lt_id;
+	}
+
 	public String getStartDate() {
 		return startDate;
 	}

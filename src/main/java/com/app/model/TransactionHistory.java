@@ -15,7 +15,26 @@ public class TransactionHistory implements Serializable {
 	private String reg_spaj;
 	private String file_path;
 	private Date tgl_transaksi;
-	
+
+	private BigDecimal amount;
+	private String status;
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public Date getTgl_transaksi() {
 		return tgl_transaksi;
 	}

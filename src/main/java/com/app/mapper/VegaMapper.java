@@ -528,4 +528,8 @@ public interface VegaMapper {
 	public User findByAccountNoDplk(String account_no);
 
 	public DPLKAccountModel getInfoDplkByAccNo(String acc_no);
+
+	public List<LstTransaksi> selectLstTransaksi();
+
+	public List<TransactionHistory> selectHistoryTransaksi(HashMap<String, Object> hashMap);
 }

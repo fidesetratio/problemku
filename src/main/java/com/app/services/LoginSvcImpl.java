@@ -480,7 +480,7 @@ public class LoginSvcImpl implements LoginSvc {
             key = user1.getKEY();
             data = getMapObjc(false, false, false, false, false,
                     false, true, key, null, data);
-            handleSuccessOrNot = new HandleSuccessOrNot(true, "Login success");
+            handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
             customResourceLoader.insertHistActivityWS(12, 40, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
         } else {
             if (user1.getPASSWORD().equals(password)) {
@@ -492,7 +492,7 @@ public class LoginSvcImpl implements LoginSvc {
                     key = user1.getKEY();
                     data = getMapObjc(false, false, false, false, false,
                             false, true, key, null, data);
-                    handleSuccessOrNot = new HandleSuccessOrNot(true, "Login success");
+                    handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
                 } else {
                     // Error username yang dimasukkan tidak ada pada database
                     handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");

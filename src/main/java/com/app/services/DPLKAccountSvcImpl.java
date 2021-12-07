@@ -1,15 +1,16 @@
 package com.app.services;
 
 import com.app.exception.HandleSuccessOrNot;
+import com.app.feignclient.ServiceOTP;
 import com.app.model.DPLKAccountModel;
 import com.app.model.LstUserSimultaneous;
 import com.app.model.ResponseData;
+import com.app.model.request.RequestSendOTP;
 import com.app.utils.DateUtils;
 import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,21 @@ public class DPLKAccountSvcImpl implements DPLKAccountSvc {
 
     private static final Logger logger = LogManager.getLogger(DPLKAccountSvcImpl.class);
 
+    private final DateUtils dateUtils;
+    private final ServiceOTP serviceOTP;
+    private final VegaServices services;
+    private final VegaCustomResourceLoader customResourceLoader;
+
     @Autowired
-    private VegaServices services;
-    @Autowired
-    private DateUtils dateUtils;
-    @Autowired
-    private VegaCustomResourceLoader customResourceLoader;
+    public DPLKAccountSvcImpl(DateUtils dateUtils, ServiceOTP serviceOTP,
+                              VegaServices services,
+                              VegaCustomResourceLoader customResourceLoader) {
+        this.dateUtils = dateUtils;
+        this.serviceOTP = serviceOTP;
+        this.services = services;
+        this.customResourceLoader = customResourceLoader;
+    }
+
 
     @Override
     public ResponseData findAccountDPLK(DPLKAccountModel requestBody, HttpServletRequest request) {
@@ -38,10 +48,25 @@ public class DPLKAccountSvcImpl implements DPLKAccountSvc {
         try {
             DPLKAccountModel account = services.findAccountDplk(requestBody.getAcc_no(), requestBody.getDob());
             if (account != null) {
+
+                RequestSendOTP requestSendOTP = new RequestSendOTP();
+                requestSendOTP.setJenis_id(91);
+                requestSendOTP.setMenu_id(1);
+                requestSendOTP.setUsername(account.getNo_hp());
+                ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
+
+                Boolean errorPost = responseSendOTP.getError();
+                String messagePost = responseSendOTP.getMessage();
                 data.put("account_no", account.getAcc_no());
                 data.put("dob", dateUtils.getFormatterFormat(account.getMspe_date_birth(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
                 data.put("no_hp", account.getNo_hp());
-                handleSuccessOrNot = new HandleSuccessOrNot(false, "Success find account");
+                if (!errorPost) {
+                    handleSuccessOrNot = new HandleSuccessOrNot(false, "Success find account");
+                } else {
+                    handleSuccessOrNot = new HandleSuccessOrNot(true,  "Phone number is blacklisted");
+                    logger.error("Path: " + request.getServletPath() + " No Account DPLK: "
+                            + account.getAcc_no() + " Error: " + messagePost);
+                }
             } else {
                 handleSuccessOrNot = new HandleSuccessOrNot(true, "account not found");
             }

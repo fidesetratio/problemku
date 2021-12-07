@@ -7,6 +7,7 @@ import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.swagger.models.auth.In;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class LoginSvcImpl implements LoginSvc {
     private RegistrationIndividuSvc registrationIndividuSvc;
 
     @Override
-    public ResponseData login(RequestLogin requestLogin, HttpServletRequest request) {
+    public ResponseData login(RequestLogin requestLogin, HttpServletRequest request, boolean easyPin) {
         Gson gson = new Gson();
         String req = gson.toJson(requestLogin);
         String username = requestLogin.getUsername();
@@ -77,8 +78,8 @@ public class LoginSvcImpl implements LoginSvc {
                 boolean user_corporate_notactive = false;
 
                 if (isIndividu) {
-                   return loginIndividu(isIndividu, isIndividuMri, username, password, data, user1, lstUserSimultaneous,
-                            request, key, lastLoginDevice, time_idle, req);
+                    return loginIndividu(isIndividu, isIndividuMri, username, password, data, user1, lstUserSimultaneous,
+                            request, key, lastLoginDevice, time_idle, req, easyPin);
                 } else if (isIndividuCorporate || corporate) {
                     ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(checkIndividuOrCorporate.getMCL_ID_EMPLOYEE());
                     for (int x = 0; x < 1; x++) {
@@ -95,12 +96,12 @@ public class LoginSvcImpl implements LoginSvc {
                         }
                     }
                     return loginCorporate(isIndividuCorporate, policy_corporate_notinforce, user_corporate_notactive, username, password, data, user1,
-                            lstUserSimultaneous, request, key, lastLoginDevice, time_idle, checkIndividuOrCorporate.getMCL_ID_EMPLOYEE(), req);
-                } else if (isHrUser){
-                    return loginHr(user1, password, lstUserSimultaneous, key, data, username, request, responseData, req);
-                } else if (isAccountDplk){
+                            lstUserSimultaneous, request, key, lastLoginDevice, time_idle, checkIndividuOrCorporate.getMCL_ID_EMPLOYEE(), req, easyPin);
+                } else if (isHrUser) {
+                    return loginHr(password, lstUserSimultaneous, user1, key, data, username, request, responseData, req, easyPin, lastLoginDevice, time_idle);
+                } else if (isAccountDplk) {
                     User dplkAccount = services.findByUsernameDplk(username);
-                    return loginDplk(dplkAccount, responseData, lstUserSimultaneous, key, user1, data, request, username, req);
+                    return loginDplk(dplkAccount, responseData, lstUserSimultaneous, key, user1, data, request, username, req, easyPin, lastLoginDevice, time_idle, password);
                 }
             } else {
                 // Error username yang dimasukkan tidak ada pada database
@@ -111,7 +112,9 @@ public class LoginSvcImpl implements LoginSvc {
         } catch (Exception e) {
             handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
             String resultErr = "bad exception " + e;
-            logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+            if (e.getStackTrace().length > 0){
+                logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+            }
         }
         responseData.setError(handleSuccessOrNot.isError());
         responseData.setMessage(handleSuccessOrNot.getMessage());
@@ -150,7 +153,7 @@ public class LoginSvcImpl implements LoginSvc {
 
     private ResponseData loginIndividu(boolean isIndividu, boolean isIndividuMri, String username, String password, HashMap<String, Object> data,
                                        LstUserSimultaneous user1, LstUserSimultaneous lstUserSimultaneous,
-                                       HttpServletRequest request, String key, String lastLoginDevice, Integer timeIdle, String req) {
+                                       HttpServletRequest request, String key, String lastLoginDevice, Integer timeIdle, String req, boolean easyPin) {
         ResponseData responseData = new ResponseData();
         HandleSuccessOrNot handleSuccessOrNot = null;
         if (isIndividu) {
@@ -160,72 +163,19 @@ public class LoginSvcImpl implements LoginSvc {
                 Integer countDeathClaim = services.selectCountDeathClaim(username);
                 if (countDeathClaim == 0) {
                     if (dataActivityUser.getLast_login_device() != null && dataActivityUser.getLast_login_device().equals(lastLoginDevice)) {
-                        if (user1.getPASSWORD().equals(password)) {
-                            ArrayList<User> list = services.selectDetailedPolis(username);
-                            // Check apakah username tersebut punya list polis/ tidak
-                            if (list.size() > 0 || isIndividuMri) {
-                                String today = df.format(new Date());
-                                lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
-                                lstUserSimultaneous.setUPDATE_DATE_TIME(today);
-                                services.updateUserKeyName(lstUserSimultaneous);
-                                key = user1.getKEY();
-
-                                data = getMapObjc(true, false, false, isIndividuMri, false,
-                                        false, false, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
-                                                : dataActivityUser.getNo_hp2(), data);
-                                handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
-                            } else {
-                                // Error list polis kosong
-                                String resultErr = "List Polis Kosong";
-                                handleSuccessOrNot = new HandleSuccessOrNot(true, "List policy is empty");
-                                logger.error("Path: " + request.getServletPath() + " Username: " + username
-                                        + " Error: " + resultErr);
-                            }
-                        } else {
-                            // Error password yang dimasukkan salah
-                            String resultErr = "Password yang dimasukkan salah";
-                            handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
-                            logger.error("Path: " + request.getServletPath() + " Username: " + username
-                                    + " Error: " + resultErr);
-                        }
+                        ArrayList<User> list = services.selectDetailedPolis(username);
+                        responseData = cekEasyLoginInvidu(easyPin, list, isIndividuMri, lstUserSimultaneous, key, user1, dataActivityUser, data, username, password, request, responseData, req);
                     } else {
+                        ArrayList<User> list = services.selectDetailedPolis(username);
                         // Kondisi dimana token ada tetapi berbeda dengan yang dikirim
-                        Date dateActivity = dataActivityUser.getUpdate_date();
+                        Date dateActivity = dataActivityUser.getUpdate_date() != null ? dataActivityUser.getUpdate_date() : new Date();
                         Date dateNow = new Date();
                         long diff = dateNow.getTime() - dateActivity.getTime();
                         long diffSeconds = diff / 1000;
                         if (diffSeconds >= timeIdle || dataActivityUser.getLast_login_device() == null) {
                             // Check apabila lebih dari 15 menit, password yang dimasukkan kosong/ ""
                             // Check password yang dimasukkan sama/ tidak dengan yang didb
-                            if (user1.getPASSWORD().equals(password)) {
-                                ArrayList<User> list = services.selectDetailedPolis(username);
-                                if (list.size() > 0 || isIndividuMri) {
-                                    customResourceLoader.postGoogle(linkFcmGoogle, username,
-                                            dataActivityUser.getLast_login_device());
-                                    String today = df.format(new Date());
-                                    lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
-                                    lstUserSimultaneous.setUPDATE_DATE_TIME(today);
-                                    services.updateUserKeyName(lstUserSimultaneous);
-                                    key = user1.getKEY();
-
-                                    data = getMapObjc(true, false, false, isIndividuMri, false,
-                                            false, false, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
-                                                    : dataActivityUser.getNo_hp2(), data);
-                                    handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
-                                } else {
-                                    // Error list polis kosong
-                                    String resultErr = "List Polis Kosong";
-                                    handleSuccessOrNot = new HandleSuccessOrNot(true, "List policy is empty");
-                                    logger.error("Path: " + request.getServletPath() + " Username: " + username
-                                            + " Error: " + resultErr);
-                                }
-                            } else {
-                                // Error password yang dimasukkan salah
-                                String resultErr = "Password yang dimasukkan salah";
-                                handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
-                                logger.error("Path: " + request.getServletPath() + " Username: " + username
-                                        + " Error: " + resultErr);
-                            }
+                            responseData = cekEasyLoginInvidu(easyPin, list, isIndividuMri, lstUserSimultaneous, key, user1, dataActivityUser, data, username, password, request, responseData, req);
                         } else {
                             // Error perbedaan lama waktu token belum lebih dari 15 menit
                             handleSuccessOrNot = new HandleSuccessOrNot(true, "Session still active");
@@ -249,75 +199,36 @@ public class LoginSvcImpl implements LoginSvc {
             }
 
         }
-        responseData.setError(handleSuccessOrNot.isError());
-        responseData.setMessage(handleSuccessOrNot.getMessage());
+        responseData.setError(handleSuccessOrNot != null ? handleSuccessOrNot.isError() : responseData.getError());
+        responseData.setMessage(handleSuccessOrNot != null ? handleSuccessOrNot.getMessage() : responseData.getMessage());
         responseData.setData(data);
-
-        // Insert Log LST_HIST_ACTIVITY_WS
-        customResourceLoader.insertHistActivityWS(12, 1, new Date(), req , responseData.toString(), 1, null, new Date(), username);
 
         return responseData;
     }
 
     private ResponseData loginCorporate(boolean individuCorporate, boolean policy_corporate_notinforce, boolean user_corporate_notactive, String username, String password, HashMap<String, Object> data,
                                         LstUserSimultaneous user1, LstUserSimultaneous lstUserSimultaneous,
-                                        HttpServletRequest request, String key, String lastLoginDevice, Integer timeIdle, 
-                                        String mcl_id_employee, String req) {
+                                        HttpServletRequest request, String key, String lastLoginDevice, Integer timeIdle,
+                                        String mcl_id_employee, String req, boolean easyPin) {
         ResponseData responseData = new ResponseData();
         HandleSuccessOrNot handleSuccessOrNot = null;
         UserCorporate dataUserCorporate = services.selectUserCorporate(username);
         // Check apakah username terdaftar/ tidak
         if (dataUserCorporate != null) {
             if (dataUserCorporate.getLast_login_device() != null && dataUserCorporate.getLast_login_device().equals(lastLoginDevice)) {
-                if (user1.getPASSWORD().equals(password)) {
-                    ArrayList<UserCorporate> list = services.selectListPolisCorporate(mcl_id_employee);
-                    // Check apakah username tersebut punya list polis/ tidak
-                    if (list.size() > 0) {
-                        String today = df.format(new Date());
-                        lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
-                        lstUserSimultaneous.setUPDATE_DATE_TIME(today);
-                        services.updateUserKeyName(lstUserSimultaneous);
-                        key = user1.getKEY();
-                        data = getMapObjc(individuCorporate, true, false, false, policy_corporate_notinforce,
-                                user_corporate_notactive, false, key, dataUserCorporate.getNo_hp(), data);
-                        handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
-                    } else {
-                        // Error list polis kosong
-                        handleSuccessOrNot = new HandleSuccessOrNot(true, "List policy is empty");
-                        String resultErr = "List Polis Kosong";
-                        logger.error("Path: " + request.getServletPath() + " Username: " + username
-                                + " Error: " + resultErr);
-                    }
-                } else {
-                    // Error password yang dimasukkan salah
-                    handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
-                    String resultErr = "Password yang dimasukkan salah";
-                    logger.error("Path: " + request.getServletPath() + " Username: " + username
-                            + " Error: " + resultErr);
-                }
+                ArrayList<UserCorporate> list = services.selectListPolisCorporate(mcl_id_employee);
+                responseData = cekLoginCorporate(easyPin, list, lstUserSimultaneous, user1, key, individuCorporate, policy_corporate_notinforce, user_corporate_notactive, dataUserCorporate.getNo_hp(), data,
+                        password, username, request, responseData, req);
             } else {
-                Date dateActivity = dataUserCorporate.getUpdate_date();
+                ArrayList<UserCorporate> list = services.selectListPolisCorporate(mcl_id_employee);
+                Date dateActivity = dataUserCorporate.getUpdate_date() != null ? dataUserCorporate.getUpdate_date() : new Date();
                 Date dateNow = new Date();
                 long diff = dateNow.getTime() - dateActivity.getTime();
                 long diffSeconds = diff / 1000;
                 // Check apakah lama perbedaan waktu token sudah melebihi 15 menit/ belum
                 if (diffSeconds >= timeIdle || dataUserCorporate.getLast_login_device() == null) {
-                    if (user1.getPASSWORD().equals(password)) {
-                        String today = df.format(new Date());
-                        lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
-                        lstUserSimultaneous.setUPDATE_DATE_TIME(today);
-                        services.updateUserKeyName(lstUserSimultaneous);
-                        key = user1.getKEY();
-                        data = getMapObjc(individuCorporate, true, false, false, policy_corporate_notinforce,
-                                user_corporate_notactive, false, key, dataUserCorporate.getNo_hp(), data);
-                        handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
-                    } else {
-                        // Error password kosong
-                        handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
-                        String resultErr = "Format password incorect";
-                        logger.error("Path: " + request.getServletPath() + " Username: " + username
-                                + " Error: " + resultErr);
-                    }
+                    responseData = cekLoginCorporate(easyPin, list, lstUserSimultaneous, user1, key, individuCorporate, policy_corporate_notinforce, user_corporate_notactive, dataUserCorporate.getNo_hp(), data,
+                            password, username, request, responseData, req);
                 } else {
                     // Error perbedaan lama waktu token belum lebih dari 15 menit
                     handleSuccessOrNot = new HandleSuccessOrNot(true, "Session still active");
@@ -333,69 +244,274 @@ public class LoginSvcImpl implements LoginSvc {
             logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
                     + resultErr);
         }
-        responseData.setError(handleSuccessOrNot.isError());
-        responseData.setMessage(handleSuccessOrNot.getMessage());
+        responseData.setError(handleSuccessOrNot != null ? handleSuccessOrNot.isError() : responseData.getError());
+        responseData.setMessage(handleSuccessOrNot != null ? handleSuccessOrNot.getMessage() : responseData.getMessage());
         responseData.setData(data);
-
-        // Insert Log LST_HIST_ACTIVITY_WS
-        customResourceLoader.insertHistActivityWS(12, 1, new Date(), req , responseData.toString(), 1, null, new Date(), username);
         return responseData;
     }
 
     private ResponseData loginDplk(User dplkAccount, ResponseData responseData, LstUserSimultaneous lstUserSimultaneous, String key,
                                    LstUserSimultaneous user1, HashMap<String, Object> data, HttpServletRequest request,
-                                   String username, String req){
+                                   String username, String req, boolean easyPin, String lastLoginDevice, Integer timeIdle, String password) {
         HandleSuccessOrNot handleSuccessOrNot = null;
-        if (dplkAccount != null){
-            String today = df.format(new Date());
-            lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
-            lstUserSimultaneous.setUPDATE_DATE_TIME(today);
-            services.updateUserKeyName(lstUserSimultaneous);
-            key = user1.getKEY();
-            getMapObjc(false, false, false, false, false,
-                    false, true, key, null, data);
-            handleSuccessOrNot = new HandleSuccessOrNot(true, "Login success");
+        if (user1.getLAST_LOGIN_DEVICE() != null && user1.getLAST_LOGIN_DEVICE().equals(lastLoginDevice)) {
+            responseData = cekLoginEasyPinDplk(easyPin, lstUserSimultaneous, key, user1, password, username, dplkAccount, request, responseData, data, req);
         } else {
-            // Error username yang dimasukkan tidak ada pada database
-            handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
-            String resultErr = "Username tidak terdaftar";
-            logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
-                    + resultErr);
+            Date dateActivity = dplkAccount.getUpdate_date() != null ? dplkAccount.getUpdate_date() : new Date();
+            Date dateNow = new Date();
+            long diff = dateNow.getTime() - dateActivity.getTime();
+            long diffSeconds = diff / 1000;
+            // Check apakah lama perbedaan waktu token sudah melebihi 15 menit/ belum
+            if (diffSeconds >= timeIdle || user1.getLAST_LOGIN_DEVICE() == null) {
+                responseData = cekLoginEasyPinDplk(easyPin, lstUserSimultaneous, key, user1, password, username, dplkAccount, request, responseData, data, req);
+            } else {
+                // Error perbedaan lama waktu token belum lebih dari 15 menit
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Session still active");
+                String resultErr = "Account sedang login ditempat lain atau ada session yang belum berakhir";
+                logger.error("Path: " + request.getServletPath() + " Username: " + username
+                        + " Error: " + resultErr);
+            }
         }
-        responseData.setError(handleSuccessOrNot.isError());
-        responseData.setMessage(handleSuccessOrNot.getMessage());
+        responseData.setError(handleSuccessOrNot != null ? handleSuccessOrNot.isError() : responseData.getError());
+        responseData.setMessage(handleSuccessOrNot != null ? handleSuccessOrNot.getMessage() : responseData.getMessage());
         responseData.setData(data);
-
-        // Insert Log LST_HIST_ACTIVITY_WS
-        customResourceLoader.insertHistActivityWS(12, 1, new Date(), req , responseData.toString(), 1, null, new Date(), username);
         return responseData;
     }
 
-    private ResponseData loginHr(LstUserSimultaneous user1, String password, LstUserSimultaneous lstUserSimultaneous, String key, HashMap<String, Object> data, String username,
-                                 HttpServletRequest request, ResponseData responseData, String req){
+    private ResponseData loginHr(String password, LstUserSimultaneous lstUserSimultaneous, LstUserSimultaneous user1, String key, HashMap<String, Object> data, String username,
+                                 HttpServletRequest request, ResponseData responseData, String req, boolean easyPin, String lastLoginDevice, Integer timeIdle) {
         HandleSuccessOrNot handleSuccessOrNot = null;
-        if (user1.getPASSWORD().equals(password)) {
+        if (user1.getLAST_LOGIN_DEVICE() != null && user1.getLAST_LOGIN_DEVICE().equals(lastLoginDevice)) {
+            responseData = cekLoginEasyPinHr(easyPin, lstUserSimultaneous, user1, password, key, username, data, request, responseData, req);
+        } else {
+            Date dateActivity = user1.getUPDATE_DATE() != null ? user1.getUPDATE_DATE() : new Date();
+            Date dateNow = new Date();
+            long diff = dateNow.getTime() - dateActivity.getTime();
+            long diffSeconds = diff / 1000;
+            // Check apakah lama perbedaan waktu token sudah melebihi 15 menit/ belum
+            if (diffSeconds >= timeIdle || user1.getLAST_LOGIN_DEVICE() == null) {
+                responseData = cekLoginEasyPinHr(easyPin, lstUserSimultaneous, user1, password, key, username, data, request, responseData, req);
+            } else {
+                // Error perbedaan lama waktu token belum lebih dari 15 menit
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Session still active");
+                String resultErr = "Account sedang login ditempat lain atau ada session yang belum berakhir";
+                logger.error("Path: " + request.getServletPath() + " Username: " + username
+                        + " Error: " + resultErr);
+            }
+        }
+        responseData.setError(handleSuccessOrNot != null ? handleSuccessOrNot.isError() : responseData.getError());
+        responseData.setMessage(handleSuccessOrNot != null ? handleSuccessOrNot.getMessage() : responseData.getMessage());
+        responseData.setData(data);
+
+        // Insert Log LST_HIST_ACTIVITY_WS
+        customResourceLoader.insertHistActivityWS(12, 1, new Date(), req, responseData.toString(), 1, null, new Date(), username);
+        return responseData;
+    }
+
+    private ResponseData cekEasyLoginInvidu(boolean easyPin, ArrayList<User> list, boolean isIndividuMri, LstUserSimultaneous lstUserSimultaneous, String key, LstUserSimultaneous user1, User dataActivityUser,
+                                            HashMap<String, Object> data, String username, String password, HttpServletRequest request, ResponseData responseData, String req) {
+        HandleSuccessOrNot handleSuccessOrNot;
+        if (easyPin) {
+            // Check apakah username tersebut punya list polis/ tidak
+            if (list.size() > 0 || isIndividuMri) {
+                String today = df.format(new Date());
+                lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+                lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+                services.updateUserKeyName(lstUserSimultaneous);
+                key = user1.getKEY();
+
+                data = getMapObjc(true, false, false, isIndividuMri, false,
+                        false, false, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
+                                : dataActivityUser.getNo_hp2(), data);
+                handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
+            } else {
+                // Error list polis kosong
+                String resultErr = "List Polis Kosong";
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "List policy is empty");
+                logger.error("Path: " + request.getServletPath() + " Username: " + username
+                        + " Error: " + resultErr);
+            }
+            customResourceLoader.insertHistActivityWS(12, 40, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
+        } else {
+            if (user1.getPASSWORD().equals(password)) {
+                // Check apakah username tersebut punya list polis/ tidak
+                if (list.size() > 0 || isIndividuMri) {
+                    String today = df.format(new Date());
+                    lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+                    lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+                    services.updateUserKeyName(lstUserSimultaneous);
+                    key = user1.getKEY();
+
+                    data = getMapObjc(true, false, false, isIndividuMri, false,
+                            false, false, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
+                                    : dataActivityUser.getNo_hp2(), data);
+                    handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
+                } else {
+                    // Error list polis kosong
+                    String resultErr = "List Polis Kosong";
+                    handleSuccessOrNot = new HandleSuccessOrNot(true, "List policy is empty");
+                    logger.error("Path: " + request.getServletPath() + " Username: " + username
+                            + " Error: " + resultErr);
+                }
+            } else {
+                // Error password yang dimasukkan salah
+                String resultErr = "Password yang dimasukkan salah";
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
+                logger.error("Path: " + request.getServletPath() + " Username: " + username
+                        + " Error: " + resultErr);
+            }
+
+            // Insert Log LST_HIST_ACTIVITY_WS
+            customResourceLoader.insertHistActivityWS(12, 1, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
+        }
+        responseData.setError(handleSuccessOrNot.isError());
+        responseData.setMessage(handleSuccessOrNot.getMessage());
+        responseData.setData(data);
+        return responseData;
+    }
+
+    private ResponseData cekLoginCorporate(boolean easyPin, ArrayList<UserCorporate> list, LstUserSimultaneous lstUserSimultaneous, LstUserSimultaneous user1, String key, boolean individuCorporate,
+                                           boolean policy_corporate_notinforce, boolean user_corporate_notactive, String no_hp, HashMap<String, Object> data, String password, String username,
+                                           HttpServletRequest request, ResponseData responseData, String req) {
+        HandleSuccessOrNot handleSuccessOrNot;
+        if (easyPin) {
+            if (list.size() > 0) {
+                String today = df.format(new Date());
+                lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+                lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+                services.updateUserKeyName(lstUserSimultaneous);
+                key = user1.getKEY();
+                data = getMapObjc(individuCorporate, true, false, false, policy_corporate_notinforce,
+                        user_corporate_notactive, false, key, no_hp, data);
+                handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
+            } else {
+                // Error list polis kosong
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "List policy is empty");
+                String resultErr = "List Polis Kosong";
+                logger.error("Path: " + request.getServletPath() + " Username: " + username
+                        + " Error: " + resultErr);
+            }
+            customResourceLoader.insertHistActivityWS(12, 40, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
+        } else {
+            if (user1.getPASSWORD().equals(password)) {
+                // Check apakah username tersebut punya list polis/ tidak
+                if (list.size() > 0) {
+                    String today = df.format(new Date());
+                    lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+                    lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+                    services.updateUserKeyName(lstUserSimultaneous);
+                    key = user1.getKEY();
+                    data = getMapObjc(individuCorporate, true, false, false, policy_corporate_notinforce,
+                            user_corporate_notactive, false, key, no_hp, data);
+                    handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
+
+                    // Insert Log LST_HIST_ACTIVITY_WS
+                    customResourceLoader.insertHistActivityWS(12, 1, new Date(), req, responseData.toString(), 1, null, new Date(), username);
+                } else {
+                    // Error list polis kosong
+                    handleSuccessOrNot = new HandleSuccessOrNot(true, "List policy is empty");
+                    String resultErr = "List Polis Kosong";
+                    logger.error("Path: " + request.getServletPath() + " Username: " + username
+                            + " Error: " + resultErr);
+                }
+            } else {
+                // Error password yang dimasukkan salah
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
+                String resultErr = "Password yang dimasukkan salah";
+                logger.error("Path: " + request.getServletPath() + " Username: " + username
+                        + " Error: " + resultErr);
+            }
+
+            // Insert Log LST_HIST_ACTIVITY_WS
+            customResourceLoader.insertHistActivityWS(12, 1, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
+        }
+        responseData.setError(handleSuccessOrNot != null ? handleSuccessOrNot.isError() :responseData.getError());
+        responseData.setMessage(handleSuccessOrNot != null ? handleSuccessOrNot.getMessage() : responseData.getMessage());
+        responseData.setData(data);
+        return responseData;
+    }
+
+    private ResponseData cekLoginEasyPinHr(boolean easyPin, LstUserSimultaneous lstUserSimultaneous, LstUserSimultaneous user1, String password, String key,
+                                           String username, HashMap<String, Object> data, HttpServletRequest request, ResponseData responseData, String req) {
+        HandleSuccessOrNot handleSuccessOrNot;
+        if (easyPin) {
             String today = df.format(new Date());
             lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
             lstUserSimultaneous.setUPDATE_DATE_TIME(today);
             services.updateUserKeyName(lstUserSimultaneous);
             key = user1.getKEY();
-            getMapObjc(false, false, true, false, false,
+            data = getMapObjc(false, false, true, false, false,
                     false, false, key, null, data);
             handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
+            customResourceLoader.insertHistActivityWS(12, 40, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
         } else {
-            // Error username yang dimasukkan tidak ada pada database
-            handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
-            String resultErr = "Username tidak terdaftar";
-            logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
-                    + resultErr);
+            if (user1.getPASSWORD().equals(password)) {
+                String today = df.format(new Date());
+                lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+                lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+                services.updateUserKeyName(lstUserSimultaneous);
+                key = user1.getKEY();
+                data = getMapObjc(false, false, true, false, false,
+                        false, false, key, null, data);
+                handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
+            } else {
+                // Error username yang dimasukkan tidak ada pada database
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
+                String resultErr = "Username tidak terdaftar";
+                logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+                        + resultErr);
+            }
+            customResourceLoader.insertHistActivityWS(12, 1, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
         }
-        responseData.setError(handleSuccessOrNot.isError());
-        responseData.setMessage(handleSuccessOrNot.getMessage());
+        responseData.setError(handleSuccessOrNot != null ? handleSuccessOrNot.isError() : responseData.getError());
+        responseData.setMessage(handleSuccessOrNot != null ? handleSuccessOrNot.getMessage() : responseData.getMessage());
         responseData.setData(data);
+        return responseData;
+    }
 
-        // Insert Log LST_HIST_ACTIVITY_WS
-        customResourceLoader.insertHistActivityWS(12, 1, new Date(), req , responseData.toString(), 1, null, new Date(), username);
+    private ResponseData cekLoginEasyPinDplk(boolean easyPin, LstUserSimultaneous lstUserSimultaneous, String key, LstUserSimultaneous user1, String password,
+                                             String username, User dplkAccount, HttpServletRequest request, ResponseData responseData, HashMap<String, Object> data, String req) {
+        HandleSuccessOrNot handleSuccessOrNot;
+        if (easyPin) {
+            String today = df.format(new Date());
+            lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+            lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+            services.updateUserKeyName(lstUserSimultaneous);
+            key = user1.getKEY();
+            data = getMapObjc(false, false, false, false, false,
+                    false, true, key, null, data);
+            handleSuccessOrNot = new HandleSuccessOrNot(true, "Login success");
+            customResourceLoader.insertHistActivityWS(12, 40, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
+        } else {
+            if (user1.getPASSWORD().equals(password)) {
+                if (dplkAccount != null) {
+                    String today = df.format(new Date());
+                    lstUserSimultaneous.setLAST_LOGIN_DATE_TIME(today);
+                    lstUserSimultaneous.setUPDATE_DATE_TIME(today);
+                    services.updateUserKeyName(lstUserSimultaneous);
+                    key = user1.getKEY();
+                    data = getMapObjc(false, false, false, false, false,
+                            false, true, key, null, data);
+                    handleSuccessOrNot = new HandleSuccessOrNot(true, "Login success");
+                } else {
+                    // Error username yang dimasukkan tidak ada pada database
+                    handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
+                    String resultErr = "Username tidak terdaftar";
+                    logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+                            + resultErr);
+                }
+            } else {
+                // Error username yang dimasukkan tidak ada pada database
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");
+                String resultErr = "Username tidak terdaftar";
+                logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+                        + resultErr);
+            }
+            customResourceLoader.insertHistActivityWS(12, 1, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
+        }
+        responseData.setError(handleSuccessOrNot != null ? handleSuccessOrNot.isError() : responseData.getError());
+        responseData.setMessage(handleSuccessOrNot != null ? handleSuccessOrNot.getMessage() : responseData.getMessage());
+        responseData.setData(data);
         return responseData;
     }
 

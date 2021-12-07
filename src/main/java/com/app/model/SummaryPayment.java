@@ -33,6 +33,7 @@ public class SummaryPayment implements Serializable {
     private Integer lsjb_id;
     private String funds_topup;
     private Integer jenis_id_app;
+    private String file_type;
 
     private String id_payment;
     private String path;

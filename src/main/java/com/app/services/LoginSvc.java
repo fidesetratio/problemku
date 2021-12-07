@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface LoginSvc {
 
-    ResponseData login(RequestLogin requestLogin,  HttpServletRequest request);
+    ResponseData login(RequestLogin requestLogin,  HttpServletRequest request, boolean easyPin);
 
     boolean isIndividu(LstUserSimultaneous checkIndividuOrCorporate);
 

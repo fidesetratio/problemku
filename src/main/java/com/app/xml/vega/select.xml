@@ -6483,7 +6483,7 @@ SELECT distinct (CASE
 	<select id="findByAccountNoDplk" parameterType="String" resultType="com.app.model.User">
 		select a.acc_no, b.mspe_date_birth, c.no_hp, d.*
 		from dplk.mst_peserta@eb a, dplk.mst_client_new@eb b, dplk.mst_address_new@eb c, eka.LST_USER_SIMULTANEOUS d
-		where a.mcl_id = b.mcl_id(+) and b.mcl_id = c.mcl_id(+) and d.ACCOUNT_NO_DPLK = #{account_no, jdbcType=VARCHAR} AND d.FLAG_ACTIVE=1
+		where a.mcl_id = b.mcl_id(+) and b.mcl_id = c.mcl_id(+) and d.ACCOUNT_NO_DPLK = #{account_no, jdbcType=VARCHAR} AND d.ACCOUNT_NO_DPLK = a.acc_no AND d.FLAG_ACTIVE=1
 	</select>
 	
 	<select id="getInfoDplkByAccNo" resultType="com.app.model.DPLKAccountModel" parameterType="String">

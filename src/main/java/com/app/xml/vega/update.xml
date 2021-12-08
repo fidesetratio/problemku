@@ -19,6 +19,7 @@
     	<trim prefix="SET" suffixOverrides=",">
     		<if test="REG_SPAJ != null"> REG_SPAJ = #{REG_SPAJ, jdbcType=VARCHAR}, ID_SIMULTAN = #{ID_SIMULTAN, jdbcType=VARCHAR}</if>
         	<if test="MCL_ID_EMPLOYEE != null"> MCL_ID_EMPLOYEE = #{MCL_ID_EMPLOYEE, jdbcType=VARCHAR},</if>
+        	<if test="account_no_dplk != null"> ACCOUNT_NO_DPLK = #{account_no_dplk, jdbcType=VARCHAR},</if>
         </trim>
     	WHERE USERNAME = #{USERNAME, jdbcType=VARCHAR} AND FLAG_ACTIVE = 1
     </update>

@@ -1339,12 +1339,13 @@ public class VegaServices {
 		dao.updateActivityStatus(user);
 	}
 
-	public void updateLinkAccount(String reg_spaj, String id_simultan, String mcl_id_employee, String username) {
+	public void updateLinkAccount(String reg_spaj, String id_simultan, String mcl_id_employee, String account_no_dplk, String username) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		LstUserSimultaneous lstUserSimultaneous = new LstUserSimultaneous();
 		lstUserSimultaneous.setREG_SPAJ(reg_spaj);
 		lstUserSimultaneous.setID_SIMULTAN(id_simultan);
 		lstUserSimultaneous.setMCL_ID_EMPLOYEE(mcl_id_employee);
+		lstUserSimultaneous.setAccount_no_dplk(account_no_dplk);
 		lstUserSimultaneous.setUSERNAME(username);
 		dao.updateLinkAccount(lstUserSimultaneous);
 	}

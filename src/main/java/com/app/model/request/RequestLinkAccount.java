@@ -12,6 +12,7 @@ public class RequestLinkAccount implements Serializable {
 	public String username;
 	public String no_polis;
 	public String mcl_id_employee;
+	public String account_no_dplk;
 
 	public Integer getType_register() {
 		return type_register;
@@ -43,5 +44,13 @@ public class RequestLinkAccount implements Serializable {
 
 	public void setMcl_id_employee(String mcl_id_employee) {
 		this.mcl_id_employee = mcl_id_employee;
+	}
+
+	public String getAccount_no_dplk() {
+		return account_no_dplk;
+	}
+
+	public void setAccount_no_dplk(String account_no_dplk) {
+		this.account_no_dplk = account_no_dplk;
 	}
 }

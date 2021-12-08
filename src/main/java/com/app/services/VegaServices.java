@@ -1864,4 +1864,14 @@ public class VegaServices {
 		return dao.findByAccountNoDplk(account_no);
 	}
 
+	public List<JenisInvestDplk> getJenisInvestDplk(){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.getJenisInvestDplk();
+	}
+
+	public DailyPriceFundDplk getDailyPriceFundDplk(Integer lji_id){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.getJenisInvestDplkByLji(lji_id);
+	}
+
 }

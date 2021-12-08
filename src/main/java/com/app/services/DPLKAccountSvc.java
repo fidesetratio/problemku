@@ -12,4 +12,8 @@ public interface DPLKAccountSvc {
     ResponseData registerAccountDplk(DPLKAccountModel requestBody, HttpServletRequest request);
 
     ResponseData getGeneralInfoDplk(DPLKAccountModel requestBody, HttpServletRequest request);
+
+    ResponseData getJenisFundDplk(HttpServletRequest request);
+
+    ResponseData getDailyPriceFundDplk(Integer lji_id, HttpServletRequest request);
 }

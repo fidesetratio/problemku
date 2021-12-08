@@ -6,10 +6,7 @@ import com.app.services.DPLKAccountSvc;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,5 +31,15 @@ public class DPLKController {
     @RequestMapping(value = "/getinfodplk", produces = "application/json", method = RequestMethod.POST)
     public ResponseData getInfoDplk(@RequestBody DPLKAccountModel requestBody, HttpServletRequest request){
         return dplkAccountSvc.getGeneralInfoDplk(requestBody, request);
+    }
+
+    @RequestMapping(value = "/listjenisinvestdplk", produces = "application/json", method = RequestMethod.POST)
+    public ResponseData getListJenisInvest(HttpServletRequest request){
+        return dplkAccountSvc.getJenisFundDplk(request);
+    }
+
+    @RequestMapping(value = "/detailjenisinvestdplk", produces = "application/json", method = RequestMethod.POST)
+    public ResponseData getJenisInvest(@RequestParam Integer lji_id,  HttpServletRequest request){
+        return dplkAccountSvc.getDailyPriceFundDplk(lji_id, request);
     }
 }

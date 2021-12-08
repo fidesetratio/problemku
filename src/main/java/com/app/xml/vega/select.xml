@@ -6499,4 +6499,27 @@ SELECT distinct (CASE
 		and f.acc_no = c.acc_no and (unit_pt + unit_peserta) > 0
 		and g.lji_id = f.lji_id AND f.acc_no=#{acc_no, jdbcType=VARCHAR}
 	</select>
+	<select id="getJenisInvestDplk" resultType="com.app.model.JenisInvestDplk">
+		select * from dplk.lst_jenis_invest@eb where ACTIVE=1
+	</select>
+	<select id="getJenisInvestDplkByLji" resultType="com.app.model.DailyPriceFundDplk" parameterType="Integer">
+		select * from(
+		select
+		lji.lji_id as LJI_ID,
+		lji.lji_invest as LJI_INVEST,
+		lji.lku_id,
+		baru.lnu_tgl,
+		baru.lnu_nilai,lama.lnu_tgl LNU_TGL_SEBELUM, lama.lnu_nilai NILAI_SEBELUM,
+		(baru.lnu_nilai - nvl(lama.lnu_nilai, baru.lnu_nilai)) SELISIH_NILAI,
+		((baru.lnu_nilai - nvl(lama.lnu_nilai, baru.lnu_nilai))/lama.lnu_nilai)*100 PERSEN_SELISIH
+		from
+		dplk.lst_jenis_invest@eb lji,
+		(SELECT lji_id, lnu_tgl, lnu_nilai FROM dplk.lst_nab_dplk@eb lnu WHERE (lji_id, lnu_tgl) in (SELECT lji_id, MAX (lnu_tgl) lnu_tgl FROM dplk.lst_nab_dplk@eb GROUP BY lji_id)) baru,
+		(SELECT lji_id, lnu_tgl, lnu_nilai FROM dplk.lst_nab_dplk@eb lnu WHERE (lji_id, lnu_tgl) in (SELECT lji_id, MAX (lnu_tgl) lnu_tgl FROM dplk.lst_nab_dplk@eb lnu  WHERE lnu_tgl <![CDATA[<]]> (SELECT MAX(lnu_tgl) FROM dplk.lst_nab_dplk@eb WHERE lji_id = lnu.lji_id) GROUP BY lji_id)) lama
+		where
+		lji.lji_id =#{acc_no, jdbcType=INTEGER}
+		and lji.lji_id=baru.lji_id
+		and lji.lji_id=lama.lji_id(+)
+		ORDER BY SUBSTR(lji.lji_invest, 1, INSTR(lji.lji_invest, ' ')-1),lku_id,replace(lji.lji_invest,'$$',''))
+	</select>
 </mapper>

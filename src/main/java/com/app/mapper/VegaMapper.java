@@ -528,4 +528,8 @@ public interface VegaMapper {
 	public User findByAccountNoDplk(String account_no);
 
 	public DPLKAccountModel getInfoDplkByAccNo(String acc_no);
+
+	public List<JenisInvestDplk> getJenisInvestDplk();
+
+	public DailyPriceFundDplk getJenisInvestDplkByLji(Integer lji_id);
 }

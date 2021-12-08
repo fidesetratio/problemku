@@ -2,9 +2,7 @@ package com.app.services;
 
 import com.app.exception.HandleSuccessOrNot;
 import com.app.feignclient.ServiceOTP;
-import com.app.model.DPLKAccountModel;
-import com.app.model.LstUserSimultaneous;
-import com.app.model.ResponseData;
+import com.app.model.*;
 import com.app.model.request.RequestSendOTP;
 import com.app.utils.DateUtils;
 import com.app.utils.ResponseMessage;
@@ -17,8 +15,10 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class DPLKAccountSvcImpl implements DPLKAccountSvc {
@@ -154,6 +154,69 @@ public class DPLKAccountSvcImpl implements DPLKAccountSvc {
                 logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + resultErr);
             }
         } catch (Exception e){
+            handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
+            logger.error(String.format("%s: %s, %s: %s", "Path", request.getServletPath(), "error get info account", e));
+        }
+        ResponseData responseData = new ResponseData();
+        responseData.setError(handleSuccessOrNot.isError());
+        responseData.setMessage(handleSuccessOrNot.getMessage());
+        responseData.setData(data);
+        return responseData;
+    }
+
+    @Override
+    public ResponseData getJenisFundDplk(HttpServletRequest request) {
+        HandleSuccessOrNot handleSuccessOrNot;
+        ArrayList<HashMap<String, Object>> dataList = new ArrayList<>();
+        HashMap<String, Object> data = new HashMap<>();
+        try {
+            List<JenisInvestDplk> jenisInvestDplks = services.getJenisInvestDplk();
+            if (jenisInvestDplks != null && jenisInvestDplks.size() > 0){
+                for (JenisInvestDplk jenisInvestDplk : jenisInvestDplks){
+                    HashMap<String, Object> obj = new HashMap<>();
+                    obj.put("lji_id", jenisInvestDplk.getLji_id());
+                    obj.put("lji_invest", jenisInvestDplk.getLji_invest());
+                    obj.put("lku_id", jenisInvestDplk.getLku_id());
+                    obj.put("status", "Active");
+                    dataList.add(obj);
+                }
+                data.put("jenis_invest", dataList);
+                handleSuccessOrNot = new HandleSuccessOrNot(false, "Successfully get jenis invest");
+            } else {
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Failed get jenis invest");
+            }
+        }catch (Exception e){
+            handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
+            logger.error(String.format("%s: %s, %s: %s", "Path", request.getServletPath(), "error get info account", e));
+        }
+        ResponseData responseData = new ResponseData();
+        responseData.setError(handleSuccessOrNot.isError());
+        responseData.setMessage(handleSuccessOrNot.getMessage());
+        responseData.setData(data);
+        return responseData;
+    }
+
+    @Override
+    public ResponseData getDailyPriceFundDplk(Integer lji_id, HttpServletRequest request) {
+        HandleSuccessOrNot handleSuccessOrNot;
+        HashMap<String, Object> data = new HashMap<>();
+        try {
+            DailyPriceFundDplk dailyPriceFundDplk = services.getDailyPriceFundDplk(lji_id);
+            if (dailyPriceFundDplk != null ){
+                data.put("lji_id", dailyPriceFundDplk.getLji_id());
+                data.put("lji_invest", dailyPriceFundDplk.getLji_invest());
+                data.put("lku_id", dailyPriceFundDplk.getLku_id());
+                data.put("price_date_now", dateUtils.getFormatterFormat(dailyPriceFundDplk.getLnu_tgl(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
+                data.put("price_now", dailyPriceFundDplk.getLnu_nilai());
+                data.put("price_date_before", dateUtils.getFormatterFormat(dailyPriceFundDplk.getLnu_tgl_sebelum(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
+                data.put("price_before", dailyPriceFundDplk.getNilai_sebelum());
+                data.put("selisih_nilai", dailyPriceFundDplk.getSelisih_nilai());
+                data.put("persen_selisih", dailyPriceFundDplk.getPersen_selisih());
+                handleSuccessOrNot = new HandleSuccessOrNot(false, "Successfully get jenis invest");
+            } else {
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Failed get jenis invest");
+            }
+        }catch (Exception e){
             handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
             logger.error(String.format("%s: %s, %s: %s", "Path", request.getServletPath(), "error get info account", e));
         }

@@ -34,12 +34,12 @@ public class DPLKController {
     }
 
     @RequestMapping(value = "/listjenisinvestdplk", produces = "application/json", method = RequestMethod.POST)
-    public ResponseData getListJenisInvest(HttpServletRequest request){
-        return dplkAccountSvc.getJenisFundDplk(request);
+    public ResponseData getListJenisInvest(@RequestBody DPLKAccountModel requestBody, HttpServletRequest request){
+        return dplkAccountSvc.getJenisFundDplk(requestBody, request);
     }
 
     @RequestMapping(value = "/detailjenisinvestdplk", produces = "application/json", method = RequestMethod.POST)
-    public ResponseData getJenisInvest(@RequestParam Integer lji_id,  HttpServletRequest request){
-        return dplkAccountSvc.getDailyPriceFundDplk(lji_id, request);
+    public ResponseData getJenisInvest(@RequestBody DPLKAccountModel requestBody,  HttpServletRequest request){
+        return dplkAccountSvc.getLstTransaksiFund(requestBody, request);
     }
 }

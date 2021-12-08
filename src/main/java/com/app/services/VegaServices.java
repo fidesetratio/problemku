@@ -1870,9 +1870,18 @@ public class VegaServices {
 		return dao.getJenisInvestDplk();
 	}
 
-	public DailyPriceFundDplk getDailyPriceFundDplk(Integer lji_id){
+	public List<DailyPriceFundDplk> getDailyPriceFundDplk(String acc_no){
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		return dao.getJenisInvestDplkByLji(lji_id);
+		return dao.getJenisInvestDplkByLji(acc_no);
+	}
+
+	public List<LstTransaksiDplk> getTransaksiFund(String acc_no, String start_date, String end_date){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("acc_no", acc_no);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.getLstTransDplk(data);
 	}
 
 }

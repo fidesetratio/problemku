@@ -13,7 +13,7 @@ public interface DPLKAccountSvc {
 
     ResponseData getGeneralInfoDplk(DPLKAccountModel requestBody, HttpServletRequest request);
 
-    ResponseData getJenisFundDplk(HttpServletRequest request);
+    ResponseData getJenisFundDplk(DPLKAccountModel requestBody, HttpServletRequest request);
 
-    ResponseData getDailyPriceFundDplk(Integer lji_id, HttpServletRequest request);
+    ResponseData getLstTransaksiFund(DPLKAccountModel requestBody, HttpServletRequest request);
 }

@@ -6502,7 +6502,7 @@ SELECT distinct (CASE
 	<select id="getJenisInvestDplk" resultType="com.app.model.JenisInvestDplk">
 		select * from dplk.lst_jenis_invest@eb where ACTIVE=1
 	</select>
-	<select id="getJenisInvestDplkByLji" resultType="com.app.model.DailyPriceFundDplk" parameterType="Integer">
+	<select id="getJenisInvestDplkByLji" resultType="com.app.model.DailyPriceFundDplk" parameterType="String">
 		select * from(
 		select
 		lji.lji_id as LJI_ID,
@@ -6514,12 +6514,298 @@ SELECT distinct (CASE
 		((baru.lnu_nilai - nvl(lama.lnu_nilai, baru.lnu_nilai))/lama.lnu_nilai)*100 PERSEN_SELISIH
 		from
 		dplk.lst_jenis_invest@eb lji,
+		dplk.mst_peserta_det@eb pst,
 		(SELECT lji_id, lnu_tgl, lnu_nilai FROM dplk.lst_nab_dplk@eb lnu WHERE (lji_id, lnu_tgl) in (SELECT lji_id, MAX (lnu_tgl) lnu_tgl FROM dplk.lst_nab_dplk@eb GROUP BY lji_id)) baru,
 		(SELECT lji_id, lnu_tgl, lnu_nilai FROM dplk.lst_nab_dplk@eb lnu WHERE (lji_id, lnu_tgl) in (SELECT lji_id, MAX (lnu_tgl) lnu_tgl FROM dplk.lst_nab_dplk@eb lnu  WHERE lnu_tgl <![CDATA[<]]> (SELECT MAX(lnu_tgl) FROM dplk.lst_nab_dplk@eb WHERE lji_id = lnu.lji_id) GROUP BY lji_id)) lama
 		where
-		lji.lji_id =#{acc_no, jdbcType=INTEGER}
+		lji.active = 1
 		and lji.lji_id=baru.lji_id
 		and lji.lji_id=lama.lji_id(+)
+		and pst.lji_id = lji.lji_id
+		and pst.acc_no = #{acc_no, jdbcType=VARCHAR}
 		ORDER BY SUBSTR(lji.lji_invest, 1, INSTR(lji.lji_invest, ' ')-1),lku_id,replace(lji.lji_invest,'$$',''))
 	</select>
+
+	<select id="getLstTransDplk" parameterType="HashMap" resultType="com.app.model.LstTransaksiDplk">
+		select semua.*, semua.awal2 + semua.awal1 +
+		round(case when semua.lji_id = '01' then sum( case when  semua.lji_id = '01' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end  +
+		case when semua.lji_id = '02' then sum( case when  semua.lji_id = '02' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end +
+		case when semua.lji_id = '03' then sum( case when  semua.lji_id = '03' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end +
+		case when semua.lji_id = '04' then sum( case when  semua.lji_id = '04' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end +
+		case when semua.lji_id = '05' then sum( case when  semua.lji_id = '05' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end +
+		case when semua.lji_id = '06' then sum( case when  semua.lji_id = '06' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end, 4) akumulasi
+		from (
+		select g.lji_invest invest, b.tgl_trx tgl, h.lt_transksi transaksi, C.AMT_PESERTA peserta, C.AMT_PT pt,
+		C.NILAI_NAB nab, nvl(C.UNIT_PESERTA,0) unit_peserta, nvl(C.UNIT_PT,0) unit_pt, C.LJI_ID lji_id,
+		'Saldo ' || g.lji_invest || ':' saldo_fund, C.MTD_DK dk,
+		(case when d.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then 0 else ef.saldo_peserta end) awal1,
+		(case when d.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then 0 else ef.saldo_pt end) awal2,
+		c.tgl_nab, d.trx_ke, h.lt_id, C.TRX_KE ke
+		from dplk.mst_peserta@eb a, dplk.mst_trx@eb b, dplk.mst_trx_dplk@eb c,
+		(
+		select d.acc_no, d.lji_id, min(d.trx_ke) trx_ke, min(d.tgl_nab) tgl_nab
+		from dplk.mst_trx_dplk@eb d
+		group by d.acc_no, d.lji_id
+		) d,
+		(
+		select e.acc_no, e.lji_id,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_peserta <![CDATA[<]]> 0 then e.unit_peserta else e.unit_peserta * - 1 end,e.unit_peserta)) saldo_peserta,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_pt <![CDATA[<]]> 0 then e.unit_pt else e.unit_pt * - 1 end,e.unit_pt)) saldo_pt
+		from dplk.mst_trx_dplk@eb e
+		where e.tgl_nab <![CDATA[<]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		group by e.acc_no, e.lji_id
+		) ef,
+		dplk.lst_jenis_invest@eb g, dplk.lst_transaksi@eb h
+		where a.acc_no = b.acc_no and B.ACC_NO = C.ACC_NO and B.TRX_KE = C.TRX_KE and C.TGL_NAB between to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') and to_date(#{end_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		and A.ACC_NO = #{acc_no, jdbcType=VARCHAR} and a.acc_no = d.acc_no and c.lji_id = d.lji_id and d.acc_no = ef.acc_no (+) and d.lji_id = ef.lji_id (+)
+		and d.lji_id = g.lji_id and c.lt_id = h.lt_id
+		and to_number(substr(a.acc_no, 1, 4)) <![CDATA[>=]]> 2012
+		UNION ALL
+		select g.lji_invest invest, b.tgl_trx tgl, h.lt_transksi transaksi, C.AMT_PESERTA peserta, C.AMT_PT pt,
+		C.NILAI_NAB nab, nvl(C.UNIT_PESERTA,0) unit_peserta, nvl(C.UNIT_PT,0) unit_pt, C.LJI_ID lji_id,
+		'Saldo ' || g.lji_invest || ':' saldo_fund, C.MTD_DK dk,
+		(
+		case when x.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		0
+		else
+		case when d.tgl_nab <![CDATA[>]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		xy.unit_pst
+		else
+		ef.saldo_peserta
+		end
+		end
+		) awal1,
+		(
+		case when x.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		0
+		else
+		case when d.tgl_nab <![CDATA[>]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		xy.unit_pt
+		else
+		ef.saldo_pt
+		end
+		end
+		) awal2,
+		c.tgl_nab, d.trx_ke, h.lt_id, c.trx_ke ke
+		from dplk.mst_peserta@eb a, dplk.mst_trx@eb b, dplk.mst_trx_dplk@eb c,
+		(
+		select d.acc_no, d.lji_id, min(d.trx_ke) trx_ke, min(d.tgl_nab) tgl_nab
+		from dplk.mst_trx_dplk@eb d
+		group by d.acc_no, d.lji_id
+		) d,
+		(
+		select e.acc_no, e.lji_id,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_peserta <![CDATA[<]]> 0 then e.unit_peserta else e.unit_peserta * - 1 end,e.unit_peserta)) saldo_peserta,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_pt <![CDATA[<]]> 0 then e.unit_pt else e.unit_pt * - 1 end,e.unit_pt)) saldo_pt
+		from dplk.mst_trx_dplk@eb e
+		where e.tgl_nab <![CDATA[<]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		group by e.acc_no, e.lji_id
+		) ef,
+		dplk.lst_jenis_invest@eb g, dplk.lst_transaksi@eb h,
+		(
+		select x.acc_no,
+		min(decode(x.tglpb, null, x.tgl_rk, x.tglpb)) tgl_nab
+		from dplk.dplk_transaction@eb x
+		group by x.acc_no
+		) x,
+		(
+		select a.acc_no,
+		sum(a.peserta) peserta,
+		sum(a.pt) pt,
+		sum(a.unit_pst) unit_pst,
+		sum(a.unit_pt) unit_pt
+		from
+		(
+		select a.acc_no, a.trans_id,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans <![CDATA[>]]> 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end peserta,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans <![CDATA[>]]> 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end pt,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans <![CDATA[>]]> 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pst,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans <![CDATA[>]]> 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pt
+		from dplk.dplk_transaction@eb a, dplk.det_transaction@eb b
+		where a.trans_id = b.trans_id
+		and decode(a.tglpb, null, a.tgl_rk, a.tglpb) <![CDATA[<]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		) a
+		group by a.acc_no
+		) xy
+		where a.acc_no = b.acc_no and B.ACC_NO = C.ACC_NO and B.TRX_KE = C.TRX_KE and C.TGL_NAB between to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') and to_date(#{end_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		and A.ACC_NO = #{acc_no, jdbcType=VARCHAR} and a.acc_no = d.acc_no and c.lji_id = d.lji_id and d.acc_no = ef.acc_no (+) and d.lji_id = ef.lji_id (+)
+		and d.lji_id = g.lji_id and c.lt_id = h.lt_id
+		and a.acc_no = x.acc_no and a.acc_no = xy.acc_no (+)
+		and to_number(substr(a.acc_no, 1, 4)) <![CDATA[<]]> 2012
+		and b.trx_ke <![CDATA[<>]]> 1
+		UNION ALL
+		select g.lji_invest invest, abc.tgl_trans tgl, f.lt_transksi transaksi,  abc.peserta peserta, abc.pt pt, --abc.jml_unit,
+		decode(d.nilai_unit, null, decode(e.lnu_nilai, null, decode(nvl(abc.jml_unit, 0), 0, 0, round(nvl(abc.total_trans / abc.jml_unit, 0), 4)), e.lnu_nilai), d.nilai_unit) nab,
+		nvl(abc.unit_pst,0) unit_peserta, nvl(abc.unit_pt,0) unit_pt,
+		abc.lji_id, g.lji_invest saldo_fund, decode(abc.status, 'C', 'D',  'K') DK,
+		(
+		case when x.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		0
+		else
+		case when de.tgl_nab <![CDATA[>]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		xy.unit_pst
+		else
+		ef.saldo_peserta
+		end
+		end
+		) awal1,
+		(
+		case when x.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		0
+		else
+		case when de.tgl_nab <![CDATA[>]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		xy.unit_pt
+		else
+		ef.saldo_pt
+		end
+		end
+		) awal2,
+		decode(abc.tglpb,null, abc.tgl_rk, abc.tglpb) tgl_nab, 0 trx_ke, f.lt_id, 0 ke
+		from (
+		select a.acc_no, a.trans_id, a.tgl_trans, avg(a.total_trans) total_trans, avg(a.jml_unit) jml_unit, a.lspl_id,
+		decode(a.status, 'C',  decode(a.trans, 'A', 2, 1), 4) lt_id, a.tglpb, tgl_rk, a.status, decode(a.lspl_id, 1, '02', '01') lji_id,
+		sum(a.peserta) peserta,
+		sum(a.pt) pt,
+		sum(a.unit_pst) unit_pst,
+		sum(a.unit_pt) unit_pt
+		from
+		(
+		select a.acc_no, a.trans_id, a.tgl_trans, a.total_trans, a.jml_unit, c.lspl_id, a.status, a.tglpb, a.tgl_rk,  "A"."FROM" trans,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end peserta,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end pt,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pst,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pt
+		from dplk.dplk_transaction@eb a, dplk.det_transaction@eb b, dplk.mst_account@eb c
+		where a.trans_id = b.trans_id
+		and a.acc_no = c.acc_no and a.total_trans <![CDATA[<>]]> 0
+		) a
+		group by a.acc_no, a.trans_id, a.tgl_trans, a.lspl_id, a.tglpb, a.tgl_rk, a.status, a.trans
+		) abc,
+		(
+		select tgl_nab tgl_close, lspl_id, unitprice nilai_unit
+		from DPLK.NABCUSTODY@eb
+		) d,
+		DPLK.LST_NAB_DPLK@eb e, dplk.lst_transaksi@eb f, dplk.lst_jenis_invest@eb g,
+		(
+		select d.acc_no, d.lji_id, min(d.trx_ke) trx_ke, min(d.tgl_nab) tgl_nab
+		from dplk.mst_trx_dplk@eb d
+		group by d.acc_no, d.lji_id
+		) de,
+		(
+		select e.acc_no, e.lji_id,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_peserta <![CDATA[<]]> 0 then e.unit_peserta else e.unit_peserta * - 1 end,e.unit_peserta)) saldo_peserta,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_pt <![CDATA[<]]> 0 then e.unit_pt else e.unit_pt * - 1 end,e.unit_pt)) saldo_pt
+		from dplk.mst_trx_dplk@eb e
+		where e.tgl_nab <![CDATA[<]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		group by e.acc_no, e.lji_id
+		) ef,
+		(
+		select x.acc_no,
+		min(decode(x.tglpb, null, x.tgl_rk, x.tglpb)) tgl_nab
+		from dplk.dplk_transaction@eb x
+		group by x.acc_no
+		) x,
+		(
+		select a.acc_no,
+		sum(a.peserta) peserta,
+		sum(a.pt) pt,
+		sum(a.unit_pst) unit_pst,
+		sum(a.unit_pt) unit_pt
+		from
+		(
+		select a.acc_no, a.trans_id,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end peserta,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end pt,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pst,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pt
+		from dplk.dplk_transaction@eb a, dplk.det_transaction@eb b
+		where a.trans_id = b.trans_id and decode(a.tglpb, null, a.tgl_rk, a.tglpb) <![CDATA[<]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		and a.total_trans <![CDATA[<>]]> 0
+		) a
+		group by a.acc_no
+		) xy
+		where (decode(abc.tglpb, null, abc.tgl_rk, abc.tglpb) = d.tgl_close (+) and abc.lspl_id = d.lspl_id (+))
+		and ((decode(abc.tglpb, null, abc.tgl_rk, abc.tglpb) = e.lnu_tgl (+) and abc.lji_id = e.lji_id (+)))
+		and decode(abc.tglpb, null, abc.tgl_rk, abc.tglpb) between to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')  and to_date(#{end_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		and abc.lt_id = f.lt_id and abc.lji_id = g.lji_id
+		and abc.acc_no = de.acc_no (+) and abc.lji_id = de.lji_id (+)
+		and abc.acc_no = ef.acc_no (+) and abc.lji_id = ef.lji_id (+)
+		and abc.acc_no = x.acc_no and abc.acc_no = xy.acc_no (+)
+		and abc.acc_no = #{acc_no, jdbcType=VARCHAR}
+		and to_number(substr(abc.acc_no, 1, 4)) <![CDATA[<]]> 2012
+		) semua
+	</select>
+
 </mapper>

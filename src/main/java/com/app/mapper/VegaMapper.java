@@ -531,5 +531,7 @@ public interface VegaMapper {
 
 	public List<JenisInvestDplk> getJenisInvestDplk();
 
-	public DailyPriceFundDplk getJenisInvestDplkByLji(Integer lji_id);
+	public List<DailyPriceFundDplk> getJenisInvestDplkByLji(String acc_no);
+
+	public List<LstTransaksiDplk> getLstTransDplk(HashMap<String, Object> hashMap);
 }

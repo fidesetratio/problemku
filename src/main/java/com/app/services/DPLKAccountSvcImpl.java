@@ -174,7 +174,7 @@ public class DPLKAccountSvcImpl implements DPLKAccountSvc {
         HashMap<String, Object> data = new HashMap<>();
         try {
             if (customResourceLoader.validateCredential(requestBody.getUsername(), requestBody.getKey())) {
-                List<DailyPriceFundDplk> jenisInvestDplks = services.getDailyPriceFundDplk(requestBody.getAcc_no());
+                List<DailyPriceFundDplk> jenisInvestDplks = services.getJenisInvestDplkByAccNo(requestBody.getAcc_no());
                 if (jenisInvestDplks != null && jenisInvestDplks.size() > 0) {
                     for (DailyPriceFundDplk jenisInvestDplk : jenisInvestDplks) {
                         HashMap<String, Object> obj = new HashMap<>();

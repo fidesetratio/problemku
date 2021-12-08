@@ -1865,14 +1865,25 @@ public class VegaServices {
 		return dao.findByAccountNoDplk(account_no);
 	}
 
-	public List<JenisInvestDplk> getJenisInvestDplk(){
+	public List<LstTransaksi> getListTransaksi(){
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		return dao.getJenisInvestDplk();
+		return dao.selectLstTransaksi();
 	}
 
-	public List<DailyPriceFundDplk> getDailyPriceFundDplk(String acc_no){
+	public List<TransactionHistory> selectHistoryTransaksi(Integer lt_id, String reg_spaj,
+														   String start_date, String end_date) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		return dao.getJenisInvestDplkByLji(acc_no);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("lt_id", lt_id);
+		data.put("reg_spaj", reg_spaj);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.selectHistoryTransaksi(data);
+	}
+
+	public List<DailyPriceFundDplk> getJenisInvestDplkByAccNo(String acc_no){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.getJenisInvestDplkByAccNo(acc_no);
 	}
 
 	public List<LstTransaksiDplk> getTransaksiFund(String acc_no, String start_date, String end_date){
@@ -1882,6 +1893,15 @@ public class VegaServices {
 		data.put("start_date", start_date);
 		data.put("end_date", end_date);
 		return dao.getLstTransDplk(data);
+	}
+
+	public List<TransactionHistory> getTransactionPolicyAlteration(String reg_spaj, String start_date, String end_date){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("reg_spaj", reg_spaj);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.selectHistoryPolicyAlteration(data);
 	}
 
 }

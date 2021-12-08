@@ -2,12 +2,16 @@ package com.app.controller;
 
 import com.app.model.*;
 import com.app.model.request.*;
+import com.app.services.TransactionHistorySvc;
 import com.app.services.TransactionSubscriptionSvc;
 import com.app.services.VegaServices;
+import com.app.utils.DateUtils;
+import com.app.utils.PageUtils;
 import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.swagger.models.auth.In;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +36,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -101,6 +106,8 @@ public class FinancialTransactionController {
 	private VegaCustomResourceLoader customResourceLoader;
 	@Autowired
 	private TransactionSubscriptionSvc transactionSubscriptionSvc;
+	@Autowired
+	private TransactionHistorySvc transactionHistorySvc;
 
 	private DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -1032,7 +1039,7 @@ public class FinancialTransactionController {
 
 	@RequestMapping(value = "/downloadattachhistory", produces = "application/json", method = RequestMethod.POST)
 	public String downloadAttachHistory(@RequestBody DownloadAttachment downloadAttachment, HttpServletRequest request, HttpServletResponse response) {
-		return transactionSubscriptionSvc.downloadAttachmentHistory(downloadAttachment, request, response);
+		return transactionHistorySvc.downloadAttachmentHistory(downloadAttachment, request, response);
 	}
 
 
@@ -7419,13 +7426,17 @@ public class FinancialTransactionController {
 		String startDate = requestTransactionHistory.getStartDate();
 		String endDate = requestTransactionHistory.getEndDate();
 		String jenis_transaksi = requestTransactionHistory.getJenis_transaksi();
-		
+		String type_transaction = requestTransactionHistory.getTransaction_type();
+		Integer lt_id = requestTransactionHistory.getLt_id();
+		Integer size = 0;
+		Integer pageNumber = requestTransactionHistory.getPage();
+		Integer pageSize = requestTransactionHistory.getSize();
+
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				String reg_spaj = services.selectGetOnlyRegSpaj(no_polis);
-				
-				ArrayList <TransactionHistory> listTransactionHistory = services.selectTransactionHistory(reg_spaj, startDate, endDate, jenis_transaksi);
 
+				List<TransactionHistory> listTransactionHistory = transactionHistorySvc.getTransactionHistory(reg_spaj, type_transaction, startDate, endDate);
 				if (listTransactionHistory == null) {
 					error = true;
 					message = "Data transaction history empty";
@@ -7433,30 +7444,33 @@ public class FinancialTransactionController {
 					logger.error(
 							"Path: " + request.getServletPath() + "Username: " + username + " Error: " + resultErr);
 				} else {
-					for(int i=0; i<listTransactionHistory.size(); i++) {
+					listTransactionHistory = PageUtils.getPage(listTransactionHistory, Optional.ofNullable(pageNumber).orElse(1), Optional.ofNullable(pageSize).orElse(20));
+					size = listTransactionHistory.size();
+
+					for(int i=0; i < listTransactionHistory.size(); i++) {
 						String kode_transaksi = listTransactionHistory.get(i).getKode_transaksi();
 						String transaction_type = listTransactionHistory.get(i).getTransaction_type();
 						
 						String file_path = listTransactionHistory.get(i).getFile_path();
-						file_path = (file_path == null)?"":file_path;
+						file_path = (file_path == null) ? "" :file_path;
 						String tgl_transaksi = df3.format(listTransactionHistory.get(i).getTgl_transaksi());
 
 						String file_name = "";
-						if(!file_path.equals("")) {
-						 file_name = file_path.substring(file_path.lastIndexOf('\\') + 1).trim();
-						
-						file_name = file_name.substring(0, file_name.lastIndexOf('.'));
-						};
 						String file_type = file_path.substring(file_path.lastIndexOf('.') + 1).trim();
-						
+						if(!file_path.equals("")) {
+							file_name = String.format("%s.%s", kode_transaksi, file_type);
+						};
+
 						HashMap<String, Object> hashMap = new HashMap<>();
 						hashMap.put("kode_transaksi", kode_transaksi);
 						hashMap.put("transaction_type", transaction_type);
+						hashMap.put("transaction_desc", listTransactionHistory.get(i).getTransaction_desc());
 						hashMap.put("file_path", file_path);
 						hashMap.put("file_name", file_name);
 						hashMap.put("file_type", file_type);
 						hashMap.put("tgl_transaksi", tgl_transaksi);
-						
+						hashMap.put("status", listTransactionHistory.get(i).getStatus());
+
 						data.add(hashMap);
 					}
 					error = false;
@@ -7475,12 +7489,90 @@ public class FinancialTransactionController {
 			resultErr = "bad exception " + e;
 			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
 		}
+		map.put("size", size);
 		map.put("error", error);
 		map.put("message", message);
 		map.put("data", data);
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 78, new Date(), req, res, 1, resultErr, start, username);
+
+		return res;
+	}
+
+	@RequestMapping(value = "/detailtransactionhistory", produces = "application/json", method = RequestMethod.POST)
+	public String detailTransaksiHistory(@RequestBody RequestTransactionHistory requestTransactionHistory, HttpServletRequest request) {
+		Date start = new Date();
+		GsonBuilder builder = new GsonBuilder();
+		builder.serializeNulls();
+		Gson gson = new Gson();
+		gson = builder.create();
+		String req = gson.toJson(requestTransactionHistory);
+		String res = null;
+		String message = null;
+		String resultErr = null;
+		Boolean error = false;
+		HashMap<String, Object> map = new HashMap<>();
+		HashMap<String, Object> data = new HashMap<>();
+
+		String username = requestTransactionHistory.getUsername();
+		String key = requestTransactionHistory.getKey();
+		String no_polis = requestTransactionHistory.getNo_polis();
+		String kode_transaksi = requestTransactionHistory.getKode_transaksi();
+
+		try {
+			if (customResourceLoader.validateCredential(username, key)) {
+				String reg_spaj = services.selectGetOnlyRegSpaj(no_polis);
+
+				TransactionHistory transactionHistory = transactionHistorySvc.getDetailTransactionHistory(kode_transaksi, reg_spaj);
+				if (transactionHistory == null) {
+					error = true;
+					message = "Data transaction history empty";
+					resultErr = "Data transaction history kosong";
+					logger.error(
+							"Path: " + request.getServletPath() + "Username: " + username + " Error: " + resultErr);
+				} else {
+						String transaksi_code = transactionHistory.getKode_transaksi();
+						String transaction_type = transactionHistory.getTransaction_type();
+
+						String file_path = transactionHistory.getFile_path();
+						file_path = (file_path == null) ? "" :file_path;
+						String tgl_transaksi = df3.format(transactionHistory.getTgl_transaksi());
+
+						String file_name = "";
+						String file_type = file_path.substring(file_path.lastIndexOf('.') + 1).trim();
+						if(!file_path.equals("")) {
+							file_name = String.format("%s.%s", kode_transaksi, file_type);
+						};
+
+						data.put("kode_transaksi", kode_transaksi);
+						data.put("transaction_type", transaction_type);
+						data.put("file_path", file_path);
+						data.put("file_name", file_name);
+						data.put("file_type", file_type);
+						data.put("tgl_transaksi", tgl_transaksi);
+						data.put("status", transactionHistory.getStatus());
+
+					}
+					error = false;
+					message = "Successfully get data";
+			} else {
+				// Handle username & key not match
+				error = true;
+				message = "Failed get data";
+				resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username  + ")";
+				logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
+			}
+		} catch (Exception e) {
+			error = true;
+			message = ResponseMessage.ERROR_SYSTEM;
+			resultErr = "bad exception " + e;
+			logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
+		}
+		map.put("error", error);
+		map.put("message", message);
+		map.put("data", data);
+		res = gson.toJson(map);
 
 		return res;
 	}
@@ -7512,23 +7604,21 @@ public class FinancialTransactionController {
 			if (customResourceLoader.validateCredential(username, key)) {
 				String reg_spaj = services.selectGetOnlyRegSpaj(no_polis);
 				
-				ArrayList <TransactionHistory> listTransactionHistory = services.selectTransactionHistoryDropDown(reg_spaj, startDate, endDate, jenis_transaksi);
+				List<LstTransaksi> lstTransaksi = transactionHistorySvc.dropDownListTransaksi();
 
-				if (listTransactionHistory == null) {
+				if (lstTransaksi == null) {
 					error = true;
 					message = "Data transaction history empty";
 					resultErr = "Data transaction history kosong";
 					logger.error(
 							"Path: " + request.getServletPath() + "Username: " + username + " Error: " + resultErr);
 				} else {
-					for(int i=0; i<listTransactionHistory.size(); i++) {
-						String kode_transaksi = listTransactionHistory.get(i).getKode_transaksi();
-						String transaction_type = listTransactionHistory.get(i).getTransaction_type();
-						
+					for (LstTransaksi transaksi : lstTransaksi){
 						HashMap<String, Object> hashMap = new HashMap<>();
-						hashMap.put("kode_transaksi", kode_transaksi);
-						hashMap.put("transaction_type", transaction_type);
-						
+						hashMap.put("lt_id", transaksi.getLt_id());
+						hashMap.put("transaction_type", transaksi.getType_transaksi());
+						hashMap.put("transaction_desc", transaksi.getLt_transksi());
+
 						data.add(hashMap);
 					}
 					error = false;

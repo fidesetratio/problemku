@@ -15,7 +15,19 @@ public class TransactionHistory implements Serializable {
 	private String reg_spaj;
 	private String file_path;
 	private Date tgl_transaksi;
-	
+
+	private String status;
+	private Integer lt_id;
+	private String transaction_desc;
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	public Date getTgl_transaksi() {
 		return tgl_transaksi;
 	}
@@ -45,5 +57,21 @@ public class TransactionHistory implements Serializable {
 	}
 	public void setFile_path(String file_path) {
 		this.file_path = file_path;
+	}
+
+	public Integer getLt_id() {
+		return lt_id;
+	}
+
+	public void setLt_id(Integer lt_id) {
+		this.lt_id = lt_id;
+	}
+
+	public String getTransaction_desc() {
+		return transaction_desc;
+	}
+
+	public void setTransaction_desc(String transaction_desc) {
+		this.transaction_desc = transaction_desc;
 	}
 }

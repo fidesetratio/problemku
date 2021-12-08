@@ -12,7 +12,7 @@ public interface TransactionHistorySvc {
 
     List<LstTransaksi> dropDownListTransaksi();
 
-    List<TransactionHistory> getTransactionHistory(String reg_spaj, Integer lt_id, String start_date, String end_date);
+    List<TransactionHistory> getTransactionHistory(String reg_spaj, String transaction_type, String start_date, String end_date);
 
     TransactionHistory getDetailTransactionHistory(String kode_transaksi, String reg_spaj);
 

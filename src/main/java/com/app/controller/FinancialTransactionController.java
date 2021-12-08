@@ -5,6 +5,7 @@ import com.app.model.request.*;
 import com.app.services.TransactionHistorySvc;
 import com.app.services.TransactionSubscriptionSvc;
 import com.app.services.VegaServices;
+import com.app.utils.DateUtils;
 import com.app.utils.PageUtils;
 import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
@@ -35,6 +36,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -7424,6 +7426,7 @@ public class FinancialTransactionController {
 		String startDate = requestTransactionHistory.getStartDate();
 		String endDate = requestTransactionHistory.getEndDate();
 		String jenis_transaksi = requestTransactionHistory.getJenis_transaksi();
+		String type_transaction = requestTransactionHistory.getTransaction_type();
 		Integer lt_id = requestTransactionHistory.getLt_id();
 		Integer size = 0;
 		Integer pageNumber = requestTransactionHistory.getPage();
@@ -7432,8 +7435,8 @@ public class FinancialTransactionController {
 		try {
 			if (customResourceLoader.validateCredential(username, key)) {
 				String reg_spaj = services.selectGetOnlyRegSpaj(no_polis);
-				
-				List<TransactionHistory> listTransactionHistory = transactionHistorySvc.getTransactionHistory(reg_spaj, lt_id, startDate, endDate);
+
+				List<TransactionHistory> listTransactionHistory = transactionHistorySvc.getTransactionHistory(reg_spaj, type_transaction, startDate, endDate);
 				if (listTransactionHistory == null) {
 					error = true;
 					message = "Data transaction history empty";
@@ -7461,6 +7464,7 @@ public class FinancialTransactionController {
 						HashMap<String, Object> hashMap = new HashMap<>();
 						hashMap.put("kode_transaksi", kode_transaksi);
 						hashMap.put("transaction_type", transaction_type);
+						hashMap.put("transaction_desc", listTransactionHistory.get(i).getTransaction_desc());
 						hashMap.put("file_path", file_path);
 						hashMap.put("file_name", file_name);
 						hashMap.put("file_type", file_type);
@@ -7548,7 +7552,6 @@ public class FinancialTransactionController {
 						data.put("file_type", file_type);
 						data.put("tgl_transaksi", tgl_transaksi);
 						data.put("status", transactionHistory.getStatus());
-						data.put("amount", transactionHistory.getAmount());
 
 					}
 					error = false;
@@ -7613,7 +7616,8 @@ public class FinancialTransactionController {
 					for (LstTransaksi transaksi : lstTransaksi){
 						HashMap<String, Object> hashMap = new HashMap<>();
 						hashMap.put("lt_id", transaksi.getLt_id());
-						hashMap.put("transaction_type", transaksi.getLt_transksi());
+						hashMap.put("transaction_type", transaksi.getType_transaksi());
+						hashMap.put("transaction_desc", transaksi.getLt_transksi());
 
 						data.add(hashMap);
 					}

@@ -20,6 +20,7 @@ public class RequestTransactionHistory implements Serializable {
 	private Integer page;
 	private Integer size;
 	private String kode_transaksi;
+	private String transaction_type;
 
 	public String getKode_transaksi() {
 		return kode_transaksi;
@@ -88,5 +89,13 @@ public class RequestTransactionHistory implements Serializable {
 	}
 	public void setKey(String key) {
 		this.key = key;
+	}
+
+	public String getTransaction_type() {
+		return transaction_type;
+	}
+
+	public void setTransaction_type(String transaction_type) {
+		this.transaction_type = transaction_type;
 	}
 }

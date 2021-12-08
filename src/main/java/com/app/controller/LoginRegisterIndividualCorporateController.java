@@ -174,6 +174,7 @@ public class LoginRegisterIndividualCorporateController {
 		String username = requestLinkAccount.getUsername();
 		String no_polis = requestLinkAccount.getNo_polis();
 		String mcl_id_employee = requestLinkAccount.getMcl_id_employee();
+		String account_no_dplk = requestLinkAccount.getAccount_no_dplk();
 		try {
 			LstUserSimultaneous checkUsername = services.selectDataLstUserSimultaneous(username);
 
@@ -193,16 +194,29 @@ public class LoginRegisterIndividualCorporateController {
 					String id_simultan = dataSPAJ.getId_simultan();
 
 					// Update reg_spaj & id_simultan
-					services.updateLinkAccount(reg_spaj, id_simultan, null, username);
+					services.updateLinkAccount(reg_spaj, id_simultan, null, null, username);
 
 					error = false;
 					message = "Successfully link account individual";
 				} else if (type_register.equals(2)) { // Corporate
 					// Update mcl_id_employee
-					services.updateLinkAccount(null, null, mcl_id_employee, username);
+					services.updateLinkAccount(null, null, mcl_id_employee, null, username);
 
 					error = false;
 					message = "Successfully link account corporate";
+				} else if (type_register.equals(3)){ // Dplk account
+					boolean isExistAccount = services.isExistAccount(account_no_dplk);
+					if (isExistAccount){
+						error = true;
+						message = "account number already registered";
+						resultErr = "account number already registered";
+						logger.error("Path: " + request.getServletPath() + ", Account number: " + account_no_dplk + ", Error: " + resultErr);
+					} else {
+						// Update account no dplk
+						services.updateLinkAccount(null, null, null, account_no_dplk, username);
+						error = false;
+						message = "Successfully link account dplk";
+					}
 				} else {
 					error = true;
 					message = "Type link account not found";

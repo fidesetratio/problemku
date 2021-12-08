@@ -32,4 +32,8 @@ public class DPLKAccountModel implements Serializable {
     private String alamat;
     private String no_id;
 
+    private String start_date;
+    private String end_date;
+    private Integer lji_id;
+
 }

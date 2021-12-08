@@ -1339,12 +1339,13 @@ public class VegaServices {
 		dao.updateActivityStatus(user);
 	}
 
-	public void updateLinkAccount(String reg_spaj, String id_simultan, String mcl_id_employee, String username) {
+	public void updateLinkAccount(String reg_spaj, String id_simultan, String mcl_id_employee, String account_no_dplk, String username) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		LstUserSimultaneous lstUserSimultaneous = new LstUserSimultaneous();
 		lstUserSimultaneous.setREG_SPAJ(reg_spaj);
 		lstUserSimultaneous.setID_SIMULTAN(id_simultan);
 		lstUserSimultaneous.setMCL_ID_EMPLOYEE(mcl_id_employee);
+		lstUserSimultaneous.setAccount_no_dplk(account_no_dplk);
 		lstUserSimultaneous.setUSERNAME(username);
 		dao.updateLinkAccount(lstUserSimultaneous);
 	}
@@ -1870,7 +1871,7 @@ public class VegaServices {
 	}
 
 	public List<TransactionHistory> selectHistoryTransaksi(Integer lt_id, String reg_spaj,
-														   String start_date, String end_date){
+														   String start_date, String end_date) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> data = new HashMap<>();
 		data.put("lt_id", lt_id);
@@ -1878,6 +1879,29 @@ public class VegaServices {
 		data.put("start_date", start_date);
 		data.put("end_date", end_date);
 		return dao.selectHistoryTransaksi(data);
+	}
+
+	public List<DailyPriceFundDplk> getJenisInvestDplkByAccNo(String acc_no){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.getJenisInvestDplkByAccNo(acc_no);
+	}
+
+	public List<LstTransaksiDplk> getTransaksiFund(String acc_no, String start_date, String end_date){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("acc_no", acc_no);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.getLstTransDplk(data);
+	}
+
+	public List<TransactionHistory> getTransactionPolicyAlteration(String reg_spaj, String start_date, String end_date){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("reg_spaj", reg_spaj);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.selectHistoryPolicyAlteration(data);
 	}
 
 }

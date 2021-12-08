@@ -126,29 +126,31 @@ public class LoginSvcImpl implements LoginSvc {
     @Override
     public boolean isIndividu(LstUserSimultaneous checkIndividuOrCorporate) {
         return checkIndividuOrCorporate != null && checkIndividuOrCorporate.getREG_SPAJ() != null && checkIndividuOrCorporate.getMCL_ID_EMPLOYEE() == null
-                && checkIndividuOrCorporate.getEB_HR_USERNAME() == null;
+                && checkIndividuOrCorporate.getEB_HR_USERNAME() == null && checkIndividuOrCorporate.getAccount_no_dplk() == null;
     }
 
     @Override
     public boolean isHrUser(LstUserSimultaneous checkIndividuOrCorporate) {
-        return checkIndividuOrCorporate != null && checkIndividuOrCorporate.getEB_HR_USERNAME() != null;
+        return checkIndividuOrCorporate != null && checkIndividuOrCorporate.getREG_SPAJ() == null && checkIndividuOrCorporate.getMCL_ID_EMPLOYEE() == null &&
+                checkIndividuOrCorporate.getEB_HR_USERNAME() != null && checkIndividuOrCorporate.getAccount_no_dplk() == null;
     }
 
     @Override
     public boolean isAccountDplk(LstUserSimultaneous checkIndividuOrCorporate) {
-        return checkIndividuOrCorporate != null && checkIndividuOrCorporate.getAccount_no_dplk() != null;
+        return checkIndividuOrCorporate != null && checkIndividuOrCorporate.getREG_SPAJ() == null && checkIndividuOrCorporate.getMCL_ID_EMPLOYEE() == null &&
+                checkIndividuOrCorporate.getEB_HR_USERNAME() == null  && checkIndividuOrCorporate.getAccount_no_dplk() != null;
     }
 
     @Override
     public boolean isIndividuCorporate(LstUserSimultaneous checkIndividuOrCorporate) {
         return checkIndividuOrCorporate != null && checkIndividuOrCorporate.getMCL_ID_EMPLOYEE() != null && checkIndividuOrCorporate.getREG_SPAJ() != null &&
-                checkIndividuOrCorporate.getEB_HR_USERNAME() == null;
+                checkIndividuOrCorporate.getEB_HR_USERNAME() == null && checkIndividuOrCorporate.getAccount_no_dplk() == null;
     }
 
     @Override
     public boolean corporate(LstUserSimultaneous checkIndividuOrCorporate) {
         return checkIndividuOrCorporate != null && checkIndividuOrCorporate.getMCL_ID_EMPLOYEE() != null && checkIndividuOrCorporate.getREG_SPAJ() == null &&
-                checkIndividuOrCorporate.getEB_HR_USERNAME() == null;
+                checkIndividuOrCorporate.getEB_HR_USERNAME() == null && checkIndividuOrCorporate.getAccount_no_dplk() == null;
     }
 
     private ResponseData loginIndividu(boolean isIndividu, boolean isIndividuMri, String username, String password, HashMap<String, Object> data,
@@ -480,7 +482,7 @@ public class LoginSvcImpl implements LoginSvc {
             key = user1.getKEY();
             data = getMapObjc(false, false, false, false, false,
                     false, true, key, null, data);
-            handleSuccessOrNot = new HandleSuccessOrNot(true, "Login success");
+            handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
             customResourceLoader.insertHistActivityWS(12, 40, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
         } else {
             if (user1.getPASSWORD().equals(password)) {
@@ -492,7 +494,7 @@ public class LoginSvcImpl implements LoginSvc {
                     key = user1.getKEY();
                     data = getMapObjc(false, false, false, false, false,
                             false, true, key, null, data);
-                    handleSuccessOrNot = new HandleSuccessOrNot(true, "Login success");
+                    handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
                 } else {
                     // Error username yang dimasukkan tidak ada pada database
                     handleSuccessOrNot = new HandleSuccessOrNot(true, "Login failed");

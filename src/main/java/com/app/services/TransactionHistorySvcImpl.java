@@ -4,6 +4,7 @@ import com.app.exception.HandleSuccessOrNot;
 import com.app.model.DownloadAttachment;
 import com.app.model.LstTransaksi;
 import com.app.model.TransactionHistory;
+import com.app.utils.DateUtils;
 import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
 import com.google.gson.Gson;
@@ -20,9 +21,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionHistorySvcImpl implements TransactionHistorySvc {
@@ -33,26 +37,44 @@ public class TransactionHistorySvcImpl implements TransactionHistorySvc {
     private VegaServices vegaServices;
     @Autowired
     private VegaCustomResourceLoader customResourceLoader;
+    @Autowired
+    private DateUtils dateUtils;
 
     @Override
     public List<LstTransaksi> dropDownListTransaksi() {
-        return vegaServices.getListTransaksi();
+        List<LstTransaksi> getLstTransaksi = mapLstTransaksi(vegaServices.getListTransaksi());
+        List<LstTransaksi> otherTransaction = otherTransactions();
+        getLstTransaksi.addAll(otherTransaction);
+        return getLstTransaksi;
     }
 
     @Override
-    public List<TransactionHistory> getTransactionHistory(String reg_spaj, Integer lt_id, String start_date, String end_date) {
-        if (lt_id == null){
-            return vegaServices.selectHistoryTransaksi(null, reg_spaj, start_date, end_date);
+    public List<TransactionHistory> getTransactionHistory(String reg_spaj, String transaction_type, String start_date, String end_date) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime firstDay = dateUtils.getFirstDay(now);
+        List<TransactionHistory> mpolTrans;
+        List<TransactionHistory> policyAlteration;
+        if (start_date != null && end_date != null) {
+            mpolTrans = vegaServices.selectHistoryTransaksi(null, reg_spaj, start_date, end_date);
+            policyAlteration = vegaServices.getTransactionPolicyAlteration(reg_spaj, start_date, end_date);
+        } else {
+            mpolTrans = vegaServices.selectHistoryTransaksi(null, reg_spaj, dateUtils.format(firstDay, DateUtils.FORMAT_DAY_MONTH_YEAR), dateUtils.format(now, DateUtils.FORMAT_DAY_MONTH_YEAR));
+            policyAlteration = vegaServices.getTransactionPolicyAlteration(reg_spaj, start_date, end_date);
         }
-        return  vegaServices.selectHistoryTransaksi(lt_id, reg_spaj, start_date, end_date);
+        mpolTrans = mapTransactionMpolTrans(mpolTrans);
+        mpolTrans.addAll(policyAlteration);
+        if (transaction_type != null) {
+            return mpolTrans.stream().filter(v -> v.getTransaction_type().equals(transaction_type)).collect(Collectors.toList());
+        }
+        return mpolTrans;
     }
 
     @Override
     public TransactionHistory getDetailTransactionHistory(String kode_transaksi, String reg_spaj) {
         List<TransactionHistory> historyList = getTransactionHistory(reg_spaj, null, null, null);
-        if (historyList != null && historyList.size() > 0){
+        if (historyList != null && historyList.size() > 0) {
             Optional<TransactionHistory> optionalTransactionHistory = historyList.stream().filter(v -> v.getKode_transaksi().equals(kode_transaksi)).findFirst();
-            if (optionalTransactionHistory.isPresent()){
+            if (optionalTransactionHistory.isPresent()) {
                 return optionalTransactionHistory.get();
             }
         }
@@ -111,4 +133,77 @@ public class TransactionHistorySvcImpl implements TransactionHistorySvc {
         res = gson.toJson(map);
         return res;
     }
+
+    private List<TransactionHistory> mapTransactionMpolTrans(List<TransactionHistory> historyList) {
+        historyList = historyList.stream().peek(v -> {
+                    v.setTransaction_desc(v.getTransaction_type());
+                    switch (v.getLt_id()) {
+                        case 22:
+                            v.setTransaction_type("TRANS-01");
+                            break;
+                        case 19:
+                            v.setTransaction_type("TRANS-02");
+                            break;
+                        case 4:
+                            v.setTransaction_type("TRANS-03");
+                            break;
+                        case 20:
+                            v.setTransaction_type("TRANS-04");
+                            break;
+                        case 2:
+                            v.setTransaction_type("TRANS-05");
+                            break;
+                        case 3:
+                            v.setTransaction_type("TRANS-06");
+                            break;
+                    }
+                }
+        ).collect(Collectors.toList());
+        return historyList;
+    }
+
+    private List<LstTransaksi> mapLstTransaksi(List<LstTransaksi> lstTransaksis) {
+        lstTransaksis = lstTransaksis.stream().peek(v -> {
+                    switch (v.getLt_id()) {
+                        case 22:
+                            v.setType_transaksi("TRANS-01");
+                            break;
+                        case 19:
+                            v.setType_transaksi("TRANS-02");
+                            break;
+                        case 4:
+                            v.setType_transaksi("TRANS-03");
+                            break;
+                        case 20:
+                            v.setType_transaksi("TRANS-04");
+                            break;
+                        case 2:
+                            v.setType_transaksi("TRANS-05");
+                            break;
+                        case 3:
+                            v.setType_transaksi("TRANS-06");
+                            break;
+                    }
+                }
+        ).collect(Collectors.toList());
+        return lstTransaksis;
+    }
+
+    private List<LstTransaksi> otherTransactions() {
+        List<LstTransaksi> otherTransactions = new ArrayList<>();
+        LstTransaksi lstTransaksiA = new LstTransaksi();
+        lstTransaksiA.setLt_transksi(null);
+        lstTransaksiA.setLt_transksi("Policy Alteration");
+        lstTransaksiA.setType_transaksi("TRANS-07");
+        LstTransaksi lstTransaksiB = new LstTransaksi();
+        lstTransaksiB.setLt_transksi(null);
+        lstTransaksiB.setLt_transksi("Claim Submission");
+        lstTransaksiB.setType_transaksi("TRANS-08");
+
+        otherTransactions.add(lstTransaksiA);
+        otherTransactions.add(lstTransaksiB);
+        return otherTransactions;
+    }
+
+
 }

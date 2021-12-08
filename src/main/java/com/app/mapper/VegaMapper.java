@@ -532,4 +532,12 @@ public interface VegaMapper {
 	public List<LstTransaksi> selectLstTransaksi();
 
 	public List<TransactionHistory> selectHistoryTransaksi(HashMap<String, Object> hashMap);
+
+	public List<JenisInvestDplk> getJenisInvestDplk();
+
+	public List<DailyPriceFundDplk> getJenisInvestDplkByAccNo(String acc_no);
+
+	public List<LstTransaksiDplk> getLstTransDplk(HashMap<String, Object> hashMap);
+
+	public List<TransactionHistory> selectHistoryPolicyAlteration(HashMap<String, Object> data);
 }

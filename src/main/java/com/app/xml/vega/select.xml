@@ -6496,7 +6496,7 @@ SELECT distinct (CASE
 		dplk.lst_jenis_invest@eb g
 		where b.mcl_pt = a.mcl_pt and c.nopol = b.nopol
 		and c.mcl_id = d.mcl_id(+) and d.mcl_id = e.mcl_id(+)
-		and f.acc_no = c.acc_no and (unit_pt + unit_peserta) > 0
+		and f.acc_no = c.acc_no
 		and g.lji_id = f.lji_id AND f.acc_no=#{acc_no, jdbcType=VARCHAR}
 	</select>
 

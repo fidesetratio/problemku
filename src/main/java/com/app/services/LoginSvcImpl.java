@@ -203,11 +203,13 @@ public class LoginSvcImpl implements LoginSvc {
                 ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
                 if (!listPolisCorporate.isEmpty()){
                     corporate = polisCorporate(listPolisCorporate, policy_corporate_notinforce);
+                    is_corporate = true;
                 }
                 DPLKAccountModel dplkByAccNo = services.getInfoDplkByAccNo(selectTypeUser.getAccount_no_dplk() != null ? selectTypeUser.getAccount_no_dplk() : null);
                 if (dplkByAccNo != null){
                     dataDplk.put("account_no", dplkByAccNo.getNo_peserta());
                     dataDplk.put("participant_name", dplkByAccNo.getNama_peserta());
+                    is_dplk = true;
                 }
 
                 if ((individu == null) && (corporate == null) && (individuMri == null) && (dataDplk == null)) {

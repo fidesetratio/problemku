@@ -6853,5 +6853,22 @@ SELECT distinct (CASE
 			AND A.MSEN_INPUT_DATE <![CDATA[ <= ]]> to_date(#{end_date}, 'dd-MM-yyyy')
 		</if>
 	</select>
+	<select id="selectHistoryClaimSubmissionIndividu" resultType="com.app.model.TransactionHistory" parameterType="HashMap">
+		select REG_SPAJ,
+		KODE_TRANS AS KODE_TRANSAKSI,
+		'TRANS-08' AS TRANSACTION_TYPE,
+		'Claim Submission' AS TRANSACTION_DESC,
+		'' AS FILE_PATH,
+		DATE_RI_1 AS TGL_TRANSAKSI,
+		'Accepted' AS STATUS
+		from EKA.MST_MPOL_CLAIM_TRANS WHERE ST_KLMSHT = 5
+		AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		<if test="start_date != null">
+			AND DATE_RI_1 <![CDATA[ >= ]]> to_date(#{start_date}, 'dd-MM-yyyy')
+		</if>
+		<if test="end_date != null">
+			AND DATE_RI_1 <![CDATA[ <= ]]> to_date(#{end_date}, 'dd-MM-yyyy')
+		</if>
+	</select>
 
 </mapper>

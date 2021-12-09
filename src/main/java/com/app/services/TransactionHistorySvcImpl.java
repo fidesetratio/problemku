@@ -54,15 +54,17 @@ public class TransactionHistorySvcImpl implements TransactionHistorySvc {
         LocalDateTime firstDay = dateUtils.getFirstDay(now);
         List<TransactionHistory> mpolTrans;
         List<TransactionHistory> policyAlteration;
+        List<TransactionHistory> claimSubmission;
         if (start_date != null && end_date != null) {
-            mpolTrans = vegaServices.selectHistoryTransaksi(null, reg_spaj, start_date, end_date);
-            policyAlteration = vegaServices.getTransactionPolicyAlteration(reg_spaj, start_date, end_date);
-        } else {
-            mpolTrans = vegaServices.selectHistoryTransaksi(null, reg_spaj, dateUtils.format(firstDay, DateUtils.FORMAT_DAY_MONTH_YEAR), dateUtils.format(now, DateUtils.FORMAT_DAY_MONTH_YEAR));
-            policyAlteration = vegaServices.getTransactionPolicyAlteration(reg_spaj, start_date, end_date);
+           start_date = dateUtils.format(firstDay, DateUtils.FORMAT_DAY_MONTH_YEAR);
+           end_date = dateUtils.format(now, DateUtils.FORMAT_DAY_MONTH_YEAR);
         }
+        mpolTrans = vegaServices.selectHistoryTransaksi(null, reg_spaj, start_date, end_date);
+        policyAlteration = vegaServices.getTransactionPolicyAlteration(reg_spaj, start_date, end_date);
+        claimSubmission = vegaServices.getTransactionHistoryClaimSubmission(reg_spaj, start_date, end_date);
         mpolTrans = mapTransactionMpolTrans(mpolTrans);
         mpolTrans.addAll(policyAlteration);
+        mpolTrans.addAll(claimSubmission);
         if (transaction_type != null) {
             return mpolTrans.stream().filter(v -> v.getTransaction_type().equals(transaction_type)).collect(Collectors.toList());
         }

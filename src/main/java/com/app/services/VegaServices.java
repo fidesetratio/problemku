@@ -1904,4 +1904,13 @@ public class VegaServices {
 		return dao.selectHistoryPolicyAlteration(data);
 	}
 
+	public List<TransactionHistory> getTransactionHistoryClaimSubmission(String reg_spaj, String start_date, String end_date){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("reg_spaj", reg_spaj);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.selectHistoryClaimSubmissionIndividu(data);
+	}
+
 }

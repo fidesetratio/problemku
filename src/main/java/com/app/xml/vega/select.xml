@@ -6132,10 +6132,10 @@ SELECT distinct (CASE
 		SELECT /*+ first_rows */
 		mspo_policy_no_format,
 		CASE
-		WHEN a.lca_id IN (37, 60, 52)
-		then 'Agency'
-		WHEN a.lca_id IN (09)
+		WHEN eka.PKG_CHANNEL.GET_CHANNEL (1,A.REG_SPAJ)  LIKE '%BANCASSURANCE%'
 		then 'BankAs'
+		WHEN eka.PKG_CHANNEL.GET_CHANNEL (1,A.REG_SPAJ)  LIKE '%AGENCY%'
+		then 'Agency'
 		else 'Others'
 		End        as                              tipe_polis,
 		ks.lku_id      as                              kurs_id,

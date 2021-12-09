@@ -2,6 +2,7 @@ package com.app.services;
 
 import com.app.model.LstUserSimultaneous;
 import com.app.model.ResponseData;
+import com.app.model.request.RequestListPolis;
 import com.app.model.request.RequestLogin;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,5 +20,7 @@ public interface LoginSvc {
     boolean isIndividuCorporate(LstUserSimultaneous checkIndividuOrCorporate);
 
     boolean corporate(LstUserSimultaneous checkIndividuOrCorporate);
+
+    ResponseData switchAccount(RequestListPolis requestLogin, HttpServletRequest request);
 
 }

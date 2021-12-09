@@ -2805,21 +2805,21 @@ public class PolicyIndividualController {
                     data.put("uang_pertanggungan", mri.getUang_pertanggungan());
                     data.put("pembayaran_premi", null);
 
-					String pathBaru = String.format("%s/%s", basePath, mri.getEsert_baru() != null ? mri.getEsert_baru() : "");
-					String pathLama = String.format("%s/%s", basePath, mri.getEsert_lama() != null ? mri.getEsert_lama() : "");
+					String esertBaru = String.format("%s/%s/%s", basePath, mri.getEsert_baru(), mri.getNo_polis() + " SERT.pdf");
+					String esertLama = String.format("%s/%s/%s", basePath, mri.getEsert_lama(), "SERT " + mri.getNo_polis() + ".pdf");
+					Path path1 = Paths.get(esertBaru);
+					Path path2 = Paths.get(esertBaru);
 
-					File folderBaru = new File(pathBaru);
-					File folderLama = new File(pathLama);
-					if (!folderBaru.exists()) {
-						folderBaru.mkdirs();
+					if(Files.exists(path1)) {
+						data.put("essert", esertBaru);
+					} else if (Files.exists(path2)){
+						data.put("essert", esertLama);
+					} else {
+						data.put("essert", null);
 					}
-					if (!folderLama.exists()){
-						folderLama.mkdirs();
-					}
-					data.put("esert_baru", String.format("%s/%s", pathBaru, mri.getNo_polis() + " SERT.pdf"));
-                    data.put("esert_lama", String.format("%s/%s", pathLama, "SERT " + mri.getNo_polis() + ".pdf"));
                     message = "Successfully get data list polis";
-                } else {
+					error = false;
+				} else {
                     error = true;
                     message = "Can't get data list polis mri";
                     resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
@@ -2851,7 +2851,7 @@ public class PolicyIndividualController {
 		String username = polisMri.getUsername();
 		String key = polisMri.getKey();
 		String pathEsertBaru = polisMri.getPathEsertBaru();
-		String pathEsertLama = polisMri.getPathEsertLama();
+		String path = polisMri.getEssert();
 		String pathFolder = storagePdfMri;
 
 		GsonBuilder builder = new GsonBuilder();
@@ -2870,74 +2870,26 @@ public class PolicyIndividualController {
 			if (customResourceLoader.validateCredential(username, key)){
 				MRIdataPolis mri = services.getDataMri(dataActivityUser.getMspo_policy_no());
 				if (mri != null){
-					String pathBaru = String.format("%s/%s/%s", pathFolder, mri.getEsert_baru() != null ? mri.getEsert_baru() : "", mri.getNo_polis() + " SERT.pdf");
-					String pathLama = String.format("%s/%s/%s", pathFolder, mri.getEsert_lama() != null ? mri.getEsert_lama() : "", "SERT " + mri.getNo_polis() + ".pdf");
-					if (pathEsertBaru != null && !pathEsertBaru.equals("")) {
-						if (pathBaru.equals(pathEsertBaru)){
-							File folder = new File(String.format("%s/%s", pathFolder, mri.getEsert_baru()));
-							File file = new File(pathBaru);
-							if (!folder.exists()) {
-								logger.debug("Path: " + request.getServletPath() + " Path Mri: " + folder.getPath());
-								folder.mkdirs();
-							}
-							// Content-Disposition
-							response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
+					File file = new File(path);
 
-							// Content-Length
-							response.setContentLength((int) file.length());
+					// Content-Disposition
+					response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
 
-							BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
-							BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+					// Content-Length
+					response.setContentLength((int) file.length());
 
-							byte[] buffer = new byte[1024];
-							int bytesRead = 0;
-							while ((bytesRead = inStream.read(buffer)) != -1) {
-								outStream.write(buffer, 0, bytesRead);
-							}
-							outStream.flush();
-							inStream.close();
-							error = false;
-							message = "Download Success";
-						} else {
-							error = true;
-							message = "Can't Download File";
-							resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
-							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
-						}
-					} else if (pathEsertLama != null && !pathEsertLama.equals("")){
-						if (pathEsertLama.equals(pathLama)){
-							File folder = new File(String.format("%s/%s", pathFolder, mri.getEsert_lama()));
-							File file = new File(pathEsertLama);
-							if (!folder.exists()) {
-								logger.debug("Path: " + request.getServletPath() + " Path Mri: " + folder.getPath());
-								folder.mkdirs();
-							}
-							// Content-Disposition
-							response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
+					BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+					BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
 
-							// Content-Length
-							response.setContentLength((int) file.length());
-
-							BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
-							BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
-
-							byte[] buffer = new byte[1024];
-							int bytesRead = 0;
-							while ((bytesRead = inStream.read(buffer)) != -1) {
-								outStream.write(buffer, 0, bytesRead);
-							}
-							outStream.flush();
-							inStream.close();
-
-							error = false;
-							message = "Download Success";
-						} else {
-							error = true;
-							message = "Can't Download File";
-							resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
-							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
-						}
+					byte[] buffer = new byte[1024];
+					int bytesRead = 0;
+					while ((bytesRead = inStream.read(buffer)) != -1) {
+						outStream.write(buffer, 0, bytesRead);
 					}
+					outStream.flush();
+					inStream.close();
+					error = false;
+					message = "Download Success";
 				} else {
 					error = true;
 					message = "Can't Download File";

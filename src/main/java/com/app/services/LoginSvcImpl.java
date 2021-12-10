@@ -191,8 +191,10 @@ public class LoginSvcImpl implements LoginSvc {
                 if (reg_spaj_register != null){
                     if (!listPolisIndividu.isEmpty()){
                         individu = polisIndividu(listPolisIndividu, request, username);
+                        is_individual = true;
                     } else if (!listPolisMri.isEmpty()){
                         individuMri = polisIndividuMri(listPolisMri);
+                        is_individual = true;
                     }
                 } else {
                     is_individual = false;
@@ -201,10 +203,9 @@ public class LoginSvcImpl implements LoginSvc {
                     is_individu_mri = false;
                 }
                 ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
-                if (!listPolisCorporate.isEmpty() && !listPolisIndividu.isEmpty()){
+                if (!listPolisCorporate.isEmpty()){
                     corporate = polisCorporate(listPolisCorporate, policy_corporate_notinforce);
                     is_corporate = true;
-                    is_individual = true;
                 }
                 DPLKAccountModel dplkByAccNo = services.getInfoDplkByAccNo(selectTypeUser.getAccount_no_dplk() != null ? selectTypeUser.getAccount_no_dplk() : null);
                 if (dplkByAccNo != null){

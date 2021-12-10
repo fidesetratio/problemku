@@ -1918,4 +1918,9 @@ public class VegaServices {
 		return dao.selectHistoryClaimSubmissionIndividu(data);
 	}
 
+	public List<EnrollPesertaAdmedika> getEnrollPesertaAdmedikaCorporate(String username){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.enrollPesertaAdmedikaCorporate(username);
+	}
+
 }

@@ -201,9 +201,10 @@ public class LoginSvcImpl implements LoginSvc {
                     is_individu_mri = false;
                 }
                 ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
-                if (!listPolisCorporate.isEmpty()){
+                if (!listPolisCorporate.isEmpty() && !listPolisIndividu.isEmpty()){
                     corporate = polisCorporate(listPolisCorporate, policy_corporate_notinforce);
                     is_corporate = true;
+                    is_individual = true;
                 }
                 DPLKAccountModel dplkByAccNo = services.getInfoDplkByAccNo(selectTypeUser.getAccount_no_dplk() != null ? selectTypeUser.getAccount_no_dplk() : null);
                 if (dplkByAccNo != null){

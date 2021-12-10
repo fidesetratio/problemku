@@ -6874,5 +6874,33 @@ SELECT distinct (CASE
 			AND DATE_RI_1 <![CDATA[ <= ]]> to_date(#{end_date}, 'dd-MM-yyyy')
 		</if>
 	</select>
+	<select id="enrollPesertaAdmedikaCorporate" parameterType="String" resultType="com.app.model.EnrollPesertaAdmedika">
+		select a.mspo_Policy_no                                                  as policy_number,
+		b.no_kartu,
+		d.mcl_id,
+		(select mcl_first from eka.mst_client@eb where mcl_id = d.mcl_id) as participant_name,
+		c.mcl_first                                                       as company_name,
+		d.mspe_date_birth                                                 as dob,
+		case
+		when Upper(trim(substr(b.mste_no_reg, length(trim(b.mste_no_reg)), 1))) = 'A' then 'P'
+		Else 'D' end                                                  as membertype, --P = Principal. D = Dependent
+		d.mspe_email
+		from eka.mst_policy@eb a
+		inner join eka.mst_insured@eb b
+		on a.reg_spaj = b.reg_Spaj
+		inner join eka.mst_client@eb c
+		on a.mspo_policy_holder = c.mcl_id
+		inner join eka.mst_person@eb d
+		on b.mste_insured = d.mcl_id
+		inner join eka.LST_USER_SIMULTANEOUS e on e.MCL_ID_EMPLOYEE = d.mcl_id
+		where (a.mspo_provider = 1 and a.mspo_flag_ntt in (1, 3)) --TPA admedika + Halodoc
+		and a.mspo_judul_polis = '402'                          --polis ekamedicare
+		and a.lstb_id = 3
+		and b.mste_active = 1                                   --peserta aktif di GTL
+		and b.mste_admedika in (1, 2)                           --peserta yg sudah di enroll ke admedika
+		and nvl(b.mste_admedika_batal, 0) <![CDATA[ <> ]]> 1    --peserta yang tidak batal statusnya di admedika
+		and a.lssp_id = 1
+		and e.username=#{username, jdbcType=VARCHAR}
+	</select>
 
 </mapper>

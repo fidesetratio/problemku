@@ -544,4 +544,6 @@ public interface VegaMapper {
 	public List<TransactionHistory> selectHistoryPolicyAlteration(HashMap<String, Object> data);
 
 	public List<TransactionHistory> selectHistoryClaimSubmissionIndividu(HashMap<String, Object> data);
+
+	public List<EnrollPesertaAdmedika> enrollPesertaAdmedikaCorporate(String username);
 }

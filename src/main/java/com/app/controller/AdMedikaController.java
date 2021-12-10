@@ -1,6 +1,7 @@
 package com.app.controller;
 
 import com.app.model.AdMedikaRequest;
+import com.app.model.ResponseData;
 import com.app.services.AdMedikaSycnhSvc;
 import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
@@ -19,15 +20,14 @@ import java.util.Date;
 import java.util.HashMap;
 
 @RestController
-public class AdMedikaSynchController {
+public class AdMedikaController {
 
-    private static final Logger logger = LogManager.getLogger(AdMedikaSynchController.class);
+    private static final Logger logger = LogManager.getLogger(AdMedikaController.class);
 
     @Autowired
     private AdMedikaSycnhSvc adMedikaSycnhSvc;
     @Autowired
     private VegaCustomResourceLoader customResourceLoader;
-
 
     @RequestMapping(value = "/urladmedika", produces = "application/json", method = RequestMethod.POST)
     public String getUrl(@RequestBody AdMedikaRequest request, HttpServletRequest servletRequest){
@@ -62,4 +62,10 @@ public class AdMedikaSynchController {
         customResourceLoader.insertHistActivityWS(12, 86, new Date(), req, res, 1, resultErr, start, request.getUsername());
         return res;
     }
+
+    @RequestMapping(value = "/pesertaadmedika", produces = "application/json", method = RequestMethod.POST)
+    public ResponseData getEnrollPeserta(@RequestBody AdMedikaRequest request, HttpServletRequest servletRequest){
+        return adMedikaSycnhSvc.getEnrollPeserta(request, servletRequest);
+    }
+
 }

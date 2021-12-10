@@ -1806,6 +1806,11 @@ public class VegaServices {
 		return dao.selectMpolTransByMptId(mpt_id);
 	}
 
+	public String getConfigAdmedika() {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectConfigAdmedika();
+	}
+
 	public DetailPesertaCorporate getDetailPesertaCorporate(String mste_insured, String regSpaj){
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> map = new HashMap<>();
@@ -1911,6 +1916,11 @@ public class VegaServices {
 		data.put("start_date", start_date);
 		data.put("end_date", end_date);
 		return dao.selectHistoryClaimSubmissionIndividu(data);
+	}
+
+	public List<EnrollPesertaAdmedika> getEnrollPesertaAdmedikaCorporate(String username){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.enrollPesertaAdmedikaCorporate(username);
 	}
 
 }

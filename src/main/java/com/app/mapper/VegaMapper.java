@@ -513,6 +513,8 @@ public interface VegaMapper {
 
 	public MpolTransData selectMpolTransByMptId(String mpt_id);
 
+	public String selectConfigAdmedika();
+
 	public DetailPesertaCorporate detailPesertaCorporate(HashMap<String, Object> hashMap);
 
 	public SummaryPayment findByMptId(String mpt_id);
@@ -542,4 +544,6 @@ public interface VegaMapper {
 	public List<TransactionHistory> selectHistoryPolicyAlteration(HashMap<String, Object> data);
 
 	public List<TransactionHistory> selectHistoryClaimSubmissionIndividu(HashMap<String, Object> data);
+
+	public List<EnrollPesertaAdmedika> enrollPesertaAdmedikaCorporate(String username);
 }

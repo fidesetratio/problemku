@@ -76,7 +76,7 @@ link:
   activity: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/checkactivity
  fcm:
   google: https://fcm.googleapis.com/fcm/send/test
-
+ ad-medika: https://ecard.admedika.co.id?token
 path:
  direct:
   notification: http://paymentcc.sinarmasmsiglife.co.id:9886/notif/api/json/pushnotif
@@ -184,7 +184,7 @@ link:
   activity: http://paymentcc.sinarmasmsiglife.co.id:8989/mpolicytest/api/checkactivity
  fcm:
   google: https://fcm.googleapis.com/fcm/send/test
-
+ ad_medika: https://ecard.admedika.co.id?token
 path:
  direct:
   notification: http://paymentcc.sinarmasmsiglife.co.id:9886/notif/api/json/pushnotif

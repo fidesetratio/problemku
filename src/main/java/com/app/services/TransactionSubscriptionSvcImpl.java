@@ -1,8 +1,7 @@
 package com.app.services;
 
-import com.app.model.DetailBillingRequest;
-import com.app.model.Pemegang;
-import com.app.model.Topup;
+import com.app.exception.HandleSuccessOrNot;
+import com.app.model.*;
 import com.app.model.request.RequestTopup;
 import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
@@ -17,14 +16,15 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
@@ -66,9 +66,6 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         Integer language_id = requestTopup.getLanguage_id();
         try {
             if (customResourceLoader.validateCredential(username, key)) {
-                // Get MPT_ID
-                BigInteger mptId = services.selectGetMptId();
-
                 // Get SPAJ
                 Pemegang paramSelectSPAJ = new Pemegang();
                 paramSelectSPAJ.setMspo_policy_no(no_polis);
@@ -77,6 +74,7 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                 String kodeCabang = services.getKodeCabang(no_polis);
 
                 if (requestTopup.getLt_id() != null && requestTopup.getLt_id().equals(2)) {
+                    BigInteger mptId = requestTopup.getMpt_id();
                     // this is request top up tunggal base on lt id
                     JSONArray fundsCheck = new JSONArray(requestTopup.getFunds());
                     if (fundsCheck.length() > 0) {
@@ -126,11 +124,10 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                                 for (int i = 0; i < funds.length(); i++) {
                                     try {
                                         String lji_id = funds.getJSONObject(i).getString("lji_id");
-                                        Float percentage = funds.getJSONObject(i).getFloat("percentage");
+                                        float percentage = funds.getJSONObject(i).getFloat("percentage");
 
-                                        Float percenVal = percentage / 100;
-                                        BigDecimal newPercelVal = new BigDecimal(percenVal).add(BigDecimal.ZERO);
-                                        BigDecimal mpt_jumlah = requestTopup.getMpt_jumlah().multiply(newPercelVal);
+                                        BigDecimal newPercentVal = new BigDecimal(percentage).divide(BigDecimal.valueOf(100),2, RoundingMode.HALF_UP);
+                                        BigDecimal mpt_jumlah = requestTopup.getMpt_jumlah().multiply(newPercentVal);
 
                                         Topup topUpDetails = new Topup();
                                         topUpDetails.setMpt_id(mptId.toString());
@@ -190,6 +187,8 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                                 "Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
                     }
                 } else if (requestTopup.getLt_id() != null && requestTopup.getLt_id().equals(22)) {
+                    BigInteger mptId = services.selectGetMptId();
+
                     // this is request premium billing base on lt id
                     if (requestTopup.getBillings() != null && requestTopup.getBillings().size() > 0){
                         String mataUang = null;
@@ -292,6 +291,71 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         return res;
     }
 
+    @Override
+    public String saveBuktiPembayaran(SummaryPayment requestBody, HttpServletRequest request) {
+        GsonBuilder builder = new GsonBuilder();
+        builder.serializeNulls();
+        Gson gson = new Gson();
+        gson = builder.create();
+        String res;
+        HandleSuccessOrNot handleSuccessOrNot=null;
+        String resultErr;
+        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
+
+        try {
+            if (customResourceLoader.validateCredential(requestBody.getUsername(), requestBody.getKey())) {
+                //idpayment if payment online is mspa_trx else if va and others is mpt_id
+                SummaryPayment mpolTrans = services.getByMptId(requestBody.getId_payment());
+                SummaryPayment paymentAggregator = services.getMspaTrxId(requestBody.getId_payment());
+                if (mpolTrans != null) {
+                    String path = String.format("%s/%s/%s/%s", storageMpolicy, mpolTrans.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail");
+                    Boolean uploadFile = customResourceLoader.uploadFileToStorage(path, requestBody.getPath(),
+                            String.format("%s.pdf", mpolTrans.getMpt_id()), requestBody.getUsername(), request.getServletPath(), null);
+                    if (uploadFile.equals(true)) {
+                        String nameFile = String.format("%s/%s/%s/%s/%s%s", storageMpolicy, mpolTrans.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail", mpolTrans.getMpt_id(), ".pdf");
+                        services.updatePathSummaryDetail(mpolTrans.getMpt_id(), nameFile);
+                        handleSuccessOrNot = new HandleSuccessOrNot(false, "Success Upload File");
+                    } else {
+                        handleSuccessOrNot = new HandleSuccessOrNot(true, "Failed upload file");
+                        resultErr = "File PDF Corrupt, MPT_ID: " + mpolTrans.getMpt_id() + ", Name File: " + String.format("%s.pdf", mpolTrans.getMpt_id());
+                        logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: "
+                                + resultErr);
+                    }
+                } else if (paymentAggregator != null) {
+                    String path = String.format("%s/%s/%s/%s", storageMpolicy, paymentAggregator.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail");
+                    Boolean uploadFile = customResourceLoader.uploadFileToStorage(path, requestBody.getPath(),
+                            String.format("%s.pdf", paymentAggregator.getObjc_id()), requestBody.getUsername(), request.getServletPath(), null);
+                    if (uploadFile.equals(true)) {
+                        String nameFile = String.format("%s/%s/%s/%s/%s%s", storageMpolicy, paymentAggregator.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail", paymentAggregator.getObjc_id(), ".pdf");
+                        services.updatePathSummaryDetail(paymentAggregator.getObjc_id(), nameFile);
+                        handleSuccessOrNot = new HandleSuccessOrNot(false, "Success Upload File");
+                    } else {
+                        handleSuccessOrNot = new HandleSuccessOrNot(true, "Failed upload file");
+                        resultErr = "File PDF Corrupt, MPT_ID: " + paymentAggregator.getObjc_id() + ", Name File: " + String.format("%s.pdf", paymentAggregator.getObjc_id());
+                        logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: "
+                                + resultErr);
+                    }
+                }
+            } else {
+                // Handle username & key tidak cocok
+                resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + requestBody.getUsername() + " & Key: " + requestBody.getKey() + ")";
+                handleSuccessOrNot = new HandleSuccessOrNot(true, resultErr);
+                logger.error("Path: " + request.getServletPath() + " Username: " +  requestBody.getUsername() + " Error: " + resultErr);
+            }
+        } catch (Exception e){
+            resultErr = e.getMessage();
+            handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
+            logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + resultErr);
+        }
+
+        map.put("error", handleSuccessOrNot != null && handleSuccessOrNot.isError());
+        map.put("data", data);
+        map.put("message", handleSuccessOrNot != null ? handleSuccessOrNot.getMessage() : null);
+        res = gson.toJson(map);
+        return res;
+    }
+
     private Topup getData(BigInteger mptId, Pemegang dataSPAJ, RequestTopup requestTopup, String nameFile, Integer lsjb_id) {
         Topup topup = new Topup();
         topup.setMpt_id(mptId.toString());
@@ -312,38 +376,6 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         topup.setLsjb_id(lsjb_id);
         topup.setFlag_source(93);
         return topup;
-    }
-
-    private void createNewFile(String path, RequestTopup requestTopup, BigInteger mptId, HttpServletRequest request,
-                               String username) throws IOException {
-        // Upload Proof Transaction
-
-        File folder = new File(path);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-
-        byte[] imageByte = Base64.getDecoder().decode(requestTopup.getBsb());
-        String directory = path + File.separator + String.format("%s.pdf", mptId);
-        new FileOutputStream(directory).write(imageByte);
-        try {
-            Document document = new Document();
-
-            PdfWriter.getInstance(document, new FileOutputStream(directory));
-            document.open();
-            byte[] decoded = Base64.getDecoder().decode(requestTopup.getBsb().getBytes());
-            Image image1 = Image.getInstance(decoded);
-
-            int indentation = 0;
-            float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
-                    - document.rightMargin() - indentation) / image1.getWidth()) * 100;
-
-            image1.scalePercent(scaler);
-            document.add(image1);
-            document.close();
-        } catch (Exception e) {
-            logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + e);
-        }
     }
 
     private HashMap<String, Object> getMapPaymentType(RequestTopup requestTopup){

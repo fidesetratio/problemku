@@ -22,4 +22,5 @@ public class PolisMri implements Serializable {
 
     private String pathEsertBaru;
     private String pathEsertLama;
+    private String essert;
 }

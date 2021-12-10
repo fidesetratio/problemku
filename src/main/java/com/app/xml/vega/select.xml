@@ -179,10 +179,10 @@
 		SELECT /*+ first_rows */
 		mspo_policy_no_format,
 		CASE
-		WHEN a.lca_id IN (37, 60, 52)
-		then 'Agency'
-		WHEN a.lca_id IN (09)
+		WHEN eka.PKG_CHANNEL.GET_CHANNEL (1,A.REG_SPAJ)  LIKE '%BANCASSURANCE%'
 		then 'BankAs'
+		WHEN eka.PKG_CHANNEL.GET_CHANNEL (1,A.REG_SPAJ)  LIKE '%AGENCY%'
+		then 'Agency'
 		else 'Others'
 		End        as                              tipe_polis,
 		 b.lsbs_id,
@@ -568,28 +568,30 @@
 	
 	<select id="selectSales" parameterType="String" resultType="com.app.model.Sales">
 		SELECT  b.msag_id as agent_code,
-				c.mcl_first,
-		        b.msag_smart_no,
-		        c.mspe_email,
-		        CASE
-                    WHEN b.mst_leader is not null
-                        THEN (select mcl_first from eka.mst_client_new where mcl_id = b.mcl_id)
-                    ELSE ''
-                END as mcl_first_leader,
-                CASE
-                    WHEN b.mst_leader is not null
-                        THEN (select msag_smart_no from eka.mst_agent where msag_id = b.mst_leader)
-                    ELSE ''
-                END as msag_smart_no_leader,
-                CASE
-                    WHEN b.mst_leader is not null
-                        THEN (select mspe_email from eka.mst_client_new where mcl_id = b.mcl_id)
-                    ELSE ''
-                END as mspe_email_leader
+		c.mcl_first,
+		b.msag_smart_no,
+		c.mspe_email,
+		CASE
+		WHEN b.mst_leader is not null
+		THEN (select mcl_first from eka.mst_client_new where mcl_id = b.mcl_id)
+		ELSE ''
+		END as mcl_first_leader,
+		CASE
+		WHEN b.mst_leader is not null
+		THEN (select msag_smart_no from eka.mst_agent where msag_id = b.mst_leader)
+		ELSE ''
+		END as msag_smart_no_leader,
+		CASE
+		WHEN b.mst_leader is not null
+		THEN (select mspe_email from eka.mst_client_new where mcl_id = b.mcl_id)
+		ELSE ''
+		END as mspe_email_leader
 		FROM    eka.mst_agent b,
-		        eka.mst_client_new c
+		eka.mst_client_new c
 		WHERE   b.mcl_id = c.mcl_id
-		    AND b.msag_id = #{msag_id, jdbcType=VARCHAR}
+		AND msag_id in (select case  when mspo_ao is null then (select msag_id from eka.mst_agent_prod where reg_spaj = x.reg_spaj
+		and lsle_id = (select max(lsle_id) from eka.mst_agent_prod where reg_spaj = X.reg_spaj)) else mspo_ao end as mspo_ao  from eka.mst_policy x
+		where x.reg_spaj = #{reg_spaj, jdbcType=VARCHAR})
 	</select>
 
 	<select id="selectListNav" resultType="com.app.model.Nav">
@@ -1133,6 +1135,7 @@
 		a.msbi_tahun_ke th_ke,
 		a.msbi_premi_ke premi_ke,
 		case when a.msbi_beg_date  <![CDATA[ <= ]]> trunc(sysdate) then 1 else 0 end flag_jt_tempo,
+		nvl(a.msbi_flag_topup,0) flag_topup,
 		sum(b.msdb_premium - nvl(b.msdb_discount,0)) total_premi
 		from
 		eka.mst_billing a,
@@ -1151,7 +1154,7 @@
 		</if>
 		group by a.reg_spaj, a.lku_id, a.msbi_beg_date, DECODE(a.msbi_paid, 1, 'Paid', 'OutS'), a.msbi_paid_date, c.lku_symbol,
 		a.MSBI_PREMI_KE, a.MSBI_TAHUN_KE,
-		case when a.msbi_beg_date <![CDATA[ <= ]]> trunc(sysdate) then 1 else 0 end
+		case when a.msbi_beg_date <![CDATA[ <= ]]> trunc(sysdate) then 1 else 0 end, nvl(a.msbi_flag_topup,0)
 		order by 3 desc
 	</select>
 
@@ -1350,7 +1353,8 @@
        reason_fu,
        		NVL (mpt_jumlah_process, 0) AS mpt_jumlah_process,
        		EKA.F_LSDBS_VIEW (g.reg_spaj, g.lsbs_id, g.lsdbs_number) AS newname,
-       a.unique_code
+       a.unique_code,
+		a.path_sum_payment
   		FROM eka.mst_mpol_trans a
        		INNER JOIN eka.lst_kurs c ON a.lku_id = c.lku_id
        		INNER JOIN eka.mst_policy d ON a.reg_spaj = d.reg_spaj
@@ -6128,10 +6132,10 @@ SELECT distinct (CASE
 		SELECT /*+ first_rows */
 		mspo_policy_no_format,
 		CASE
-		WHEN a.lca_id IN (37, 60, 52)
-		then 'Agency'
-		WHEN a.lca_id IN (09)
+		WHEN eka.PKG_CHANNEL.GET_CHANNEL (1,A.REG_SPAJ)  LIKE '%BANCASSURANCE%'
 		then 'BankAs'
+		WHEN eka.PKG_CHANNEL.GET_CHANNEL (1,A.REG_SPAJ)  LIKE '%AGENCY%'
+		then 'Agency'
 		else 'Others'
 		End        as                              tipe_polis,
 		ks.lku_id      as                              kurs_id,
@@ -6406,7 +6410,469 @@ SELECT distinct (CASE
 	<select id="selectMpolTransByMptId" resultType="com.app.model.MpolTransData" parameterType="String">
 		SELECT * FROM EKA.MST_MPOL_TRANS WHERE MPT_ID =#{mpt_id, jdbcType=VARCHAR}
 	</select>
+
 	<select id="selectConfigAdmedika" resultType="String">
 		select name from EKA.MST_CONFIG where APP_ID=93 and MC_ID = 'V01'
 	</select>
+
+	<select id="detailPesertaCorporate" resultType="com.app.model.DetailPesertaCorporate" parameterType="HashMap">
+		SELECT A.REG_SPAJ,
+		A.MSPO_POLICY_NO AS NO_POLIS,
+		A.MSPO_END_DATE,
+		A.MSPO_BEG_DATE,
+		C.MSPE_MOBILE AS NO_HP,
+		D.MST_MCL_ID AS MCL_ID_EMPLOYEE,
+		B.MSTE_NO_REG,
+		B.MSTE_INSURED_NO,
+		B.MSTE_INSURED,
+		C.MSPE_DATE_BIRTH,
+		E.MCL_FIRST as NAME
+		FROM EKA.MST_POLICY@EB A
+		INNER JOIN EKA.MST_INSURED@EB B ON A.REG_SPAJ = B.REG_SPAJ
+		INNER JOIN EKA.MST_PERSON@EB C ON B.MSTE_INSURED = C.MCL_ID
+		INNER JOIN EKA.MST_PERSON_RELATION@EB D ON C.MCL_ID = D.MCL_ID
+		INNER JOIN EKA.MST_CLIENT@EB E ON E.MCL_ID = B.MSTE_INSURED
+		WHERE A.LSTB_ID = 3
+		AND A.LSSP_ID = 1
+		AND A. MSPO_END_DATE > SYSDATE
+		AND b.mste_active = 1
+		AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		AND B.MSTE_INSURED = #{mste_insured, jdbcType=VARCHAR}
+	</select>
+
+	<select id="findByMptId" resultType="com.app.model.SummaryPayment" parameterType="String">
+		select
+		A.MPT_ID                  MPT_ID,
+		A.REG_SPAJ                  SPAJ_ETC,
+		A.MPT_JUMLAH                AMOUNT,
+		(CASE
+		WHEN A.MPT_STATUS IN (0, 1, 45, 46, 47)
+		THEN
+		'On progress'
+		WHEN A.MPT_STATUS in (7, 54)
+		THEN
+		'Accepted'
+		WHEN A.MPT_STATUS = 8
+		THEN
+		'Canceled'
+		WHEN A.MPT_STATUS = 9
+		THEN
+		'Canceled' END) AS STATUS,
+		A.REQ_DATE                  PAID_AT,
+		A.REKENING,
+		A.BANK_NAME,
+		PAY_TYPE.LSJB_TYPE          PAYMENT_METHOD
+		from EKA.MST_MPOL_TRANS A
+		JOIN EKA.LST_PAYMENT_TYPE PAY_TYPE ON A.LSJB_ID = PAY_TYPE.LSJB_ID WHERE A.MPT_ID = #{mpt_id, jdbcType=VARCHAR}
+	</select>
+
+	<select id="findByMstrxId" resultType="com.app.model.SummaryPayment" parameterType="String">
+		SELECT  MSPA_TRX, SPAJ_ETC, AMOUNT, STATUS, PAYMENT_METHOD, BANK_CODE AS BANK_NAME, DESCRIPTION_REQUEST, PAYMENT_CHANNEL, PAID_AT, LT_ID, OBJC_ID, FUNDS_TOPUP FROM EKA.MST_PAYMENT_AGGREGATOR WHERE MSPA_TRX=  #{mspa_trx, jdbcType=VARCHAR}
+	</select>
+
+	<select id="findAccountDplk" resultType="com.app.model.DPLKAccountModel" parameterType="HashMap">
+		select a.acc_no, b.mspe_date_birth, c.no_hp
+		from dplk.mst_peserta@eb a, dplk.mst_client_new@eb b, dplk.mst_address_new@eb c
+		where a.mcl_id = b.mcl_id(+) and b.mcl_id = c.mcl_id(+)
+		and a.acc_no = #{account_no, jdbcType=VARCHAR}
+		and b.mspe_date_birth = TO_DATE(#{birth_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+	</select>
+
+	<select id="findByUsernameDplk" parameterType="String" resultType="com.app.model.User">
+		select a.acc_no, b.mspe_date_birth, c.no_hp, d.*
+		from dplk.mst_peserta@eb a, dplk.mst_client_new@eb b, dplk.mst_address_new@eb c, eka.LST_USER_SIMULTANEOUS d
+		where a.mcl_id = b.mcl_id(+) and b.mcl_id = c.mcl_id(+) and d.username=#{username, jdbcType=VARCHAR} and d.ACCOUNT_NO_DPLK = a.acc_no AND d.FLAG_ACTIVE=1
+	</select>
+
+	<select id="findByAccountNoDplk" parameterType="String" resultType="com.app.model.User">
+		select a.acc_no, b.mspe_date_birth, c.no_hp, d.*
+		from dplk.mst_peserta@eb a, dplk.mst_client_new@eb b, dplk.mst_address_new@eb c, eka.LST_USER_SIMULTANEOUS d
+		where a.mcl_id = b.mcl_id(+) and b.mcl_id = c.mcl_id(+) and d.ACCOUNT_NO_DPLK = #{account_no, jdbcType=VARCHAR} AND d.ACCOUNT_NO_DPLK = a.acc_no AND d.FLAG_ACTIVE=1
+	</select>
+	
+	<select id="getInfoDplkByAccNo" resultType="com.app.model.DPLKAccountModel" parameterType="String">
+		select decode(b.flag_dplk, 1, 'PPIP', 2, 'PPUKP') jenis_dplk, a.mpt_nama nama_perusahaan,
+		c.acc_no no_peserta, c.msp_beg_date tgl_mulai_dplk, decode(b.pperiod, 1, '1 bulan', 6, '6 bulan', 12, '12 bulan') periode_pembayaran,
+		g.lji_invest, c.usia_pn usia_pensiun, d.mcl_first nama_peserta, alamat_rumah alamat,
+		e.no_hp, d.mspe_no_identity no_id
+		from dplk.mst_pt@eb a, dplk.mst_dplk@eb b, dplk.mst_peserta@eb c,
+		dplk.mst_client_new@eb d, dplk.mst_address_new@eb e, dplk.mst_peserta_det@eb f,
+		dplk.lst_jenis_invest@eb g
+		where b.mcl_pt = a.mcl_pt and c.nopol = b.nopol
+		and c.mcl_id = d.mcl_id(+) and d.mcl_id = e.mcl_id(+)
+		and f.acc_no = c.acc_no
+		and g.lji_id = f.lji_id AND f.acc_no=#{acc_no, jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectLstTransaksi" resultType="com.app.model.LstTransaksi">
+		SELECT * FROM LST_TRANSAKSI where LT_ID in(22, 19, 4, 20, 3, 2)
+	</select>
+
+	<select id="selectHistoryTransaksi" resultType="com.app.model.TransactionHistory" parameterType="HashMap">
+		select a.mpt_id as kode_transaksi, b.LT_ID, a.reg_spaj, b.LT_TRANSKSI as transaction_type, case
+		when a.MPT_STATUS IN (7, 54)
+		THEN
+		'Accepted' end as status,
+		a.req_date as tgl_transaksi, a.mpt_jumlah_process as amount, a.path_sum_payment as file_path
+		from EKA.MST_MPOL_TRANS a, EKA.LST_TRANSAKSI b
+		where B.LT_ID = A.LT_ID and a.reg_spaj=#{reg_spaj, jdbcType=VARCHAR} and A.MPT_STATUS IN (7, 54)
+		<if test="LT_ID != null">
+			and A.LT_ID = #{lt_id,jdbcType=INTEGER}
+		</if>
+		<if test="start_date != null">
+			AND A.REQ_DATE <![CDATA[ >= ]]> to_date(#{start_date}, 'dd-MM-yyyy')
+		</if>
+		<if test="end_date != null">
+			AND A.REQ_DATE <![CDATA[ <= ]]> to_date(#{end_date}, 'dd-MM-yyyy')
+		</if>
+		and a.REQ_DATE >= trunc(sysdate, 'YEAR') and a.REQ_DATE <![CDATA[ < ]]> sysdate
+	</select>
+
+	<select id="getJenisInvestDplk" resultType="com.app.model.JenisInvestDplk">
+		select * from dplk.lst_jenis_invest@eb where ACTIVE=1
+	</select>
+
+	<select id="getJenisInvestDplkByAccNo" resultType="com.app.model.DailyPriceFundDplk" parameterType="String">
+		select * from(
+		select
+		lji.lji_id as LJI_ID,
+		lji.lji_invest as LJI_INVEST,
+		lji.lku_id,
+		baru.lnu_tgl,
+		baru.lnu_nilai,lama.lnu_tgl LNU_TGL_SEBELUM, lama.lnu_nilai NILAI_SEBELUM,
+		(baru.lnu_nilai - nvl(lama.lnu_nilai, baru.lnu_nilai)) SELISIH_NILAI,
+		((baru.lnu_nilai - nvl(lama.lnu_nilai, baru.lnu_nilai))/lama.lnu_nilai)*100 PERSEN_SELISIH
+		from
+		dplk.lst_jenis_invest@eb lji,
+		dplk.mst_peserta_det@eb pst,
+		(SELECT lji_id, lnu_tgl, lnu_nilai FROM dplk.lst_nab_dplk@eb lnu WHERE (lji_id, lnu_tgl) in (SELECT lji_id, MAX (lnu_tgl) lnu_tgl FROM dplk.lst_nab_dplk@eb GROUP BY lji_id)) baru,
+		(SELECT lji_id, lnu_tgl, lnu_nilai FROM dplk.lst_nab_dplk@eb lnu WHERE (lji_id, lnu_tgl) in (SELECT lji_id, MAX (lnu_tgl) lnu_tgl FROM dplk.lst_nab_dplk@eb lnu  WHERE lnu_tgl <![CDATA[<]]> (SELECT MAX(lnu_tgl) FROM dplk.lst_nab_dplk@eb WHERE lji_id = lnu.lji_id) GROUP BY lji_id)) lama
+		where
+		lji.active = 1
+		and lji.lji_id=baru.lji_id
+		and lji.lji_id=lama.lji_id(+)
+		and pst.lji_id = lji.lji_id
+		and pst.acc_no = #{acc_no, jdbcType=VARCHAR}
+		ORDER BY SUBSTR(lji.lji_invest, 1, INSTR(lji.lji_invest, ' ')-1),lku_id,replace(lji.lji_invest,'$$',''))
+	</select>
+
+	<select id="getLstTransDplk" parameterType="HashMap" resultType="com.app.model.LstTransaksiDplk">
+		select semua.*, semua.awal2 + semua.awal1 +
+		round(case when semua.lji_id = '01' then sum( case when  semua.lji_id = '01' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end  +
+		case when semua.lji_id = '02' then sum( case when  semua.lji_id = '02' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end +
+		case when semua.lji_id = '03' then sum( case when  semua.lji_id = '03' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end +
+		case when semua.lji_id = '04' then sum( case when  semua.lji_id = '04' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end +
+		case when semua.lji_id = '05' then sum( case when  semua.lji_id = '05' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end +
+		case when semua.lji_id = '06' then sum( case when  semua.lji_id = '06' then semua.unit_pt + semua.unit_peserta else 0 end) over ( order by semua.ke, semua.lji_id,  semua.tgl_nab) else 0 end, 4) akumulasi
+		from (
+		select g.lji_invest invest, b.tgl_trx tgl, h.lt_transksi transaksi, C.AMT_PESERTA peserta, C.AMT_PT pt,
+		C.NILAI_NAB nab, nvl(C.UNIT_PESERTA,0) unit_peserta, nvl(C.UNIT_PT,0) unit_pt, C.LJI_ID lji_id,
+		'Saldo ' || g.lji_invest || ':' saldo_fund, C.MTD_DK dk,
+		(case when d.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then 0 else ef.saldo_peserta end) awal1,
+		(case when d.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then 0 else ef.saldo_pt end) awal2,
+		c.tgl_nab, d.trx_ke, h.lt_id, C.TRX_KE ke
+		from dplk.mst_peserta@eb a, dplk.mst_trx@eb b, dplk.mst_trx_dplk@eb c,
+		(
+		select d.acc_no, d.lji_id, min(d.trx_ke) trx_ke, min(d.tgl_nab) tgl_nab
+		from dplk.mst_trx_dplk@eb d
+		group by d.acc_no, d.lji_id
+		) d,
+		(
+		select e.acc_no, e.lji_id,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_peserta <![CDATA[<]]> 0 then e.unit_peserta else e.unit_peserta * - 1 end,e.unit_peserta)) saldo_peserta,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_pt <![CDATA[<]]> 0 then e.unit_pt else e.unit_pt * - 1 end,e.unit_pt)) saldo_pt
+		from dplk.mst_trx_dplk@eb e
+		where e.tgl_nab <![CDATA[<]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		group by e.acc_no, e.lji_id
+		) ef,
+		dplk.lst_jenis_invest@eb g, dplk.lst_transaksi@eb h
+		where a.acc_no = b.acc_no and B.ACC_NO = C.ACC_NO and B.TRX_KE = C.TRX_KE and C.TGL_NAB between to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') and to_date(#{end_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		and A.ACC_NO = #{acc_no, jdbcType=VARCHAR} and a.acc_no = d.acc_no and c.lji_id = d.lji_id and d.acc_no = ef.acc_no (+) and d.lji_id = ef.lji_id (+)
+		and d.lji_id = g.lji_id and c.lt_id = h.lt_id
+		and to_number(substr(a.acc_no, 1, 4)) <![CDATA[>=]]> 2012
+		UNION ALL
+		select g.lji_invest invest, b.tgl_trx tgl, h.lt_transksi transaksi, C.AMT_PESERTA peserta, C.AMT_PT pt,
+		C.NILAI_NAB nab, nvl(C.UNIT_PESERTA,0) unit_peserta, nvl(C.UNIT_PT,0) unit_pt, C.LJI_ID lji_id,
+		'Saldo ' || g.lji_invest || ':' saldo_fund, C.MTD_DK dk,
+		(
+		case when x.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		0
+		else
+		case when d.tgl_nab <![CDATA[>]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		xy.unit_pst
+		else
+		ef.saldo_peserta
+		end
+		end
+		) awal1,
+		(
+		case when x.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		0
+		else
+		case when d.tgl_nab <![CDATA[>]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		xy.unit_pt
+		else
+		ef.saldo_pt
+		end
+		end
+		) awal2,
+		c.tgl_nab, d.trx_ke, h.lt_id, c.trx_ke ke
+		from dplk.mst_peserta@eb a, dplk.mst_trx@eb b, dplk.mst_trx_dplk@eb c,
+		(
+		select d.acc_no, d.lji_id, min(d.trx_ke) trx_ke, min(d.tgl_nab) tgl_nab
+		from dplk.mst_trx_dplk@eb d
+		group by d.acc_no, d.lji_id
+		) d,
+		(
+		select e.acc_no, e.lji_id,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_peserta <![CDATA[<]]> 0 then e.unit_peserta else e.unit_peserta * - 1 end,e.unit_peserta)) saldo_peserta,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_pt <![CDATA[<]]> 0 then e.unit_pt else e.unit_pt * - 1 end,e.unit_pt)) saldo_pt
+		from dplk.mst_trx_dplk@eb e
+		where e.tgl_nab <![CDATA[<]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		group by e.acc_no, e.lji_id
+		) ef,
+		dplk.lst_jenis_invest@eb g, dplk.lst_transaksi@eb h,
+		(
+		select x.acc_no,
+		min(decode(x.tglpb, null, x.tgl_rk, x.tglpb)) tgl_nab
+		from dplk.dplk_transaction@eb x
+		group by x.acc_no
+		) x,
+		(
+		select a.acc_no,
+		sum(a.peserta) peserta,
+		sum(a.pt) pt,
+		sum(a.unit_pst) unit_pst,
+		sum(a.unit_pt) unit_pt
+		from
+		(
+		select a.acc_no, a.trans_id,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans <![CDATA[>]]> 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end peserta,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans <![CDATA[>]]> 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end pt,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans <![CDATA[>]]> 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pst,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans <![CDATA[>]]> 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pt
+		from dplk.dplk_transaction@eb a, dplk.det_transaction@eb b
+		where a.trans_id = b.trans_id
+		and decode(a.tglpb, null, a.tgl_rk, a.tglpb) <![CDATA[<]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		) a
+		group by a.acc_no
+		) xy
+		where a.acc_no = b.acc_no and B.ACC_NO = C.ACC_NO and B.TRX_KE = C.TRX_KE and C.TGL_NAB between to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') and to_date(#{end_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		and A.ACC_NO = #{acc_no, jdbcType=VARCHAR} and a.acc_no = d.acc_no and c.lji_id = d.lji_id and d.acc_no = ef.acc_no (+) and d.lji_id = ef.lji_id (+)
+		and d.lji_id = g.lji_id and c.lt_id = h.lt_id
+		and a.acc_no = x.acc_no and a.acc_no = xy.acc_no (+)
+		and to_number(substr(a.acc_no, 1, 4)) <![CDATA[<]]> 2012
+		and b.trx_ke <![CDATA[<>]]> 1
+		UNION ALL
+		select g.lji_invest invest, abc.tgl_trans tgl, f.lt_transksi transaksi,  abc.peserta peserta, abc.pt pt, --abc.jml_unit,
+		decode(d.nilai_unit, null, decode(e.lnu_nilai, null, decode(nvl(abc.jml_unit, 0), 0, 0, round(nvl(abc.total_trans / abc.jml_unit, 0), 4)), e.lnu_nilai), d.nilai_unit) nab,
+		nvl(abc.unit_pst,0) unit_peserta, nvl(abc.unit_pt,0) unit_pt,
+		abc.lji_id, g.lji_invest saldo_fund, decode(abc.status, 'C', 'D',  'K') DK,
+		(
+		case when x.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		0
+		else
+		case when de.tgl_nab <![CDATA[>]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		xy.unit_pst
+		else
+		ef.saldo_peserta
+		end
+		end
+		) awal1,
+		(
+		case when x.tgl_nab <![CDATA[>=]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		0
+		else
+		case when de.tgl_nab <![CDATA[>]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy') then
+		xy.unit_pt
+		else
+		ef.saldo_pt
+		end
+		end
+		) awal2,
+		decode(abc.tglpb,null, abc.tgl_rk, abc.tglpb) tgl_nab, 0 trx_ke, f.lt_id, 0 ke
+		from (
+		select a.acc_no, a.trans_id, a.tgl_trans, avg(a.total_trans) total_trans, avg(a.jml_unit) jml_unit, a.lspl_id,
+		decode(a.status, 'C',  decode(a.trans, 'A', 2, 1), 4) lt_id, a.tglpb, tgl_rk, a.status, decode(a.lspl_id, 1, '02', '01') lji_id,
+		sum(a.peserta) peserta,
+		sum(a.pt) pt,
+		sum(a.unit_pst) unit_pst,
+		sum(a.unit_pt) unit_pt
+		from
+		(
+		select a.acc_no, a.trans_id, a.tgl_trans, a.total_trans, a.jml_unit, c.lspl_id, a.status, a.tglpb, a.tgl_rk,  "A"."FROM" trans,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end peserta,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end pt,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pst,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pt
+		from dplk.dplk_transaction@eb a, dplk.det_transaction@eb b, dplk.mst_account@eb c
+		where a.trans_id = b.trans_id
+		and a.acc_no = c.acc_no and a.total_trans <![CDATA[<>]]> 0
+		) a
+		group by a.acc_no, a.trans_id, a.tgl_trans, a.lspl_id, a.tglpb, a.tgl_rk, a.status, a.trans
+		) abc,
+		(
+		select tgl_nab tgl_close, lspl_id, unitprice nilai_unit
+		from DPLK.NABCUSTODY@eb
+		) d,
+		DPLK.LST_NAB_DPLK@eb e, dplk.lst_transaksi@eb f, dplk.lst_jenis_invest@eb g,
+		(
+		select d.acc_no, d.lji_id, min(d.trx_ke) trx_ke, min(d.tgl_nab) tgl_nab
+		from dplk.mst_trx_dplk@eb d
+		group by d.acc_no, d.lji_id
+		) de,
+		(
+		select e.acc_no, e.lji_id,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_peserta <![CDATA[<]]> 0 then e.unit_peserta else e.unit_peserta * - 1 end,e.unit_peserta)) saldo_peserta,
+		sum(decode(e.mtd_dk, 'K',case when e.unit_pt <![CDATA[<]]> 0 then e.unit_pt else e.unit_pt * - 1 end,e.unit_pt)) saldo_pt
+		from dplk.mst_trx_dplk@eb e
+		where e.tgl_nab <![CDATA[<]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		group by e.acc_no, e.lji_id
+		) ef,
+		(
+		select x.acc_no,
+		min(decode(x.tglpb, null, x.tgl_rk, x.tglpb)) tgl_nab
+		from dplk.dplk_transaction@eb x
+		group by x.acc_no
+		) x,
+		(
+		select a.acc_no,
+		sum(a.peserta) peserta,
+		sum(a.pt) pt,
+		sum(a.unit_pst) unit_pst,
+		sum(a.unit_pt) unit_pt
+		from
+		(
+		select a.acc_no, a.trans_id,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end peserta,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		b.jml_trans * -1
+		else b.jml_trans end,
+		b.jml_trans)
+		else 0 end pt,
+		case when b.lsji_id in (1,3,50) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pst,
+		case when b.lsji_id in (2,4,5,6) then
+		decode(a.status, 'W',
+		case when b.jml_trans > 0 then
+		((b.jml_trans /  a.total_trans)  * a.jml_unit) * -1
+		else (b.jml_trans /  a.total_trans)  * a.jml_unit end,
+		(b.jml_trans /  a.total_trans)  * a.jml_unit)
+		else 0 end unit_pt
+		from dplk.dplk_transaction@eb a, dplk.det_transaction@eb b
+		where a.trans_id = b.trans_id and decode(a.tglpb, null, a.tgl_rk, a.tglpb) <![CDATA[<]]> to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		and a.total_trans <![CDATA[<>]]> 0
+		) a
+		group by a.acc_no
+		) xy
+		where (decode(abc.tglpb, null, abc.tgl_rk, abc.tglpb) = d.tgl_close (+) and abc.lspl_id = d.lspl_id (+))
+		and ((decode(abc.tglpb, null, abc.tgl_rk, abc.tglpb) = e.lnu_tgl (+) and abc.lji_id = e.lji_id (+)))
+		and decode(abc.tglpb, null, abc.tgl_rk, abc.tglpb) between to_date(#{start_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')  and to_date(#{end_date, jdbcType=VARCHAR}, 'dd-MM-yyyy')
+		and abc.lt_id = f.lt_id and abc.lji_id = g.lji_id
+		and abc.acc_no = de.acc_no (+) and abc.lji_id = de.lji_id (+)
+		and abc.acc_no = ef.acc_no (+) and abc.lji_id = ef.lji_id (+)
+		and abc.acc_no = x.acc_no and abc.acc_no = xy.acc_no (+)
+		and abc.acc_no = #{acc_no, jdbcType=VARCHAR}
+		and to_number(substr(abc.acc_no, 1, 4)) <![CDATA[<]]> 2012
+		) semua
+	</select>
+
+	<select id="selectHistoryPolicyAlteration" resultType="com.app.model.TransactionHistory" parameterType="HashMap">
+		select A.MSEN_ENDORS_NO    AS KODE_TRANSAKSI,
+		'TRANS-07' AS TRANSACTION_TYPE,
+		'Policy Alteration' AS TRANSACTION_DESC,
+		A.REG_SPAJ,
+		''                  AS FILE_PATH,
+		A.MSEN_INPUT_DATE   AS TGL_TRANSAKSI,
+		(CASE
+		WHEN A.LSPD_ID NOT IN (46, 47) THEN 'Accepted' END)  AS STATUS
+		from EKA.MST_ENDORS A
+		WHERE LSPD_ID NOT IN (46, 47)
+		AND A.REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		<if test="start_date != null">
+			AND A.MSEN_INPUT_DATE <![CDATA[ >= ]]> to_date(#{start_date}, 'dd-MM-yyyy')
+		</if>
+		<if test="end_date != null">
+			AND A.MSEN_INPUT_DATE <![CDATA[ <= ]]> to_date(#{end_date}, 'dd-MM-yyyy')
+		</if>
+	</select>
+	<select id="selectHistoryClaimSubmissionIndividu" resultType="com.app.model.TransactionHistory" parameterType="HashMap">
+		select REG_SPAJ,
+		KODE_TRANS AS KODE_TRANSAKSI,
+		'TRANS-08' AS TRANSACTION_TYPE,
+		'Claim Submission' AS TRANSACTION_DESC,
+		'' AS FILE_PATH,
+		DATE_RI_1 AS TGL_TRANSAKSI,
+		'Accepted' AS STATUS
+		from EKA.MST_MPOL_CLAIM_TRANS WHERE ST_KLMSHT = 5
+		AND REG_SPAJ = #{reg_spaj, jdbcType=VARCHAR}
+		<if test="start_date != null">
+			AND DATE_RI_1 <![CDATA[ >= ]]> to_date(#{start_date}, 'dd-MM-yyyy')
+		</if>
+		<if test="end_date != null">
+			AND DATE_RI_1 <![CDATA[ <= ]]> to_date(#{end_date}, 'dd-MM-yyyy')
+		</if>
+	</select>
+
 </mapper>

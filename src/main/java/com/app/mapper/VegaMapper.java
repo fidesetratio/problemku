@@ -92,7 +92,7 @@ public interface VegaMapper {
 
 	public DataUsulan selectDataUsulan(DataUsulan dataUsulan);
 	
-	public Sales selectSales(String msag_id);
+	public Sales selectSales(String reg_spaj);
 
 	public ArrayList<TertanggungTambahan> selectTertanggungTambahan(String spaj);
 
@@ -514,4 +514,34 @@ public interface VegaMapper {
 	public MpolTransData selectMpolTransByMptId(String mpt_id);
 
 	public String selectConfigAdmedika();
+
+	public DetailPesertaCorporate detailPesertaCorporate(HashMap<String, Object> hashMap);
+
+	public SummaryPayment findByMptId(String mpt_id);
+
+	public SummaryPayment findByMstrxId(String mspa_trx);
+
+	public void updatePathSummary(HashMap<String, Object> hashMap);
+
+	public DPLKAccountModel findAccountDplk(HashMap<String, Object> hashMap);
+
+	public User findByUsernameDplk(String username);
+
+	public User findByAccountNoDplk(String account_no);
+
+	public DPLKAccountModel getInfoDplkByAccNo(String acc_no);
+
+	public List<LstTransaksi> selectLstTransaksi();
+
+	public List<TransactionHistory> selectHistoryTransaksi(HashMap<String, Object> hashMap);
+
+	public List<JenisInvestDplk> getJenisInvestDplk();
+
+	public List<DailyPriceFundDplk> getJenisInvestDplkByAccNo(String acc_no);
+
+	public List<LstTransaksiDplk> getLstTransDplk(HashMap<String, Object> hashMap);
+
+	public List<TransactionHistory> selectHistoryPolicyAlteration(HashMap<String, Object> data);
+
+	public List<TransactionHistory> selectHistoryClaimSubmissionIndividu(HashMap<String, Object> data);
 }

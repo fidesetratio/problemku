@@ -19,6 +19,7 @@
     	<trim prefix="SET" suffixOverrides=",">
     		<if test="REG_SPAJ != null"> REG_SPAJ = #{REG_SPAJ, jdbcType=VARCHAR}, ID_SIMULTAN = #{ID_SIMULTAN, jdbcType=VARCHAR}</if>
         	<if test="MCL_ID_EMPLOYEE != null"> MCL_ID_EMPLOYEE = #{MCL_ID_EMPLOYEE, jdbcType=VARCHAR},</if>
+        	<if test="account_no_dplk != null"> ACCOUNT_NO_DPLK = #{account_no_dplk, jdbcType=VARCHAR},</if>
         </trim>
     	WHERE USERNAME = #{USERNAME, jdbcType=VARCHAR} AND FLAG_ACTIVE = 1
     </update>
@@ -169,4 +170,8 @@
   		and jenis_id = #{jenis_id, jdbcType=INTEGER}
   		and flag_active = 1 
     </update>
+
+	<update id="updatePathSummary" parameterType="HashMap">
+		update EKA.MST_MPOL_TRANS set path_sum_payment= #{path, jdbcType=VARCHAR} where mpt_id=#{mpt_id, jdbcType=VARCHAR}
+	</update>
 </mapper>

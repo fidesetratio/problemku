@@ -83,7 +83,7 @@
 	</insert>
 	
 	<insert id="insertNewuser" parameterType="LstUserSimultaneous">
-	    INSERT INTO EKA.LST_USER_SIMULTANEOUS (username, password, id_simultan, flag_active, create_date, reg_spaj, mcl_id_employee)
+	    INSERT INTO EKA.LST_USER_SIMULTANEOUS (username, password, id_simultan, flag_active, create_date, reg_spaj, mcl_id_employee, account_no_dplk)
 	    VALUES
 	    (
 	    	#{USERNAME, jdbcType=VARCHAR}, 
@@ -92,7 +92,8 @@
 	    	#{FLAG_ACTIVE, jdbcType=INTEGER},
 	    	to_date(#{DATE_CREATED_JAVA, jdbcType=VARCHAR}, 'DD/MM/YYYY HH24:MI:SS'),
 	    	#{REG_SPAJ, jdbcType=VARCHAR}, 
-	    	#{MCL_ID_EMPLOYEE, jdbcType=VARCHAR} 
+	    	#{MCL_ID_EMPLOYEE, jdbcType=VARCHAR},
+	    	#{account_no_dplk, jdbcType=VARCHAR}
 	    )
 	</insert>
 	
@@ -113,7 +114,7 @@
 	<insert id="insertMstMpolTransBill" parameterType="com.app.model.DetailBillingRequest">
 		INSERT INTO EKA.MST_MPOL_TRANS_BILL (MPT_ID, REG_SPAJ, TAHUN_KE, PREMI_KE, AMOUNT, FLAG_BILL)
 		VALUES
-		(#{mpt_id, jdbcType=VARCHAR}, #{reg_spaj, jdbcType=VARCHAR}, #{premi_ke, jdbcType=INTEGER}, #{tahun_ke, jdbcType=INTEGER}, #{amount, jdbcType=DOUBLE},
+		(#{mpt_id, jdbcType=VARCHAR}, #{reg_spaj, jdbcType=VARCHAR}, #{tahun_ke, jdbcType=INTEGER},  #{premi_ke, jdbcType=INTEGER}, #{amount, jdbcType=DOUBLE},
 		 #{flag_bill, jdbcType=INTEGER})
 	</insert>
 	

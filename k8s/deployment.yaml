@@ -28,7 +28,7 @@ spec:
             - name: ekamedicare-mount
               mountPath: /mnt/Ekamedicare
             - name: mri-mount
-              mountPath: /mnt/mri/Sertifikat
+              mountPath: /mnt/mri
           ports:
             - containerPort: 9092
       volumes:
@@ -41,6 +41,9 @@ spec:
         - name: ekamedicare-mount
           hostPath:
            path: /mnt/Ekamedicare
+        - name: mri-mount
+          hostPath:
+           path: /mnt/mri
 ---
 kind: Service
 apiVersion: v1

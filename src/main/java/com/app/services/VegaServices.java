@@ -417,9 +417,9 @@ public class VegaServices {
 		return dao.selectDataUsulan(dataUsulan);
 	}
 
-	public Sales selectSales(String msag_id) {
+	public Sales selectSales(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		return dao.selectSales(msag_id);
+		return dao.selectSales(reg_spaj);
 	}
 
 	public ArrayList<TertanggungTambahan> selectTertanggungTambahan(String spaj) {
@@ -1339,12 +1339,13 @@ public class VegaServices {
 		dao.updateActivityStatus(user);
 	}
 
-	public void updateLinkAccount(String reg_spaj, String id_simultan, String mcl_id_employee, String username) {
+	public void updateLinkAccount(String reg_spaj, String id_simultan, String mcl_id_employee, String account_no_dplk, String username) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		LstUserSimultaneous lstUserSimultaneous = new LstUserSimultaneous();
 		lstUserSimultaneous.setREG_SPAJ(reg_spaj);
 		lstUserSimultaneous.setID_SIMULTAN(id_simultan);
 		lstUserSimultaneous.setMCL_ID_EMPLOYEE(mcl_id_employee);
+		lstUserSimultaneous.setAccount_no_dplk(account_no_dplk);
 		lstUserSimultaneous.setUSERNAME(username);
 		dao.updateLinkAccount(lstUserSimultaneous);
 	}
@@ -1805,9 +1806,116 @@ public class VegaServices {
 		return dao.selectMpolTransByMptId(mpt_id);
 	}
 
-	public String getConfigAdmedika(){
+	public String getConfigAdmedika() {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectConfigAdmedika();
+	}
+
+	public DetailPesertaCorporate getDetailPesertaCorporate(String mste_insured, String regSpaj){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("reg_spaj", regSpaj);
+		map.put("mste_insured", mste_insured);
+		return dao.detailPesertaCorporate(map);
+	}
+
+	public SummaryPayment getByMptId(String mpt_id){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.findByMptId(mpt_id);
+	}
+
+	public SummaryPayment getMspaTrxId(String mpt_id){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.findByMstrxId(mpt_id);
+	}
+
+	public void updatePathSummaryDetail(String mpt_id, String path){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("mpt_id", mpt_id);
+		map.put("path", path);
+		dao.updatePathSummary(map);
+	}
+
+	public DPLKAccountModel findAccountDplk(String account_no, String dob){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("account_no", account_no);
+		hashMap.put("birth_date", dob);
+		return dao.findAccountDplk(hashMap);
+	}
+
+	public boolean isExistUsername(String username){
+		User isExist = findByUsernameDplk(username);
+		return isExist != null;
+	}
+
+	public boolean isExistAccount(String account_no){
+		User isExist = findByAccountNoDplk(account_no);
+		return isExist != null;
+	}
+
+	public DPLKAccountModel getInfoDplkByAccNo(String acc_no){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.getInfoDplkByAccNo(acc_no);
+	}
+
+	public User findByUsernameDplk(String username){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.findByUsernameDplk(username);
+	}
+
+	public User findByAccountNoDplk(String account_no){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.findByAccountNoDplk(account_no);
+	}
+
+	public List<LstTransaksi> getListTransaksi(){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectLstTransaksi();
+	}
+
+	public List<TransactionHistory> selectHistoryTransaksi(Integer lt_id, String reg_spaj,
+														   String start_date, String end_date) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("lt_id", lt_id);
+		data.put("reg_spaj", reg_spaj);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.selectHistoryTransaksi(data);
+	}
+
+	public List<DailyPriceFundDplk> getJenisInvestDplkByAccNo(String acc_no){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.getJenisInvestDplkByAccNo(acc_no);
+	}
+
+	public List<LstTransaksiDplk> getTransaksiFund(String acc_no, String start_date, String end_date){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("acc_no", acc_no);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.getLstTransDplk(data);
+	}
+
+	public List<TransactionHistory> getTransactionPolicyAlteration(String reg_spaj, String start_date, String end_date){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("reg_spaj", reg_spaj);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.selectHistoryPolicyAlteration(data);
+	}
+
+	public List<TransactionHistory> getTransactionHistoryClaimSubmission(String reg_spaj, String start_date, String end_date){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		HashMap<String, Object> data = new HashMap<>();
+		data.put("reg_spaj", reg_spaj);
+		data.put("start_date", start_date);
+		data.put("end_date", end_date);
+		return dao.selectHistoryClaimSubmissionIndividu(data);
 	}
 
 }

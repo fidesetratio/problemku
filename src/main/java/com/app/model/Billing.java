@@ -16,6 +16,7 @@ public class Billing implements Serializable {
 
 	public static final String BILLING_STATUS_PAID = "Paid";
 	public static final String BILLING_STATUS_OUTSTANDING = "OutS";
+	public static final String LABEL_STATUS_OUTSTANDING = "Outstanding";
 	public static final String BILLING_STATUS_ACTIVE_BILLING = "Active";
 
 	private String reg_spaj;
@@ -30,6 +31,7 @@ public class Billing implements Serializable {
 	private Integer count;
 
 	private Integer flag_jt_tempo;
+	private Integer flag_topup;
 	
 	public Integer getCount() {
 		return count;
@@ -119,4 +121,11 @@ public class Billing implements Serializable {
 		this.flag_jt_tempo = flag_jt_tempo;
 	}
 
+	public Integer getFlag_topup() {
+		return flag_topup;
+	}
+
+	public void setFlag_topup(Integer flag_topup) {
+		this.flag_topup = flag_topup;
+	}
 }

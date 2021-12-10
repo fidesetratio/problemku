@@ -63,7 +63,7 @@ public class AdMedikaController {
         return res;
     }
 
-    @RequestMapping(value = "/pesertaadmedika", produces = "application/json", method = RequestMethod.POST)
+    @RequestMapping(value = "/ecardadmedika", produces = "application/json", method = RequestMethod.POST)
     public ResponseData getEnrollPeserta(@RequestBody AdMedikaRequest request, HttpServletRequest servletRequest){
         return adMedikaSycnhSvc.getEnrollPeserta(request, servletRequest);
     }

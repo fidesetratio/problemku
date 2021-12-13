@@ -396,4 +396,18 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
         }
         return map;
     }
+
+    @Override
+    public String getPaymentType(Integer lsjb_id){
+        if (lsjb_id == null) return "";
+        if (lsjb_id.equals(33)){
+            return "PEMBAYARAN-ONLINE";
+        } else if (lsjb_id.equals(5)){
+            return "Bank Transfer";
+        } else if (lsjb_id.equals(32)){
+            return "VA";
+        } else {
+            return "";
+        }
+    }
 }

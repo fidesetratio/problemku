@@ -56,6 +56,7 @@ public class Topup implements Serializable {
 	private String topup_payor;
 	private Integer lsjb_id;
 	private Integer flag_source;
+	private String bank_name;
 
 	public String getTopup_payor() {
 		return topup_payor;
@@ -415,5 +416,13 @@ public class Topup implements Serializable {
 
 	public void setPath_sum_payment(String path_sum_payment) {
 		this.path_sum_payment = path_sum_payment;
+	}
+
+	public String getBank_name() {
+		return bank_name;
+	}
+
+	public void setBank_name(String bank_name) {
+		this.bank_name = bank_name;
 	}
 }

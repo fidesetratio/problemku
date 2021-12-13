@@ -11,6 +11,7 @@ public class RequestForgotUsername implements Serializable {
 	private static final long serialVersionUID = -5475046463158363137L;
 	private Integer type = 1;
 	private String ktp_or_nopolis;
+	private String account_no_dplk;
 	private String dob;
 	private String kode;
 
@@ -44,5 +45,13 @@ public class RequestForgotUsername implements Serializable {
 
 	public void setKode(String kode) {
 		this.kode = kode;
+	}
+
+	public String getAccount_no_dplk() {
+		return account_no_dplk;
+	}
+
+	public void setAccount_no_dplk(String account_no_dplk) {
+		this.account_no_dplk = account_no_dplk;
 	}
 }

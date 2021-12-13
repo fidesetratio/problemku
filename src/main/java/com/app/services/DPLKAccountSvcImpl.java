@@ -137,7 +137,7 @@ public class DPLKAccountSvcImpl implements DPLKAccountSvc {
                     data.put("jenis_dplk", dplkByAccNo.getJenis_dplk());
                     data.put("company_name", dplkByAccNo.getNama_perusahaan());
                     data.put("no_peserta", dplkByAccNo.getNo_peserta());
-                    data.put("join_dplk_date", dateUtils.getFormatterFormat(dplkByAccNo.getTgl_mulai_dplk(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
+                    data.put("join_dplk_date", dplkByAccNo.getTgl_mulai_dplk() != null ? dateUtils.getFormatterFormat(dplkByAccNo.getTgl_mulai_dplk(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7") : null);
                     data.put("payment_method", dplkByAccNo.getPeriode_pembayaran());
                     data.put("lji_invest", dplkByAccNo.getLji_invest());
                     data.put("usia_pensiun_normal", dplkByAccNo.getUsia_pensiun());

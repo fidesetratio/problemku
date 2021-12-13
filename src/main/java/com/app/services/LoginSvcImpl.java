@@ -80,6 +80,7 @@ public class LoginSvcImpl implements LoginSvc {
                 boolean isIndividuMri = registrationIndividuSvc.isIndividuMri(checkIndividuOrCorporate.getID_SIMULTAN(), checkIndividuOrCorporate.getUSERNAME());
                 boolean policy_corporate_notinforce = false;
                 boolean user_corporate_notactive = false;
+                lstUserSimultaneous.setAccount_no_dplk(checkIndividuOrCorporate.getAccount_no_dplk());
 
                 if (isIndividu) {
                     return loginIndividu(isIndividu, isIndividuMri, username, password, data, user1, lstUserSimultaneous,
@@ -411,6 +412,11 @@ public class LoginSvcImpl implements LoginSvc {
     private ResponseData cekEasyLoginInvidu(boolean easyPin, ArrayList<User> list, boolean isIndividuMri, LstUserSimultaneous lstUserSimultaneous, String key, LstUserSimultaneous user1, User dataActivityUser,
                                             HashMap<String, Object> data, String username, String password, HttpServletRequest request, ResponseData responseData, String req) {
         HandleSuccessOrNot handleSuccessOrNot;
+        boolean account_dplk  = false;
+        DPLKAccountModel dplkByAccNo = services.getInfoDplkByAccNo(lstUserSimultaneous.getAccount_no_dplk() != null ? lstUserSimultaneous.getAccount_no_dplk() : null);
+        if (dplkByAccNo != null){
+            account_dplk = true;
+        }
         if (easyPin) {
             // Check apakah username tersebut punya list polis/ tidak
             if (list.size() > 0 || isIndividuMri) {
@@ -421,7 +427,7 @@ public class LoginSvcImpl implements LoginSvc {
                 key = user1.getKEY();
 
                 data = getMapObjc(true, false, false, isIndividuMri, false,
-                        false, false, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
+                        false, account_dplk, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
                                 : dataActivityUser.getNo_hp2(), data);
                 handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
             } else {
@@ -443,7 +449,7 @@ public class LoginSvcImpl implements LoginSvc {
                     key = user1.getKEY();
 
                     data = getMapObjc(true, false, false, isIndividuMri, false,
-                            false, false, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
+                            false, account_dplk, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
                                     : dataActivityUser.getNo_hp2(), data);
                     handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
                 } else {
@@ -474,6 +480,11 @@ public class LoginSvcImpl implements LoginSvc {
                                            boolean policy_corporate_notinforce, boolean user_corporate_notactive, String no_hp, HashMap<String, Object> data, String password, String username,
                                            HttpServletRequest request, ResponseData responseData, String req) {
         HandleSuccessOrNot handleSuccessOrNot;
+        boolean account_dplk  = false;
+        DPLKAccountModel dplkByAccNo = services.getInfoDplkByAccNo(lstUserSimultaneous.getAccount_no_dplk() != null ? lstUserSimultaneous.getAccount_no_dplk() : null);
+        if (dplkByAccNo != null){
+            account_dplk = true;
+        }
         if (easyPin) {
             if (list.size() > 0) {
                 String today = df.format(new Date());
@@ -482,7 +493,7 @@ public class LoginSvcImpl implements LoginSvc {
                 services.updateUserKeyName(lstUserSimultaneous);
                 key = user1.getKEY();
                 data = getMapObjc(individuCorporate, true, false, false, policy_corporate_notinforce,
-                        user_corporate_notactive, false, key, no_hp, data);
+                        user_corporate_notactive, account_dplk, key, no_hp, data);
                 handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
             } else {
                 // Error list polis kosong
@@ -502,7 +513,7 @@ public class LoginSvcImpl implements LoginSvc {
                     services.updateUserKeyName(lstUserSimultaneous);
                     key = user1.getKEY();
                     data = getMapObjc(individuCorporate, true, false, false, policy_corporate_notinforce,
-                            user_corporate_notactive, false, key, no_hp, data);
+                            user_corporate_notactive, account_dplk, key, no_hp, data);
                     handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
 
                     // Insert Log LST_HIST_ACTIVITY_WS

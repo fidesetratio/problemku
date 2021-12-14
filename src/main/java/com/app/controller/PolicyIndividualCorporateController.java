@@ -2000,7 +2000,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _area_code_rumah_pp = new HashMap<>();
 				HashMap<String, Object> temp_area_code_rumah_pp = new HashMap<>();
 				_area_code_rumah_pp.put("value", area_code_rumah_pp);
-				_area_code_rumah_pp.put("id_endors", 3);
+				_area_code_rumah_pp.put("id_endors", 34);
 				_area_code_rumah_pp.put ("flag_direct",0 );
 				temp_area_code_rumah_pp.put("area_code_rumah_pp", _area_code_rumah_pp);
 				data_policyholder.putAll(temp_area_code_rumah_pp);
@@ -2158,7 +2158,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _nama_perusahaan = new HashMap<>();
 				HashMap<String, Object> temp_nama_perusahaan = new HashMap<>();
 				_nama_perusahaan.put("value", nama_perusahaan);
-				_nama_perusahaan.put("id_endors", 96);
+				_nama_perusahaan.put("id_endors", 90);
 				_nama_perusahaan.put ("flag_direct", 0);
 				temp_nama_perusahaan.put("nama_perusahaan", _nama_perusahaan);
 				data_payor.putAll(temp_nama_perusahaan);
@@ -2166,7 +2166,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _jabatan = new HashMap<>();
 				HashMap<String, Object> temp_jabatan = new HashMap<>();
 				_jabatan.put("value", jabatan);
-				_jabatan.put("id_endors", 96);
+				_jabatan.put("id_endors", 89);
 				_jabatan.put ("flag_direct", 0);
 				temp_jabatan.put("jabatan", _jabatan);
 				data_payor.putAll(temp_jabatan);
@@ -2174,7 +2174,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _negara = new HashMap<>();
 				HashMap<String, Object> temp_negara = new HashMap<>();
 				_negara.put("value", negara);
-				_negara.put("id_endors", 96);
+				_negara.put("id_endors", 3);
 				_negara.put ("flag_direct", 1);
 				temp_negara.put("negara", _negara);
 				data_payor.putAll(temp_negara);
@@ -2246,7 +2246,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _alamat_rumah = new HashMap<>();
 				HashMap<String, Object> temp_alamat_rumah = new HashMap<>();
 				_alamat_rumah.put("value", alamat_rumah);
-				_alamat_rumah.put("id_endors", 96);
+				_alamat_rumah.put("id_endors", 3);
 				_alamat_rumah.put ("flag_direct", 0);
 				temp_alamat_rumah.put("alamat_rumah", _alamat_rumah);
 				data_payor.putAll(temp_alamat_rumah);
@@ -2278,7 +2278,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _kelurahan = new HashMap<>();
 				HashMap<String, Object> temp_kelurahan = new HashMap<>();
 				_kelurahan.put("value", kelurahan);
-				_kelurahan.put("id_endors", 96);
+				_kelurahan.put("id_endors", 3);
 				_kelurahan.put ("flag_direct", 0);
 				temp_kelurahan.put("kelurahan", _kelurahan);
 				data_payor.putAll(temp_kelurahan);
@@ -2286,7 +2286,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _kodepos = new HashMap<>();
 				HashMap<String, Object> temp_kodepos = new HashMap<>();
 				_kodepos.put("value", kodepos);
-				_kodepos.put("id_endors", 96);
+				_kodepos.put("id_endors", 34);
 				_kodepos.put ("flag_direct", 0);
 				temp_kodepos.put("kodepos", _kodepos);
 				data_payor.putAll(temp_kodepos);
@@ -2294,7 +2294,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _area_code_rumah = new HashMap<>();
 				HashMap<String, Object> temp_area_code_rumah = new HashMap<>();
 				_area_code_rumah.put("value", area_code_rumah);
-				_area_code_rumah.put("id_endors", 96);
+				_area_code_rumah.put("id_endors", 3);
 				_area_code_rumah.put ("flag_direct", 0);
 				temp_area_code_rumah.put("area_code_rumah", _area_code_rumah);
 				data_payor.putAll(temp_area_code_rumah);
@@ -2310,7 +2310,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _no_hp = new HashMap<>();
 				HashMap<String, Object> temp_no_hp = new HashMap<>();
 				_no_hp.put("value", no_hp);
-				_no_hp.put("id_endors", 96);
+				_no_hp.put("id_endors", 3);
 				_no_hp.put ("flag_direct", 0);
 				temp_no_hp.put("no_hp", _no_hp);
 				data_payor.putAll(temp_no_hp);

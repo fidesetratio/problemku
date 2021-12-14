@@ -235,7 +235,7 @@ public class DPLKAccountSvcImpl implements DPLKAccountSvc {
                     HashMap<String, Object> obj = new HashMap<>();
                     obj.put("invest", transaksiDplk.getInvest());
                     obj.put("date_transaksi", dateUtils.getFormatterFormat(transaksiDplk.getTgl(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
-                    obj.put("transaksi", transaksiDplk.getTransaksi());
+                    obj.put("transaksi", transaksiDplk.getTransaksi().equals("MFEE") ? "Manajemen Fee" : transaksiDplk.getTransaksi());
                     obj.put("peserta", transaksiDplk.getPeserta());
                     obj.put("pt", transaksiDplk.getPt());
                     obj.put("nab", transaksiDplk.getNab());

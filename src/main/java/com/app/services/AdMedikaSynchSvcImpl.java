@@ -67,24 +67,25 @@ public class AdMedikaSynchSvcImpl implements AdMedikaSycnhSvc {
                 }
 
                 if (optPeserta.isPresent()){
-                    Gson gson = new Gson();
-                    AdMedikaRequest objToken = new AdMedikaRequest();
-                    objToken.setCard_no(optPeserta.get().getNo_kartu());
-                    objToken.setProfile_name(optPeserta.get().getParticipant_name());
-                    objToken.setDob(dateUtils.getFormatterFormat(optPeserta.get().getDob(), DateUtils.FORMAT_YEAR_MONTH_DAY, "GMT+7"));
-                    objToken.setMember_type(optPeserta.get().getMembertype());
-                    objToken.setEmail(optPeserta.get().getMspe_email() != null ? optPeserta.get().getMspe_email() : "");
-                    objToken.setSignature(config.getSignature());
-                    objToken.setProject_id(config.getProject_id());
-                    objToken.setApp_id(config.getApp_id());
-                    Timestamp now = Timestamp.valueOf(LocalDate.now().atStartOfDay());
-                    Long val = now.getTime();
-                    objToken.setTimestamp(val);
-                    objToken.setUsing_idcard(config.getUsing_idcard());
-                    objToken.setUsing_selfie(config.getUsing_selfie());
-                    objToken.setUsing_pin(optPeserta.get().getMspe_email() != null);
-                    String jsonUser = gson.toJson(objToken);
+                    HashMap<String, Object> objToken = new HashMap<>();
+                    objToken.put("card_no", optPeserta.get().getNo_kartu());
+                    objToken.put("profile_name", optPeserta.get().getParticipant_name());
+                    objToken.put("dob",dateUtils.getFormatterFormat(optPeserta.get().getDob(), DateUtils.FORMAT_YEAR_MONTH_DAY, "GMT+7"));
+                    objToken.put("member_type", optPeserta.get().getMembertype());
+                    objToken.put("phone", optPeserta.get().getMspe_mobile() != null ? optPeserta.get().getMspe_mobile() : "0");
+                    objToken.put("email", optPeserta.get().getMspe_email() != null ? optPeserta.get().getMspe_email() : "");
+                    objToken.put("signature", config.getSignature());
+                    objToken.put("project_id", config.getProject_id());
+                    objToken.put("app_id", config.getApp_id());
+                    long unixTime = System.currentTimeMillis() / 1000L;
+                    objToken.put("timestamp", unixTime);
+                    objToken.put("using_idcard", config.getUsing_idcard());
+                    objToken.put("using_selfie", config.getUsing_selfie());
+                    objToken.put("using_pin", optPeserta.get().getMspe_email() != null);
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String jsonUser = objectMapper.writeValueAsString(objToken);
                     token = AesTools.aesEncrypt(config.getProject_id(), jsonUser);
+                    token = token.replaceAll("\n", "");
                 }
             } else {
                 String resultErr = "Username tidak terdaftar";

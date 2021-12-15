@@ -18,11 +18,12 @@ public class AdMedikaRequest implements Serializable {
     private String profile_name;
     private String dob;
     private String member_type;
+    private String phone;
     private String email;
     private String signature;
     private String project_id;
     private String app_id;
-    private Long timestamp;
+    private double timestamp;
     private Boolean using_idcard;
     private Boolean using_selfie;
     private boolean using_pin = false;

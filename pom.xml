@@ -140,6 +140,13 @@
 			<version>1.18.22</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>aesencrytion</groupId>
+			<artifactId>aesencrytion</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/aesencrytion-app.jar</systemPath>
+		</dependency>
 
 		<dependency>
 				<groupId>org.springframework.cloud</groupId>
@@ -167,9 +174,8 @@
      		   <includes>
         		  <include>**/**/*.xml</include>
        			 </includes>
- 		</resource> 
- 			       
-    </resources>
+ 		</resource>
+		</resources>
 	</build>
 	
 </project>

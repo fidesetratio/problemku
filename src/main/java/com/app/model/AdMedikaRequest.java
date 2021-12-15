@@ -22,7 +22,7 @@ public class AdMedikaRequest implements Serializable {
     private String signature;
     private String project_id;
     private String app_id;
-    private Timestamp timestamp;
+    private Long timestamp;
     private Boolean using_idcard;
     private Boolean using_selfie;
     private boolean using_pin = false;

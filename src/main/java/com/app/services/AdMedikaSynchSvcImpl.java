@@ -14,12 +14,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -71,11 +73,13 @@ public class AdMedikaSynchSvcImpl implements AdMedikaSycnhSvc {
                     objToken.setProfile_name(optPeserta.get().getParticipant_name());
                     objToken.setDob(dateUtils.getFormatterFormat(optPeserta.get().getDob(), DateUtils.FORMAT_YEAR_MONTH_DAY, "GMT+7"));
                     objToken.setMember_type(optPeserta.get().getMembertype());
-                    objToken.setEmail(optPeserta.get().getMspe_email());
+                    objToken.setEmail(optPeserta.get().getMspe_email() != null ? optPeserta.get().getMspe_email() : "");
                     objToken.setSignature(config.getSignature());
                     objToken.setProject_id(config.getProject_id());
                     objToken.setApp_id(config.getApp_id());
-                    objToken.setTimestamp(Timestamp.valueOf(LocalDateTime.now().toLocalDate().atStartOfDay()));
+                    Timestamp now = Timestamp.valueOf(LocalDate.now().atStartOfDay());
+                    Long val = now.getTime();
+                    objToken.setTimestamp(val);
                     objToken.setUsing_idcard(config.getUsing_idcard());
                     objToken.setUsing_selfie(config.getUsing_selfie());
                     objToken.setUsing_pin(optPeserta.get().getMspe_email() != null);

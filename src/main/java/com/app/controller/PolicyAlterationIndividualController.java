@@ -1,11 +1,6 @@
 package com.app.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -485,16 +480,7 @@ public class PolicyAlterationIndividualController {
 				);
 
 
-
-
-
-
-
-
 				utility.processparse();
-
-
-
 
 				if(listtosubmit.size()>0) {
 
@@ -528,6 +514,10 @@ public class PolicyAlterationIndividualController {
 
 									if(checkingIsInProgess) {
 										detailPolicyAlteration.setStatus("INPROGRESS");
+										oldvalue.put(keyOld, detailPolicyAlteration.getOld());
+
+										newvalue.put(keyNew,detailPolicyAlteration.getNew_());
+
 										inProgress.add(d);
 									}else {
 										String kolom = "";
@@ -662,10 +652,6 @@ public class PolicyAlterationIndividualController {
 								String msde_new25 = newvalue.get("msde_new25")==null?null:newvalue.get("msde_new25").toString();
 
 								if(!inProgress.contains(d)) {
-
-
-
-
 									if(direct.contains(d)) {
 										for(IndexPolicyAlteration g:t) {
 											DetailPolicyAlteration detailPolicyAlteration = g.getDetailPolicyAlteration();
@@ -678,16 +664,12 @@ public class PolicyAlterationIndividualController {
 											String new_ = detailPolicyAlteration.getNew_();
 											String newData = g.getNewValue();
 
-
-
 											if(newData == null) {
 												newData = new_;
 											}
 											if(newData.isEmpty() || newData.equals("")) {
 												newData = new_;
 											}
-
-
 
 											if(detailPolicyAlteration != null) {
 												boolean returnofsuccess = directProcessFromDatabase(d, newData,reg_spaj,no_polis,keyt);
@@ -704,15 +686,6 @@ public class PolicyAlterationIndividualController {
 											}
 
 										}
-
-
-
-
-
-
-
-
-
 										msde_old1 = (isOldValueString.get("msde_old1") != null && isOldValueString.get("msde_old1")) == true ? oldValueString.get("msde_old1") : msde_old1 ;
 										msde_old2 = (isOldValueString.get("msde_old2") != null && isOldValueString.get("msde_old2")) == true ? oldValueString.get("msde_old2") : msde_old2;
 										msde_old3 = (isOldValueString.get("msde_old3") != null && isOldValueString.get("msde_old3")) == true ? oldValueString.get("msde_old3") : msde_old3;
@@ -738,24 +711,6 @@ public class PolicyAlterationIndividualController {
 										msde_old23 = (isOldValueString.get("msde_old23") != null && isOldValueString.get("msde_old23")) == true ? oldValueString.get("msde_old23") : msde_old23;
 										msde_old24 = (isOldValueString.get("msde_old24") != null && isOldValueString.get("msde_old24")) == true ? oldValueString.get("msde_old24") : msde_old24;
 										msde_old25 = (isOldValueString.get("msde_old25") != null && isOldValueString.get("msde_old25")) == true ? oldValueString.get("msde_old25") : msde_old25;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 										customResourceLoader.PolicyAlterationDirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,msde_old9,msde_old10,
 												msde_old11, msde_old12, msde_old13, msde_old14, msde_old15, msde_old16,msde_old17,msde_old18,msde_old19,msde_old20,
 												msde_old21,msde_old22,msde_old23,msde_old24,msde_old25,
@@ -765,15 +720,7 @@ public class PolicyAlterationIndividualController {
 
 												, kolom,counter.getCounter());
 										counter.addOne();
-
-
 									}else {
-
-
-
-
-
-
 										msde_old1 = (isOldValueString.get("msde_old1") != null && isOldValueString.get("msde_old1")) == true ? oldValueString.get("msde_old1") : msde_old1 ;
 										msde_old2 = (isOldValueString.get("msde_old2") != null && isOldValueString.get("msde_old2")) == true ? oldValueString.get("msde_old2") : msde_old2;
 										msde_old3 = (isOldValueString.get("msde_old3") != null && isOldValueString.get("msde_old3")) == true ? oldValueString.get("msde_old3") : msde_old3;
@@ -800,25 +747,57 @@ public class PolicyAlterationIndividualController {
 										msde_old24 = (isOldValueString.get("msde_old24") != null && isOldValueString.get("msde_old24")) == true ? oldValueString.get("msde_old24") : msde_old24;
 										msde_old25 = (isOldValueString.get("msde_old25") != null && isOldValueString.get("msde_old25")) == true ? oldValueString.get("msde_old25") : msde_old25;
 
-
-
-
-
-
 										customResourceLoader.PolicyAlterationIndirect(reg_spaj, msen_alasan, lsje_id, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7,msde_old8,msde_old9,msde_old10,
 												msde_old11, msde_old12, msde_old13, msde_old14, msde_old15, msde_old16,msde_old17,msde_old18,msde_old19,msde_old20,
 												msde_old21,msde_old22,msde_old23,msde_old24,msde_old25,
 												msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6,msde_new7,msde_new8,msde_new9,msde_new10,
 												msde_new11, msde_new12, msde_new13, msde_new14, msde_new15, msde_new16,msde_new17,msde_new18,msde_new19,msde_new20,
-												msde_new21,msde_new22,msde_new23,msde_new24,msde_new25
-
-												, kolom);
+												msde_new21,msde_new22,msde_new23,msde_new24,msde_new25, kolom);
 									}
 
-								};
+								} else {
+									Optional<Endorse> optInprogressEndors = inProgressEndorse.stream().filter(v -> d.equals(v.getLsje_id())).findFirst();
 
+									msde_old1 = (isOldValueString.get("msde_old1") != null && isOldValueString.get("msde_old1")) == true ? oldValueString.get("msde_old1") : msde_old1 ;
+									msde_old2 = (isOldValueString.get("msde_old2") != null && isOldValueString.get("msde_old2")) == true ? oldValueString.get("msde_old2") : msde_old2;
+									msde_old3 = (isOldValueString.get("msde_old3") != null && isOldValueString.get("msde_old3")) == true ? oldValueString.get("msde_old3") : msde_old3;
+									msde_old4 = (isOldValueString.get("msde_old4") != null && isOldValueString.get("msde_old4")) == true ? oldValueString.get("msde_old4") : msde_old4;
+									msde_old5 = (isOldValueString.get("msde_old5") != null && isOldValueString.get("msde_old5")) == true ? oldValueString.get("msde_old5") : msde_old5;
+									msde_old6 = (isOldValueString.get("msde_old6") != null && isOldValueString.get("msde_old6")) == true ? oldValueString.get("msde_old6") : msde_old6;
+									msde_old7 = (isOldValueString.get("msde_old7") != null && isOldValueString.get("msde_old7")) == true ? oldValueString.get("msde_old7") : msde_old7;
+									msde_old8 = (isOldValueString.get("msde_old8") != null && isOldValueString.get("msde_old8")) == true ? oldValueString.get("msde_old8") : msde_old8;
+									msde_old9 = (isOldValueString.get("msde_old9") != null && isOldValueString.get("msde_old9")) == true ? oldValueString.get("msde_old9") : msde_old9;
+									msde_old10 = (isOldValueString.get("msde_old10") != null && isOldValueString.get("msde_old10")) == true ? oldValueString.get("msde_old10") : msde_old10;
+									msde_old11 = (isOldValueString.get("msde_old11") != null && isOldValueString.get("msde_old11")) == true ? oldValueString.get("msde_old11") : msde_old11;
+									msde_old12 = (isOldValueString.get("msde_old12") != null && isOldValueString.get("msde_old12")) == true ? oldValueString.get("msde_old12") : msde_old12;
+									msde_old13 = (isOldValueString.get("msde_old13") != null && isOldValueString.get("msde_old13")) == true ? oldValueString.get("msde_old13") : msde_old13;
+									msde_old14 = (isOldValueString.get("msde_old14") != null && isOldValueString.get("msde_old14")) == true ? oldValueString.get("msde_old14") : msde_old14;
+									msde_old15 = (isOldValueString.get("msde_old15") != null && isOldValueString.get("msde_old15")) == true ? oldValueString.get("msde_old15") : msde_old15;
+									msde_old16 = (isOldValueString.get("msde_old16") != null && isOldValueString.get("msde_old16")) == true ? oldValueString.get("msde_old16") : msde_old16;
+									msde_old17 = (isOldValueString.get("msde_old17") != null && isOldValueString.get("msde_old17")) == true ? oldValueString.get("msde_old17") : msde_old17;
+									msde_old18 = (isOldValueString.get("msde_old18") != null && isOldValueString.get("msde_old18")) == true ? oldValueString.get("msde_old18") : msde_old18;
+									msde_old19 = (isOldValueString.get("msde_old19") != null && isOldValueString.get("msde_old19")) == true ? oldValueString.get("msde_old19") : msde_old19;
+									msde_old20 = (isOldValueString.get("msde_old20") != null && isOldValueString.get("msde_old20")) == true ? oldValueString.get("msde_old20") : msde_old20;
+									msde_old21 = (isOldValueString.get("msde_old21") != null && isOldValueString.get("msde_old21")) == true ? oldValueString.get("msde_old21") : msde_old21;
+									msde_old22 = (isOldValueString.get("msde_old22") != null && isOldValueString.get("msde_old22")) == true ? oldValueString.get("msde_old22") : msde_old22;
+									msde_old23 = (isOldValueString.get("msde_old23") != null && isOldValueString.get("msde_old23")) == true ? oldValueString.get("msde_old23") : msde_old23;
+									msde_old24 = (isOldValueString.get("msde_old24") != null && isOldValueString.get("msde_old24")) == true ? oldValueString.get("msde_old24") : msde_old24;
+									msde_old25 = (isOldValueString.get("msde_old25") != null && isOldValueString.get("msde_old25")) == true ? oldValueString.get("msde_old25") : msde_old25;
+									if (optInprogressEndors.isPresent()){
+										Integer endorsId = optInprogressEndors.get().getLsje_id();
+										String msen_endors_no = optInprogressEndors.get().getMsen_endors_no();
+										services.insertDetailEndorse(msen_endors_no, endorsId, msde_old1, msde_old2, msde_old3, msde_old4, msde_old5, msde_old6,msde_old7, msde_old8,msde_old9,msde_old10,
+												msde_old11, msde_old12, msde_old13, msde_old14, msde_old15, msde_old16,msde_old17, msde_old18,msde_old19,msde_old20,
+												msde_old21,msde_old22,msde_old23,msde_old24,msde_old25,
+												msde_new1, msde_new2, msde_new3, msde_new4, msde_new5, msde_new6, msde_new7, msde_new8,msde_new9,msde_new10,
+												msde_new11, msde_new12, msde_new13, msde_new14, msde_new15, msde_new16, msde_new17, msde_new18,msde_new19,msde_new20
+												,msde_new21,msde_new22,msde_new23,msde_new24,msde_new25, true
+										);
 
-							};
+									}
+								}
+
+							}
 						}
 					}
 

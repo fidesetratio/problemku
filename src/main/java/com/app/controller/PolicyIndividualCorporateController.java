@@ -2230,7 +2230,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _hubungan_payor = new HashMap<>();
 				HashMap<String, Object> temp_hubungan_payor = new HashMap<>();
 				_hubungan_payor.put("value", hubungan_payor);
-				_hubungan_payor.put("id_endors", 96);
+				_hubungan_payor.put("id_endors", 8);
 				_hubungan_payor.put ("flag_direct", 0);
 				temp_hubungan_payor.put("hubungan_payor", _hubungan_payor);
 				data_payor.putAll(temp_hubungan_payor);
@@ -2270,7 +2270,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _kecamatan = new HashMap<>();
 				HashMap<String, Object> temp_kecamatan = new HashMap<>();
 				_kecamatan.put("value", kecamatan);
-				_kecamatan.put("id_endors", 96);
+				_kecamatan.put("id_endors", 3);
 				_kecamatan.put ("flag_direct", 0);
 				temp_kecamatan.put("kecamatan", _kecamatan);
 				data_payor.putAll(temp_kecamatan);

@@ -6673,7 +6673,7 @@ public class FinancialTransactionController {
 							null,null,null,null,null,
 							tanggal_awal,tanggal_akhir, null, null, null, null,null,null,null,null,
 							null, null, null, null, null, null,null,null,null,null,
-							null,null,null,null,null);
+							null,null,null,null,null, false);
 					
 					//UPDATE LSPD_ID IN MSPO_POLICY
 					services.updateLspdId(reg_spaj);

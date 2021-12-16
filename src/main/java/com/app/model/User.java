@@ -109,6 +109,8 @@ public class User implements Serializable {
 	private String msap_phone1;
 	private String msap_phone2;
 
+	private String account_no_dplk;
+
 	public String getIp() {
 		return ip;
 	}
@@ -868,5 +870,13 @@ public class User implements Serializable {
 
 	public void setMsap_phone2(String msap_phone2) {
 		this.msap_phone2 = msap_phone2;
+	}
+
+	public String getAccount_no_dplk() {
+		return account_no_dplk;
+	}
+
+	public void setAccount_no_dplk(String account_no_dplk) {
+		this.account_no_dplk = account_no_dplk;
 	}
 }

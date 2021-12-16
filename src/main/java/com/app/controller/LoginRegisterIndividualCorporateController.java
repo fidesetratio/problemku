@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.app.model.*;
 import com.app.services.LoginSvc;
 import com.app.services.RegistrationIndividuSvc;
+import com.app.utils.DateUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -51,6 +52,7 @@ public class LoginRegisterIndividualCorporateController {
 
 	private static final Logger logger = LogManager.getLogger(LoginRegisterIndividualCorporateController.class);
 
+	private final DateUtils dateUtils;
 	private final VegaServices services;
 	private final VegaCustomResourceLoader customResourceLoader;
 	private final AccountManagementCons constant;
@@ -67,9 +69,11 @@ public class LoginRegisterIndividualCorporateController {
 	private DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Autowired
-	public LoginRegisterIndividualCorporateController(VegaServices services, VegaCustomResourceLoader customResourceLoader,
+	public LoginRegisterIndividualCorporateController(DateUtils dateUtils,
+													  VegaServices services, VegaCustomResourceLoader customResourceLoader,
 													  AccountManagementCons constant, ServiceEmail serviceEmail, ServiceOTP serviceOTP,
 													  CommonUtils utils, RegistrationIndividuSvc registrationIndividuSvc, LoginSvc loginSvc) {
+		this.dateUtils = dateUtils;
 		this.services = services;
 		this.customResourceLoader = customResourceLoader;
 		this.constant = constant;
@@ -1007,6 +1011,58 @@ public class LoginRegisterIndividualCorporateController {
 							data.put("ktp", null);
 						}
 					}
+				}
+			} else if (type.equals(3)){
+				// dplk account
+				User dplkByAccNo = services.findByAccountNoDplk(requestForgotUsername.getAccount_no_dplk() != null ? requestForgotUsername.getAccount_no_dplk() : null);
+				boolean matchDob = false;
+				if (dplkByAccNo.getMspe_date_birth() != null){
+					if (dateUtils.getFormatterFormat(dplkByAccNo.getMspe_date_birth(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7").equals(dob))
+						matchDob = true;
+				}
+				if (dplkByAccNo != null && matchDob){
+					if (dplkByAccNo.getNo_hp() != null){
+						String no_hp = dplkByAccNo.getNo_hp();
+						/*String result = customResourceLoader.sendOTP(91, 2, no_hp, dataForgotUsername.getReg_spaj(),
+								dataForgotUsername.getNo_polis());*/
+
+						RequestSendOTP requestSendOTP = new RequestSendOTP();
+						requestSendOTP.setJenis_id(91);
+						requestSendOTP.setMenu_id(2);
+						requestSendOTP.setUsername(no_hp);
+						ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
+
+						Boolean errorPost = (Boolean) responseSendOTP.getError();
+
+						if (errorPost == true) {
+							error = true;
+							message = "Phone number is blacklisted";
+							resultErr = "No telepon sedang dalam masa blacklist";
+							logger.error("Path: " + request.getServletPath() + ", No. HP: " + no_hp + ", Error: "
+									+ resultErr);
+						} else {
+							error = false;
+							message = "OTP Send & Successfully get data username";
+							data.put("username", dplkByAccNo.getUsername());
+							data.put("no_handphone", no_hp);
+							data.put("no_polis", null);
+							data.put("account_no_dplk", dplkByAccNo.getAccount_no_dplk());
+							data.put("ktp", null);
+						}
+					} else {
+						error = true;
+						message = "Data phone number is empty";
+						resultErr = "Data nomor hp kosong";
+						logger.error("Path: " + request.getServletPath() + ", No. Polis/ KTP: " + ktp_or_nopolis
+								+ ", Error: " + resultErr);
+					}
+				} else {
+					error = true;
+					message = "account no not found";
+					resultErr = "Hasil select username tidak menemukan data" + "(No. polis/ KTP / account no_dplk: " + requestForgotUsername.getAccount_no_dplk()
+							+ ", dob: " + dob + ")";
+					logger.error("Path: " + request.getServletPath() + ", No. Polis/ KTP: " + ktp_or_nopolis
+							+ " Error: " + resultErr);
 				}
 			} else {
 				// Type not available

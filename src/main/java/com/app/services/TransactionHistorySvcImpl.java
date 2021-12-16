@@ -21,11 +21,9 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.text.ParseException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,16 +47,22 @@ public class TransactionHistorySvcImpl implements TransactionHistorySvc {
     }
 
     @Override
-    public List<TransactionHistory> getTransactionHistory(String reg_spaj, String transaction_type, String start_date, String end_date) {
+    public List<TransactionHistory> getTransactionHistory(String reg_spaj, String transaction_type, String start_date, String end_date) throws ParseException {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime firstDay = dateUtils.getFirstDay(now);
         List<TransactionHistory> mpolTrans;
         List<TransactionHistory> policyAlteration;
         List<TransactionHistory> claimSubmission;
         if (start_date != null && end_date != null) {
-           start_date = dateUtils.format(firstDay, DateUtils.FORMAT_DAY_MONTH_YEAR);
-           end_date = dateUtils.format(now, DateUtils.FORMAT_DAY_MONTH_YEAR);
+            Date start_to_date = dateUtils.getFormatterFormat(start_date, DateUtils.YEAR_MONTH);
+            Date end_to_date = dateUtils.getFormatterFormat(end_date, DateUtils.YEAR_MONTH);
+            start_date = dateUtils.format(dateUtils.convertToLocalDateViaMilisecond(start_to_date), DateUtils.FORMAT_DAY_MONTH_YEAR);
+            end_date = dateUtils.format(dateUtils.convertToLocalDateViaMilisecond(end_to_date).plusMonths(1).minusDays(1), DateUtils.FORMAT_DAY_MONTH_YEAR);
+        } else {
+            start_date = dateUtils.format(firstDay, DateUtils.FORMAT_DAY_MONTH_YEAR);
+            end_date = dateUtils.format(now, DateUtils.FORMAT_DAY_MONTH_YEAR);
         }
+
         mpolTrans = vegaServices.selectHistoryTransaksi(null, reg_spaj, start_date, end_date);
         policyAlteration = vegaServices.getTransactionPolicyAlteration(reg_spaj, start_date, end_date);
         claimSubmission = vegaServices.getTransactionHistoryClaimSubmission(reg_spaj, start_date, end_date);
@@ -72,7 +76,7 @@ public class TransactionHistorySvcImpl implements TransactionHistorySvc {
     }
 
     @Override
-    public TransactionHistory getDetailTransactionHistory(String kode_transaksi, String reg_spaj) {
+    public TransactionHistory getDetailTransactionHistory(String kode_transaksi, String reg_spaj) throws ParseException {
         List<TransactionHistory> historyList = getTransactionHistory(reg_spaj, null, null, null);
         if (historyList != null && historyList.size() > 0) {
             Optional<TransactionHistory> optionalTransactionHistory = historyList.stream().filter(v -> v.getKode_transaksi().equals(kode_transaksi)).findFirst();

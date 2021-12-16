@@ -218,7 +218,11 @@ public class DPLKAccountSvcImpl implements DPLKAccountSvc {
             LocalDateTime firstDay = dateUtils.getFirstDay(now);
             List<LstTransaksiDplk> lstTransaksiDplk;
             if (requestBody.getStart_date() != null && requestBody.getEnd_date() != null) {
-                lstTransaksiDplk = services.getTransaksiFund(requestBody.getAcc_no(), requestBody.getStart_date(), requestBody.getEnd_date());
+                Date start_to_date = dateUtils.getFormatterFormat(requestBody.getStart_date(), DateUtils.YEAR_MONTH);
+                Date end_to_date = dateUtils.getFormatterFormat(requestBody.getEnd_date(), DateUtils.YEAR_MONTH);
+                String start_date = dateUtils.format(dateUtils.convertToLocalDateViaMilisecond(start_to_date), DateUtils.FORMAT_DAY_MONTH_YEAR);
+                String end_date = dateUtils.format(dateUtils.convertToLocalDateViaMilisecond(end_to_date).plusMonths(1).minusDays(1), DateUtils.FORMAT_DAY_MONTH_YEAR);
+                lstTransaksiDplk = services.getTransaksiFund(requestBody.getAcc_no(), start_date, end_date);
             } else {
                 lstTransaksiDplk = services.getTransaksiFund(requestBody.getAcc_no(), dateUtils.format(firstDay, DateUtils.FORMAT_DAY_MONTH_YEAR), dateUtils.format(now, DateUtils.FORMAT_DAY_MONTH_YEAR));
             }
@@ -231,7 +235,7 @@ public class DPLKAccountSvcImpl implements DPLKAccountSvc {
                     HashMap<String, Object> obj = new HashMap<>();
                     obj.put("invest", transaksiDplk.getInvest());
                     obj.put("date_transaksi", dateUtils.getFormatterFormat(transaksiDplk.getTgl(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
-                    obj.put("transaksi", transaksiDplk.getTransaksi());
+                    obj.put("transaksi", transaksiDplk.getTransaksi().equals("MFEE") ? "Manajemen Fee" : transaksiDplk.getTransaksi());
                     obj.put("peserta", transaksiDplk.getPeserta());
                     obj.put("pt", transaksiDplk.getPt());
                     obj.put("nab", transaksiDplk.getNab());

@@ -710,14 +710,9 @@ public class FinancialTransactionController {
 							payment_method.put("currency", "");
 						}
 
-						Rekening dataPaymentMethod = services.selectRekeningForTopup(dataTopup.getReg_spaj());
-						// Check no rekening exists or not
-						if (dataPaymentMethod != null) {
-							payment_method.put("payment_method", dataPaymentMethod.getBank());
-						} else {
-							payment_method.put("payment_method", "-");
-						}
-						
+						payment_method.put("payment_method", dataTopup.getBank_name());
+						payment_method.put("payment_type", transactionSubscriptionSvc.getPaymentType(dataTopup.getLsjb_id()));
+
 						payment_method.put("unique_code", dataTopup.getUnique_code());
 						payment_method.put("total_topup", nfZeroTwo.format(dataTopup.getMpt_jumlah()));
 						payment_method.put("total_topup_process", nfZeroTwo.format(dataTopup.getMpt_jumlah_process()));

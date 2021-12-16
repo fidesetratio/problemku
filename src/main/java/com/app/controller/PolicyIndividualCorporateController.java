@@ -2489,10 +2489,7 @@ public class PolicyIndividualCorporateController {
 						error = false;
 						message = "Data list premium holiday empty";
 					} else {
-
-						
-						
-						
+						listPolicyAlteration = (ArrayList<Endorse>) listPolicyAlteration.stream().filter(v -> !v.getStatus().equals("Accepted")).collect(Collectors.toList());
 						HashMap<String,ArrayList<Endorse>> preview = new HashMap<String, ArrayList<Endorse>>();
 						HashMap<String,ArrayList<Endorse>> groups = new HashMap<String, ArrayList<Endorse>>();
 						for(int i = 0; i<listPolicyAlteration.size();i++) {

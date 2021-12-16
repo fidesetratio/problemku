@@ -461,6 +461,7 @@ public class FinancialTransactionController {
 				ArrayList<HashMap<String, Object>> data1 = new ArrayList<HashMap<String, Object>>();
 				if (regspaj != null) {
 					ArrayList<Topup> list = services.selectListTopup(regspaj.getReg_spaj(), pageNumber, pageSize);
+					list = (ArrayList<Topup>) list.stream().filter(v -> !v.getDescription().equals("Accepted")).collect(Collectors.toList());
 					if (list.size() > 0) {
 						ListIterator<Topup> liter = list.listIterator();
 						while (liter.hasNext()) {
@@ -1560,7 +1561,7 @@ public class FinancialTransactionController {
 				} else {
 					error = false;
 					message = "Successfully get data redirection";
-
+					arrayList = (ArrayList<SwitchingRedirection>) arrayList.stream().filter(v -> !v.getDescription().equals("Accepted")).collect(Collectors.toList());
 					for (Integer i = 0; i < arrayList.size(); i++) {
 						try {
 							HashMap<String, Object> dataTemp = new HashMap<>();
@@ -1651,7 +1652,7 @@ public class FinancialTransactionController {
 				} else {
 					error = false;
 					message = "Successfully get data switching ";
-
+					arrayList = (ArrayList<SwitchingRedirection>) arrayList.stream().filter(v -> !v.getDescription().equals("Accepted")).collect(Collectors.toList());
 					for (Integer i = 0; i < arrayList.size(); i++) {
 						try {
 							HashMap<String, Object> dataTemp = new HashMap<>();
@@ -3917,7 +3918,7 @@ public class FinancialTransactionController {
 				} else {
 					error = false;
 					message = "Successfully get data withdraw";
-
+					arrayList = (ArrayList<Withdraw>) arrayList.stream().filter(v -> !v.getDescription().equals("Accepted")).collect(Collectors.toList());
 					for (Integer i = 0; i < arrayList.size(); i++) {
 						try {
 							HashMap<String, Object> dataTemp = new HashMap<>();
@@ -4754,6 +4755,7 @@ public class FinancialTransactionController {
 					error = false;
 					message = "List claim submission empty";
 				} else {
+					arrayList = (ArrayList<ClaimSubmission>) arrayList.stream().filter(v -> !v.getStatus().equals("Accepted")).collect(Collectors.toList());
 					for (int i = 0; i < arrayList.size(); i++) {
 						BigInteger mpc_id = arrayList.get(i).getKode_trans();
 						Date regapldate = arrayList.get(i).getRegapldate();

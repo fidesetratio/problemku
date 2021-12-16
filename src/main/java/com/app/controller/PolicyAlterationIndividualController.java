@@ -514,6 +514,10 @@ public class PolicyAlterationIndividualController {
 
 									if(checkingIsInProgess) {
 										detailPolicyAlteration.setStatus("INPROGRESS");
+										oldvalue.put(keyOld, detailPolicyAlteration.getOld());
+
+										newvalue.put(keyNew,detailPolicyAlteration.getNew_());
+
 										inProgress.add(d);
 									}else {
 										String kolom = "";

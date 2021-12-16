@@ -146,7 +146,7 @@ public class VegaServices {
 			,String msde_old21,String msde_old22,String msde_old23,String msde_old24,String msde_old25
 			, String msde_new1, String msde_new2, String msde_new3, String msde_new4, String msde_new5, String msde_new6,String msde_new7,String msde_new8,String msde_new9,String msde_new10,String msde_new11
 			,String msde_new12,String msde_new13,String msde_new14,String msde_new15,String msde_new16,String msde_new17,String msde_new18,String msde_new19,String msde_new20
-			,String msde_new21,String msde_new22,String msde_new23,String msde_new24,String msde_new25
+			,String msde_new21,String msde_new22,String msde_new23,String msde_new24,String msde_new25, boolean isUpdate
 			) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
@@ -206,8 +206,11 @@ public class VegaServices {
 		hashMap.put("msde_new24", msde_new24);
 		hashMap.put("msde_new25", msde_new25);
 
-
-		dao.insertDetailEndorse(hashMap);
+		if (isUpdate){
+			dao.updateDetEndorseByMsenAndEndorseId(hashMap);
+		} else {
+			dao.insertDetailEndorse(hashMap);
+		}
 	}
 
 	public void insertDetailRedirection(String mpt_id, String lji_id, Float mpt_persen, String mpt_dk) {

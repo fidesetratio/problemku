@@ -69,7 +69,7 @@ public class TransactionHistorySvcImpl implements TransactionHistorySvc {
         mpolTrans = mapTransactionMpolTrans(mpolTrans);
         mpolTrans.addAll(policyAlteration);
         mpolTrans.addAll(claimSubmission);
-        if (transaction_type != null) {
+        if (transaction_type != null && !transaction_type.equals("")) {
             return mpolTrans.stream().filter(v -> v.getTransaction_type().equals(transaction_type)).collect(Collectors.toList());
         }
         return mpolTrans;

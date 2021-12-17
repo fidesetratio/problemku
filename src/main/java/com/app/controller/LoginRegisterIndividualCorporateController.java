@@ -1016,11 +1016,11 @@ public class LoginRegisterIndividualCorporateController {
 				// dplk account
 				User dplkByAccNo = services.findByAccountNoDplk(requestForgotUsername.getAccount_no_dplk() != null ? requestForgotUsername.getAccount_no_dplk() : null);
 				boolean matchDob = false;
-				if (dplkByAccNo.getMspe_date_birth() != null){
+				if (dplkByAccNo != null && dplkByAccNo.getMspe_date_birth() != null){
 					if (dateUtils.getFormatterFormat(dplkByAccNo.getMspe_date_birth(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7").equals(dob))
 						matchDob = true;
 				}
-				if (dplkByAccNo != null && matchDob){
+				if (matchDob){
 					if (dplkByAccNo.getNo_hp() != null){
 						String no_hp = dplkByAccNo.getNo_hp();
 						/*String result = customResourceLoader.sendOTP(91, 2, no_hp, dataForgotUsername.getReg_spaj(),

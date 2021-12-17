@@ -1879,7 +1879,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _status = new HashMap<>();
 				HashMap<String, Object> temp_status = new HashMap<>();
 				_status.put("value", status);
-				_status.put("id_endors", 123);
+				_status.put("id_endors", 67);
 				_status.put ("flag_direct", 1);
 				temp_status.put("status", _status);
 				data_policyholder.putAll(temp_status);
@@ -1887,7 +1887,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _agama = new HashMap<>();
 				HashMap<String, Object> temp_agama = new HashMap<>();
 				_agama.put("value", agama);
-				_agama.put("id_endors", 121);
+				_agama.put("id_endors", 61);
 				_agama.put ("flag_direct", 1);
 				temp_agama.put("agama", _agama);
 				data_policyholder.putAll(temp_agama);
@@ -1895,7 +1895,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _kewarganegaraan_pp = new HashMap<>();
 				HashMap<String, Object> temp_kewarganegaraan_pp = new HashMap<>();
 				_kewarganegaraan_pp.put("value", kewarganegaraan_pp);
-				_kewarganegaraan_pp.put("id_endors", 39);
+				_kewarganegaraan_pp.put("id_endors", 40);
 				_kewarganegaraan_pp.put ("flag_direct", 1);
 				temp_kewarganegaraan_pp.put("kewarganegaraan_pp", _kewarganegaraan_pp);
 				data_policyholder.putAll(temp_kewarganegaraan_pp);
@@ -1903,7 +1903,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _nama_perusahaan_pp = new HashMap<>();
 				HashMap<String, Object> temp_nama_perusahaan_pp = new HashMap<>();
 				_nama_perusahaan_pp.put("value", nama_perusahaan_pp);
-				_nama_perusahaan_pp.put("id_endors", 125);
+				_nama_perusahaan_pp.put("id_endors", 89);
 				_nama_perusahaan_pp.put ("flag_direct", 1);
 				temp_nama_perusahaan_pp.put("nama_perusahaan_pp", _nama_perusahaan_pp);
 				data_policyholder.putAll(temp_nama_perusahaan_pp);
@@ -1911,7 +1911,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _tipe_usaha_pp = new HashMap<>();
 				HashMap<String, Object> temp_tipe_usaha_pp = new HashMap<>();
 				_tipe_usaha_pp.put("value", tipe_usaha_pp);
-				_tipe_usaha_pp.put("id_endors", 125);
+				_tipe_usaha_pp.put("id_endors", 89);
 				_tipe_usaha_pp.put ("flag_direct", 1);
 				temp_tipe_usaha_pp.put("tipe_usaha_pp", _tipe_usaha_pp);
 				data_policyholder.putAll(temp_tipe_usaha_pp);
@@ -1935,7 +1935,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _alamat_kantor = new HashMap<>();
 				HashMap<String, Object> temp_alamat_kantor = new HashMap<>();
 				_alamat_kantor.put("value", alamat_kantor);
-				_alamat_kantor.put("id_endors", 120);
+				_alamat_kantor.put("id_endors", 34);
 				_alamat_kantor.put ("flag_direct", 1);
 				temp_alamat_kantor.put("alamat_kantor", _alamat_kantor);
 				data_policyholder.putAll(temp_alamat_kantor);

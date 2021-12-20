@@ -198,6 +198,7 @@ public class AdMedikaSynchSvcImpl implements AdMedikaSycnhSvc {
         data.put("dob", dateUtils.getFormatterFormat(enrollPesertaAdmedika.getDob(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
         data.put("member_type", enrollPesertaAdmedika.getMembertype());
         data.put("email", enrollPesertaAdmedika.getMspe_email());
+        data.put("nama_plan", enrollPesertaAdmedika.getNama_plan());
         return data;
     }
 }

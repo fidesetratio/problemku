@@ -664,6 +664,7 @@ public class LoginRegisterIndividualCorporateController {
 			if (checkIndividuOrCorporate != null) {
 				String reg_spaj = checkIndividuOrCorporate.getREG_SPAJ();
 				String mcl_id_employee = checkIndividuOrCorporate.getMCL_ID_EMPLOYEE();
+				boolean isAccountDplk = loginSvc.isAccountDplk(checkIndividuOrCorporate);
 
 				Boolean individu = false;
 				Boolean corporate = false;
@@ -688,6 +689,7 @@ public class LoginRegisterIndividualCorporateController {
 						message = "Data phone number is empty";
 						sms.put("sms", null);
 						sms.put("no_polis", null);
+						sms.put("account_no_dplk", null);
 						data.put("contacts", sms);
 						data.put("ishavingphonenumber", false);
 						data.put("username", null);
@@ -717,6 +719,7 @@ public class LoginRegisterIndividualCorporateController {
 							data.put("poicy_type", "individual");
 							sms.put("sms", no_hp);
 							sms.put("no_polis", dataUserIndividual.getMspo_policy_no());
+							sms.put("account_no_dplk", null);
 						} else {
 							error = true;
 							message = "Phone number is blacklisted";
@@ -725,12 +728,13 @@ public class LoginRegisterIndividualCorporateController {
 							data.put("username", null);
 							sms.put("sms", no_hp);
 							sms.put("no_polis", dataUserIndividual.getMspo_policy_no());
+							sms.put("account_no_dplk", null);
 							resultErr = "No telepon sedang dalam masa blacklist";
 							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 									+ resultErr);
 						}
 					}
-				} else { // Forgot Password Corporate
+				} else if (corporate){ // Forgot Password Corporate
 					UserCorporate dataUserCorporate = services.selectUserCorporate(username);
 
 					if (dataUserCorporate != null) {
@@ -760,6 +764,7 @@ public class LoginRegisterIndividualCorporateController {
 								data.put("poicy_type", "corporate");
 								sms.put("sms", no_hp);
 								sms.put("no_polis", dataUserCorporate.getNo_polis());
+								sms.put("account_no_dplk", null);
 							} else {
 								error = true;
 								message = "Phone number is blacklisted";
@@ -768,6 +773,7 @@ public class LoginRegisterIndividualCorporateController {
 								data.put("username", null);
 								sms.put("sms", no_hp);
 								sms.put("no_polis", dataUserCorporate.getNo_polis());
+								sms.put("account_no_dplk", null);
 								resultErr = "No telepon sedang dalam masa blacklist";
 								logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 										+ resultErr);
@@ -780,6 +786,7 @@ public class LoginRegisterIndividualCorporateController {
 							data.put("contacts", sms);
 							sms.put("sms", null);
 							sms.put("no_polis", null);
+							sms.put("account_no_dplk", null);
 							resultErr = "Nomor handphone kosong hubungi CS";
 							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 									+ resultErr);
@@ -792,6 +799,69 @@ public class LoginRegisterIndividualCorporateController {
 						data.put("contacts", sms);
 						sms.put("sms", null);
 						sms.put("no_polis", null);
+						sms.put("account_no_dplk", null);
+						resultErr = "Username tidak ditemukan";
+						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+								+ resultErr);
+					}
+				} else if (isAccountDplk){
+					DPLKAccountModel dplkByAccNo = services.getInfoDplkByAccNo(checkIndividuOrCorporate.getAccount_no_dplk() != null ? checkIndividuOrCorporate.getAccount_no_dplk() : null);
+					if (dplkByAccNo != null){
+						String no_hp = dplkByAccNo.getNo_hp();
+						if (no_hp == null){
+							error = true;
+							message = "Account not found in database";
+							data.put("ishavingphonenumber", false);
+							data.put("username", null);
+							data.put("contacts", sms);
+							sms.put("sms", null);
+							sms.put("no_polis", null);
+							sms.put("account_no_dplk", null);
+							resultErr = "Username tidak ditemukan";
+							logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+									+ resultErr);
+						} else {
+							RequestSendOTP requestSendOTP = new RequestSendOTP();
+							requestSendOTP.setJenis_id(91);
+							requestSendOTP.setMenu_id(requestForgotPassword.getMenu_id());
+							requestSendOTP.setUsername(no_hp);
+							ResponseData responseSendOTP = serviceOTP.sendOTP(requestSendOTP);
+
+							Boolean errorPost = (Boolean) responseSendOTP.getError();
+
+							if (errorPost == false) {
+								error = false;
+								message = "Account found in database";
+								data.put("ishavingphonenumber", true);
+								data.put("username", username);
+								data.put("contacts", sms);
+								data.put("poicy_type", "corporate");
+								sms.put("sms", no_hp);
+								sms.put("no_polis", null);
+								sms.put("account_no_dplk", dplkByAccNo.getAcc_no());
+							} else {
+								error = true;
+								message = "Phone number is blacklisted";
+								data.put("ishavingphonenumber", true);
+								data.put("contacts", sms);
+								data.put("username", null);
+								sms.put("sms", no_hp);
+								sms.put("no_polis", null);
+								sms.put("account_no_dplk", dplkByAccNo.getAcc_no());
+								resultErr = "No telepon sedang dalam masa blacklist";
+								logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
+										+ resultErr);
+							}
+						}
+					} else {
+						error = true;
+						message = "Account not found in database";
+						data.put("ishavingphonenumber", false);
+						data.put("username", null);
+						data.put("contacts", sms);
+						sms.put("sms", null);
+						sms.put("no_polis", null);
+						sms.put("account_no_dplk", null);
 						resultErr = "Username tidak ditemukan";
 						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 								+ resultErr);

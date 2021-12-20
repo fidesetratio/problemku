@@ -2056,7 +2056,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _pemilik_rekening_pp = new HashMap<>();
 				HashMap<String, Object> temp_pemilik_rekening_pp = new HashMap<>();
 				_pemilik_rekening_pp.put("value", pemilik_rekening_pp);
-				_pemilik_rekening_pp.put("id_endors", 119);
+				_pemilik_rekening_pp.put("id_endors", 96);
 				_pemilik_rekening_pp.put ("flag_direct", 0);
 				temp_pemilik_rekening_pp.put("pemilik_rekening_pp", _pemilik_rekening_pp);
 				data_policyholder.putAll(temp_pemilik_rekening_pp);

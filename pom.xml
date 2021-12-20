@@ -144,8 +144,6 @@
 			<groupId>aesencrytion</groupId>
 			<artifactId>aesencrytion</artifactId>
 			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/lib/aesencrytion-app.jar</systemPath>
 		</dependency>
 
 		<dependency>

@@ -38,7 +38,7 @@ pipeline {
         
       stage('build') {
             steps {
-              sh "mvn install:install-file -DgroupId=aesencrytion -DartifactId=aesencrytion -Dpackaging=jar -Dversion=1.0 -Dfile=lib/aesencrytion-app.jar -DgeneratePom=true"
+              sh "mvn install:install-file -Dfile=lib/aesencrytion-app.jar -DgroupId=aesencrytion -DartifactId=aesencrytion -Dversion=1.0  -Dpackaging=jar"
               sh "mvn clean package"
            }
       }

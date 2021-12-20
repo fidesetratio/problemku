@@ -6886,8 +6886,27 @@ SELECT distinct (CASE
 		case
 		when Upper(trim(substr(b.mste_no_reg, length(trim(b.mste_no_reg)), 1))) = 'A' then 'P'
 		Else 'D' end                                                  as membertype, --P = Principal. D = Dependent
-		d.mspe_email,
-	    f.lsdbs_name as nama_plan
+		d.mspe_email
+		from eka.mst_policy@eb a
+		inner join eka.mst_insured@eb b
+		on a.reg_spaj = b.reg_Spaj
+		inner join eka.mst_client@eb c
+		on a.mspo_policy_holder = c.mcl_id
+		inner join eka.mst_person@eb d
+		on b.mste_insured = d.mcl_id
+		inner join eka.LST_USER_SIMULTANEOUS e on e.MCL_ID_EMPLOYEE = d.mcl_id
+		where (a.mspo_provider = 1 and a.mspo_flag_ntt in (1, 3)) --TPA admedika + Halodoc
+		and a.mspo_judul_polis = '402'                          --polis ekamedicare
+		and a.lstb_id = 3
+		and b.mste_active = 1                                   --peserta aktif di GTL
+		and b.mste_admedika in (1, 2)                           --peserta yg sudah di enroll ke admedika
+		and nvl(b.mste_admedika_batal, 0) <![CDATA[ <> ]]> 1    --peserta yang tidak batal statusnya di admedika
+		and a.lssp_id = 1
+		and e.username=#{username, jdbcType=VARCHAR}
+	</select>
+
+	<select id="getPlanAdmedikaCorporate" parameterType="String" resultType="com.app.model.DataPlanPeserta">
+		select f.lsdbs_name as nama_plan
 		from eka.mst_policy@eb a
 		inner join eka.mst_insured@eb b
 		on a.reg_spaj = b.reg_Spaj
@@ -6905,11 +6924,10 @@ SELECT distinct (CASE
 		and a.lstb_id = 3
 		and b.mste_active = 1                                   --peserta aktif di GTL
 		and b.mste_admedika in (1, 2)                           --peserta yg sudah di enroll ke admedika
-		and nvl(b.mste_admedika_batal, 0) <![CDATA[ <> ]]> 1    --peserta yang tidak batal statusnya di admedika
+		and nvl(b.mste_admedika_batal, 0)  <![CDATA[ <> ]]> 1    --peserta yang tidak batal statusnya di admedika
 		and a.lssp_id = 1
 		and e.mspr_active = 1
-		and e.lsbs_id = 402
-		and e.username=#{username, jdbcType=VARCHAR}
+		and e.lsbs_id = 402 and b.no_kartu=#{no_kartu, jdbcType=VARCHAR}
 	</select>
 
 </mapper>

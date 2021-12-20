@@ -1926,4 +1926,9 @@ public class VegaServices {
 		return dao.enrollPesertaAdmedikaCorporate(username);
 	}
 
+	public List<DataPlanPeserta> getDataPlanPesertaCorporate(String no_kartu){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.getPlanAdmedikaCorporate(no_kartu);
+	}
+
 }

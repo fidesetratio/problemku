@@ -2,10 +2,7 @@ package com.app.services;
 
 import com.admedika.aesencryption.AesTools;
 import com.app.exception.HandleSuccessOrNot;
-import com.app.model.AdMedikaRequest;
-import com.app.model.EnrollPesertaAdmedika;
-import com.app.model.LstUserSimultaneous;
-import com.app.model.ResponseData;
+import com.app.model.*;
 import com.app.utils.DateUtils;
 import com.app.utils.ResponseMessage;
 import com.app.utils.VegaCustomResourceLoader;
@@ -155,14 +152,16 @@ public class AdMedikaSynchSvcImpl implements AdMedikaSycnhSvc {
                 if (corporate) {
                     List<EnrollPesertaAdmedika> enrollPesertaAdmedika = vegaServices.getEnrollPesertaAdmedikaCorporate(username);
                     for (EnrollPesertaAdmedika pesertaAdmedika : enrollPesertaAdmedika){
-                        arrayList.add(getMapEnrollPeserta(pesertaAdmedika));
+                        List<DataPlanPeserta> dataPlanPesertaList = vegaServices.getDataPlanPesertaCorporate(pesertaAdmedika.getNo_kartu());
+                        arrayList.add(getMapEnrollPeserta(pesertaAdmedika, dataPlanPesertaList));
                     }
                     data.put("corporate", arrayList);
                 } else if (isIndividu){
                     //TODO query peserta individu admedika enroll
                     List<EnrollPesertaAdmedika> enrollPesertaAdmedika = vegaServices.getEnrollPesertaAdmedikaCorporate(username);
                     for (EnrollPesertaAdmedika pesertaAdmedika : enrollPesertaAdmedika){
-                        arrayList.add(getMapEnrollPeserta(pesertaAdmedika));
+                        List<DataPlanPeserta> dataPlanPesertaList = vegaServices.getDataPlanPesertaCorporate(pesertaAdmedika.getNo_kartu());
+                        arrayList.add(getMapEnrollPeserta(pesertaAdmedika, dataPlanPesertaList));
                     }
                     data.put("individu", arrayList);
                 }
@@ -188,7 +187,8 @@ public class AdMedikaSynchSvcImpl implements AdMedikaSycnhSvc {
         return responseData;
     }
 
-    private HashMap<String, Object> getMapEnrollPeserta(EnrollPesertaAdmedika enrollPesertaAdmedika) {
+    private HashMap<String, Object> getMapEnrollPeserta(EnrollPesertaAdmedika enrollPesertaAdmedika,
+                                                        List<DataPlanPeserta> dataPlanPesertaList) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("policy_number", enrollPesertaAdmedika.getPolicy_number());
         data.put("no_kartu", enrollPesertaAdmedika.getNo_kartu());
@@ -198,7 +198,7 @@ public class AdMedikaSynchSvcImpl implements AdMedikaSycnhSvc {
         data.put("dob", dateUtils.getFormatterFormat(enrollPesertaAdmedika.getDob(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7"));
         data.put("member_type", enrollPesertaAdmedika.getMembertype());
         data.put("email", enrollPesertaAdmedika.getMspe_email());
-        data.put("nama_plan", enrollPesertaAdmedika.getNama_plan());
+        data.put("list_plan", dataPlanPesertaList);
         return data;
     }
 }

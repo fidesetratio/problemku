@@ -1931,4 +1931,9 @@ public class VegaServices {
 		return dao.getPlanAdmedikaCorporate(no_kartu);
 	}
 
+	public String getConfigDocument(){
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.getConfigDocumentCenter();
+	}
+
 }

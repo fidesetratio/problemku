@@ -1191,6 +1191,8 @@ public class PolicyIndividualCorporateController {
 		map.put("data", data);
 		map.put("min_value", min_value);
 		map.put("max_value", max_value);
+		map.put("fund_focus", "http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/businesssubmission/spaj/downloadnewsfund?value=Fund%20Focus%20Excellink%20Aggressive%20Fund.pdf&type=2");
+		map.put("fund_fact_sheet", "http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/businesssubmission/spaj/downloadnewsfund?value=Artha%20Link%20Aggressive%20Fund.pdf&type=1");
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 16, new Date(), req, res, 1, resultErr, start, username);

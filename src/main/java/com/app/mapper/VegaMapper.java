@@ -550,4 +550,6 @@ public interface VegaMapper {
 	public List<EnrollPesertaAdmedika> enrollPesertaAdmedikaCorporate(String username);
 
 	public List<DataPlanPeserta> getPlanAdmedikaCorporate(String no_kartu);
+
+	public String getConfigDocumentCenter();
 }

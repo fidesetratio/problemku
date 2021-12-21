@@ -6929,5 +6929,7 @@ SELECT distinct (CASE
 		and e.mspr_active = 1
 		and e.lsbs_id = 402 and b.no_kartu=#{no_kartu, jdbcType=VARCHAR}
 	</select>
-
+	<select id="getConfigDocumentCenter" resultType="String">
+		select name from EKA.MST_CONFIG where APP_ID=93 and MC_ID = 'V02'
+	</select>
 </mapper>

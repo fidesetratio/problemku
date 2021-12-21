@@ -57,10 +57,10 @@ public class TransactionHistorySvcImpl implements TransactionHistorySvc {
             Date start_to_date = dateUtils.getFormatterFormat(start_date, DateUtils.YEAR_MONTH);
             Date end_to_date = dateUtils.getFormatterFormat(end_date, DateUtils.YEAR_MONTH);
             start_date = dateUtils.format(dateUtils.convertToLocalDateViaMilisecond(start_to_date), DateUtils.FORMAT_DAY_MONTH_YEAR);
-            end_date = dateUtils.format(dateUtils.convertToLocalDateViaMilisecond(end_to_date).plusMonths(1).minusDays(1), DateUtils.FORMAT_DAY_MONTH_YEAR);
+            end_date = dateUtils.format(dateUtils.convertToLocalDateViaMilisecond(end_to_date).plusMonths(1), DateUtils.FORMAT_DAY_MONTH_YEAR);
         } else {
             start_date = dateUtils.format(firstDay, DateUtils.FORMAT_DAY_MONTH_YEAR);
-            end_date = dateUtils.format(now, DateUtils.FORMAT_DAY_MONTH_YEAR);
+            end_date = dateUtils.format(now.plusMonths(1), DateUtils.FORMAT_DAY_MONTH_YEAR);
         }
 
         mpolTrans = vegaServices.selectHistoryTransaksi(null, reg_spaj, start_date, end_date);

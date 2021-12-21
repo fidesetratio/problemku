@@ -6531,7 +6531,7 @@ SELECT distinct (CASE
 		<if test="end_date != null">
 			AND A.REQ_DATE <![CDATA[ <= ]]> to_date(#{end_date}, 'dd-MM-yyyy')
 		</if>
-		and a.REQ_DATE >= trunc(sysdate, 'YEAR') and a.REQ_DATE <![CDATA[ < ]]> sysdate
+		and a.REQ_DATE >= trunc(sysdate, 'YEAR') and a.REQ_DATE <![CDATA[ <= ]]> sysdate
 	</select>
 
 	<select id="getJenisInvestDplk" resultType="com.app.model.JenisInvestDplk">

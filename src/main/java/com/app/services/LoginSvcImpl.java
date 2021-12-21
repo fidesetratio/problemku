@@ -314,13 +314,11 @@ public class LoginSvcImpl implements LoginSvc {
         ResponseData responseData = new ResponseData();
         HandleSuccessOrNot handleSuccessOrNot = null;
         UserCorporate dataUserCorporate = services.selectUserCorporate(username);
-        User userIndividual = services.selectUserIndividual(username);
-        String no_hp = dataUserCorporate.getNo_hp() != null ? dataUserCorporate.getNo_hp() : userIndividual.getNo_hp();
         // Check apakah username terdaftar/ tidak
         if (dataUserCorporate != null) {
             if (dataUserCorporate.getLast_login_device() != null && dataUserCorporate.getLast_login_device().equals(lastLoginDevice)) {
                 ArrayList<UserCorporate> list = services.selectListPolisCorporate(mcl_id_employee);
-                responseData = cekLoginCorporate(easyPin, list, lstUserSimultaneous, user1, key, individuCorporate, policy_corporate_notinforce, user_corporate_notactive, no_hp, data,
+                responseData = cekLoginCorporate(easyPin, list, lstUserSimultaneous, user1, key, individuCorporate, policy_corporate_notinforce, user_corporate_notactive, dataUserCorporate.getNo_hp(), data,
                         password, username, request, responseData, req);
             } else {
                 ArrayList<UserCorporate> list = services.selectListPolisCorporate(mcl_id_employee);
@@ -330,7 +328,7 @@ public class LoginSvcImpl implements LoginSvc {
                 long diffSeconds = diff / 1000;
                 // Check apakah lama perbedaan waktu token sudah melebihi 15 menit/ belum
                 if (diffSeconds >= timeIdle || dataUserCorporate.getLast_login_device() == null) {
-                    responseData = cekLoginCorporate(easyPin, list, lstUserSimultaneous, user1, key, individuCorporate, policy_corporate_notinforce, user_corporate_notactive, no_hp, data,
+                    responseData = cekLoginCorporate(easyPin, list, lstUserSimultaneous, user1, key, individuCorporate, policy_corporate_notinforce, user_corporate_notactive, dataUserCorporate.getNo_hp(), data,
                             password, username, request, responseData, req);
                 } else {
                     // Error perbedaan lama waktu token belum lebih dari 15 menit

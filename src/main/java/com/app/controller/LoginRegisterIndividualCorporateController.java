@@ -1087,7 +1087,8 @@ public class LoginRegisterIndividualCorporateController {
 				User dplkByAccNo = services.findByAccountNoDplk(requestForgotUsername.getAccount_no_dplk() != null ? requestForgotUsername.getAccount_no_dplk() : null);
 				boolean matchDob = false;
 				if (dplkByAccNo != null && dplkByAccNo.getMspe_date_birth() != null){
-					if (dateUtils.getFormatterFormat(dplkByAccNo.getMspe_date_birth(), DateUtils.FORMAT_DAY_MONTH_YEAR, "GMT+7").equals(dob))
+					String dobCompare = dateUtils.getFormatterFormat(dplkByAccNo.getMspe_date_birth(), DateUtils.FORMAT_DAY_MONTH_YEAR_NO_STRIP, "GMT+7");
+					if (dobCompare.equals(dob))
 						matchDob = true;
 				}
 				if (matchDob){
@@ -1128,7 +1129,7 @@ public class LoginRegisterIndividualCorporateController {
 					}
 				} else {
 					error = true;
-					message = "account no not found";
+					message = "account not found";
 					resultErr = "Hasil select username tidak menemukan data" + "(No. polis/ KTP / account no_dplk: " + requestForgotUsername.getAccount_no_dplk()
 							+ ", dob: " + dob + ")";
 					logger.error("Path: " + request.getServletPath() + ", No. Polis/ KTP: " + ktp_or_nopolis

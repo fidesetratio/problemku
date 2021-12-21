@@ -1057,6 +1057,7 @@ public class PolicyIndividualCorporateController {
 		Boolean error = true;
 		BigDecimal min_value = null;
 		BigDecimal max_value = null;
+		String lji_type  = null;
 		HashMap<String, Object> map = new HashMap<>();
 		ArrayList<Object> data = new ArrayList<>();
 		String username = requestNabchart.getUsername();
@@ -1083,6 +1084,7 @@ public class PolicyIndividualCorporateController {
 							Nav m = liter.next();
 							HashMap<String, Object> mapper = new HashMap<>();
 							String lji_invest = m.getLji_invest();
+							lji_type = lji_invest;
 							String lji_Id = m.getLji_id();
 							String tgl = m.getTgl();
 							BigDecimal lnu_nilai = m.getLnu_nilai();
@@ -1136,6 +1138,7 @@ public class PolicyIndividualCorporateController {
 								Nav m = liter.next();
 								HashMap<String, Object> mapper = new HashMap<>();
 								String lji_invest = m.getLji_invest();
+								lji_type = lji_invest;
 								String lji_Id = m.getLji_id();
 								String tgl = m.getTgl();
 								BigDecimal lnu_nilai = m.getLnu_nilai();
@@ -1191,8 +1194,8 @@ public class PolicyIndividualCorporateController {
 		map.put("data", data);
 		map.put("min_value", min_value);
 		map.put("max_value", max_value);
-		map.put("fund_focus", "http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/businesssubmission/spaj/downloadnewsfund?value=Fund%20Focus%20Excellink%20Aggressive%20Fund.pdf&type=2");
-		map.put("fund_fact_sheet", "http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/businesssubmission/spaj/downloadnewsfund?value=Artha%20Link%20Aggressive%20Fund.pdf&type=1");
+		map.put("fund_focus", String.format("%s?value=Fund Focus %s.pdf&type=%d", "http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/businesssubmission/spaj/downloadnewsfund", lji_type, 2));
+		map.put("fund_fact_sheet", String.format("%s?value=%s.pdf&type=%d", "http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/businesssubmission/spaj/downloadnewsfund", lji_type, 1));
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS
 		customResourceLoader.insertHistActivityWS(12, 16, new Date(), req, res, 1, resultErr, start, username);
@@ -1654,22 +1657,22 @@ public class PolicyIndividualCorporateController {
 				String tin_pp_descripsi = policyHolder.getTin_descripsi();
 				
 
-				HashMap<String, Object> _tin_pp = new HashMap<>();
-				HashMap<String, Object> temp_tin_pp = new HashMap<>();
-				_tin_pp.put("value", tin_pp);
-				_tin_pp.put("id_endors",111);
-				_tin_pp.put ("flag_direct", 0);
-				temp_tin_pp.put("tin_pp", _tin_pp);
-				data_policyholder.putAll(temp_tin_pp);
+//				HashMap<String, Object> _tin_pp = new HashMap<>();
+//				HashMap<String, Object> temp_tin_pp = new HashMap<>();
+//				_tin_pp.put("value", tin_pp);
+//				_tin_pp.put("id_endors",111);
+//				_tin_pp.put ("flag_direct", 0);
+//				temp_tin_pp.put("tin_pp", _tin_pp);
+//				data_policyholder.putAll(temp_tin_pp);
 				
 				
-				HashMap<String, Object> _tin_descripsi_pp = new HashMap<>();
-				HashMap<String, Object> temp_tin_descripsi_pp = new HashMap<>();
-				_tin_descripsi_pp.put("value", tin_pp_descripsi);
-				_tin_descripsi_pp.put("id_endors", 112);
-				_tin_descripsi_pp.put ("flag_direct", 0);
-				temp_tin_descripsi_pp.put("tin_pp_descripsi", _tin_descripsi_pp);
-				data_policyholder.putAll(temp_tin_descripsi_pp);
+//				HashMap<String, Object> _tin_descripsi_pp = new HashMap<>();
+//				HashMap<String, Object> temp_tin_descripsi_pp = new HashMap<>();
+//				_tin_descripsi_pp.put("value", tin_pp_descripsi);
+//				_tin_descripsi_pp.put("id_endors", 112);
+//				_tin_descripsi_pp.put ("flag_direct", 0);
+//				temp_tin_descripsi_pp.put("tin_pp_descripsi", _tin_descripsi_pp);
+//				data_policyholder.putAll(temp_tin_descripsi_pp);
 				
 				
 				HashMap<String, Object> _nama_pp = new HashMap<>();
@@ -2075,7 +2078,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _status_tt = new HashMap<>();
 				HashMap<String, Object> temp_status_tt = new HashMap<>();
 				_status_tt.put("value", status_tt);
-				_status_tt.put("id_endors", 124);
+				_status_tt.put("id_endors", 68);
 				_status_tt.put ("flag_direct", 1);
 				temp_status_tt.put("status_tt", _status_tt);
 				data_insured.putAll(temp_status_tt);
@@ -2083,7 +2086,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _agama_tt = new HashMap<>();
 				HashMap<String, Object> temp_agama_tt = new HashMap<>();
 				_agama_tt.put("value", agama_tt);
-				_agama_tt.put("id_endors", 122);
+				_agama_tt.put("id_endors", 62);
 				_agama_tt.put ("flag_direct", 1);
 				temp_agama_tt.put("agama_tt", _agama_tt);
 				data_insured.putAll(temp_agama_tt);

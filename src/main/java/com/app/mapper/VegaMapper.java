@@ -57,6 +57,8 @@ public interface VegaMapper {
 	
 	public void insertDetailEndorse(HashMap<String, Object> hashMap);
 
+	public void insertDetailEndorseTemp(HashMap<String, Object> hashMap);
+
 	public void insertLstUlangan(HashMap<String, Object> hashMap);
 	
 	public void insertNotifToken(NotifToken notifToken_new);
@@ -504,6 +506,12 @@ public interface VegaMapper {
 	public void updateStatusAttemptOtp(MstOTPSimultaneous paramUpdate);
 
 	public void updateDetEndorseByMsenAndEndorseId(HashMap<String, Object> hashMap);
+
+	public void updateDetTempEndorseByMsenAndEndorseId(HashMap<String, Object> hashMap);
+
+	public double countUpdatableEndorseDet(HashMap<String, Object> hashMap);
+
+	public double countUpdatableEndorseTempDet(HashMap<String, Object> hashMap);
 
 	public User selectDataPolisByPolisNo(HashMap<String, Object> hashMap);
 

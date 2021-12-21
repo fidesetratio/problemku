@@ -6936,4 +6936,10 @@ SELECT distinct (CASE
 	<select id="getConfigDocumentCenter" resultType="String">
 		select name from EKA.MST_CONFIG where APP_ID=93 and MC_ID = 'V02'
 	</select>
+	<select id="countUpdatableEndorseDet" resultType="Double" parameterType="HashMap">
+		select count(*) from EKA.MST_DET_ENDORS WHERE MSEN_ENDORS_NO=#{msen_endors_no, jdbcType=VARCHAR} and LSJE_ID=#{lsje_id, jdbcType=INTEGER}
+	</select>
+	<select id="countUpdatableEndorseTempDet" resultType="Double" parameterType="HashMap">
+		select count(*) from EKA.MST_DET_ENDORS_TEMP WHERE MSEN_ENDORS_NO=#{msen_endors_no, jdbcType=VARCHAR} and LSJE_ID=#{lsje_id, jdbcType=INTEGER}
+	</select>
 </mapper>

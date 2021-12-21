@@ -20,6 +20,7 @@ public class DateUtils {
     public static final String FORMAT_YEAR_MONTH_DAY = "yyyy-MM-dd";
     public static final String YEAR_MONTH = "yyyy-MM";
     public static final String FORMAT_DAY_MONTH_YEAR = "dd-MM-yyyy";
+    public static final String FORMAT_DAY_MONTH_YEAR_NO_STRIP = "ddMMyyyy";
     public static final String FORMAT_YYYY_MONTH_DAY_SECOND = "yyyy-MM-dd HH:mm:ss";
     public static final String FORMAT_YYYY_MONTH_DAY_MILLI_SEC = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 

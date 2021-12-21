@@ -205,11 +205,46 @@ public class VegaServices {
 		hashMap.put("msde_new23", msde_new23);
 		hashMap.put("msde_new24", msde_new24);
 		hashMap.put("msde_new25", msde_new25);
+		boolean isTemp = lsje_id == 96 && msde_old3 != null && msde_new3 != null;
+		if (lsje_id == 96 && msde_old6 != null && msde_new6 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old8 != null && msde_new8 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old9 != null && msde_new9 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old12 != null && msde_new12 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old13 != null && msde_new13 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old14 != null && msde_new14 != null) isTemp = true;
+		if (lsje_id == 68 && msde_old11 != null && msde_new11 != null) isTemp = true;
+		if (lsje_id == 62 && msde_old11 != null && msde_new11 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old1 != null && msde_new1 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old2 != null && msde_new2 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old21 != null && msde_new21 != null) isTemp = true;
+		if (lsje_id == 111 && msde_old1 != null && msde_new1 != null) isTemp = true;
+		if (lsje_id == 112 && msde_old1 != null && msde_new1 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old20 != null && msde_new20 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old22 != null && msde_new22 != null) isTemp = true;
+		if (lsje_id == 96 && msde_old23 != null && msde_new23 != null) isTemp = true;
 
-		if (isUpdate){
-			dao.updateDetEndorseByMsenAndEndorseId(hashMap);
+		if (isTemp){
+			if (isUpdate){
+				double isUpdatable = dao.countUpdatableEndorseTempDet(hashMap);
+				if (isUpdatable > 0){
+					dao.updateDetTempEndorseByMsenAndEndorseId(hashMap);
+				} else {
+					dao.insertDetailEndorseTemp(hashMap);
+				}
+			} else {
+				dao.insertDetailEndorseTemp(hashMap);
+			}
 		} else {
-			dao.insertDetailEndorse(hashMap);
+			if (isUpdate){
+				double isUpdatable = dao.countUpdatableEndorseDet(hashMap);
+				if (isUpdatable > 0){
+					dao.updateDetEndorseByMsenAndEndorseId(hashMap);
+				} else {
+					dao.updateDetEndorseByMsenAndEndorseId(hashMap);
+				}
+			} else {
+				dao.insertDetailEndorse(hashMap);
+			}
 		}
 	}
 

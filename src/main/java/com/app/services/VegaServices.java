@@ -1384,6 +1384,11 @@ public class VegaServices {
 		return dao.selectTopActiveOtp();
 	}
 
+	public OtpTest selectTopActiveOtp(String no_hp) {
+		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
+		return dao.selectTopActiveOtpByNoHtp(no_hp);
+	}
+
 	public Endorse selectGetPremiumHolidayDate(String reg_spaj) {
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		return dao.selectGetPremiumHolidayDate(reg_spaj);

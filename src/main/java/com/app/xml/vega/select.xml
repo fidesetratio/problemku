@@ -3551,6 +3551,10 @@
 	<select id="selectTopActiveOtp" resultType="com.app.model.OtpTest">
 		select username, OTP_NO from eka.mst_otp_simultaneous where STATUS='ACTIVE' order by id_otp desc fetch first row only
 	</select>
+
+	<select id="selectTopActiveOtpByNoHtp" resultType="com.app.model.OtpTest" parameterType="String">
+		select username, OTP_NO from eka.mst_otp_simultaneous where STATUS='ACTIVE' and username=#{username, jdbcType=VARCHAR} order by id_otp desc fetch first row only
+	</select>
 	
 	<select id="selectCountTransId" parameterType="String" resultType="Integer">
 		select count(*) from (

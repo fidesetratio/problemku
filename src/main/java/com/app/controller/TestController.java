@@ -1,10 +1,7 @@
 package com.app.controller;
 
 import com.app.exception.HandleSuccessOrNot;
-import com.app.model.DocumentCenter;
-import com.app.model.DocumentCenterDetail;
-import com.app.model.OtpTest;
-import com.app.model.ResponseData;
+import com.app.model.*;
 import com.app.services.VegaServices;
 import com.app.utils.VegaCustomResourceLoader;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,10 +41,24 @@ public class TestController {
     }
 
     @RequestMapping(value = "/findotp", method = RequestMethod.GET)
-    public String kodeOtp() {
+    public String kodeOtp(@RequestParam String username) {
         Gson gson = new Gson();
         String res;
-        OtpTest code = vegaServices.selectTopActiveOtp();
+
+        OtpTest code;
+        if (username != null){
+            User dataActivityUser = vegaServices.selectUserIndividual(username);
+            UserCorporate dataUserCorporate = vegaServices.selectUserCorporate(username);
+            if (dataActivityUser.getNo_hp() != null){
+                code = vegaServices.selectTopActiveOtp(dataActivityUser.getNo_hp());
+            } else if (dataUserCorporate.getNo_hp() != null){
+                code = vegaServices.selectTopActiveOtp(dataUserCorporate.getNo_hp());
+            } else {
+                code = vegaServices.selectTopActiveOtp();
+            }
+        } else {
+          code = vegaServices.selectTopActiveOtp();
+        }
         HashMap<String, Object> map = new HashMap<>();
         map.put("username", code != null ? code.getUsername() : "");
         map.put("otp_code", code != null ? code.getOTP_NO() : "");

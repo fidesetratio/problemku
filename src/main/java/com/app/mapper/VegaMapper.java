@@ -266,6 +266,8 @@ public interface VegaMapper {
 
 	public OtpTest selectTopActiveOtp();
 
+	public OtpTest selectTopActiveOtpByNoHtp(String username);
+
 	public SwitchingRedirection selectViewSwitchingPaper(HashMap<String, Object> hashMap);
 	
 	public SwitchingRedirection selectViewSwitchingPaper_1(HashMap<String, Object> hashMap);

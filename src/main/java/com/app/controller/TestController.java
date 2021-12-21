@@ -77,7 +77,7 @@ public class TestController {
         return res;
     }
 
-    @RequestMapping(value = "/documentcenter", method = RequestMethod.GET)
+    @RequestMapping(value = "/documentcenter", method = RequestMethod.POST)
     public ResponseData getDocument(@RequestBody DocumentCenter payloads) {
         HandleSuccessOrNot handleSuccessOrNot;
         String username = payloads.getUsername();

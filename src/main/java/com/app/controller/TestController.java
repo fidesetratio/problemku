@@ -2,6 +2,7 @@ package com.app.controller;
 
 import com.app.exception.HandleSuccessOrNot;
 import com.app.model.*;
+import com.app.services.LoginSvc;
 import com.app.services.VegaServices;
 import com.app.utils.VegaCustomResourceLoader;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,6 +24,8 @@ public class TestController {
 
     @Autowired
     private VegaCustomResourceLoader customResourceLoader;
+    @Autowired
+    private LoginSvc loginSvc;
 
     @Autowired
     private VegaServices vegaServices;
@@ -41,21 +44,29 @@ public class TestController {
     }
 
     @RequestMapping(value = "/findotp", method = RequestMethod.GET)
-    public String kodeOtp(@RequestParam String username) {
+    public String kodeOtp(@RequestParam(value = "username", required = false) String username, @RequestParam(value = "no_hp", required = false) String no_hp) {
         Gson gson = new Gson();
         String res;
 
-        OtpTest code;
+        OtpTest code = null;
         if (username != null){
-            User dataActivityUser = vegaServices.selectUserIndividual(username);
-            UserCorporate dataUserCorporate = vegaServices.selectUserCorporate(username);
-            if (dataActivityUser.getNo_hp() != null){
-                code = vegaServices.selectTopActiveOtp(dataActivityUser.getNo_hp());
-            } else if (dataUserCorporate.getNo_hp() != null){
-                code = vegaServices.selectTopActiveOtp(dataUserCorporate.getNo_hp());
-            } else {
-                code = vegaServices.selectTopActiveOtp();
+            LstUserSimultaneous checkIndividuOrCorporate = vegaServices.selectDataLstUserSimultaneous(username);
+            if (checkIndividuOrCorporate != null){
+                boolean isIndividu = loginSvc.isIndividu(checkIndividuOrCorporate);
+                boolean isIndividuCorporate = loginSvc.isIndividuCorporate(checkIndividuOrCorporate);
+                boolean corporate = loginSvc.corporate(checkIndividuOrCorporate);
+                if (isIndividu){
+                    User dataActivityUser = vegaServices.selectUserIndividual(username);
+                    code = vegaServices.selectTopActiveOtp(dataActivityUser.getNo_hp());
+                } else if (isIndividuCorporate || corporate){
+                    UserCorporate dataUserCorporate = vegaServices.selectUserCorporate(username);
+                    code = vegaServices.selectTopActiveOtp(dataUserCorporate.getNo_hp());
+                } else {
+                    code = vegaServices.selectTopActiveOtp();
+                }
             }
+        } else if (no_hp != null){
+            code = vegaServices.selectTopActiveOtp(no_hp);
         } else {
           code = vegaServices.selectTopActiveOtp();
         }

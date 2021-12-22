@@ -822,10 +822,10 @@ public class LoginSvcImpl implements LoginSvc {
                                                 ArrayList<HashMap<String, Object>> corporate, ArrayList<HashMap<String, Object>> individu, ArrayList<HashMap<String, Object>> individuMri,
                                                 HashMap<String, Object> data_dplk){
         HashMap<String, Object> data = new HashMap<>();
-        data.put("corporate", corporate);
-        data.put("individual", individu);
-        data.put("data_mri", individuMri);
-        data.put("data_dplk", data_dplk);
+        data.put("corporate", corporate != null && !corporate.isEmpty() ? corporate : null);
+        data.put("individual", individu != null && !individu.isEmpty() ? individu : null);
+        data.put("data_mri", individuMri != null && !individuMri.isEmpty() ? individuMri : null);
+        data.put("data_dplk", data_dplk != null ? data_dplk : null);
         data.put("individu_mri", is_individu_mri);
         data.put("is_individual", is_individual);
         data.put("is_corporate", is_corporate);

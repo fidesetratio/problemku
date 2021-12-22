@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.app.services.RegistrationIndividuImpl.TYPE_INDIVIDU_MRI;
+
 @Service
 public class LoginSvcImpl implements LoginSvc {
 
@@ -193,7 +195,9 @@ public class LoginSvcImpl implements LoginSvc {
                     if (!listPolisIndividu.isEmpty()){
                         individu = polisIndividu(listPolisIndividu, request, username);
                         is_individual = true;
-                    } else if (!listPolisMri.isEmpty()){
+                    }
+                    if (!listPolisMri.isEmpty()){
+                        listPolisMri = (ArrayList<PolisMri>) listPolisMri.stream().filter(v -> v.getType_individu().equals(TYPE_INDIVIDU_MRI)).collect(Collectors.toList());
                         individuMri = polisIndividuMri(listPolisMri);
                         is_individual = true;
                     }

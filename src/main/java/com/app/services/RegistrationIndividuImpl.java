@@ -90,11 +90,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                 // Check ID Simultan apakah sudah pernah daftar pada M-Polis
                 if (!checkSimultanPolis) {
                     String no_hp_polis;
-                    if (pemegang.getType_individu().equals(TYPE_INDIVIDU_MRI)){
-                        no_hp_polis = pemegang.getMsap_phone1() != null ? pemegang.getMsap_phone1() : pemegang.getMsap_phone2();
-                    } else {
-                        no_hp_polis = pemegang.getNo_hp() != null ? pemegang.getNo_hp() : pemegang.getNo_hp2();
-                    }
+                    no_hp_polis = pemegang.getNo_hp() != null ? pemegang.getNo_hp() : pemegang.getNo_hp2();
                     // Check No Telepon apakah kosong atau kurang dari 6 digit
                     if (no_hp_polis != null && no_hp_polis.length() > 6) {
                         Integer checkDeathClaim = services.selectCheckDeathClaim(pemegang.getId_simultan());
@@ -180,11 +176,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
                     // Check ID Simultan apakah sudah pernah daftar pada M-Polis
                     if (!checkSimultanKTP) {
                         String no_hp_ktp;
-                        if (resultKTP.getType_individu().equals(TYPE_INDIVIDU_MRI)){
-                            no_hp_ktp = resultKTP.getMsap_phone1() != null ? resultKTP.getMsap_phone1() : resultKTP.getMsap_phone2();
-                        } else {
-                            no_hp_ktp = resultKTP.getNo_hp() != null ? resultKTP.getNo_hp() : resultKTP.getNo_hp2();
-                        }
+                        no_hp_ktp = resultKTP.getNo_hp() != null ? resultKTP.getNo_hp() : resultKTP.getNo_hp2();
                         // Check No Telepon apakah kosong atau kurang dari 6 digit
                         if (no_hp_ktp != null && no_hp_ktp.length() > 6) {
                             Integer checkDeathClaim = services.selectCheckDeathClaim(resultKTP.getId_simultan());
@@ -527,7 +519,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
         }
         User user = services.selectUserIndividual(username);
         if (user == null) return  false;
-        List<Pemegang> lst = services.filterByIdSimultanRegSpajNoPolis(id_simultan, user.getMspo_policy_no(), user.getReg_spaj());
+        List<Pemegang> lst = services.filterByIdSimultanRegSpajNoPolis(id_simultan, user.getMspo_policy_no(), user.getReg_spaj(), username);
         Optional<Pemegang> optionalPemegang = lst.stream().filter(v -> v.getType_individu() != null).findFirst();
         if (optionalPemegang.isPresent()){
             String typeIndividu = optionalPemegang.get().getType_individu();

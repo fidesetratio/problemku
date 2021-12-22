@@ -19,6 +19,7 @@ public class PolisMri implements Serializable {
     private String status;
     private String username;
     private String key;
+    private String type_individu;
 
     private String pathEsertBaru;
     private String pathEsertLama;

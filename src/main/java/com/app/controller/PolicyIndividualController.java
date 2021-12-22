@@ -2786,12 +2786,13 @@ public class PolicyIndividualController {
 		HashMap<String, Object> data = new HashMap<>();
         String username = requestListPolis.getUsername();
         String key = requestListPolis.getKey();
+		String no_polis = requestListPolis.getPolicy_no();
 		String basePath = storagePdfMri;
 
 		try {
 			User dataActivityUser = services.selectUserIndividual(username);
             if (customResourceLoader.validateCredential(username, key)){
-                MRIdataPolis mri = services.getDataMri(dataActivityUser.getMspo_policy_no());
+                MRIdataPolis mri = services.getDataMri(no_polis);
                 if (mri != null){
                     data.put("nama_pemegang_polis", mri.getNama_pemegang_polis());
                     data.put("no_polis", mri.getNo_polis());
@@ -2822,7 +2823,7 @@ public class PolicyIndividualController {
 				} else {
                     error = true;
                     message = "Can't get data list polis mri";
-                    resultErr = ResponseMessage.ERROR_VALIDATION + "(Username: " + username + " & Key: " + key + ")";
+                    resultErr = "data mri not found" + "(Username: " + username + ")";
                     logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: " + resultErr);
                 }
             } else {
@@ -2853,6 +2854,7 @@ public class PolicyIndividualController {
 		String pathEsertBaru = polisMri.getPathEsertBaru();
 		String path = polisMri.getEssert();
 		String pathFolder = storagePdfMri;
+		String policy_no = polisMri.getPolicy_no();
 
 		GsonBuilder builder = new GsonBuilder();
 		Gson gson = new Gson();
@@ -2868,7 +2870,7 @@ public class PolicyIndividualController {
 		try {
 			User dataActivityUser = services.selectUserIndividual(username);
 			if (customResourceLoader.validateCredential(username, key)){
-				MRIdataPolis mri = services.getDataMri(dataActivityUser.getMspo_policy_no());
+				MRIdataPolis mri = services.getDataMri(policy_no);
 				if (mri != null){
 					File file = new File(path);
 

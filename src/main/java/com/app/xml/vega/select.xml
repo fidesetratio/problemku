@@ -6355,7 +6355,7 @@ SELECT distinct (CASE
 		on a.lscb_id = g.lscb_id
 		inner join eka.mst_client_new h
 		on a.mspo_customer = h.mcl_id
-		where a.mspo_policy_no = #{no_polis, jdbcType=VARCHAR}
+		where a.mspo_policy_no = REPLACE (#{no_polis, jdbcType=VARCHAR}, '.')
 		and a.lstb_id = 2
 		and e.lsbs_id <![CDATA[<]]> 900
 		group by d.mcl_first,

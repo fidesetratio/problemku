@@ -665,22 +665,12 @@ public class LoginRegisterIndividualCorporateController {
 				String reg_spaj = checkIndividuOrCorporate.getREG_SPAJ();
 				String mcl_id_employee = checkIndividuOrCorporate.getMCL_ID_EMPLOYEE();
 				boolean isAccountDplk = loginSvc.isAccountDplk(checkIndividuOrCorporate);
+				boolean isIndividu = loginSvc.isIndividu(checkIndividuOrCorporate);
+				boolean isIndividuMri = registrationIndividuSvc.isIndividuMri(checkIndividuOrCorporate.getID_SIMULTAN(), checkIndividuOrCorporate.getUSERNAME());
+				boolean isIndividuCorporate = loginSvc.isIndividuCorporate(checkIndividuOrCorporate);
+				boolean isCorporate = loginSvc.corporate(checkIndividuOrCorporate);
 
-				Boolean individu = false;
-				Boolean corporate = false;
-				if ((reg_spaj != null) && (mcl_id_employee == null)) {
-					individu = true;
-					corporate = false;
-				} else if ((reg_spaj == null) && (mcl_id_employee != null)) {
-					individu = false;
-					corporate = true;
-				}  else {
-					individu = true;
-					corporate = true;
-				}
-
-				if ((individu.equals(true) && corporate.equals(false))
-						|| (individu.equals(true) && corporate.equals(true))) { // Forgot Password Individual
+				if (isIndividu || isIndividuMri) { // Forgot Password Individual
 					User dataUserIndividual = services.selectUserIndividual(username);
 					String no_hp = registrationIndividuSvc.noHpIndividuAndMri(dataUserIndividual);
 
@@ -716,7 +706,7 @@ public class LoginRegisterIndividualCorporateController {
 							data.put("ishavingphonenumber", true);
 							data.put("contacts", sms);
 							data.put("username", username);
-							data.put("poicy_type", "individual");
+							data.put("policy_type", "individual");
 							sms.put("sms", no_hp);
 							sms.put("no_polis", dataUserIndividual.getMspo_policy_no());
 							sms.put("account_no_dplk", null);
@@ -734,7 +724,7 @@ public class LoginRegisterIndividualCorporateController {
 									+ resultErr);
 						}
 					}
-				} else if (corporate){ // Forgot Password Corporate
+				} else if (isIndividuCorporate || isCorporate){ // Forgot Password Corporate
 					UserCorporate dataUserCorporate = services.selectUserCorporate(username);
 
 					if (dataUserCorporate != null) {
@@ -761,7 +751,7 @@ public class LoginRegisterIndividualCorporateController {
 								data.put("ishavingphonenumber", true);
 								data.put("username", username);
 								data.put("contacts", sms);
-								data.put("poicy_type", "corporate");
+								data.put("policy_type", "corporate");
 								sms.put("sms", no_hp);
 								sms.put("no_polis", dataUserCorporate.getNo_polis());
 								sms.put("account_no_dplk", null);
@@ -835,10 +825,10 @@ public class LoginRegisterIndividualCorporateController {
 								data.put("ishavingphonenumber", true);
 								data.put("username", username);
 								data.put("contacts", sms);
-								data.put("poicy_type", "corporate");
+								data.put("policy_type", "dplk");
 								sms.put("sms", no_hp);
 								sms.put("no_polis", null);
-								sms.put("account_no_dplk", dplkByAccNo.getAcc_no());
+								sms.put("account_no_dplk", dplkByAccNo.getNo_peserta());
 							} else {
 								error = true;
 								message = "Phone number is blacklisted";
@@ -847,7 +837,7 @@ public class LoginRegisterIndividualCorporateController {
 								data.put("username", null);
 								sms.put("sms", no_hp);
 								sms.put("no_polis", null);
-								sms.put("account_no_dplk", dplkByAccNo.getAcc_no());
+								sms.put("account_no_dplk", dplkByAccNo.getNo_peserta());
 								resultErr = "No telepon sedang dalam masa blacklist";
 								logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 										+ resultErr);

@@ -520,7 +520,9 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
         User user = services.selectUserIndividual(username);
         if (user == null) return  false;
         List<Pemegang> lst = services.filterByIdSimultanRegSpajNoPolis(id_simultan, user.getMspo_policy_no(), user.getReg_spaj(), username);
-        Optional<Pemegang> optionalPemegang = lst.stream().filter(v -> v.getType_individu() != null).findFirst();
+        Optional<Pemegang> optionalPemegang = lst.stream()
+                .filter(v -> v.getType_individu() != null && v.getType_individu().equals(TYPE_INDIVIDU_MRI))
+                .findFirst();
         if (optionalPemegang.isPresent()){
             String typeIndividu = optionalPemegang.get().getType_individu();
             return typeIndividu.equals(TYPE_INDIVIDU_MRI);

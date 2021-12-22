@@ -1657,22 +1657,22 @@ public class PolicyIndividualCorporateController {
 				String tin_pp_descripsi = policyHolder.getTin_descripsi();
 				
 
-//				HashMap<String, Object> _tin_pp = new HashMap<>();
-//				HashMap<String, Object> temp_tin_pp = new HashMap<>();
-//				_tin_pp.put("value", tin_pp);
-//				_tin_pp.put("id_endors",111);
-//				_tin_pp.put ("flag_direct", 0);
-//				temp_tin_pp.put("tin_pp", _tin_pp);
-//				data_policyholder.putAll(temp_tin_pp);
+				HashMap<String, Object> _tin_pp = new HashMap<>();
+				HashMap<String, Object> temp_tin_pp = new HashMap<>();
+				_tin_pp.put("value", tin_pp);
+				_tin_pp.put("id_endors", 6);
+				_tin_pp.put ("flag_direct", 0);
+				temp_tin_pp.put("tin_pp", _tin_pp);
+				data_policyholder.putAll(temp_tin_pp);
 				
 				
-//				HashMap<String, Object> _tin_descripsi_pp = new HashMap<>();
-//				HashMap<String, Object> temp_tin_descripsi_pp = new HashMap<>();
-//				_tin_descripsi_pp.put("value", tin_pp_descripsi);
-//				_tin_descripsi_pp.put("id_endors", 112);
-//				_tin_descripsi_pp.put ("flag_direct", 0);
-//				temp_tin_descripsi_pp.put("tin_pp_descripsi", _tin_descripsi_pp);
-//				data_policyholder.putAll(temp_tin_descripsi_pp);
+				HashMap<String, Object> _tin_descripsi_pp = new HashMap<>();
+				HashMap<String, Object> temp_tin_descripsi_pp = new HashMap<>();
+				_tin_descripsi_pp.put("value", tin_pp_descripsi);
+				_tin_descripsi_pp.put("id_endors", 6);
+				_tin_descripsi_pp.put ("flag_direct", 0);
+				temp_tin_descripsi_pp.put("tin_pp_descripsi", _tin_descripsi_pp);
+				data_policyholder.putAll(temp_tin_descripsi_pp);
 				
 				
 				HashMap<String, Object> _nama_pp = new HashMap<>();
@@ -2155,7 +2155,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _cara_bayar = new HashMap<>();
 				HashMap<String, Object> temp_cara_bayar = new HashMap<>();
 				_cara_bayar.put("value", cara_bayar);
-				_cara_bayar.put("id_endors", null);
+				_cara_bayar.put("id_endors", 8);
 				_cara_bayar.put ("flag_direct", 3);
 				temp_cara_bayar.put("cara_bayar", _cara_bayar);
 				data_payor.putAll(temp_cara_bayar);
@@ -2235,7 +2235,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _hubungan_payor = new HashMap<>();
 				HashMap<String, Object> temp_hubungan_payor = new HashMap<>();
 				_hubungan_payor.put("value", hubungan_payor);
-				_hubungan_payor.put("id_endors", 8);
+				_hubungan_payor.put("id_endors", 96);
 				_hubungan_payor.put ("flag_direct", 0);
 				temp_hubungan_payor.put("hubungan_payor", _hubungan_payor);
 				data_payor.putAll(temp_hubungan_payor);

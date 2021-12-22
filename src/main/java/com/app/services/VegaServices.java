@@ -222,6 +222,8 @@ public class VegaServices {
 		if (lsje_id == 96 && msde_old20 != null && msde_new20 != null) isTemp = true;
 		if (lsje_id == 96 && msde_old22 != null && msde_new22 != null) isTemp = true;
 		if (lsje_id == 96 && msde_old23 != null && msde_new23 != null) isTemp = true;
+		if (lsje_id == 6 && msde_old1 != null && msde_new1 != null) isTemp = true;
+		if (lsje_id == 6 && msde_old2 != null && msde_new2 != null) isTemp = true;
 
 		if (isTemp){
 			if (isUpdate){

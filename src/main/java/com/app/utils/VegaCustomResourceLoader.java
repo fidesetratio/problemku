@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import com.itextpdf.text.*;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,9 +61,6 @@ import com.app.model.Provinsi;
 import com.app.model.PushNotif;
 import com.app.model.User;
 import com.app.services.VegaServices;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
@@ -1704,10 +1702,24 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 			Document document = new Document();
 
 			fileBase64 = fileBase64.replace("\n", "");
-			String fileUpload = pathFolder + File.separator + nameFileNew + ".jpg";
+			String fileUpload = pathFolder + File.separator + nameFileNew + ".pdf";
 
 			byte[] imageByte = Base64.getDecoder().decode(fileBase64);
 			new FileOutputStream(fileUpload).write(imageByte);
+
+			PdfWriter.getInstance(document, new FileOutputStream(fileUpload));
+			document.open();
+			byte[] decoded = Base64.getDecoder().decode(fileBase64.getBytes());
+			Image img = Image.getInstance(decoded);
+
+			int indentation = 0;
+			img.scaleToFit(PageSize.A4.getWidth(), PageSize.A4.getHeight());
+			float x = (PageSize.A4.getWidth() - img.getScaledWidth()) / 2;
+			float y = (PageSize.A4.getHeight() - img.getScaledHeight()) / 2;
+			img.setAbsolutePosition(x, y);
+
+			document.add(img);
+			document.close();
 
 			result = true;
 		} catch (Exception e) {

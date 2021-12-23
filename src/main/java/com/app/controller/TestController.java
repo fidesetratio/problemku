@@ -3,6 +3,7 @@ package com.app.controller;
 import com.app.exception.HandleSuccessOrNot;
 import com.app.model.*;
 import com.app.services.LoginSvc;
+import com.app.services.RegistrationIndividuSvc;
 import com.app.services.VegaServices;
 import com.app.utils.VegaCustomResourceLoader;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,6 +27,8 @@ public class TestController {
     private VegaCustomResourceLoader customResourceLoader;
     @Autowired
     private LoginSvc loginSvc;
+    @Autowired
+    private RegistrationIndividuSvc registrationIndividuSvc;
 
     @Autowired
     private VegaServices vegaServices;
@@ -53,14 +56,20 @@ public class TestController {
             LstUserSimultaneous checkIndividuOrCorporate = vegaServices.selectDataLstUserSimultaneous(username);
             if (checkIndividuOrCorporate != null){
                 boolean isIndividu = loginSvc.isIndividu(checkIndividuOrCorporate);
+                boolean isIndividuMri = registrationIndividuSvc.isIndividuMri(checkIndividuOrCorporate.getID_SIMULTAN(), checkIndividuOrCorporate.getUSERNAME());
                 boolean isIndividuCorporate = loginSvc.isIndividuCorporate(checkIndividuOrCorporate);
+                boolean isDplk = loginSvc.isAccountDplk(checkIndividuOrCorporate);
                 boolean corporate = loginSvc.corporate(checkIndividuOrCorporate);
-                if (isIndividu){
+                if (isIndividu || isIndividuMri){
                     User dataActivityUser = vegaServices.selectUserIndividual(username);
                     code = vegaServices.selectTopActiveOtp(dataActivityUser.getNo_hp());
                 } else if (isIndividuCorporate || corporate){
                     UserCorporate dataUserCorporate = vegaServices.selectUserCorporate(username);
                     code = vegaServices.selectTopActiveOtp(dataUserCorporate.getNo_hp());
+                } else if (isDplk){
+                    DPLKAccountModel dplkByAccNo = vegaServices.getInfoDplkByAccNo(checkIndividuOrCorporate.getAccount_no_dplk() != null
+                            ? checkIndividuOrCorporate.getAccount_no_dplk() : null);
+                    code = vegaServices.selectTopActiveOtp(dplkByAccNo.getNo_hp());
                 } else {
                     code = vegaServices.selectTopActiveOtp();
                 }

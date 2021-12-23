@@ -1036,7 +1036,7 @@ public class FinancialTransactionController {
 	}
 
 	@RequestMapping(value = "/downloadattachhistory", produces = "application/json", method = RequestMethod.POST)
-	public ResponseEntity<Resource> downloadAttachHistory(@RequestBody DownloadAttachment downloadAttachment, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public String downloadAttachHistory(@RequestBody DownloadAttachment downloadAttachment, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		return transactionHistorySvc.downloadAttachmentHistory(downloadAttachment, request, response);
 	}
 

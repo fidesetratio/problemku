@@ -2021,7 +2021,7 @@ public class PolicyIndividualCorporateController {
 				HashMap<String, Object> _npwp = new HashMap<>();
 				HashMap<String, Object> temp_npwp = new HashMap<>();
 				_npwp.put("value", npwp);
-				_npwp.put("id_endors", 3);
+				_npwp.put("id_endors", 96);
 				_npwp.put ("flag_direct", 0);
 				temp_npwp.put("npwp", _npwp);
 				data_policyholder.putAll(temp_npwp);

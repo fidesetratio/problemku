@@ -20,6 +20,6 @@ public interface TransactionHistorySvc {
 
     TransactionHistory getDetailTransactionHistory(String kode_transaksi, String reg_spaj) throws ParseException;
 
-    ResponseEntity<Resource> downloadAttachmentHistory(DownloadAttachment requestBody, HttpServletRequest request, HttpServletResponse response) throws IOException;
+    String downloadAttachmentHistory(DownloadAttachment requestBody, HttpServletRequest request, HttpServletResponse response) throws IOException;
 
 }

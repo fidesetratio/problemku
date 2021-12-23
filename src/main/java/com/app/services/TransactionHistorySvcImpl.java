@@ -92,15 +92,56 @@ public class TransactionHistorySvcImpl implements TransactionHistorySvc {
     }
 
     @Override
-    public ResponseEntity<Resource> downloadAttachmentHistory(DownloadAttachment requestBody, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        File file = new File(requestBody.getPath());
-        Path path = Paths.get(file.getAbsolutePath());
-        ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+    public String downloadAttachmentHistory(DownloadAttachment requestBody, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        GsonBuilder builder = new GsonBuilder();
+        builder.serializeNulls();
+        Gson gson = new Gson();
+        gson = builder.create();
+        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
+        HandleSuccessOrNot handleSuccessOrNot;
+        String res;
+        try {
+            if (customResourceLoader.validateCredential(requestBody.getUsername(), requestBody.getKey())) {
+                // Path file yang mau di download
+                File file = new File(requestBody.getPath());
+                try {
+                    // Content-Disposition
+                    response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName());
 
-        return ResponseEntity.ok()
-                .contentLength(file.length())
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(resource);
+                    // Content-Length
+                    response.setContentLength((int) file.length());
+
+                    BufferedInputStream inStream = new BufferedInputStream(new FileInputStream(file));
+                    BufferedOutputStream outStream = new BufferedOutputStream(response.getOutputStream());
+
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = 0;
+                    while ((bytesRead = inStream.read(buffer)) != -1) {
+                        outStream.write(buffer, 0, bytesRead);
+                    }
+                    outStream.flush();
+                    inStream.close();
+
+                    handleSuccessOrNot = new HandleSuccessOrNot(false, "Success Download");
+                } catch (Exception e) {
+                    handleSuccessOrNot = new HandleSuccessOrNot(true, "Download Failed file not found");
+                    logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + e);
+                }
+            } else {
+                handleSuccessOrNot = new HandleSuccessOrNot(true, "Download Failed file not found");
+                logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + "Download Failed file not found");
+            }
+        } catch (Exception e) {
+            handleSuccessOrNot = new HandleSuccessOrNot(true, ResponseMessage.ERROR_SYSTEM);
+            String resultErr = "bad exception " + e;
+            logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: " + resultErr);
+        }
+        map.put("error", handleSuccessOrNot.isError());
+        map.put("data", data);
+        map.put("message", handleSuccessOrNot.getMessage());
+        res = gson.toJson(map);
+        return res;
     }
 
     private List<TransactionHistory> mapTransactionMpolTrans(List<TransactionHistory> historyList) {

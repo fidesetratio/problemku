@@ -18,7 +18,9 @@ import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -1034,7 +1036,7 @@ public class FinancialTransactionController {
 	}
 
 	@RequestMapping(value = "/downloadattachhistory", produces = "application/json", method = RequestMethod.POST)
-	public String downloadAttachHistory(@RequestBody DownloadAttachment downloadAttachment, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<Resource> downloadAttachHistory(@RequestBody DownloadAttachment downloadAttachment, HttpServletRequest request, HttpServletResponse response) throws IOException {
 		return transactionHistorySvc.downloadAttachmentHistory(downloadAttachment, request, response);
 	}
 

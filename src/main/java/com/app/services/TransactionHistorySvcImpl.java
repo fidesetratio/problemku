@@ -72,7 +72,7 @@ public class TransactionHistorySvcImpl implements TransactionHistorySvc {
         if (transaction_type != null && !transaction_type.equals("")) {
             return mpolTrans.stream().filter(v -> v.getTransaction_type().equals(transaction_type)).collect(Collectors.toList());
         }
-        return mpolTrans.stream().sorted(Comparator.comparing(TransactionHistory::getTgl_transaksi).reversed()).collect(Collectors.toList());
+        return mpolTrans;
     }
 
     @Override

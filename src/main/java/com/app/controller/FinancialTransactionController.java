@@ -7441,6 +7441,7 @@ public class FinancialTransactionController {
 					logger.error(
 							"Path: " + request.getServletPath() + "Username: " + username + " Error: " + resultErr);
 				} else {
+					listTransactionHistory = listTransactionHistory.stream().sorted(Comparator.comparing(TransactionHistory::getTgl_transaksi).reversed()).collect(Collectors.toList())
 					listTransactionHistory = PageUtils.getPage(listTransactionHistory, Optional.ofNullable(pageNumber).orElse(1), Optional.ofNullable(pageSize).orElse(20));
 					size = listTransactionHistory.size();
 

@@ -1684,6 +1684,40 @@ public class VegaCustomResourceLoader implements ResourceLoaderAware {
 		return result;
 	}
 
+	public Boolean uploadFileToStorageImage(String pathFolder, String fileBase64, String fileName, String username,
+											String urlPath){
+		Boolean result = false;
+		String nameFileNew = null;
+
+		File folder = new File(pathFolder);
+		if (!folder.exists()) {
+			folder.mkdirs();
+		}
+
+		int lastIndexOf = fileName.lastIndexOf(".");
+		if (lastIndexOf > -1) {
+			nameFileNew = fileName.substring(0, lastIndexOf);
+			System.out.println(fileName);
+		}
+
+		try {
+			Document document = new Document();
+
+			fileBase64 = fileBase64.replace("\n", "");
+			String fileUpload = pathFolder + File.separator + nameFileNew + ".jpg";
+
+			byte[] imageByte = Base64.getDecoder().decode(fileBase64);
+			new FileOutputStream(fileUpload).write(imageByte);
+
+			result = true;
+		} catch (Exception e) {
+			logger.error("Path: " + urlPath + " Username: " + username + " Error: " + e);
+			result = false;
+		}
+		return result;
+	}
+
+
 	public Boolean createTxt(String mpc_id, String text, String file_name, Integer type) throws IOException {
 		// Type 1: Individual Type 2: Corporate
 		String pathLog = pathLogSubmitClaimSubmission + File.separator + mpc_id;

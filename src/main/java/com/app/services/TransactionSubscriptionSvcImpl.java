@@ -310,8 +310,8 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                 SummaryPayment paymentAggregator = services.getMspaTrxId(requestBody.getId_payment());
                 if (mpolTrans != null) {
                     String path = String.format("%s/%s/%s/%s", storageMpolicy, mpolTrans.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail");
-                    Boolean uploadFile = customResourceLoader.uploadFileToStorage(path, requestBody.getPath(),
-                            String.format("%s.pdf", mpolTrans.getMpt_id()), requestBody.getUsername(), request.getServletPath(), null);
+                    Boolean uploadFile = customResourceLoader.uploadFileToStorageImage(path, requestBody.getPath(),
+                            String.format("%s.pdf", mpolTrans.getMpt_id()), requestBody.getUsername(), request.getServletPath());
                     if (uploadFile.equals(true)) {
                         String nameFile = String.format("%s/%s/%s/%s/%s%s", storageMpolicy, mpolTrans.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail", mpolTrans.getMpt_id(), ".pdf");
                         services.updatePathSummaryDetail(mpolTrans.getMpt_id(), nameFile);
@@ -324,8 +324,8 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                     }
                 } else if (paymentAggregator != null) {
                     String path = String.format("%s/%s/%s/%s", storageMpolicy, paymentAggregator.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail");
-                    Boolean uploadFile = customResourceLoader.uploadFileToStorage(path, requestBody.getPath(),
-                            String.format("%s.pdf", paymentAggregator.getObjc_id()), requestBody.getUsername(), request.getServletPath(), null);
+                    Boolean uploadFile = customResourceLoader.uploadFileToStorageImage(path, requestBody.getPath(),
+                            String.format("%s.pdf", paymentAggregator.getObjc_id()), requestBody.getUsername(), request.getServletPath());
                     if (uploadFile.equals(true)) {
                         String nameFile = String.format("%s/%s/%s/%s/%s%s", storageMpolicy, paymentAggregator.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail", paymentAggregator.getObjc_id(), ".pdf");
                         services.updatePathSummaryDetail(paymentAggregator.getObjc_id(), nameFile);

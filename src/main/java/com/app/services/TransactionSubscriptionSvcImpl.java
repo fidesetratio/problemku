@@ -311,28 +311,28 @@ public class TransactionSubscriptionSvcImpl implements TransactionSubscriptionSv
                 if (mpolTrans != null) {
                     String path = String.format("%s/%s/%s/%s", storageMpolicy, mpolTrans.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail");
                     Boolean uploadFile = customResourceLoader.uploadFileToStorageImage(path, requestBody.getPath(),
-                            String.format("%s.pdf", mpolTrans.getMpt_id()), requestBody.getUsername(), request.getServletPath());
+                            String.format("%s.jpg", mpolTrans.getMpt_id()), requestBody.getUsername(), request.getServletPath());
                     if (uploadFile.equals(true)) {
-                        String nameFile = String.format("%s/%s/%s/%s/%s%s", storageMpolicy, mpolTrans.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail", mpolTrans.getMpt_id(), ".pdf");
+                        String nameFile = String.format("%s/%s/%s/%s/%s%s", storageMpolicy, mpolTrans.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail", mpolTrans.getMpt_id(), ".jpg");
                         services.updatePathSummaryDetail(mpolTrans.getMpt_id(), nameFile);
                         handleSuccessOrNot = new HandleSuccessOrNot(false, "Success Upload File");
                     } else {
                         handleSuccessOrNot = new HandleSuccessOrNot(true, "Failed upload file");
-                        resultErr = "File PDF Corrupt, MPT_ID: " + mpolTrans.getMpt_id() + ", Name File: " + String.format("%s.pdf", mpolTrans.getMpt_id());
+                        resultErr = "File PDF Corrupt, MPT_ID: " + mpolTrans.getMpt_id() + ", Name File: " + String.format("%s.jpg", mpolTrans.getMpt_id());
                         logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: "
                                 + resultErr);
                     }
                 } else if (paymentAggregator != null) {
                     String path = String.format("%s/%s/%s/%s", storageMpolicy, paymentAggregator.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail");
                     Boolean uploadFile = customResourceLoader.uploadFileToStorageImage(path, requestBody.getPath(),
-                            String.format("%s.pdf", paymentAggregator.getObjc_id()), requestBody.getUsername(), request.getServletPath());
+                            String.format("%s.jpg", paymentAggregator.getObjc_id()), requestBody.getUsername(), request.getServletPath());
                     if (uploadFile.equals(true)) {
-                        String nameFile = String.format("%s/%s/%s/%s/%s%s", storageMpolicy, paymentAggregator.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail", paymentAggregator.getObjc_id(), ".pdf");
+                        String nameFile = String.format("%s/%s/%s/%s/%s%s", storageMpolicy, paymentAggregator.getSpaj_etc(), "Bukti_Transaksi", "Summary_Detail", paymentAggregator.getObjc_id(), ".jpg");
                         services.updatePathSummaryDetail(paymentAggregator.getObjc_id(), nameFile);
                         handleSuccessOrNot = new HandleSuccessOrNot(false, "Success Upload File");
                     } else {
                         handleSuccessOrNot = new HandleSuccessOrNot(true, "Failed upload file");
-                        resultErr = "File PDF Corrupt, MPT_ID: " + paymentAggregator.getObjc_id() + ", Name File: " + String.format("%s.pdf", paymentAggregator.getObjc_id());
+                        resultErr = "File PDF Corrupt, MPT_ID: " + paymentAggregator.getObjc_id() + ", Name File: " + String.format("%s.jpg", paymentAggregator.getObjc_id());
                         logger.error("Path: " + request.getServletPath() + " Username: " + requestBody.getUsername() + " Error: "
                                 + resultErr);
                     }

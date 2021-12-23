@@ -1194,7 +1194,7 @@ public class PolicyIndividualCorporateController {
 		map.put("data", data);
 		map.put("min_value", min_value);
 		map.put("max_value", max_value);
-		map.put("fund_focus", String.format("%s?value=Fund Focus %s.pdf&type=%d", "http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/businesssubmission/spaj/downloadnewsfund", lji_type, 2));
+		map.put("fund_focus", String.format("%s?value=%s.pdf&type=%d", "http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/businesssubmission/spaj/downloadnewsfund", lji_type, 2));
 		map.put("fund_fact_sheet", String.format("%s?value=%s.pdf&type=%d", "http://vega-api-sandbox.sinarmasmsiglife.co.id:8687/businesssubmission/spaj/downloadnewsfund", lji_type, 1));
 		res = gson.toJson(map);
 		// Insert Log LST_HIST_ACTIVITY_WS

@@ -20,12 +20,10 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.app.services.RegistrationIndividuImpl.TYPE_INDIVIDU;
 import static com.app.services.RegistrationIndividuImpl.TYPE_INDIVIDU_MRI;
 
 @Service
@@ -84,7 +82,7 @@ public class LoginSvcImpl implements LoginSvc {
                 boolean user_corporate_notactive = false;
                 lstUserSimultaneous.setAccount_no_dplk(checkIndividuOrCorporate.getAccount_no_dplk());
 
-                if (isIndividu) {
+                if (isIndividu || isIndividuMri) {
                     return loginIndividu(isIndividu, isIndividuMri, username, password, data, user1, lstUserSimultaneous,
                             request, key, lastLoginDevice, time_idle, req, easyPin);
                 } else if (isIndividuCorporate || corporate) {
@@ -132,8 +130,16 @@ public class LoginSvcImpl implements LoginSvc {
 
     @Override
     public boolean isIndividu(LstUserSimultaneous checkIndividuOrCorporate) {
-        return checkIndividuOrCorporate != null && checkIndividuOrCorporate.getREG_SPAJ() != null && checkIndividuOrCorporate.getMCL_ID_EMPLOYEE() == null
-                && checkIndividuOrCorporate.getEB_HR_USERNAME() == null;
+        List<Pemegang> lst = services.filterByIdSimultanRegSpajNoPolis(checkIndividuOrCorporate.getUSERNAME());
+        Optional<Pemegang> optionalPemegang = lst.stream()
+                .filter(v -> v.getType_individu() != null && v.getType_individu().equals(TYPE_INDIVIDU))
+                .findFirst();
+        if (optionalPemegang.isPresent()){
+            String typeIndividu = optionalPemegang.get().getType_individu();
+            return typeIndividu.equals(TYPE_INDIVIDU);
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -199,7 +205,6 @@ public class LoginSvcImpl implements LoginSvc {
                     if (!listPolisMri.isEmpty()){
                         listPolisMri = (ArrayList<PolisMri>) listPolisMri.stream().filter(v -> v.getType_individu().equals(TYPE_INDIVIDU_MRI)).collect(Collectors.toList());
                         individuMri = polisIndividuMri(listPolisMri);
-                        is_individual = true;
                     }
                 } else {
                     is_individual = false;
@@ -261,7 +266,7 @@ public class LoginSvcImpl implements LoginSvc {
                                        HttpServletRequest request, String key, String lastLoginDevice, Integer timeIdle, String req, boolean easyPin) {
         ResponseData responseData = new ResponseData();
         HandleSuccessOrNot handleSuccessOrNot = null;
-        if (isIndividu) {
+        if (isIndividu || isIndividuMri) {
             User dataActivityUser = services.selectUserIndividual(username);
             // Check apakah username terdaftar/ tidak
             if (dataActivityUser != null) {
@@ -269,7 +274,7 @@ public class LoginSvcImpl implements LoginSvc {
                 if (countDeathClaim == 0) {
                     if (dataActivityUser.getLast_login_device() != null && dataActivityUser.getLast_login_device().equals(lastLoginDevice)) {
                         ArrayList<User> list = services.selectDetailedPolis(username);
-                        responseData = cekEasyLoginInvidu(easyPin, list, isIndividuMri, lstUserSimultaneous, key, user1, dataActivityUser, data, username, password, request, responseData, req);
+                        responseData = cekEasyLoginInvidu(easyPin, list, isIndividu, isIndividuMri, lstUserSimultaneous, key, user1, dataActivityUser, data, username, password, request, responseData, req);
                     } else {
                         ArrayList<User> list = services.selectDetailedPolis(username);
                         // Kondisi dimana token ada tetapi berbeda dengan yang dikirim
@@ -280,7 +285,7 @@ public class LoginSvcImpl implements LoginSvc {
                         if (diffSeconds >= timeIdle || dataActivityUser.getLast_login_device() == null) {
                             // Check apabila lebih dari 15 menit, password yang dimasukkan kosong/ ""
                             // Check password yang dimasukkan sama/ tidak dengan yang didb
-                            responseData = cekEasyLoginInvidu(easyPin, list, isIndividuMri, lstUserSimultaneous, key, user1, dataActivityUser, data, username, password, request, responseData, req);
+                            responseData = cekEasyLoginInvidu(easyPin, list, isIndividu, isIndividuMri, lstUserSimultaneous, key, user1, dataActivityUser, data, username, password, request, responseData, req);
                         } else {
                             // Error perbedaan lama waktu token belum lebih dari 15 menit
                             handleSuccessOrNot = new HandleSuccessOrNot(true, "Session still active");
@@ -413,7 +418,7 @@ public class LoginSvcImpl implements LoginSvc {
         return responseData;
     }
 
-    private ResponseData cekEasyLoginInvidu(boolean easyPin, ArrayList<User> list, boolean isIndividuMri, LstUserSimultaneous lstUserSimultaneous, String key, LstUserSimultaneous user1, User dataActivityUser,
+    private ResponseData cekEasyLoginInvidu(boolean easyPin, ArrayList<User> list, boolean isIndividu, boolean isIndividuMri, LstUserSimultaneous lstUserSimultaneous, String key, LstUserSimultaneous user1, User dataActivityUser,
                                             HashMap<String, Object> data, String username, String password, HttpServletRequest request, ResponseData responseData, String req) {
         HandleSuccessOrNot handleSuccessOrNot;
         boolean account_dplk  = false;
@@ -430,7 +435,7 @@ public class LoginSvcImpl implements LoginSvc {
                 services.updateUserKeyName(lstUserSimultaneous);
                 key = user1.getKEY();
 
-                data = getMapObjc(true, false, false, isIndividuMri, false,
+                data = getMapObjc(isIndividu, false, false, isIndividuMri, false,
                         false, account_dplk, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
                                 : dataActivityUser.getNo_hp2(), data);
                 handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
@@ -452,7 +457,7 @@ public class LoginSvcImpl implements LoginSvc {
                     services.updateUserKeyName(lstUserSimultaneous);
                     key = user1.getKEY();
 
-                    data = getMapObjc(true, false, false, isIndividuMri, false,
+                    data = getMapObjc(isIndividu, false, false, isIndividuMri, false,
                             false, account_dplk, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
                                     : dataActivityUser.getNo_hp2(), data);
                     handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");

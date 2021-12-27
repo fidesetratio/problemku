@@ -35,6 +35,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
 
     private final DateFormat df2 = new SimpleDateFormat("ddMMyyyy");
     public static final String TYPE_INDIVIDU_MRI = "INDIVIDU_MRI";
+    public static final String TYPE_INDIVIDU = "INDIVIDU";
 
     private final VegaServices services;
     private final ServiceOTP serviceOTP;
@@ -519,7 +520,7 @@ public class RegistrationIndividuImpl implements RegistrationIndividuSvc{
         }
         User user = services.selectUserIndividual(username);
         if (user == null) return  false;
-        List<Pemegang> lst = services.filterByIdSimultanRegSpajNoPolis(id_simultan, user.getMspo_policy_no(), user.getReg_spaj(), username);
+        List<Pemegang> lst = services.filterByIdSimultanRegSpajNoPolis(username);
         Optional<Pemegang> optionalPemegang = lst.stream()
                 .filter(v -> v.getType_individu() != null && v.getType_individu().equals(TYPE_INDIVIDU_MRI))
                 .findFirst();

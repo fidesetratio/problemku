@@ -1832,13 +1832,9 @@ public class VegaServices {
 		return dao.filterIndividuAndMri(hashMap);
 	}
 
-	public List<Pemegang> filterByIdSimultanRegSpajNoPolis(String id_simultan, String policy_number, String reg_spaj,
-														   String username){
+	public List<Pemegang> filterByIdSimultanRegSpajNoPolis(String username){
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
 		HashMap<String, Object> hashMap = new HashMap<>();
-		hashMap.put("mspa_policy_number", policy_number);
-		hashMap.put("id_simultan", id_simultan);
-		hashMap.put("reg_spaj", reg_spaj);
 		hashMap.put("username", username);
 		return dao.filterByIdSimultanRegSpajNoPolis(hashMap);
 	}

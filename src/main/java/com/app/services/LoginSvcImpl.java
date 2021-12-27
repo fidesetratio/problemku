@@ -82,10 +82,10 @@ public class LoginSvcImpl implements LoginSvc {
                 boolean user_corporate_notactive = false;
                 lstUserSimultaneous.setAccount_no_dplk(checkIndividuOrCorporate.getAccount_no_dplk());
 
-                if (isIndividu || isIndividuMri) {
+                if (isIndividu || isIndividuMri && !corporate && !isIndividuCorporate && !isAccountDplk && !isHrUser) {
                     return loginIndividu(isIndividu, isIndividuMri, username, password, data, user1, lstUserSimultaneous,
                             request, key, lastLoginDevice, time_idle, req, easyPin);
-                } else if (isIndividuCorporate || corporate) {
+                } else if (isIndividuCorporate || corporate && !isIndividu && !isIndividuMri && !isAccountDplk && !isHrUser) {
                     ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(checkIndividuOrCorporate.getMCL_ID_EMPLOYEE());
                     for (int x = 0; x < 1; x++) {
                         Date endDate = listPolisCorporate.get(x).getMspo_end_date();

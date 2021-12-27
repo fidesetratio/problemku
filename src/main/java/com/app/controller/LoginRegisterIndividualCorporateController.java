@@ -670,7 +670,7 @@ public class LoginRegisterIndividualCorporateController {
 				boolean isIndividuCorporate = loginSvc.isIndividuCorporate(checkIndividuOrCorporate);
 				boolean isCorporate = loginSvc.corporate(checkIndividuOrCorporate);
 
-				if (isIndividu || isIndividuMri) { // Forgot Password Individual
+				if (isIndividu || isIndividuMri && !isCorporate && !isIndividuCorporate && !isAccountDplk) { // Forgot Password Individual
 					User dataUserIndividual = services.selectUserIndividual(username);
 					String no_hp = registrationIndividuSvc.noHpIndividuAndMri(dataUserIndividual);
 
@@ -724,7 +724,7 @@ public class LoginRegisterIndividualCorporateController {
 									+ resultErr);
 						}
 					}
-				} else if (isIndividuCorporate || isCorporate){ // Forgot Password Corporate
+				} else if (isIndividuCorporate || isCorporate && !isIndividu && !isIndividuMri){ // Forgot Password Corporate
 					UserCorporate dataUserCorporate = services.selectUserCorporate(username);
 
 					if (dataUserCorporate != null) {
@@ -794,7 +794,7 @@ public class LoginRegisterIndividualCorporateController {
 						logger.error("Path: " + request.getServletPath() + " Username: " + username + " Error: "
 								+ resultErr);
 					}
-				} else if (isAccountDplk){
+				} else if (isAccountDplk && !isIndividuCorporate && !isCorporate && !isIndividu && !isIndividuMri){
 					DPLKAccountModel dplkByAccNo = services.getInfoDplkByAccNo(checkIndividuOrCorporate.getAccount_no_dplk() != null ? checkIndividuOrCorporate.getAccount_no_dplk() : null);
 					if (dplkByAccNo != null){
 						String no_hp = dplkByAccNo.getNo_hp();

@@ -136,7 +136,8 @@ public class LoginSvcImpl implements LoginSvc {
                 .findFirst();
         if (optionalPemegang.isPresent()){
             String typeIndividu = optionalPemegang.get().getType_individu();
-            return typeIndividu.equals(TYPE_INDIVIDU);
+            return typeIndividu.equals(TYPE_INDIVIDU) && checkIndividuOrCorporate.getREG_SPAJ() != null && checkIndividuOrCorporate.getMCL_ID_EMPLOYEE() == null
+                    && checkIndividuOrCorporate.getEB_HR_USERNAME() == null;
         } else {
             return false;
         }

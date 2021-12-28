@@ -6881,7 +6881,7 @@ SELECT distinct (CASE
 			AND DATE_RI_1 <![CDATA[ <= ]]> to_date(#{end_date}, 'dd-MM-yyyy')
 		</if>
 	</select>
-	<select id="enrollPesertaAdmedikaCorporate" parameterType="String" resultType="com.app.model.EnrollPesertaAdmedika">
+	<select id="enrollPesertaAdmedikaCorporate" parameterType="HashMap" resultType="com.app.model.EnrollPesertaAdmedika">
 		select a.mspo_Policy_no                                                  as policy_number,
 		b.no_kartu,
 		d.mcl_id,
@@ -6891,7 +6891,10 @@ SELECT distinct (CASE
 		case
 		when Upper(trim(substr(b.mste_no_reg, length(trim(b.mste_no_reg)), 1))) = 'A' then 'P'
 		Else 'D' end                                                  as membertype, --P = Principal. D = Dependent
-		d.mspe_email
+		d.mspe_email,
+		'SMile Medicare' as nama_product,
+		case when a.mspo_eb_syariah = 1 then 'Syariah' Else 'Konvensional' end as flag_syariah,
+		case when a.mspo_policy_no in ('62402201500114','BD402201500114') then 'TMMIN' else 'Regular' end as flag_tmmin --regular utk polis selain tmmin
 		from eka.mst_policy@eb a
 		inner join eka.mst_insured@eb b
 		on a.reg_spaj = b.reg_Spaj
@@ -6899,15 +6902,13 @@ SELECT distinct (CASE
 		on a.mspo_policy_holder = c.mcl_id
 		inner join eka.mst_person@eb d
 		on b.mste_insured = d.mcl_id
-		inner join eka.LST_USER_SIMULTANEOUS e on e.MCL_ID_EMPLOYEE = d.mcl_id
 		where (a.mspo_provider = 1 and a.mspo_flag_ntt in (1, 3)) --TPA admedika + Halodoc
 		and a.mspo_judul_polis = '402'                          --polis ekamedicare
 		and a.lstb_id = 3
 		and b.mste_active = 1                                   --peserta aktif di GTL
 		and b.mste_admedika in (1, 2)                           --peserta yg sudah di enroll ke admedika
 		and nvl(b.mste_admedika_batal, 0) <![CDATA[ <> ]]> 1    --peserta yang tidak batal statusnya di admedika
-		and a.lssp_id = 1
-		and e.username=#{username, jdbcType=VARCHAR}
+		and a.lssp_id = 1 and d.mcl_id in(#{mcl_id, jdbcType=VARCHAR})
 	</select>
 
 	<select id="getPlanAdmedikaCorporate" parameterType="String" resultType="com.app.model.DataPlanPeserta">

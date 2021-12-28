@@ -1966,9 +1966,11 @@ public class VegaServices {
 		return dao.selectHistoryClaimSubmissionIndividu(data);
 	}
 
-	public List<EnrollPesertaAdmedika> getEnrollPesertaAdmedikaCorporate(String username){
+	public List<EnrollPesertaAdmedika> getEnrollPesertaAdmedikaCorporate(String mcl_id){
 		VegaMapper dao = sqlSession.getMapper(VegaMapper.class);
-		return dao.enrollPesertaAdmedikaCorporate(username);
+		HashMap<String, Object> hashMap = new HashMap<>();
+		hashMap.put("mcl_id", mcl_id);
+		return dao.enrollPesertaAdmedikaCorporate(hashMap);
 	}
 
 	public List<DataPlanPeserta> getDataPlanPesertaCorporate(String no_kartu){

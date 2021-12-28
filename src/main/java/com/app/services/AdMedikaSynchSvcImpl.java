@@ -55,11 +55,18 @@ public class AdMedikaSynchSvcImpl implements AdMedikaSycnhSvc {
                 boolean corporate = loginSvc.isIndividuCorporate(selectTypeUser) || loginSvc.corporate(selectTypeUser);
                 Optional<EnrollPesertaAdmedika> optPeserta = Optional.empty();
                 if (corporate) {
-                    List<EnrollPesertaAdmedika> enrollPesertaAdmedika = vegaServices.getEnrollPesertaAdmedikaCorporate(request.getUsername());
-                    optPeserta = enrollPesertaAdmedika.stream().filter(v -> v.getNo_kartu().equals(request.getCard_no())).findFirst();
+                    ArrayList<UserCorporate> listPolisCorporate = vegaServices.selectListPolisCorporate(selectTypeUser.getMCL_ID_EMPLOYEE());
+                    String [] msteInsured = listPolisCorporate.stream().map(UserCorporate::getMste_insured).toArray(String[]::new);
+                    msteInsured = Arrays.stream(msteInsured).distinct().toArray(String[]::new);
+                    List<EnrollPesertaAdmedika> datacombine = new ArrayList<>();
+                    for (String mclId : msteInsured){
+                        List<EnrollPesertaAdmedika> enrollPesertaAdmedika = vegaServices.getEnrollPesertaAdmedikaCorporate(mclId);
+                        datacombine.addAll(enrollPesertaAdmedika);
+                    }
+                    optPeserta = datacombine.stream().filter(v -> v.getNo_kartu().equals(request.getCard_no())).findFirst();
                 } else if (isIndividu){
                     //TODO query peserta individu admedika enroll
-                    List<EnrollPesertaAdmedika> enrollPesertaAdmedika = vegaServices.getEnrollPesertaAdmedikaCorporate(request.getUsername());
+                    List<EnrollPesertaAdmedika> enrollPesertaAdmedika = vegaServices.getEnrollPesertaAdmedikaCorporate(null);
                     optPeserta = enrollPesertaAdmedika.stream().filter(v -> v.getNo_kartu().equals(request.getCard_no())).findFirst();
                 }
 
@@ -150,15 +157,22 @@ public class AdMedikaSynchSvcImpl implements AdMedikaSycnhSvc {
                 boolean isIndividu = loginSvc.isIndividu(selectTypeUser);
                 boolean corporate = loginSvc.isIndividuCorporate(selectTypeUser) || loginSvc.corporate(selectTypeUser);
                 if (corporate) {
-                    List<EnrollPesertaAdmedika> enrollPesertaAdmedika = vegaServices.getEnrollPesertaAdmedikaCorporate(username);
-                    for (EnrollPesertaAdmedika pesertaAdmedika : enrollPesertaAdmedika){
+                    ArrayList<UserCorporate> listPolisCorporate = vegaServices.selectListPolisCorporate(selectTypeUser.getMCL_ID_EMPLOYEE());
+                    String [] msteInsured = listPolisCorporate.stream().distinct().map(UserCorporate::getMste_insured).toArray(String[]::new);
+                    msteInsured = Arrays.stream(msteInsured).distinct().toArray(String[]::new);
+                    List<EnrollPesertaAdmedika> datacombine = new ArrayList<>();
+                    for (String mclId : msteInsured){
+                        List<EnrollPesertaAdmedika> enrollPesertaAdmedika = vegaServices.getEnrollPesertaAdmedikaCorporate(mclId);
+                        datacombine.addAll(enrollPesertaAdmedika);
+                    }
+                    for (EnrollPesertaAdmedika pesertaAdmedika : datacombine){
                         List<DataPlanPeserta> dataPlanPesertaList = vegaServices.getDataPlanPesertaCorporate(pesertaAdmedika.getNo_kartu());
                         arrayList.add(getMapEnrollPeserta(pesertaAdmedika, dataPlanPesertaList));
                     }
                     data.put("corporate", arrayList);
                 } else if (isIndividu){
                     //TODO query peserta individu admedika enroll
-                    List<EnrollPesertaAdmedika> enrollPesertaAdmedika = vegaServices.getEnrollPesertaAdmedikaCorporate(username);
+                    List<EnrollPesertaAdmedika> enrollPesertaAdmedika = vegaServices.getEnrollPesertaAdmedikaCorporate(null);
                     for (EnrollPesertaAdmedika pesertaAdmedika : enrollPesertaAdmedika){
                         List<DataPlanPeserta> dataPlanPesertaList = vegaServices.getDataPlanPesertaCorporate(pesertaAdmedika.getNo_kartu());
                         arrayList.add(getMapEnrollPeserta(pesertaAdmedika, dataPlanPesertaList));
@@ -199,6 +213,9 @@ public class AdMedikaSynchSvcImpl implements AdMedikaSycnhSvc {
         data.put("member_type", enrollPesertaAdmedika.getMembertype());
         data.put("email", enrollPesertaAdmedika.getMspe_email());
         data.put("list_plan", dataPlanPesertaList);
+        data.put("flag_syariah", enrollPesertaAdmedika.getFlag_syariah());
+        data.put("flag_tmmin", enrollPesertaAdmedika.getFlag_tmmin());
+        data.put("nama_product", enrollPesertaAdmedika.getNama_product());
         return data;
     }
 }

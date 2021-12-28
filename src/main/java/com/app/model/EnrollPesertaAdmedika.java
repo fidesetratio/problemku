@@ -24,4 +24,7 @@ public class EnrollPesertaAdmedika implements Serializable {
     private String mspe_email;
     private String mspe_mobile;
     private String nama_plan;
+    private String flag_syariah;
+    private String flag_tmmin;
+    private String nama_product;
 }

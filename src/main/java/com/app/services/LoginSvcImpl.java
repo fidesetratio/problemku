@@ -329,7 +329,7 @@ public class LoginSvcImpl implements LoginSvc {
             if (dataUserCorporate.getLast_login_device() != null && dataUserCorporate.getLast_login_device().equals(lastLoginDevice)) {
                 ArrayList<UserCorporate> list = services.selectListPolisCorporate(mcl_id_employee);
                 responseData = cekLoginCorporate(easyPin, list, lstUserSimultaneous, user1, key, individuCorporate, policy_corporate_notinforce, user_corporate_notactive, dataUserCorporate.getNo_hp(), data,
-                        password, username, request, responseData, req);
+                        password, username, request, responseData, req, mcl_id_employee);
             } else {
                 ArrayList<UserCorporate> list = services.selectListPolisCorporate(mcl_id_employee);
                 Date dateActivity = dataUserCorporate.getUpdate_date() != null ? dataUserCorporate.getUpdate_date() : new Date();
@@ -339,7 +339,7 @@ public class LoginSvcImpl implements LoginSvc {
                 // Check apakah lama perbedaan waktu token sudah melebihi 15 menit/ belum
                 if (diffSeconds >= timeIdle || dataUserCorporate.getLast_login_device() == null) {
                     responseData = cekLoginCorporate(easyPin, list, lstUserSimultaneous, user1, key, individuCorporate, policy_corporate_notinforce, user_corporate_notactive, dataUserCorporate.getNo_hp(), data,
-                            password, username, request, responseData, req);
+                            password, username, request, responseData, req, mcl_id_employee);
                 } else {
                     // Error perbedaan lama waktu token belum lebih dari 15 menit
                     handleSuccessOrNot = new HandleSuccessOrNot(true, "Session still active");
@@ -438,7 +438,7 @@ public class LoginSvcImpl implements LoginSvc {
 
                 data = getMapObjc(isIndividu, false, false, isIndividuMri, false,
                         false, account_dplk, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
-                                : dataActivityUser.getNo_hp2(), data);
+                                : dataActivityUser.getNo_hp2(), data, username, null);
                 handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
             } else {
                 // Error list polis kosong
@@ -460,7 +460,7 @@ public class LoginSvcImpl implements LoginSvc {
 
                     data = getMapObjc(isIndividu, false, false, isIndividuMri, false,
                             false, account_dplk, key, dataActivityUser.getNo_hp() != null ? dataActivityUser.getNo_hp()
-                                    : dataActivityUser.getNo_hp2(), data);
+                                    : dataActivityUser.getNo_hp2(), data, username, null);
                     handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
                 } else {
                     // Error list polis kosong
@@ -488,7 +488,7 @@ public class LoginSvcImpl implements LoginSvc {
 
     private ResponseData cekLoginCorporate(boolean easyPin, ArrayList<UserCorporate> list, LstUserSimultaneous lstUserSimultaneous, LstUserSimultaneous user1, String key, boolean individuCorporate,
                                            boolean policy_corporate_notinforce, boolean user_corporate_notactive, String no_hp, HashMap<String, Object> data, String password, String username,
-                                           HttpServletRequest request, ResponseData responseData, String req) {
+                                           HttpServletRequest request, ResponseData responseData, String req, String mcl_id_employee) {
         HandleSuccessOrNot handleSuccessOrNot;
         boolean account_dplk  = false;
         DPLKAccountModel dplkByAccNo = services.getInfoDplkByAccNo(lstUserSimultaneous.getAccount_no_dplk() != null ? lstUserSimultaneous.getAccount_no_dplk() : null);
@@ -503,7 +503,7 @@ public class LoginSvcImpl implements LoginSvc {
                 services.updateUserKeyName(lstUserSimultaneous);
                 key = user1.getKEY();
                 data = getMapObjc(individuCorporate, true, false, false, policy_corporate_notinforce,
-                        user_corporate_notactive, account_dplk, key, no_hp, data);
+                        user_corporate_notactive, account_dplk, key, no_hp, data, username, mcl_id_employee);
                 handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
             } else {
                 // Error list polis kosong
@@ -523,7 +523,7 @@ public class LoginSvcImpl implements LoginSvc {
                     services.updateUserKeyName(lstUserSimultaneous);
                     key = user1.getKEY();
                     data = getMapObjc(individuCorporate, true, false, false, policy_corporate_notinforce,
-                            user_corporate_notactive, account_dplk, key, no_hp, data);
+                            user_corporate_notactive, account_dplk, key, no_hp, data, username, mcl_id_employee);
                     handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
 
                     // Insert Log LST_HIST_ACTIVITY_WS
@@ -562,7 +562,7 @@ public class LoginSvcImpl implements LoginSvc {
             services.updateUserKeyName(lstUserSimultaneous);
             key = user1.getKEY();
             data = getMapObjc(false, false, true, false, false,
-                    false, false, key, null, data);
+                    false, false, key, null, data, username, null);
             handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
             customResourceLoader.insertHistActivityWS(12, 40, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
         } else {
@@ -573,7 +573,7 @@ public class LoginSvcImpl implements LoginSvc {
                 services.updateUserKeyName(lstUserSimultaneous);
                 key = user1.getKEY();
                 data = getMapObjc(false, false, true, false, false,
-                        false, false, key, null, data);
+                        false, false, key, null, data, username, null);
                 handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
             } else {
                 // Error username yang dimasukkan tidak ada pada database
@@ -600,7 +600,7 @@ public class LoginSvcImpl implements LoginSvc {
             services.updateUserKeyName(lstUserSimultaneous);
             key = user1.getKEY();
             data = getMapObjc(false, false, false, false, false,
-                    false, true, key, dplkAccount.getNo_hp(), data);
+                    false, true, key, dplkAccount.getNo_hp(), data, username, null);
             handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
             customResourceLoader.insertHistActivityWS(12, 40, new Date(), req, responseData.toString(), 1, handleSuccessOrNot.getMessage(), new Date(), username);
         } else {
@@ -612,7 +612,7 @@ public class LoginSvcImpl implements LoginSvc {
                     services.updateUserKeyName(lstUserSimultaneous);
                     key = user1.getKEY();
                     data = getMapObjc(false, false, false, false, false,
-                            false, true, key, dplkAccount.getNo_hp(), data);
+                            false, true, key, dplkAccount.getNo_hp(), data, username, null);
                     handleSuccessOrNot = new HandleSuccessOrNot(false, "Login success");
                 } else {
                     // Error username yang dimasukkan tidak ada pada database
@@ -638,7 +638,16 @@ public class LoginSvcImpl implements LoginSvc {
 
     private HashMap<String, Object> getMapObjc(boolean individu, boolean corporate, boolean hr_user, boolean individu_mri,
                                                boolean policy_corporate_notinforce, boolean user_corporate_notactive, boolean accountDplk, String key,
-                                               String no_hp, HashMap<String, Object> data) {
+                                               String no_hp, HashMap<String, Object> data, String username, String mcl_id_employee) {
+        ArrayList<User> listPolisIndividu = services.selectDetailedPolis(username);
+        ArrayList<PolisMri> listPolisMri = services.getListPolisMri(username);
+        if (listPolisMri != null && !listPolisMri.isEmpty()){
+            listPolisMri = (ArrayList<PolisMri>) listPolisMri.stream().filter(v -> v.getType_individu().equals(TYPE_INDIVIDU_MRI)).collect(Collectors.toList());
+            individu_mri = listPolisMri != null && !listPolisMri.isEmpty() ? true : false;
+        }
+        individu = listPolisIndividu != null && !listPolisIndividu.isEmpty() ? true : false;
+        ArrayList<UserCorporate> listPolisCorporate = services.selectListPolisCorporate(mcl_id_employee);
+        corporate = listPolisCorporate != null && !listPolisCorporate.isEmpty() ? true : false;
         data.put("individual", individu);
         data.put("corporate", corporate);
         data.put("hr_user", hr_user);

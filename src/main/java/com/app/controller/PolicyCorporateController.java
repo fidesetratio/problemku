@@ -7,6 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -211,8 +214,12 @@ public class PolicyCorporateController {
 						String mce_klaim_admedika = dataDetailClaimCorporate.get(i).getMce_klaim_admedika();
 						
 						if(mce_klaim_admedika!=null) {
-							path = storageMpolicyDB + "Ekamedicare" + "\\"  + tgl_input + "\\" + mbc_no +
+							String pathtemp = storageMpolicyDB + "Ekamedicare" + "\\"  + tgl_input + "\\" + mbc_no +
 									"\\" + "Kwitansi" + "\\" + mce_klaim_admedika + ".pdf";
+							Path path1 = Paths.get(pathtemp);
+							if(Files.exists(path1)) {
+								path = pathtemp;
+							}
 						} else {
 							path = null;
 						}
